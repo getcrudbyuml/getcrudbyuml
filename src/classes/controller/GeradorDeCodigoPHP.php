@@ -181,7 +181,7 @@ class DAO {
 		}
 	}
 	public function fazerConexao(){
-		$this->conexao = new PDO(\'mysql:host=localhost;dbname=NomeBanco\', \'usuarioBanco\', \'SenhaBanco\', array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+		$this->conexao = new PDO(\'mysql:host=localhost;dbname=mourao_teste\', \'root\');
 		
 	}
 	
@@ -352,6 +352,12 @@ class '.$nomeDoObjetoMa.'Controller {
 		$i = 0;
 		foreach ($objeto->getAtributos() as $atributo){
 			$i++;
+			
+			$tipo = $atributo->getTipo();
+			$indice = $atributo->getIndice();
+			if($indice == 'primary_key'){
+					continue;
+			}
 			$codigo .= 'isset ( $this->post [\''.$atributo->getNome().'\'] )';
 			if($i != count($objeto->getAtributos())){
 				$codigo .= ' && ';
@@ -383,7 +389,7 @@ class '.$nomeDoObjetoMa.'Controller {
 	}
 				
 	public function listarJSON() {
-		$'.$objeto->getNome().'Dao = new '.$nomeDoObjetoMa.'DAO ();
+		$'.$nomeDoObjeto.'Dao = new '.$nomeDoObjetoMa.'DAO ();
 		$lista = $usuarioDao->retornaLista ();
 		$listaUsuarios [\''.$nomeDoObjeto.'\'] = array ();
 		foreach ( $lista as $linha ) {
