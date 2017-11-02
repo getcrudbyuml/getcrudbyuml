@@ -125,7 +125,7 @@ function __autoload($classe) {
 			
 			</fieldset>
 			</form>
-			<hr>
+			<hr/>
 			<form action="insereatributo.php" method="post">
 			<fieldset>
 				<legend>Inserir Atributo a um Objeto</legend>

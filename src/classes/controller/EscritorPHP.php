@@ -11,14 +11,13 @@ class EscritorPHP extends Escritor{
 	 */
 	public function escreverSoftware(){
 		$this->criaEstrutura();
+		$this->criaClasseDAO();
 		$this->criaClasses();
 		$this->criaControllers();
 		$this->geraIndex();
 		$this->criaStyle();
 		$this->criaClassesDAO();
 		$this->criaForms();
-		
-		
 	}
 	public function geraIndex(){
 		$arquivo = new Arquivo();
@@ -94,24 +93,16 @@ class EscritorPHP extends Escritor{
 		$software = $this->software;
 		$vetorGeradores = GeradorDeCodigoPHP::geraClasses($software);
 		if($vetorGeradores){
-			
 			foreach ($vetorGeradores as $gerador)
 			{
-				
-				
+
 				$arquivo = new Arquivo();
 				$arquivo->setCaminho($gerador->getCaminho());
 				$arquivo->setConteudo($gerador->getCodigo());
 				$arquivo->criaArquivo();
-				
-				
-				
+
 			}
 		}
-		
-
-		
-		
 	}
 	public function criaControllers(){
 		$software = $this->software;
@@ -120,21 +111,12 @@ class EscritorPHP extends Escritor{
 				
 			foreach ($vetorGeradores as $gerador)
 			{
-	
-	
 				$arquivo = new Arquivo();
 				$arquivo->setCaminho($gerador->getCaminho());
 				$arquivo->setConteudo($gerador->getCodigo());
 				$arquivo->criaArquivo();
-	
-	
-	
 			}
 		}
-	
-	
-	
-	
 	}
 	public function criaForms(){
 		$software = $this->software;
@@ -143,22 +125,12 @@ class EscritorPHP extends Escritor{
 				
 			foreach ($vetorGeradores as $gerador)
 			{
-		
-		
 				$arquivo = new Arquivo();
 				$arquivo->setCaminho($gerador->getCaminho());
 				$arquivo->setConteudo($gerador->getCodigo());
 				$arquivo->criaArquivo();
-		
-
-		
-		
 			}
 		}
-		
-		
-		
-		
 	}
 	public function criaClassesDAO(){
 		
@@ -168,19 +140,23 @@ class EscritorPHP extends Escritor{
 				
 			foreach ($vetorGeradores as $gerador)
 			{
-		
-		
 				$arquivo = new Arquivo();
 				$arquivo->setCaminho($gerador->getCaminho());
 				$arquivo->setConteudo($gerador->getCodigo());
 				$arquivo->criaArquivo();
-		
-		
-		
 			}
 		}
-		
-		
+	}
+	public function criaClasseDAO(){
+	
+		$software = $this->software;
+		$gerador = GeradorDeCodigoPHP::geraClasseDao($this->software);
+		$arquivo = new Arquivo();
+		$arquivo->setCaminho($gerador->getCaminho());
+		$arquivo->setConteudo($gerador->getCodigo());
+		$arquivo->criaArquivo();
+	
+			
 	}
 	public function criaStyle(){
 		$arquivo = new Arquivo();

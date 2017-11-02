@@ -30,8 +30,6 @@ class GeradorDeCodigoPHP extends GeradorDeCodigo{
 				//instancia no geradorDePHP
 				//Armazena em Um vetor.
 				$gerador = GeradorDeCodigoPHP::geraCodigoDeObjeto($objeto, $nomedosite);
-			
-			
 				$geradores[] = $gerador;
 			
 			
@@ -123,7 +121,7 @@ class GeradorDeCodigoPHP extends GeradorDeCodigo{
 	
 	/**
 	 * Retorna uma estrutura que representa o codigo e o caminho de cada 
-	 * Objeto responsável por insersao de objetos no banco de dados. 
+	 * Objeto responsÃ¡vel por insersao de objetos no banco de dados. 
 	 * @param Software $software
 	 * @return GeradorDeCodigoPHP|NULL
 	 */
@@ -161,9 +159,49 @@ class GeradorDeCodigoPHP extends GeradorDeCodigo{
 		
 		
 	}
+	public static function geraClasseDao(Software $software){
+		$nomeDoSite = $software->getNome();
+		
+		$codigo  = '<?php
+		
+/**
+ * Cria uma conexão. 
+ * @author Jefferson Uchôa Ponte
+ *
+ */
+class DAO {
+	protected $conexao;
+	
+	public function DAO(PDO $conexao = null){
+		if($conexao != null){
+			$this->conexao = $conexao;
+		}else{
+			$this->fazerConexao();
+				
+		}
+	}
+	public function fazerConexao(){
+		$this->conexao = new PDO(\'mysql:host=localhost;dbname=NomeBanco\', \'usuarioBanco\', \'SenhaBanco\', array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+		
+	}
+	
+	public function getConexao(){
+		return $this->conexao;
+		
+	}
+				
+}
+?>';
+		
+		$gerador = new GeradorDeCodigoPHP();
+		$gerador->codigo = $codigo;
+		$gerador->caminho = 'sistemasphp/'.$nomeDoSite.'/classes/dao/DAO.php';
+		return $gerador;
+		
+	}
 	/**
 	 * 
-	 * Gera códigos das classes do pacote DAO
+	 * Gera cÃ³digos das classes do pacote DAO
 	 * @param Objeto $objeto
 	 * @param String $nomeDoSite
 	 * @return GeradorDeCodigoPHP
@@ -183,24 +221,98 @@ class GeradorDeCodigoPHP extends GeradorDeCodigo{
  *
  *
  */
-class '.$nomeDoObjetoDAO.' {
-	private $conexao;
-	public function setConexao(PDO $conexao) {
-		$this->conexao = $conexao;
+class '.$nomeDoObjetoDAO.' extends DAO {
+	
+	
+	public function inserir('.$nomeDoObjetoMA.' $'.$nomeDoObjeto.'){
+		
+		$sql = "INSERT INTO usuario(';
+		$i = 0;
+		foreach ($objeto->getAtributos() as $atributo){
+			$i++;
+			$codigo .= $atributo->getNome();
+			if($i != count($objeto->getAtributos())){
+				$codigo .= ', ';
+			}
+		}
+		$codigo .= ')
+				VALUES(';
+		$i = 0;
+		foreach ($objeto->getAtributos() as $atributo){
+			$i++;
+			$codigo .= ':'.$atributo->getNome();
+			if($i != count($objeto->getAtributos())){
+				$codigo .= ', ';
+			}
+		}
+		
+		$codigo .= ')";';
+		foreach ($objeto->getAtributos() as $atributo){
+			$nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)).substr($atributo->getNome(), 1,100);
+			$codigo .= '
+			$'.$atributo->getNome().' = $'.$nomeDoObjeto.'->get'.$nomeDoAtributoMA.'();';
+			
+		}
+		
+		$codigo .= '
+		try {
+			$db = $this->getConexao();
+			$stmt = $db->prepare($sql);';
+		foreach ($objeto->getAtributos() as $atributo){
+			$codigo .= '
+			$stmt->bindParam("'.$atributo->getNome().'", $'.$atributo->getNome().', PDO::PARAM_STR);';
+		}
+		
+		$codigo .= '
+			$result = $stmt->execute();
+			return $result;
+			 
+		} catch(PDOException $e) {
+			echo \'{"error":{"text":\'. $e->getMessage() .\'}}\';
+		}
 	}
-	public function getConexao() {
-		return $this->conexao;
-	}
-	public function inserir('.$nomeDoObjetoMA.' $'.$nomeDoObjeto.' ) {
-		//Aqui vc escreve o codigo pra inserir '.$nomeDoObjeto.'
-	}
-	public function deletar(){
-		//Aqui vc escreve o codigo pra inserir '.$nomeDoObjeto.'
+	public function excluir('.$nomeDoObjetoMA.' $'.$nomeDoObjeto.'){
+		$'.$objeto->getAtributos()[0]->getNome().' = $'.$nomeDoObjeto.'->getId();
+		$sql = "DELETE FROM '.$nomeDoObjeto.' WHERE '.$objeto->getAtributos()[0]->getNome().' = :'.$objeto->getAtributos()[0]->getNome().'";
+		
+		try {
+			$db = $this->getConexao();
+			$stmt = $db->prepare($sql);
+			$stmt->bindParam("id", $id, PDO::PARAM_INT);
+			return $stmt->execute();
+	
+		} catch(PDOException $e) {
+			echo \'{"error":{"text":\'. $e->getMessage() .\'}}\';
+		}
 	}
 	public function alterar(){
 		//Aqui vc escreve o codigo pra alterar '.$nomeDoObjeto.'
 	
 	}
+	
+	public function retornaLista() {
+		$lista = array ();
+		$sql = "SELECT * FROM '.$nomeDoObjeto.'	LIMIT 1000";
+		$result = $this->getConexao ()->query ( $sql );
+	
+		foreach ( $result as $linha ) {
+				
+			$'.$nomeDoObjeto.' = new '.$nomeDoObjetoMA."();\n";
+		
+		foreach ($objeto->getAtributos() as $atributo){
+			$nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)).substr($atributo->getNome(), 1,100);
+			
+			$codigo .= '
+			$'.$nomeDoObjeto.'->set'.$nomeDoAtributoMA.'( $linha [\''.$atributo->getNome().'\'] );'
+;
+			
+		}
+		$codigo .= '
+			$lista [] = $'.$nomeDoObjeto.';
+		}
+		return $lista;
+	}			
+				
 }';
 		
 		$gerador = new GeradorDeCodigoPHP();
@@ -221,9 +333,9 @@ class '.$nomeDoObjetoDAO.' {
 		$codigo  = '<?php	
 
 /**
- * Classe feita para manipulação do objeto '.$nomeDoObjetoMa.'
+ * Classe feita para manipulaÃ§Ã£o do objeto '.$nomeDoObjetoMa.'
  * feita automaticamente com programa gerador de software inventado por
- * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
+ * @author Jefferson UchÃ´a Ponte <j.pontee@gmail.com>
  */
 class '.$nomeDoObjetoMa.'Controller {
 		
@@ -247,9 +359,9 @@ class '.$nomeDoObjetoMa.'Controller {
 		$codigo  = '<?php
 	
 /**
- * Classe feita para manipulação do objeto '.$nomeDoObjetoMa.'
+ * Classe feita para manipulaÃ§Ã£o do objeto '.$nomeDoObjetoMa.'
  * feita automaticamente com programa gerador de software inventado por
- * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
+ * @author Jefferson UchÃ´a Ponte <j.pontee@gmail.com>
  */
 class '.$nomeDoObjetoMa.' {';
 		if($objeto->getAtributos())
@@ -349,14 +461,14 @@ function __autoload($classe) {
 		</div>
 		<div id="menu">
 			<ul>
-				<li><a href="">Ítem do Menu</a></li>
-				<li><a href="">Outro Ítem do Menu</a></li>
+				<li><a href="">Ã�tem do Menu</a></li>
+				<li><a href="">Outro Ã�tem do Menu</a></li>
 			</ul>
 		</div>
 		<div id="corpo">
-			<div id="esquerda">Esta é a esquerda</div>
+			<div id="esquerda">Esta Ã© a esquerda</div>
 					
-			<div id="direita">Esta é a direita</div>		
+			<div id="direita">Esta Ã© a direita</div>		
 			
 		</div>
 		<div id="footer">
@@ -371,7 +483,7 @@ function __autoload($classe) {
 	public function geraStyle(Software $software){
 		
 		$this->caminho = "sistemasphp/".$software->getNome().'/css/style.css';
-		$this->codigo = "/*Esse é um arquivo css*/
+		$this->codigo = "/*Esse Ã© um arquivo css*/
 body{
 	background-color:#5DD0C0;	
 	font:Arial, Helvetica, sans-serif;
@@ -506,7 +618,7 @@ select{
 				
 /**
  * Classe de visao para '.$nomeDoObjetoMa.'
- * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
+ * @author Jefferson UchÃ´a Ponte <j.pontee@gmail.com>
  *
  */				
 class '.$nomeDoObjetoMa.'View {
@@ -514,7 +626,7 @@ class '.$nomeDoObjetoMa.'View {
 		echo \'<form action="inserir'.$nomeDOObjeto.'.php" method="post">
 					<fieldset>
 						<legend>
-							Formulário para adicionar '.$nomeDOObjeto.'
+							FormulÃ¡rio para adicionar '.$nomeDOObjeto.'
 						</legend>';
 		
 		$atributos = $objeto->getAtributos();

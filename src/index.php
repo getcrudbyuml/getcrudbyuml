@@ -17,6 +17,7 @@ function __autoload($classe) {
 	else if (file_exists ( 'classes/view/' . $classe . '.php' )){
 		include_once 'classes/view/' . $classe . '.php';
 	}
+	
 }
 
 ?>
@@ -76,21 +77,18 @@ function __autoload($classe) {
                 	<label for="linguagem">Linguagem</label>
                     <select id="linguagem" name="linguagem">
                     	<option value="php">PHP </option>
-                    	<option value="java">Java</option>
-                    	<option value="pyton">Pyton</option>
                     </select>
-                    <label for="sgdb">Selecione o SGDB</label>
-                    <select id="sgdb" name="sgdb">
-                    	<option value="mysql">Mysql</option>
-                    </select>
-                    <label for="host">Host do Banco</label>
-                      <input type="text" value="localhost" id="host" name="host" />
-                    <label for="nome_do_banco">Nome Do Banco</label>
-                      <input type="text" value="bd_teste" id="nome_do_banco" name="nome_do_banco" />
-                     <label for="usuario">Usuario do banco</label>
-                     <input type="text" value="mvlineco_root" id="usuario" name="usuario" />
-                     <label for="senha">senha do banco</label>
-                     <input type="text" value="cocacola@12" id="senha" name="senha" />
+                    
+                    <input type="hidden" value="mysql" id="sgdb" name="sgdb" />
+                    
+<!--                     <label for="host">Host do Banco</label> -->
+                      <input type="hidden" value="localhost" id="host" name="host" />
+<!--                     <label for="nome_do_banco">Nome Do Banco</label> -->
+                      <input type="hidden" value="bd_teste" id="nome_do_banco" name="nome_do_banco" />
+<!--                      <label for="usuario">Usuario do banco</label> -->
+                     <input type="hidden" value="mvlineco_root" id="usuario" name="usuario" />
+<!--                      <label for="senha">senha do banco</label> -->
+                     <input type="hidden" value="cocacola@12" id="senha" name="senha" />
                     <input type="submit" value="Criar Software"  />
                     
                 </fieldset>
