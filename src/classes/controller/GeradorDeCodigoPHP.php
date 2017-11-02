@@ -292,7 +292,7 @@ class '.$nomeDoObjetoDAO.' extends DAO {
 	
 	public function retornaLista() {
 		$lista = array ();
-		$sql = "SELECT * FROM '.$nomeDoObjeto.'	LIMIT 1000";
+		$sql = "SELECT * FROM '.$nomeDoObjeto.' LIMIT 1000";
 		$result = $this->getConexao ()->query ( $sql );
 	
 		foreach ( $result as $linha ) {
@@ -327,18 +327,87 @@ class '.$nomeDoObjetoDAO.' extends DAO {
 	 */
 	public static function geraCodigoDeController(Objeto $objeto, $nomeDoSite){
 		$geradorDeCodigo = new GeradorDeCodigoPHP();
-		$nomeDoObjeto = $objeto->getNome();
+		$nomeDoObjeto = strtolower($objeto->getNome());
 		$nomeDoObjetoMa = strtoupper(substr($objeto->getNome(), 0, 1)).substr($objeto->getNome(), 1,100);
 		
 		$codigo  = '<?php	
 
 /**
- * Classe feita para manipulaÃ§Ã£o do objeto '.$nomeDoObjetoMa.'
+ * Classe feita para manipulação do objeto '.$nomeDoObjetoMa.'
  * feita automaticamente com programa gerador de software inventado por
  * @author Jefferson UchÃ´a Ponte <j.pontee@gmail.com>
  */
 class '.$nomeDoObjetoMa.'Controller {
+	private $post;
+	private $view;
+	public function '.$nomeDoObjetoMa.'Controller(){		
+		$this->view = new '.$nomeDoObjetoMa.'View();
+		foreach($_POST as $chave => $valor){
+			$this->post[$chave] = $valor;
+		}
+	}
+	public function cadastrar() {
+		$this->view->mostraFormInserir();
+		if (! ( ';
+		$i = 0;
+		foreach ($objeto->getAtributos() as $atributo){
+			$i++;
+			$codigo .= 'isset ( $this->post [\''.$atributo->getNome().'\'] )';
+			if($i != count($objeto->getAtributos())){
+				$codigo .= ' && ';
+			}
+			
+		}
 		
+		$codigo .= ')) {
+			if(isset($this->post[\'cadastrar\'])){
+				echo "Incompleto";
+			}
+			return;
+		}
+	
+		$usuario = new Usuario ();';
+		foreach ($objeto->getAtributos() as $atributo){
+			$nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)).substr($atributo->getNome(), 1,100);
+			$codigo .= '		
+		$usuario->set'.$nomeDoAtributoMA.' ( $this->post [\''.$atributo->getNome().'\'] );';			
+		}
+		
+		$codigo .= '	
+		$usuarioDao = new UsuarioDAO ();
+		if ($usuarioDao->inserir ( $usuario )) {
+			echo "Sucesso";
+		} else {
+			echo "Fracasso";
+		}
+	}
+				
+	public function listarJSON() {
+		$'.$objeto->getNome().'Dao = new '.$nomeDoObjetoMa.'DAO ();
+		$lista = $usuarioDao->retornaLista ();
+		$listaUsuarios [\''.$nomeDoObjeto.'\'] = array ();
+		foreach ( $lista as $linha ) {
+			$usuarios [\''.$nomeDoObjeto.'\'] [] = array (';
+		$i = 0;
+		foreach($objeto->getAtributos() as $atributo){
+			$i++;
+			$nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)).substr($atributo->getNome(), 1,100);
+			$codigo .= '
+					\''.$atributo->getNome().'\' => $linha->get'.$nomeDoAtributoMA.' ()';
+			if($i != count($objeto->getAtributos())){
+				$codigo .= ', ';
+			}
+		}
+		
+		$codigo .= '
+						
+						
+			);
+		}
+		echo json_encode ( $usuarios );
+	}			
+				
+	
 		';
 
 		$codigo .='
@@ -461,14 +530,27 @@ function __autoload($classe) {
 		</div>
 		<div id="menu">
 			<ul>
-				<li><a href="">Ã�tem do Menu</a></li>
-				<li><a href="">Outro Ã�tem do Menu</a></li>
+				<li><a href="">Item  do Menu</a></li>
+				<li><a href="">Outro Item do Menu</a></li>
 			</ul>
 		</div>
 		<div id="corpo">
-			<div id="esquerda">Esta Ã© a esquerda</div>
+			<div id="esquerda">
+			<?php
+				$controller = new '.$software->getListaDeObjetos()[0]->getNome().'Controller();
+				$controller->cadastrar();
+			?>
+			</div>
 					
-			<div id="direita">Esta Ã© a direita</div>		
+			<div id="direita">
+			<h1>Listagem em JSON</h1>
+			<?php
+
+				 $controller->listarJSON();
+						
+			?>
+						
+			</div>		
 			
 		</div>
 		<div id="footer">
@@ -623,10 +705,10 @@ select{
  */				
 class '.$nomeDoObjetoMa.'View {
 	public function mostraFormInserir() {	
-		echo \'<form action="inserir'.$nomeDOObjeto.'.php" method="post">
+		echo \'<form action="" method="post">
 					<fieldset>
 						<legend>
-							FormulÃ¡rio para adicionar '.$nomeDOObjeto.'
+							Adicionar '.$nomeDoObjetoMa.'
 						</legend>';
 		
 		$atributos = $objeto->getAtributos();
@@ -647,7 +729,7 @@ class '.$nomeDoObjetoMa.'View {
 		
 		
 		$codigo .='
-						<input type="submit" value="Cadastrar">
+						<input type="submit" name="cadastrar" value="Cadastrar">
 					</fieldset>
 				</form>\';
 	}	
