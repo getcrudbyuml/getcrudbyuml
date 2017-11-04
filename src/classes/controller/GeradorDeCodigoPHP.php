@@ -444,7 +444,35 @@ class '.$nomeDoObjetoMa.'Controller {
 		}
 		echo json_encode ( $listagem );
 	}			
+	public function listar() {
+		$'.$nomeDoObjeto.'Dao = new '.$nomeDoObjetoMa.'DAO ();
+		$lista = $'.$nomeDoObjeto.'Dao->retornaLista ();
+		echo \'<table border="1">\';';
+		foreach($objeto->getAtributos() as $atributo){
+			$nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)).substr($atributo->getNome(), 1,100);
+			$codigo .= '
+			echo \'<th>'.$nomeDoAtributoMA.'</th>\';';
 				
+		}
+		
+		$codigo .= '
+		foreach ( $lista as $'.$nomeDoObjeto.') {
+			echo \'<tr>\';		
+		';
+		foreach($objeto->getAtributos() as $atributo){
+			$nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)).substr($atributo->getNome(), 1,100);
+			$codigo .= '
+			echo \'<td>\'.$'.$nomeDoObjeto.'->get'.$nomeDoAtributoMA.' ().\'</td>\';';
+			
+		}
+		
+		$codigo .= '
+			echo \'</tr>\';
+		}
+		echo \'</table>\';
+		
+		
+	}			
 	
 		';
 
@@ -651,10 +679,10 @@ function __autoload($classe) {
 			</div>
 					
 			<div id="direita">
-			<h1>Listagem em JSON</h1>
+			<h1>Listagem</h1>
 			<?php
 
-				 $controller->listarJSON();
+				 $controller->listar();
 						
 			?>
 						
