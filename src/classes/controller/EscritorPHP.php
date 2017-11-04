@@ -51,64 +51,20 @@ class EscritorPHP extends Escritor{
 // 		$arquivo->setConteudo($gerador->getCodigo());
 // 		$arquivo->criaArquivo();
 	}
+		
 	public function criaEstrutura(){
-		
-		$nomeDoSite = $this->software->getNome();
-		
-		//pasta do programa
-		$caminho = 'sistemasphp/'.$nomeDoSite.'/src' ;
-		$pastadoprograma = new Diretorio();
-		$pastadoprograma->setCaminho($caminho);
-		$pastadoprograma->geraDiretorio();
-		
-		//pasta das classes
-		$caminho = 'sistemasphp/'.$nomeDoSite .'/src/classes';
-		$pastadoprograma->setCaminho($caminho);
-		$pastadoprograma->geraDiretorio();
-		
-		//Classes especificas para o programa
-		$caminho ='sistemasphp/'.$nomeDoSite.'/src/classes/model';
-		$pastadoprograma->setCaminho($caminho);
-		$pastadoprograma->geraDiretorio();
-		
-		//Classes especificas para o programa
-		$caminho ='sistemasphp/'.$nomeDoSite.'/src/classes/view';
-		$pastadoprograma->setCaminho($caminho);
-		$pastadoprograma->geraDiretorio();
-		
-		//Classes especificas para o programa
-		$caminho ='sistemasphp/'.$nomeDoSite.'/src/classes/controller';
-		$pastadoprograma->setCaminho($caminho);
-		$pastadoprograma->geraDiretorio();
-		
-		
-		//Classes especificas para o programa
-		$caminho ='sistemasphp/'.$nomeDoSite.'/src/classes/view';
-		$pastadoprograma->setCaminho($caminho);
-		$pastadoprograma->geraDiretorio();
-		
-		//Classes especificas para o programa
-		$caminho ='sistemasphp/'.$nomeDoSite.'/src/classes/dao';
-		$pastadoprograma->setCaminho($caminho);
-		$pastadoprograma->geraDiretorio();
-		
-		//pasta de imagens
-		$caminho ='sistemasphp/'.$nomeDoSite.'/src/img';
-		$pastadoprograma->setCaminho($caminho);
-		$pastadoprograma->geraDiretorio();
-		
-		//pasta de imagens
-		$caminho ='sistemasphp/'.$nomeDoSite.'/src/css';
-		$pastadoprograma->setCaminho($caminho);
-		$pastadoprograma->geraDiretorio();
-		
-		//pasta de imagens
-		$caminho ='sistemasphp/'.$nomeDoSite.'/src/js';
-		$pastadoprograma->setCaminho($caminho);
-		$pastadoprograma->geraDiretorio();
-		
+		$nomeDoSite = $this->software->getNome();	
+		@mkdir (  'sistemasphp/'.$nomeDoSite.'/src' , 0777, true );
+		@mkdir (  'sistemasphp/'.$nomeDoSite .'/src/classes' , 0777, true );
+		@mkdir (  'sistemasphp/'.$nomeDoSite.'/src/classes/model' , 0777, true );
+		@mkdir (  'sistemasphp/'.$nomeDoSite.'/src/classes/view' , 0777, true );
+		@mkdir (  'sistemasphp/'.$nomeDoSite.'/src/classes/controller' , 0777, true );
+		@mkdir (  'sistemasphp/'.$nomeDoSite.'/src/classes/view' , 0777, true );
+		@mkdir (  'sistemasphp/'.$nomeDoSite.'/src/classes/dao' , 0777, true );
+		@mkdir (  'sistemasphp/'.$nomeDoSite.'/src/img' , 0777, true );
+		@mkdir (  'sistemasphp/'.$nomeDoSite.'/src/css' , 0777, true );
+		@mkdir ( 'sistemasphp/'.$nomeDoSite.'/src/js' , 0777, true );
 	}
-	
 	
 	public function criaClasses(){
 		$software = $this->software;
