@@ -22,21 +22,14 @@ class Zipador {
 	 * @param unknown $arquivoFinal        	
 	 */
 	public function zipaArquivo($diretorio, $arquivoFinal) {
-		if(!count($this->arrayDeArquivos)){
+		$this->browse ( $diretorio );
+		if (! count ( $this->arrayDeArquivos )) {
 			return;
 		}
-		$this->browse ( $diretorio );
-		
-		$directory = $diretorio; // diretorio para compactar
-		$zipfile = $arquivoFinal; // nome do zip gerado
-		                          
-		// Array de arquivos
-		$filenames = $this->arrayDeArquivos;
-		
-		
-		// cria zip, adiciona arquivos...
+		$directory = $diretorio;
+		$zipfile = $arquivoFinal;
+		$filenames = $this->arrayDeArquivos;		
 		$zip = new ZipArchive ();
-		
 		if ($zip->open ( $zipfile, ZIPARCHIVE::CREATE ) !== TRUE) {
 			exit ( "Não pode abrir: <$zipfile>\n" );
 		}
@@ -53,12 +46,12 @@ class Zipador {
 	/**
 	 * O objetivo deste método é receber o nome de um dretorio e retornar um array com todos
 	 * os arquivos de dentro, inclusive os arquivos em subpastas.
-	 * 
+	 *
 	 * @param unknown $directory
 	 *        	Retorna merda nenhuma.
 	 */
 	public function browse($dir) {
-		if(!file_exists($dir)){
+		if (! file_exists ( $dir )) {
 			return;
 		}
 		if ($handle = opendir ( $dir )) {
