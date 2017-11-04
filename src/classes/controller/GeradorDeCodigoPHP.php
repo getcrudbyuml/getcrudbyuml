@@ -541,7 +541,15 @@ class '.$nomeDoObjetoMa.' {';
 	
 		return $geradorDeCodigo;
 	}
-	
+	public function geraBancoSqlite(Software $software){
+		$bdNome = 'sistemasphp/'.$software->getNome().'/'.strtolower($software->getNome()).'.db';
+		$pdo = new PDO('sqlite:'.$bdNome);
+		foreach ($software->getListaDeObjetos() as $objeto){
+			echo "Criar tabela: ".$objeto->getNome();
+			echo '<br>';
+		}
+		
+	}
 	public function geraINI(Software $software){
 		$this->codigo = ';configurações do banco de dados. 
 ;Banco de regras de negócio do sistema. 

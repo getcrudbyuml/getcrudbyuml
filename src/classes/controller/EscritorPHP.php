@@ -19,27 +19,37 @@ class EscritorPHP extends Escritor{
 		$this->criaClassesDAO();
 		$this->criaForms();
 		$this->geraINI();
+		$this->geraBancoSql();
+		
 		
 	}
 	public function geraIndex(){
-		$arquivo = new Arquivo();
 		$gerador = new GeradorDeCodigoPHP();
 		$gerador->geraIndex($this->software);
-		$arquivo->setCaminho($gerador->getCaminho());
-		$arquivo->setConteudo($gerador->getCodigo());
-		$arquivo->criaArquivo();
-		
-		
+		self::criaArquivo($gerador->getCaminho(), $gerador->getCodigo());
+	}
+	public static function criaArquivo($caminho, $conteudo){
+		if(file_exists($caminho)){
+			unlink($caminho);
+		}
+		$file = @fopen($caminho, "w+");
+		@fwrite($file, stripslashes($conteudo));
+		@fclose($file);
 	}
 	public function geraINI(){
-		$arquivo = new Arquivo();
+
 		$gerador = new GeradorDeCodigoPHP();
 		$gerador->geraINI($this->software);
-		$arquivo->setCaminho($gerador->getCaminho());
-		$arquivo->setConteudo($gerador->getCodigo());
-		$arquivo->criaArquivo();
-	
-	
+		self::criaArquivo($gerador->getCaminho(), $gerador->getCodigo());
+		
+	}
+	public function geraBancoSql(){
+// 		$arquivo = new Arquivo();
+		$gerador = new GeradorDeCodigoPHP();
+		$gerador->geraBancoSqlite($this->software);
+// 		$arquivo->setCaminho($gerador->getCaminho());
+// 		$arquivo->setConteudo($gerador->getCodigo());
+// 		$arquivo->criaArquivo();
 	}
 	public function criaEstrutura(){
 		
@@ -106,12 +116,7 @@ class EscritorPHP extends Escritor{
 		if($vetorGeradores){
 			foreach ($vetorGeradores as $gerador)
 			{
-
-				$arquivo = new Arquivo();
-				$arquivo->setCaminho($gerador->getCaminho());
-				$arquivo->setConteudo($gerador->getCodigo());
-				$arquivo->criaArquivo();
-
+				self::criaArquivo($gerador->getCaminho(), $gerador->getCodigo());
 			}
 		}
 	}
@@ -122,10 +127,7 @@ class EscritorPHP extends Escritor{
 				
 			foreach ($vetorGeradores as $gerador)
 			{
-				$arquivo = new Arquivo();
-				$arquivo->setCaminho($gerador->getCaminho());
-				$arquivo->setConteudo($gerador->getCodigo());
-				$arquivo->criaArquivo();
+				self::criaArquivo($gerador->getCaminho(), $gerador->getCodigo());
 			}
 		}
 	}
@@ -133,13 +135,10 @@ class EscritorPHP extends Escritor{
 		$software = $this->software;
 		$vetorGeradores = GeradorDeCodigoPHP::geraFormularios($software);
 		if($vetorGeradores){
-				
 			foreach ($vetorGeradores as $gerador)
 			{
-				$arquivo = new Arquivo();
-				$arquivo->setCaminho($gerador->getCaminho());
-				$arquivo->setConteudo($gerador->getCodigo());
-				$arquivo->criaArquivo();
+				self::criaArquivo($gerador->getCaminho(), $gerador->getCodigo());
+				
 			}
 		}
 	}
@@ -151,10 +150,8 @@ class EscritorPHP extends Escritor{
 				
 			foreach ($vetorGeradores as $gerador)
 			{
-				$arquivo = new Arquivo();
-				$arquivo->setCaminho($gerador->getCaminho());
-				$arquivo->setConteudo($gerador->getCodigo());
-				$arquivo->criaArquivo();
+				self::criaArquivo($gerador->getCaminho(), $gerador->getCodigo());
+				
 			}
 		}
 	}
@@ -162,21 +159,16 @@ class EscritorPHP extends Escritor{
 	
 		$software = $this->software;
 		$gerador = GeradorDeCodigoPHP::geraClasseDao($this->software);
-		$arquivo = new Arquivo();
-		$arquivo->setCaminho($gerador->getCaminho());
-		$arquivo->setConteudo($gerador->getCodigo());
-		$arquivo->criaArquivo();
+		self::criaArquivo($gerador->getCaminho(), $gerador->getCodigo());
+		
 	
 			
 	}
 	public function criaStyle(){
-		$arquivo = new Arquivo();
 		$gerador = new GeradorDeCodigoPHP();
 		$gerador->geraStyle($this->software);
+		self::criaArquivo($gerador->getCaminho(), $gerador->getCodigo());
 		
-		$arquivo->setConteudo($gerador->getCodigo());
-		$arquivo->setCaminho($gerador->getCaminho());
-		$arquivo->criaArquivo();
 			
 	}
 	

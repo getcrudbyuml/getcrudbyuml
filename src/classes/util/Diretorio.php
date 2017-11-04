@@ -27,12 +27,9 @@ class Diretorio {
 	 * Metodo sem retorno, tenta criar um diretorio
 	 */
 	public function geraDiretorio() {
-		if (is_dir ( $this->Caminho )) {
-			echo '<br><b>Diretório:</b> ' . $this->Caminho . ' já existe.<br>';
-		} else {
+		if (!is_dir ( $this->Caminho )) {
 			mkdir ( $this->Caminho, 0777, true );
 			chmod ( $this->Caminho, 0777 );
-			echo '<br><b>Diretório:</b>  ' . $this->Caminho . ' foi criado<br>';
 		}
 	}
 }
