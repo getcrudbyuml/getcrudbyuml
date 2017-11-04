@@ -104,8 +104,9 @@ function __autoload($classe) {
 					$escritorPHP->escreverSoftware();
 					$zipador = new Zipador();
 					$zipador->zipaArquivo('sistemasphp/'.$software->getNome(), 'sistemasphp/'.$software->getNome().'.zip');
-					echo '<br><br><br><a href="sistemasphp/'.$software->getNome().'/src/">Acessar Software</a><br>';
+					echo '<br><br><br><a href="sistemasphp/'.$software->getNome().'/src">Acessar Software</a><br>';
 					echo '<h1><a href="sistemasphp/'.$software->getNome().'.zip">Baixar Software</a></h1>';
+					
 					
 					break;
 				case "java":

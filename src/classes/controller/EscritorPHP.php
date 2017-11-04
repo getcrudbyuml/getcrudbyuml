@@ -10,6 +10,16 @@ class EscritorPHP extends Escritor{
 	 * @see Escritor::criaEstrutura()
 	 */
 	public function escreverSoftware(){
+		if(!count($this->software->getListaDeObjetos())){
+			echo "Ausencia de Objetos, software não criado";
+			return;
+		}
+		foreach ($this->software->getListaDeObjetos() as $objeto){
+			if(!count($objeto->getAtributos())){
+				echo "Encontrado objeto sem atributos, software não criado";
+				return;
+			} 
+		}
 		$this->criaEstrutura();
 		$this->criaClasseDAO();
 		$this->criaClasses();
@@ -44,12 +54,10 @@ class EscritorPHP extends Escritor{
 		
 	}
 	public function geraBancoSql(){
-// 		$arquivo = new Arquivo();
 		$gerador = new GeradorDeCodigoPHP();
 		$gerador->geraBancoSqlite($this->software);
-// 		$arquivo->setCaminho($gerador->getCaminho());
-// 		$arquivo->setConteudo($gerador->getCodigo());
-// 		$arquivo->criaArquivo();
+		self::criaArquivo($gerador->getCaminho(), $gerador->getCodigo());
+		
 	}
 		
 	public function criaEstrutura(){

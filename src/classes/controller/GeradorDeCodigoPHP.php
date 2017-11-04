@@ -82,27 +82,14 @@ class GeradorDeCodigoPHP extends GeradorDeCodigo{
 	
 	}
 
-	public static function geraFormularios(Software $software){
-		//primeiro iremos percorrer cada um dos objetos deste software.
-		//primeira vez pra criar os codigos
-			
+	public static function geraFormularios(Software $software){		
 		$listaDeObjetos = $software->getListaDeObjetos();
 		if($listaDeObjetos){
 			foreach ($listaDeObjetos as $objeto){
-					
-				//Gera o codigo de cada objeto
-				//Gera o nome do arquivo
 				$nomedosite = $software->getNome();
-	
-				//instancia no geradorDePHP
-				//Armazena em Um vetor.
-				$gerador = GeradorDeCodigoPHP::geraForm($objeto, $software);
-					
-					
+				$gerador = GeradorDeCodigoPHP::geraForm($objeto, $software);	
 				$geradores[] = $gerador;
-					
-					
-					
+
 			}
 		}
 		if(isset($geradores))
@@ -505,7 +492,7 @@ class '.$nomeDoObjetoMa.' {';
 				$tipo = $atributo->getTipo();
 	
 	
-				if($atributo->getTipo() == 'int' || $atributo->getTipo() == 'float' || $atributo->getTipo() == 'string')
+				if($atributo->getTipo() == 'int' || $atributo->getTipo() == 'float' || $atributo->getTipo() == 'string'|| $atributo->getTipo() == 'Texto')
 				{
 	
 					$codigo .= '
@@ -544,10 +531,28 @@ class '.$nomeDoObjetoMa.' {';
 	public function geraBancoSqlite(Software $software){
 		$bdNome = 'sistemasphp/'.$software->getNome().'/'.strtolower($software->getNome()).'.db';
 		$pdo = new PDO('sqlite:'.$bdNome);
+		$this->codigo = '';
 		foreach ($software->getListaDeObjetos() as $objeto){
-			echo "Criar tabela: ".$objeto->getNome();
-			echo '<br>';
+			$this->codigo .= 'CREATE TABLE `'.strtolower($objeto->getNome());
+			$this->codigo .= "` (\n";
+			$i = 0;
+			foreach ($objeto->getAtributos() as $atributo){
+				$i++;
+				if($atributo->getIndice() == 'primary_key'){
+					$this->codigo .= '`'.strtolower($atributo->getNome()).'`	INTEGER PRIMARY KEY AUTOINCREMENT';
+				}else{
+					$this->codigo .= '`'.strtolower($atributo->getNome()).'`	TEXT';
+				}
+				if($i == count($objeto->getAtributos())){
+					$this->codigo .= "\n";
+					continue;
+				}
+				$this->codigo .= ",\n";
+			}
+			$this->codigo .= ");\n";
 		}
+		$pdo->exec($this->codigo);
+		$this->caminho = 'sistemasphp/'.$software->getNome().'/'.strtolower($software->getNome()).'_banco.sql';
 		
 	}
 	public function geraINI(Software $software){
@@ -568,8 +573,11 @@ senha = 123
 	}
 	
 	public function geraIndex(Software $software){
-		
 		$this->caminho = "sistemasphp/".$software->getNome().'/src/index.php';
+		$this->codigo = '';
+		if(!count($software->getListaDeObjetos())){
+			return;
+		}
 		$this->codigo = '<?php
 
 function __autoload($classe) {
@@ -817,11 +825,13 @@ class '.$nomeDoObjetoMa.'View {
 			$tipo = $atributo->getTipo();
 
 			$indice = $atributo->getIndice();
-			if($tipo == 'string' || $tipo == 'int' && $indice != 'primary_key'){
-				$codigo .= '
+			if($atributo->getIndice() == 'primary_key'){
+				continue;
+			}
+			$codigo .= '
 						<label for="'.$variavel.'">'.$variavel.':</label>'.'
 						<input type="text" name="'.$variavel.'" id="'.$variavel.'" />';
-			}
+			
 
 		}
 		

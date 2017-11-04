@@ -8,6 +8,9 @@ class Software{
 	private $listaDeObjetos;
 	private $bancoDeDados;
 
+	public function __construct(){
+		$this->listaDeObjetos = array();
+	}
 	
 	public function setId($id){
 		$this->id = $id;
