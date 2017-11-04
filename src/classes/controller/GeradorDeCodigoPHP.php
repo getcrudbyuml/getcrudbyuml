@@ -230,6 +230,9 @@ class '.$nomeDoObjetoDAO.' extends DAO {
 		$i = 0;
 		foreach ($objeto->getAtributos() as $atributo){
 			$i++;
+			if($atributo->getIndice() == 'primary_key'){
+				continue;
+			}
 			$codigo .= $atributo->getNome();
 			if($i != count($objeto->getAtributos())){
 				$codigo .= ', ';
@@ -240,6 +243,9 @@ class '.$nomeDoObjetoDAO.' extends DAO {
 		$i = 0;
 		foreach ($objeto->getAtributos() as $atributo){
 			$i++;
+			if($atributo->getIndice() == 'primary_key'){
+				continue;
+			}
 			$codigo .= ':'.$atributo->getNome();
 			if($i != count($objeto->getAtributos())){
 				$codigo .= ', ';
@@ -272,13 +278,13 @@ class '.$nomeDoObjetoDAO.' extends DAO {
 		}
 	}
 	public function excluir('.$nomeDoObjetoMA.' $'.$nomeDoObjeto.'){
-		$'.$objeto->getAtributos()[0]->getNome().' = $'.$nomeDoObjeto.'->getId();
+		$'.$objeto->getAtributos()[0]->getNome().' = $'.$nomeDoObjeto.'->get'.strtoupper(substr($objeto->getAtributos()[0]->getNome(), 0, 1)).substr($objeto->getAtributos()[0]->getNome(), 1,100).'();
 		$sql = "DELETE FROM '.$nomeDoObjeto.' WHERE '.$objeto->getAtributos()[0]->getNome().' = :'.$objeto->getAtributos()[0]->getNome().'";
 		
 		try {
 			$db = $this->getConexao();
 			$stmt = $db->prepare($sql);
-			$stmt->bindParam("id", $id, PDO::PARAM_INT);
+			$stmt->bindParam("'.$objeto->getAtributos()[0]->getNome().'", $'.$objeto->getAtributos()[0]->getNome().', PDO::PARAM_INT);
 			return $stmt->execute();
 	
 		} catch(PDOException $e) {
@@ -389,9 +395,9 @@ class '.$nomeDoObjetoMa.'Controller {
 	public function listarJSON() {
 		$'.$nomeDoObjeto.'Dao = new '.$nomeDoObjetoMa.'DAO ();
 		$lista = $'.$nomeDoObjeto.'Dao->retornaLista ();
-		$listagem [\''.$nomeDoObjeto.'\'] = array ();
+		$listagem [\'lista\'] = array ();
 		foreach ( $lista as $linha ) {
-			$listagem [\''.$nomeDoObjeto.'\'] [] = array (';
+			$listagem [\'lista\'] [] = array (';
 		$i = 0;
 		foreach($objeto->getAtributos() as $atributo){
 			$i++;
@@ -582,9 +588,7 @@ function __autoload($classe) {
 		</div>
 		<div id="footer">
 			<p>Base do site</p>
-		</div>
-					
-		
+		</div>		
 	</body>
 </html>';
 		
