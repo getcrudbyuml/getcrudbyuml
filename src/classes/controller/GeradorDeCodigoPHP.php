@@ -163,39 +163,76 @@ class GeradorDeCodigoPHP extends GeradorDeCodigo{
 		$nomeDoSite = $software->getNome();
 		
 		$codigo  = '<?php
-		
-/**
- * Cria uma conexão. 
- * @author Jefferson Uchôa Ponte
- *
- */
+
+
 class DAO {
-	protected $conexao;
+	const ARQUIVO_CONFIGURACAO = "../'.strtolower($software->getNome()).'_bd.ini";
 	
-	public function DAO(PDO $conexao = null){
-		if($conexao != null){
+	protected $conexao;
+	private $tipoDeConexao;
+	private $sgbb;
+
+	public function getSgdb(){
+		return $this->sgdb;
+	}
+	public function DAO(PDO $conexao = null) {
+		if ($conexao != null) {
 			$this->conexao = $conexao;
-		}else{
-			$this->fazerConexao();
-				
+		} else {
+			
+			$this->fazerConexao ();
 		}
 	}
-	public function fazerConexao(){
-		$this->conexao = new PDO(\'mysql:host=localhost;dbname=mourao_teste\', \'root\');
-		
+	public function getEntidadeUsuarios(){
+		return $this->entidadeUsuarios;
 	}
 	
-	public function getConexao(){
-		return $this->conexao;
+	
+	public function fazerConexao() {
+		$config = parse_ini_file ( self::ARQUIVO_CONFIGURACAO );
 		
+		$bd [\'sgdb\'] = $config [\'sgdb\'];
+		$bd [\'bd_nome\'] = $config [\'bd_nome\'];
+		$bd [\'host\'] = $config [\'host\'];
+		$bd [\'porta\'] = $config [\'porta\'];
+		$bd [\'usuario\'] = $config [\'usuario\'];
+		$bd [\'senha\'] = $config [\'senha\'];
+
+		if ($bd [\'sgdb\'] == "postgres") {
+			$this->conexao = new PDO ( \'pgsql:host=\' . $bd [\'host\'] . \' dbname=\' . $bd [\'bd_nome\'] . \' user=\' . $bd [\'usuario\'] . \' password=\' . $bd [\'senha\'] );
+		} else if ($bd [\'sgdb\'] == "mssql") {
+			$this->conexao = new PDO ( \'dblib:host=\' . $bd [\'host\'] . \';dbname=\' . $bd [\'bd_nome\'], $bd [\'usuario\'], $bd [\'senha\'] );
+			
+		}else if($bd[\'sgdb\'] == "mysql"){
+			$this->conexao = $PDO = new PDO( \'mysql:host=\' . $bd [\'host\'] . \';dbname=\' .  $bd [\'bd_nome\'], $bd [\'usuario\'], $bd [\'senha\']);
+		}else if($bd[\'sgdb\']== "sqlite"){
+			$this->conexao = new PDO(\'sqlite:\'.$bd [\'bd_nome\']);
+		}
+		$this->sgdb = $bd[\'sgdb\'];
 	}
-				
+	public function setConexao($conexao) {
+		$this->conexao = $conexao;
+	}
+	public function getConexao() {
+		return $this->conexao;
+	}
+	public function fechaConexao() {
+		$this->conexao = null;
+	}
+	public function getTipoDeConexao() {
+		return $this->tipoDeConexao;
+	}
+	public function setTipoDeConexao($tipo) {
+		$this->tipoDeConexao = $tipo;
+	}
 }
-?>';
+
+?>
+		';
 		
 		$gerador = new GeradorDeCodigoPHP();
 		$gerador->codigo = $codigo;
-		$gerador->caminho = 'sistemasphp/'.$nomeDoSite.'/classes/dao/DAO.php';
+		$gerador->caminho = 'sistemasphp/'.$nomeDoSite.'/src/classes/dao/DAO.php';
 		return $gerador;
 		
 	}
@@ -254,6 +291,9 @@ class '.$nomeDoObjetoDAO.' extends DAO {
 		
 		$codigo .= ')";';
 		foreach ($objeto->getAtributos() as $atributo){
+			if($atributo->getIndice() == 'primary_key'){
+				continue;
+			}
 			$nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)).substr($atributo->getNome(), 1,100);
 			$codigo .= '
 			$'.$atributo->getNome().' = $'.$nomeDoObjeto.'->get'.$nomeDoAtributoMA.'();';
@@ -265,14 +305,15 @@ class '.$nomeDoObjetoDAO.' extends DAO {
 			$db = $this->getConexao();
 			$stmt = $db->prepare($sql);';
 		foreach ($objeto->getAtributos() as $atributo){
-			$codigo .= '
+			if($atributo->getIndice() == 'primary_key'){
+				continue;
+			}
+			$codigo .= '		
 			$stmt->bindParam("'.$atributo->getNome().'", $'.$atributo->getNome().', PDO::PARAM_STR);';
 		}
 		
 		$codigo .= '
-			$result = $stmt->execute();
-			return $result;
-			 
+			return $stmt->execute();
 		} catch(PDOException $e) {
 			echo \'{"error":{"text":\'. $e->getMessage() .\'}}\';
 		}
@@ -323,7 +364,7 @@ class '.$nomeDoObjetoDAO.' extends DAO {
 		
 		$gerador = new GeradorDeCodigoPHP();
 		$gerador->codigo = $codigo;
-		$gerador->caminho = 'sistemasphp/'.$nomeDoSite.'/classes/dao/'.$nomeDoObjetoDAO.'.php'; 
+		$gerador->caminho = 'sistemasphp/'.$nomeDoSite.'/src/classes/dao/'.$nomeDoObjetoDAO.'.php'; 
 		return $gerador;
 		
 	}
@@ -385,7 +426,7 @@ class '.$nomeDoObjetoMa.'Controller {
 		
 		$codigo .= '	
 		$'.$nomeDoObjeto.'Dao = new '.$nomeDoObjetoMa.'DAO ();
-		if ($'.$nomeDoObjetoMa.'Dao->inserir ( $'.$nomeDoObjeto.' )) {
+		if ($'.$nomeDoObjeto.'Dao->inserir ( $'.$nomeDoObjeto.' )) {
 			echo "Sucesso";
 		} else {
 			echo "Fracasso";
@@ -425,7 +466,7 @@ class '.$nomeDoObjetoMa.'Controller {
 ?>';
 		
 		$geradorDeCodigo->codigo = $codigo;
-		$geradorDeCodigo->caminho = 'sistemasphp/'.$nomeDoSite.'/classes/controller/'.strtoupper(substr($objeto->getNome(), 0, 1)).substr($objeto->getNome(),1,100).'Controller.php';
+		$geradorDeCodigo->caminho = 'sistemasphp/'.$nomeDoSite.'/src/classes/controller/'.strtoupper(substr($objeto->getNome(), 0, 1)).substr($objeto->getNome(),1,100).'Controller.php';
 		
 		return $geradorDeCodigo;
 	}
@@ -496,13 +537,31 @@ class '.$nomeDoObjetoMa.' {';
 ?>';
 	
 		$geradorDeCodigo->codigo = $codigo;
-		$geradorDeCodigo->caminho = 'sistemasphp/'.$nomeDoSite.'/classes/model/'.strtoupper(substr($objeto->getNome(), 0, 1)).substr($objeto->getNome(),1,100).'.php';
+		$geradorDeCodigo->caminho = 'sistemasphp/'.$nomeDoSite.'/src/classes/model/'.strtoupper(substr($objeto->getNome(), 0, 1)).substr($objeto->getNome(),1,100).'.php';
 	
 		return $geradorDeCodigo;
 	}
+	
+	public function geraINI(Software $software){
+		$this->codigo = ';configurações do banco de dados. 
+;Banco de regras de negócio do sistema. 
+
+sgdb = sqlite
+host = localhost
+porta = 5432 
+bd_nome = ../'.strtolower($software->getNome()).'.db
+usuario = root
+senha = 123
+';
+
+		$this->caminho = "sistemasphp/".$software->getNome().'/'.strtolower($software->getNome().'_bd.ini');
+		
+		
+	}
+	
 	public function geraIndex(Software $software){
 		
-		$this->caminho = "sistemasphp/".$software->getNome().'/index.php';
+		$this->caminho = "sistemasphp/".$software->getNome().'/src/index.php';
 		$this->codigo = '<?php
 
 function __autoload($classe) {
@@ -595,7 +654,7 @@ function __autoload($classe) {
 	}
 	public function geraStyle(Software $software){
 		
-		$this->caminho = "sistemasphp/".$software->getNome().'/css/style.css';
+		$this->caminho = "sistemasphp/".$software->getNome().'/src/css/style.css';
 		$this->codigo = "/*Esse Ã© um arquivo css*/
 body{
 	background-color:#5DD0C0;	
@@ -766,7 +825,7 @@ class '.$nomeDoObjetoMa.'View {
 	}	
 }';
 		$gerador = new GeradorDeCodigoPHP();
-		$gerador->caminho = 'sistemasphp/'.$nomeDoSite.'/classes/view/'.$nomeDoObjetoMa.'View.php';
+		$gerador->caminho = 'sistemasphp/'.$nomeDoSite.'/src/classes/view/'.$nomeDoObjetoMa.'View.php';
 		$gerador->codigo = $codigo;
 		return $gerador;
 		
