@@ -226,7 +226,7 @@ class '.$nomeDoObjetoDAO.' extends DAO {
 	
 	public function inserir('.$nomeDoObjetoMA.' $'.$nomeDoObjeto.'){
 		
-		$sql = "INSERT INTO usuario(';
+		$sql = "INSERT INTO '.$nomeDoObjeto.'(';
 		$i = 0;
 		foreach ($objeto->getAtributos() as $atributo){
 			$i++;
@@ -352,10 +352,7 @@ class '.$nomeDoObjetoMa.'Controller {
 		$i = 0;
 		foreach ($objeto->getAtributos() as $atributo){
 			$i++;
-			
-			$tipo = $atributo->getTipo();
-			$indice = $atributo->getIndice();
-			if($indice == 'primary_key'){
+			if($atributo->getIndice() == 'primary_key'){
 					continue;
 			}
 			$codigo .= 'isset ( $this->post [\''.$atributo->getNome().'\'] )';
@@ -366,22 +363,23 @@ class '.$nomeDoObjetoMa.'Controller {
 		}
 		
 		$codigo .= ')) {
-			if(isset($this->post[\'cadastrar\'])){
-				echo "Incompleto";
-			}
+			echo "Incompleto";
 			return;
 		}
 	
-		$usuario = new Usuario ();';
+		$'.$nomeDoObjeto.' = new '.$nomeDoObjetoMa.' ();';
 		foreach ($objeto->getAtributos() as $atributo){
 			$nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)).substr($atributo->getNome(), 1,100);
+			if($atributo->getIndice() == 'primary_key'){
+				continue;
+			}
 			$codigo .= '		
-		$usuario->set'.$nomeDoAtributoMA.' ( $this->post [\''.$atributo->getNome().'\'] );';			
+		$'.$nomeDoObjeto.'->set'.$nomeDoAtributoMA.' ( $this->post [\''.$atributo->getNome().'\'] );';			
 		}
 		
 		$codigo .= '	
-		$usuarioDao = new UsuarioDAO ();
-		if ($usuarioDao->inserir ( $usuario )) {
+		$'.$nomeDoObjeto.'Dao = new '.$nomeDoObjetoMa.'DAO ();
+		if ($'.$nomeDoObjetoMa.'Dao->inserir ( $'.$nomeDoObjeto.' )) {
 			echo "Sucesso";
 		} else {
 			echo "Fracasso";
@@ -390,10 +388,10 @@ class '.$nomeDoObjetoMa.'Controller {
 				
 	public function listarJSON() {
 		$'.$nomeDoObjeto.'Dao = new '.$nomeDoObjetoMa.'DAO ();
-		$lista = $usuarioDao->retornaLista ();
-		$listaUsuarios [\''.$nomeDoObjeto.'\'] = array ();
+		$lista = $'.$nomeDoObjeto.'Dao->retornaLista ();
+		$listagem [\''.$nomeDoObjeto.'\'] = array ();
 		foreach ( $lista as $linha ) {
-			$usuarios [\''.$nomeDoObjeto.'\'] [] = array (';
+			$listagem [\''.$nomeDoObjeto.'\'] [] = array (';
 		$i = 0;
 		foreach($objeto->getAtributos() as $atributo){
 			$i++;
@@ -410,7 +408,7 @@ class '.$nomeDoObjetoMa.'Controller {
 						
 			);
 		}
-		echo json_encode ( $usuarios );
+		echo json_encode ( $listagem );
 	}			
 				
 	
@@ -428,7 +426,7 @@ class '.$nomeDoObjetoMa.'Controller {
 	
 	public static function geraCodigoDeObjeto(Objeto $objeto, $nomeDoSite){
 		$geradorDeCodigo = new GeradorDeCodigoPHP();
-		$nomeDoObjeto = $objeto->getNome();
+		$nomeDoObjeto = strtolower($objeto->getNome());
 		$nomeDoObjetoMa = strtoupper(substr($objeto->getNome(), 0, 1)).substr($objeto->getNome(), 1,100);
 	
 		$codigo  = '<?php
@@ -455,7 +453,7 @@ class '.$nomeDoObjetoMa.' {';
 			foreach ($objeto->getAtributos() as $atributo)
 			{
 					
-				$nome = $atributo->getNome();
+				$nome = strtolower($atributo->getNome());
 				$nome2 = strtoupper(substr($atributo->getNome(), 0, 1)).substr($atributo->getNome(), 1, 100);
 				$tipo = $atributo->getTipo();
 	
@@ -466,7 +464,7 @@ class '.$nomeDoObjetoMa.' {';
 					$codigo .= '
 	public function set'.$nome2.'($'.$nome.') {';
 					$codigo .= '
-		$this->'.$nome2.' = $'.$nome.';
+		$this->'.$nome.' = $'.$nome.';
 	}';
 				}
 				else
@@ -475,19 +473,16 @@ class '.$nomeDoObjetoMa.' {';
 	public function set'.$nome2.'('.$atributo->getTipo().' $'.$nome.') {';
 						
 					$codigo .= '
-		$this->'.$nome2.' = $'.$nome.';
+		$this->'.$nome.' = $'.$nome.';
 	}';
 				}//fecha o caso contrario. o atributo sendo objeto
 	
 				$codigo .= '
 	public function get'.$nome2.'() {
-		return $this->'.$nome2.';
+		return $this->'.$nome.';
 	}';
 	
-			}//fecha foreach dos atributos
-				
-				
-				
+			}
 		}
 	
 		$codigo .='
@@ -500,6 +495,7 @@ class '.$nomeDoObjetoMa.' {';
 		return $geradorDeCodigo;
 	}
 	public function geraIndex(Software $software){
+		
 		$this->caminho = "sistemasphp/".$software->getNome().'/index.php';
 		$this->codigo = '<?php
 
@@ -536,14 +532,39 @@ function __autoload($classe) {
 		</div>
 		<div id="menu">
 			<ul>
-				<li><a href="">Item  do Menu</a></li>
-				<li><a href="">Outro Item do Menu</a></li>
+				<li><a href="index.php">Inicio</a></li>';
+		foreach($software->getListaDeObjetos() as $objeto){
+			
+			$this->codigo .= '
+				<li><a href="?pagina='.strtolower($objeto->getNome()).'">'.$objeto->getNome().'</a></li>';
+		}
+		
+		$this->codigo .= '
+		
 			</ul>
 		</div>
 		<div id="corpo">
 			<div id="esquerda">
 			<?php
-				$controller = new '.$software->getListaDeObjetos()[0]->getNome().'Controller();
+				if(isset($_GET[\'pagina\'])){
+					switch ($_GET[\'pagina\']){';
+		
+		foreach ($software->getListaDeObjetos() as $objeto){
+			$this->codigo .= '
+						case \''.strtolower($objeto->getNome()).'\':
+							$controller = new '.$objeto->getNome().'Controller();	
+							break;';
+		}
+		
+		$this->codigo .= '
+						default:
+							$controller = new '.$software->getListaDeObjetos()[0]->getNome().'Controller();				
+							break;
+					}
+				}else{
+					$controller = new '.$software->getListaDeObjetos()[0]->getNome().'Controller();
+				}
+				
 				$controller->cadastrar();
 			?>
 			</div>
@@ -706,7 +727,7 @@ select{
 				
 /**
  * Classe de visao para '.$nomeDoObjetoMa.'
- * @author Jefferson UchÃ´a Ponte <j.pontee@gmail.com>
+ * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
  *
  */				
 class '.$nomeDoObjetoMa.'View {
