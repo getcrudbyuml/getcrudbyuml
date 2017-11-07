@@ -1,15 +1,8 @@
 <?php
 
 
-class SoftwareDAO{
-	
-	public $conexao;
+class SoftwareDAO extends DAO {
 
-	
-	public function setConexao(PDO $conexao){
-		$this->conexao = $conexao;
-		
-	}
 	/**
 	 * Serve para inserir nome, linguagem em uma tabela software, 
 	 * retorna o id desta insersao
@@ -20,14 +13,14 @@ class SoftwareDAO{
 		$nome = $software->getNome();
 		$linguagem = $software->getLinguagem();
 		$insert = "INSERT into software(nome, linguagem) values('$nome', '$linguagem')";
-		if($this->conexao->query($insert)){
+		if($this->getConexao()->query($insert)){
 			//echo 'Software Inserido Com sucesso! -'. $insert;
 			
 			$sgdb = $software->getBancoDeDados()->getSistemaGerenciadorDeBancoDeDados();
 			$host = $software->getBancoDeDados()->getHost();
 			$pass = $software->getBancoDeDados()->getPass();
 			$nomeDoBanco = $software->getBancoDeDados()->getNomeDoBanco();
-			$idDoSoftware = $this->conexao->lastInsertId();
+			$idDoSoftware = $this->getConexao()->lastInsertId();
 			
 			
 			
@@ -36,7 +29,7 @@ class SoftwareDAO{
 					(nome_do_banco, sistema_gerenciador_de_banco, host, pass, software_id_software) 
 					values('$nomeDoBanco', '$sgdb', '$host', '$pass', $idDoSoftware)";
 			
-			if($this->conexao->query($insert2)){
+			if($this->getConexao()->query($insert2)){
 				//echo '<br>Dados do banco inseridos com sucesso! '. $insert2;
 				//Terceiro Passo - Retornar o ultimo ID do software inserido para quem fez a insersão.
 				
@@ -69,7 +62,7 @@ class SoftwareDAO{
 		
 
 		$sql = "SELECT * FROM software ORDER BY id_software DESC LIMIT 10";
-		$result = $this->conexao->query($sql);
+		$result = $this->getConexao()->query($sql);
 		foreach ($result as $linha)
 		{
 			
@@ -96,7 +89,7 @@ class SoftwareDAO{
 			//Pega dados do software. 
 			$idSoftware = $software->getId();
 			$selectSoftware = "Select * From software Where id_software = $idSoftware";
-			$result = $this->conexao->query($selectSoftware);
+			$result = $this->getConexao()->query($selectSoftware);
 			foreach ($result as $linha)
 			{
 				
@@ -107,7 +100,7 @@ class SoftwareDAO{
 
 			//Buscaremos dados a respeito do banco de dados escolhido. 
 			$selectBanco = "SELECT * FROM banco_de_dados WHERE software_id_software";
-			$result = $this->conexao->query($selectBanco);
+			$result = $this->getConexao()->query($selectBanco);
 			$banco = new BancoDeDados();
 			foreach ($result as $linha)
 			{
@@ -129,7 +122,7 @@ class SoftwareDAO{
 			//Aqui também podemos buscar os atributos, mas implementarei isso daqui a pouco
 			
 			$selectObjetos = "SELECT * FROM objeto WHERE software_id_software = $idSoftware";
-			$result = $this->conexao->query($selectObjetos);
+			$result = $this->getConexao()->query($selectObjetos);
 			foreach ($result as $linha)
 			{
 				$objeto = new Objeto();
@@ -139,7 +132,7 @@ class SoftwareDAO{
 				$idObjeto = $linha['id_objeto'];
 				
 				$selectAtributo = "SELECT * FROM atributo WHERE objeto_id_objeto = $idObjeto";
-				$resultAtributo = $this->conexao->query($selectAtributo);
+				$resultAtributo = $this->getConexao()->query($selectAtributo);
 				foreach ($resultAtributo as $linhaatributo){
 					$atributo = new Atributo();
 					$atributo->setId($linhaatributo['id_atributo']);

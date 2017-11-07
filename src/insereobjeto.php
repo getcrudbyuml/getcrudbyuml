@@ -40,8 +40,6 @@ function __autoload($classe) {
 		{ // vou fechar isso lá no final
 
 			$objetodao = new ObjetoDAO();
-			$conexao = Conexao::retornaConexaoComBanco();
-			$objetodao->setConexao($conexao);
 			
 			$software = new Software ();
 			$software->setId ($_SESSION['meuSoftwareId']);

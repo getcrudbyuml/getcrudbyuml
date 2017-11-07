@@ -1,12 +1,8 @@
 <?php
 
 
-class ObjetoDAO{
-	private $conexao;
-	
-	public function setConexao(PDO $conexao){
-		$this->conexao = $conexao;
-	}
+class ObjetoDAO extends DAO {
+
 	
 	/**
 	 * Este serve para inserir objeto em um software.  
@@ -23,7 +19,7 @@ class ObjetoDAO{
 		(software_id_software, nome, persistencia) 
 		values($idSoftware, '$nomeDoObjeto', '$persistenciaObjeto')";
 		
-		if($this->conexao->query($insert)){
+		if($this->getConexao()->query($insert)){
 			return true;
 		}else{
 			//echo "<br>".$insert;

@@ -56,10 +56,9 @@ function __autoload($classe) {
 				$software = new Software();
 				$software->setId($_SESSION['meuSoftwareId']);
 				$software->addObjetoNaLista($objeto);
-				
-				$conexao = Conexao::retornaConexaoComBanco();
+
 				$atributodao = new AtributoDAO();
-				$atributodao->setConexao($conexao);
+
 				if($atributodao->inserir($objeto, $atributo)){
 					echo "Atributo Inserido Com sucesso!";
 					echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=software.php?idsoftware='.$_SESSION['meuSoftwareId'].'">';

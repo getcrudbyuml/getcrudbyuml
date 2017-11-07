@@ -38,10 +38,9 @@ function __autoload($classe) {
 		if ($_GET ['idsoftware']) {
 		 // vou fechar isso lá no final
 			$_SESSION['meuSoftwareId'] = $_GET['idsoftware'];
-			$conexao = Conexao::retornaConexaoComBanco();
+			
 			
 			$softwaredao = new SoftwareDAO();
-			$softwaredao->setConexao($conexao);
 			
 			
 			

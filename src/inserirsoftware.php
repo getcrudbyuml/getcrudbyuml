@@ -44,9 +44,7 @@ function __autoload($classe) {
        	<div id="direita">
         	<h1>Criar Novo Software</h1>
             <?php 
-            $conexao = Conexao::retornaConexaoComBanco();
             $softwaredao = new SoftwareDAO();
-            $softwaredao->setConexao($conexao);
             
             $software = new Software();
             $software->setNome($_POST['nome_do_software']);

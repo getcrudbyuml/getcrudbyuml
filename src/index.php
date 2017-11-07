@@ -42,9 +42,8 @@ function __autoload($classe) {
             <ul>        	
         	<?php 
         	
-        	$conexao = Conexao::retornaConexaoComBanco();
+        	
         	$softwaredao = new SoftwareDAO();
-        	$softwaredao->setConexao($conexao);
         	$softwares = $softwaredao->retornaSoftwaresComId();
         	if($softwares)
 			{
