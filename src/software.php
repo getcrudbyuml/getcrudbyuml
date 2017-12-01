@@ -31,7 +31,7 @@ function __autoload($classe) {
 <body>
 
 	<div id="topo">
-		<img src="images/logo.png" alt="" />
+		<h1>Escritor de Software</h1>
 	</div>
 
 	<div id="conteiner">
@@ -90,7 +90,7 @@ function __autoload($classe) {
 
 
 								</ul>
-								<p>	<a href="#"> Adicionar Atributo a este Objeto</a></p>
+								
 
 							</div>
 							'; 

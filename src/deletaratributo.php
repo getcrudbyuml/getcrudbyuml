@@ -37,7 +37,7 @@ if($_GET['id_atributo']){
 	$atributo = new Atributo(); 
 	$atributo->setId($_GET['id_atributo']);
 	$atributodao = new AtributoDAO();
-	$atributodao->setConexao(Conexao::retornaConexaoComBanco());
+	
 	if($atributodao->deletarAtributo($atributo)){
 		
 		echo 'Atributo deletado com sucesso<META HTTP-EQUIV="REFRESH" CONTENT="5; URL=software.php">
