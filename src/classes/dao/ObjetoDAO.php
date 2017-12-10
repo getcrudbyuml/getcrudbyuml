@@ -26,10 +26,7 @@ class ObjetoDAO extends DAO {
 			return false;
 			
 		}
-		
-		
-		
-		
+
 	}
 	
 	

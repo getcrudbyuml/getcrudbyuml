@@ -27,13 +27,6 @@ class AtributoDAO extends DAO {
 			return false;
 		}
 	}
-	public function definirComoPrimaryKey(Atributo $atributo)
-	{
-		//objetivo é definir este atributo como primaryKey
-		
-	}
-	public function retirarPrimaryKeyDeObjeto(){
-		
-	}
+	
 }
 ?>

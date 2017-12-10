@@ -31,13 +31,12 @@ function __autoload($classe) {
 <body>
 
 	<div id="topo">
-		<h1>Escritor de Software</h1>
+		   <img src="images/logo.png" alt="" />
 	</div>
 
 	<div id="conteiner">
 		<?php
 		if ($_GET ['idsoftware']) {
-		 // vou fechar isso lá no final
 			$_SESSION['meuSoftwareId'] = $_GET['idsoftware'];	
 			$softwaredao = new SoftwareDAO();	
 			$software = new Software ();

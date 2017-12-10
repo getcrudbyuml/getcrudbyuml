@@ -66,8 +66,6 @@ function __autoload($classe) {
         </div>
        	<div id="direita">
         	<h1>Criar Novo Software</h1>
-            <p>(Não use Acento ou caracteres especiais, somente letras)</p>
-            
             <form action="inserirsoftware.php" method="post">
             	<fieldset>
                 	<legend>Criar Novo Software</legend>
@@ -77,16 +75,11 @@ function __autoload($classe) {
                     <select id="linguagem" name="linguagem">
                     	<option value="php">PHP </option>
                     </select>
-                    
                     <input type="hidden" value="mysql" id="sgdb" name="sgdb" />
-                    
-<!--                     <label for="host">Host do Banco</label> -->
                       <input type="hidden" value="localhost" id="host" name="host" />
-<!--                     <label for="nome_do_banco">Nome Do Banco</label> -->
                       <input type="hidden" value="bd_teste" id="nome_do_banco" name="nome_do_banco" />
-<!--                      <label for="usuario">Usuario do banco</label> -->
                      <input type="hidden" value="mvlineco_root" id="usuario" name="usuario" />
-<!--                      <label for="senha">senha do banco</label> -->
+
                      <input type="hidden" value="cocacola@12" id="senha" name="senha" />
                     <input type="submit" value="Criar Software"  />
                     
