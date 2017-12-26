@@ -1,5 +1,4 @@
 <?php
-session_start();
  
 function __autoload($classe) {
 	if (file_exists ( 'classes/dao/' . $classe . '.php' )){
@@ -17,6 +16,7 @@ function __autoload($classe) {
 	else if (file_exists ( 'classes/view/' . $classe . '.php' )){
 		include_once 'classes/view/' . $classe . '.php';
 	}
+
 }
 
 ?>
@@ -38,7 +38,7 @@ function __autoload($classe) {
 	<div id="conteiner">
 		<?php
 		if ($_GET ['idsoftware']) {
-			$_SESSION['meuSoftwareId'] = $_GET['idsoftware'];	
+			
 			$softwaredao = new SoftwareDAO();	
 			$software = new Software ();
 			$software->setId ( $_GET ['idsoftware'] );
@@ -52,7 +52,7 @@ function __autoload($classe) {
 
 			<?php 
 			echo '<h1>'.$software->getNome().'</h1>';
-			echo '<h2>Informações:</h2>';
+			
 			
 			
 			?> 
@@ -144,7 +144,7 @@ function __autoload($classe) {
 			
 						foreach ($software->getObjetos() as $objeto)
 							{
-								echo '<option value="'.$objeto->getNome().'">'.$objeto->getNome().' Criado pelo Usuário</option>';
+								echo '<option value="'.$objeto->getNome().'">'.$objeto->getNome().' Criado pelo UsuÃ¡rio</option>';
 					
 							}
 						}
@@ -152,15 +152,15 @@ function __autoload($classe) {
 					
 					
 				</select>
-				<label for="indice">Índice</label>
+				<label for="indice">Ã�ndice</label>
 				
 				<select id="indice" name="indice">
-					<option value="padrao">Padrão</option>
+					<option value="padrao">PadrÃ£o</option>
 					<option value="primary_key">Primary key</option>
 				</select>
 				<label for="relacionamento_com_outro_tipo">Relacionamento com outro tipo</label>
 				<select name="relacionamento_com_outro_tipo" id="relacionamento_com_outro_tipo">
-					<option value="padrao">Padrão</option>
+					<option value="padrao">PadrÃ£o</option>
 					<option value="n:n">N:N</option>
 					<option value="n:1">N:1</option>
 					<option value="1:1">1:1</option>

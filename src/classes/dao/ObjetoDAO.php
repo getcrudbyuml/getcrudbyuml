@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Classe feita para manipulação do objeto Objeto
+ * Classe feita para manipulaÃ§Ã£o do objeto Objeto
  * feita automaticamente com programa gerador de software inventado por
- * @author Jefferson Uchôa Ponte
+ * @author Jefferson UchÃ´a Ponte
  *
  *
  */
@@ -20,10 +20,8 @@ class ObjetoDAO extends DAO {
 		
 	    $idSoftware = $software->getId();
 	    $nome = $objeto->getNome();
-	    $sql = "INSERT INTO objeto(nome, id_software)
+	    $sql = "INSERT INTO objeto(nome_objeto, id_software)
 				VALUES(:nome, :idSoftware)";
-	 
-	    
 	    try {
 	        $db = $this->getConexao();
 	        $stmt = $db->prepare($sql);

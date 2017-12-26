@@ -1,5 +1,4 @@
 <?php
-session_start();
  
 function __autoload($classe) {
 	if (file_exists ( 'classes/dao/' . $classe . '.php' )){
@@ -38,7 +37,7 @@ function __autoload($classe) {
 		<?php
 		if ($_GET ['idsoftware']) {
 		 // vou fechar isso lá no final
-			$_SESSION['meuSoftwareId'] = $_GET['idsoftware'];
+			
 			
 			
 			$softwaredao = new SoftwareDAO();

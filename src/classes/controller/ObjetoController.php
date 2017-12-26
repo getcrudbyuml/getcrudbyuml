@@ -33,9 +33,11 @@ class ObjetoController {
 		$objetoDao = new ObjetoDAO ();
 		if ($objetoDao->inserir ( $objeto, $software )) {
 			echo "Sucesso";
+		
 		} else {
 			echo "Fracasso";
 		}
+		echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=software.php?idsoftware='.$_GET['idsoftware'].'">';
 	}
 				
 	public function listarJSON() {
