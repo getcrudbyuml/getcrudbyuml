@@ -25,30 +25,33 @@ class AtributoDAO extends DAO {
         }
     }
 
-	public function inserir(Atributo $atributo){
+	public function inserir(Atributo $atributo, Objeto $objeto){
+		
 	    
-	    $sql = "INSERT INTO atributo(nome_atributo, tipo_atributo, relacionamento_atributo, id_objeto)
-				VALUES(:nome, :tipo, :relacionamento, :idobjeto)";
+	    $sql = "INSERT INTO atributo(nome_atributo, tipo_atributo, indice_atributo, id_objeto)
+				VALUES(:nome, :tipo, :indice, :idobjeto)";
 	    $nome = $atributo->getNome();
 	    $tipo = $atributo->getTipo();
-	    $relacionamento = $atributo->getRelacionamento();
-	    $idobjeto = $atributo->getIdobjeto();
+	    $indice = $atributo->getIndice();
+	    $idobjeto = $objeto->getId();
+	    
 	    try {
 	        $db = $this->getConexao();
 	        $stmt = $db->prepare($sql);
 	        $stmt->bindParam("nome", $nome, PDO::PARAM_STR);
 	        $stmt->bindParam("tipo", $tipo, PDO::PARAM_STR);
-	        $stmt->bindParam("relacionamento", $relacionamento, PDO::PARAM_STR);
-	        $stmt->bindParam("idobjeto", $idobjeto, PDO::PARAM_STR);
+	        $stmt->bindParam("indice", $indice, PDO::PARAM_STR);
+	        $stmt->bindParam("idobjeto", $idobjeto, PDO::PARAM_INT);
 	        return $stmt->execute();
 	    } catch(PDOException $e) {
 	        echo '{"error":{"text":'. $e->getMessage() .'}}';
 	    }
 	}
 	
-	public function retornaLista() {
+	public function retornaLista(Objeto $objeto) {
+		$id = $objeto->getId();
 	    $lista = array ();
-	    $sql = "SELECT * FROM atributo LIMIT 1000";
+	    $sql = "SELECT * FROM atributo WHERE id_objeto = $id LIMIT 1000";
 	    $result = $this->getConexao ()->query ( $sql );
 	    
 	    foreach ( $result as $linha ) {

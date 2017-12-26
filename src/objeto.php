@@ -41,7 +41,7 @@ function __autoload($classe) {
 			<?php
 			
 			
-				$controller = new ObjetoController();
+				$controller = new AtributoController();
 				$controller->listar();
 			
 			?>

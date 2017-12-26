@@ -6,22 +6,30 @@
  *
  */				
 class AtributoView {
-	public function mostraFormInserir() {	
+	public function mostraFormInserir(Objeto $objeto) {	
 		echo '<form action="" method="post">
 					<fieldset>
-						<legend>
-							Adicionar Atributo
-						</legend>
-						<label for="nome">nome:</label>
-						<input type="text" name="nome" id="nome" />
-						<label for="tipo">tipo:</label>
-						<input type="text" name="tipo" id="tipo" />
-						<label for="relacionamento">relacionamento:</label>
-						<input type="text" name="relacionamento" id="relacionamento" />
-						<label for="idobjeto">idobjeto:</label>
-						<input type="text" name="idobjeto" id="idobjeto" />
-						<input type="submit" name="cadastrar" value="Cadastrar">
-					</fieldset>
-				</form>';
+					<legend>Inserir Atributo a um Objeto</legend>
+					<label for="nome">Nome do Atributo</label>
+					<input type="text" id="nome" name="nome" />
+					
+					
+					<label for="tipo">Tipo </label>
+					<select id="tipo" name="tipo">
+					
+						<option value="string">Texto</option>
+						<option value="int">Inteiro</option>
+					</select>
+				
+					<label for="indice">Índice</label>
+					
+					<select id="indice" name="indice">
+						<option value="padrao">-</option>
+						<option value="primary_key">Primary key</option>
+					</select>
+				<input type="hidden" name="id_objeto" value="'.$objeto->getId().'" id="id_objeto" />
+				<input type="submit" name="envia_atributo" value="Cadastrar">
+			</fieldset>
+		</form>';
 	}	
 }

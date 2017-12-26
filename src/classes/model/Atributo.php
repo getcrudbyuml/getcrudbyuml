@@ -9,7 +9,7 @@ class Atributo {
     private $id;
     private $nome;
     private $tipo;
-    private $relacionamento;
+    private $indice;
     public function setId($id) {
         $this->id = $id;
     }
@@ -28,11 +28,11 @@ class Atributo {
     public function getTipo() {
         return $this->tipo;
     }
-    public function setRelacionamento($relacionamento) {
-        $this->relacionamento = $relacionamento;
+    public function setIndice($indice) {
+        $this->indice= $indice;
     }
-    public function getRelacionamento() {
-        return $this->relacionamento;
+    public function getIndice() {
+        return $this->indice;
     }
 
 }

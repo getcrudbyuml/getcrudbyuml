@@ -15,8 +15,17 @@ class AtributoController {
 		}
 	}
 	public function cadastrar() {
-		$this->view->mostraFormInserir();
-		if (! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['tipo'] ) && isset ( $this->post ['relacionamento'] ) && isset ( $this->post ['idobjeto'] ))) {
+		if(!(isset($_GET['idobjeto']))){
+			return;
+		}
+		$objeto = new Objeto();
+		$objeto->setId($_GET['idobjeto']);
+		
+		$this->view->mostraFormInserir($objeto);
+		if(!(isset($this->post['envia_atributo']))){
+			return;
+		}
+		if (! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['tipo'] ) && isset ( $this->post ['indice'] ) && isset ( $this->post ['id_objeto'] ))) {
 			echo "Incompleto";
 			return;
 		}
@@ -24,14 +33,15 @@ class AtributoController {
 		$atributo = new Atributo ();		
 		$atributo->setNome ( $this->post ['nome'] );		
 		$atributo->setTipo ( $this->post ['tipo'] );		
-		$atributo->setRelacionamento ( $this->post ['relacionamento'] );		
-		$atributo->setIdobjeto ( $this->post ['idobjeto'] );	
+		$atributo->setIndice( $this->post ['indice'] );		
+		
 		$atributoDao = new AtributoDAO ();
-		if ($atributoDao->inserir ( $atributo )) {
+		if ($atributoDao->inserir ( $atributo , $objeto)) {
 			echo "Sucesso";
 		} else {
 			echo "Fracasso";
 		}
+		echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=objeto.php?idobjeto=' . $_GET ['idobjeto'] . '">';
 	}
 				
 	public function listarJSON() {
@@ -52,25 +62,31 @@ class AtributoController {
 		echo json_encode ( $listagem );
 	}			
 	public function listar() {
-		$atributoDao = new AtributoDAO ();
-		$lista = $atributoDao->retornaLista ();
-		echo '<table border="1">';
-			echo '<th>Id</th>';
-			echo '<th>Nome</th>';
-			echo '<th>Tipo</th>';
-			echo '<th>Relacionamento</th>';
-			echo '<th>Idobjeto</th>';
-		foreach ( $lista as $atributo) {
-			echo '<tr>';		
-		
-			echo '<td>'.$atributo->getId ().'</td>';
-			echo '<td>'.$atributo->getNome ().'</td>';
-			echo '<td>'.$atributo->getTipo ().'</td>';
-			echo '<td>'.$atributo->getRelacionamento ().'</td>';
-			echo '<td>'.$atributo->getIdobjeto ().'</td>';
-			echo '</tr>';
+		if (!isset($_GET ['idobjeto'])) {
+			return;
 		}
-		echo '</table>';
+		$objeto = new Objeto();
+		$objeto->setId($_GET['idobjeto']);
+		$objetoDao = new ObjetoDAO();
+		$objetoDao->retornaPorId($objeto);
+		
+		echo '<div class="classe">
+							<h1><a href="objeto.php?idobjeto='.$objeto->getId().'">'.$objeto->getNome().'</a><img src="images/delete.png" alt="" width="20"/></h1>
+								<ul>';
+		foreach ($objeto->getAtributos() as $atributo){
+		
+			if($atributo->getIndice() == "padrao"){
+				echo '		<li>'.$atributo->getNome().' - '.$atributo->getTipo().'<a href="deletaratributo.php?id_atributo='.$atributo->getId().'"> <img src="images/delete.png" alt="" width="20"/></a></li>';
+			}else
+			{
+				echo '<li>'.$atributo->getNome().' - '.$atributo->getTipo().'; '.$atributo->getIndice() .'<img src="images/delete.png" alt="" width="20"/></li>';
+			}
+		
+		
+		
+		}
+		echo '</ul></div>
+							';
 		
 		
 	}			

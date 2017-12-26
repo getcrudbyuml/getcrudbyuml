@@ -64,7 +64,31 @@ class ObjetoDAO extends DAO {
 	    }
 	    return $lista;
 	}
-	
+	public function retornaPorId(Objeto $objeto){
+		$id = $objeto->getId();
+		$selectObjetos = "SELECT * FROM objeto WHERE id_objeto = $id";
+		$result = $this->getConexao()->query($selectObjetos);
+		foreach ($result as $linha)
+		{
+			
+			$objeto->setNome($linha['nome_objeto']);
+			$objeto->setId($linha['id_objeto']);
+			$idObjeto = $linha['id_objeto'];
+				
+			$selectAtributo = "SELECT * FROM atributo WHERE id_objeto = $idObjeto";
+			$resultAtributo = $this->getConexao()->query($selectAtributo);
+			foreach ($resultAtributo as $linhaatributo){
+				$atributo = new Atributo();
+				$atributo->setId($linhaatributo['id_atributo']);
+				$atributo->setNome($linhaatributo['nome_atributo']);
+				$atributo->setTipo($linhaatributo['tipo_atributo']);
+				$atributo->setIndice($linhaatributo['indice_atributo']);
+				$objeto->addAtributo($atributo);
+		
+			}	
+		}
+		
+	}
 }
 
 

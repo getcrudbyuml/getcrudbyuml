@@ -92,7 +92,6 @@ class SoftwareDAO extends DAO {
 				$atributo->setNome($linhaatributo['nome_atributo']);
 				$atributo->setTipo($linhaatributo['tipo_atributo']);
 				$atributo->setIndice($linhaatributo['indice_atributo']);
-				$atributo->setRelacionamento($linhaatributo['relacionamento_atributo']);
 				$objeto->addAtributo($atributo);
 				
 			}
