@@ -50,7 +50,7 @@ function __autoload($classe) {
 			<?php
 				$objeto = new Objeto();
 				$objeto->setNome($_POST['nomedoobjeto']) ;
-				$objeto->setPersistencia($_POST['persistencia']);
+			
 				if($objetodao->inserir($objeto, $software)){
 					echo "Objeto inserido com sucesso!";
 					echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=software.php?idsoftware='.$_SESSION['meuSoftwareId'].'">';

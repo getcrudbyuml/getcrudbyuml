@@ -2,7 +2,7 @@
 
 
 class DAO {
-	const ARQUIVO_CONFIGURACAO = "../config_bd.ini";
+	const ARQUIVO_CONFIGURACAO = "../escritordesoftware_bd.ini";
 	
 	protected $conexao;
 	private $tipoDeConexao;
@@ -40,7 +40,7 @@ class DAO {
 			$this->conexao = new PDO ( 'dblib:host=' . $bd ['host'] . ';dbname=' . $bd ['bd_nome'], $bd ['usuario'], $bd ['senha'] );
 			
 		}else if($bd['sgdb'] == "mysql"){
-			$this->conexao = $PDO = new PDO( 'mysql:host=' . $bd ['host'] . ';port='.$bd['porta'].';dbname=' .  $bd ['bd_nome'], $bd ['usuario'], $bd ['senha']);
+			$this->conexao = $PDO = new PDO( 'mysql:host=' . $bd ['host'] . ';dbname=' .  $bd ['bd_nome'], $bd ['usuario'], $bd ['senha']);
 		}else if($bd['sgdb']== "sqlite"){
 			$this->conexao = new PDO('sqlite:'.$bd ['bd_nome']);
 		}

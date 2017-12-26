@@ -1,66 +1,59 @@
 <?php
 
+/**
+ * Classe feita para manipulaÃ§Ã£o do objeto Software
+ * feita automaticamente com programa gerador de software inventado por
+ * @author Jefferson UchÃ´a Ponte <j.pontee@gmail.com>
+ */
+class Software
+{
 
-class Software{
-	private $id;
-	private $nome;
-	private $linguagem;
-	private $listaDeObjetos;
-	private $bancoDeDados;
+    /**
+     * @var int
+     */
+    private $id;
 
-	public function __construct(){
-		$this->listaDeObjetos = array();
-	}
-	
-	public function setId($id){
-		$this->id = $id;
-	}
-	public function getId(){
-		return $this->id;	
-	}
-	
-	public function setNome($nome){
-		
-		$this->nome = $nome;
-		
-	}
-	
-	public function getNome(){
-		return $this->nome;
-		
-	}
-	
-	public function setLinguagem($linguagem){
-		$this->linguagem = $linguagem;
-	}
-	public function getLinguagem(){
-		return $this->linguagem;
-	}
-	
-	public function setBancoDeDados(BancoDeDados $bancoDeDados){
-		$this->bancoDeDados = $bancoDeDados;
-		
-	}
-	public function getBancoDeDados(){
-		return $this->bancoDeDados;
-	}
-	
-	public function addObjetoNaLista(Objeto $objeto){
-		$this->listaDeObjetos[] = $objeto;
-		
-	}
-	public function getListaDeObjetos(){
-		return $this->listaDeObjetos;
-	}
-	
-	public function escreverSoftware(){
-		//escreve o software
-	}
-	
-	
-	
+    /**
+     * @var string
+     */
+    private $nome;
+    /**
+     * @var array 
+     */
+    private $objetos;
+
+    public function __construct()
+    {
+        $this->objetos = array();
+    }
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+    public function getId()
+    {
+        return $this->id;
+    }
+    public function setNome($nome)
+    {
+        $this->nome = $nome;
+    }
+    public function getNome()
+    {
+        return $this->nome;
+    }
+    public function addObjeto(Objeto $objeto)
+    {
+        $this->listaDeObjetos[] = $objeto;
+    }
+    public function setObjetos($objetos)
+    {
+        $this->objetos = $objetos;
+    }
+    public function getObjetos()
+    {
+        return $this->objetos;
+    }
 }
-
-
 
 ?>

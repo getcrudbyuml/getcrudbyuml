@@ -51,21 +51,18 @@ function __autoload($classe) {
 
 			<?php 
 			echo '<h1>'.$software->getNome().'</h1>';
-			echo '<h2>Informações:</h2>
-				<p>Linguagem: '.$software->getLinguagem();
+			echo '<h2>Informações:</h2>';
 			
-			if($software->getBancoDeDados()){
-				echo '; Banco: '.$software->getBancoDeDados()->getSistemaGerenciadorDeBancoDeDados().'</p>';
-			}
+			
 			?> 
 			
 			
 			<h2>Objetos:</h2>
 
 			<?php 
-			if($software->getListaDeObjetos()){
+			if($software->getObjetos()){
 			
-				foreach ($software->getListaDeObjetos() as $objeto){
+				foreach ($software->getObjetos() as $objeto){
 					
 					echo '<div class="classe">
 							<h1>'.$objeto->getNome().'<img src="images/delete.png" alt="" width="20"/></h1>
@@ -110,10 +107,7 @@ function __autoload($classe) {
 			<legend>Inserir Objeto A Este Software</legend>
 			<label for="nomedoobjeto">Nome do Objeto</label>
 			<input type="text" id="nomedoobjeto" name="nomedoobjeto" />
-			<label for="persistencia">Persistencia</label>
-			<select name="persistencia" id="persistencia">
-				<option value="banco">Banco De Dados</option>
-			</select>
+
 			<input type="submit" value="Inserir Objeto" />
 			
 			</fieldset>
@@ -128,10 +122,10 @@ function __autoload($classe) {
 				<select id="objeto" name="objeto" >
 					
 						<?php 
-						if($software->getListaDeObjetos())
+						if($software->getObjetos())
 						{
 			
-						foreach ($software->getListaDeObjetos() as $objeto)
+						foreach ($software->getObjetos() as $objeto)
 							{
 								echo '<option value="'.$objeto->getId().'">'.$objeto->getNome().'</option>';
 					
@@ -149,10 +143,10 @@ function __autoload($classe) {
 					<option value="float">Ponto Flutuante Nativo</option>
 					<option value="file">Arquivo Nativo</option>
 					<?php 
-						if($software->getListaDeObjetos())
+						if($software->getObjetos())
 						{
 			
-						foreach ($software->getListaDeObjetos() as $objeto)
+						foreach ($software->getObjetos() as $objeto)
 							{
 								echo '<option value="'.$objeto->getNome().'">'.$objeto->getNome().' Criado pelo Usuário</option>';
 					
