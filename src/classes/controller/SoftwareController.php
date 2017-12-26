@@ -62,7 +62,7 @@ class SoftwareController {
 	    {
 	        foreach ($softwares as $software)
 	        {
-	            echo '<li><a href="index.php?pagina=objeto&id='.$software->getId().'">'.$software->getNome().'</a></li>';
+	            echo '<li><a href="software.php?idsoftware='.$software->getId().'">'.$software->getNome().'</a></li>';
 	        }
 	    }
 	    else

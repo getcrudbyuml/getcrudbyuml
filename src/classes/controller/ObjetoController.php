@@ -15,20 +15,23 @@ class ObjetoController {
 		}
 	}
 	public function cadastrar() {
-		$this->view->mostraFormInserir();
-		if(!isset($this->post['enviar'])){
+	    
+	   
+	    $software = new Software();
+	    $software->setId($_GET['idsoftware']);
+		$this->view->mostraFormInserir($software);
+		if(!isset($this->post['enviar_objeto'])){
 		    return;
 		}
-		if (! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['idsoftware'] ))) {
+		if (! ( isset ( $this->post ['nome'] ))) {
 			echo "Incompleto";
 			return;
 		}
 	
 		$objeto = new Objeto ();		
 		$objeto->setNome ( $this->post ['nome'] );		
-		$objeto->setIdsoftware ( $this->post ['idsoftware'] );	
 		$objetoDao = new ObjetoDAO ();
-		if ($objetoDao->inserir ( $objeto )) {
+		if ($objetoDao->inserir ( $objeto, $software )) {
 			echo "Sucesso";
 		} else {
 			echo "Fracasso";

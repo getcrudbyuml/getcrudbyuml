@@ -19,10 +19,11 @@ class ObjetoDAO extends DAO {
 	public function inserir(Objeto $objeto, Software $software){
 		
 	    $idSoftware = $software->getId();
+	    $nome = $objeto->getNome();
 	    $sql = "INSERT INTO objeto(nome, id_software)
 				VALUES(:nome, :idSoftware)";
-	    $nome = $objeto->getNome();
-	    $idsoftware = $objeto->getIdsoftware();
+	 
+	    
 	    try {
 	        $db = $this->getConexao();
 	        $stmt = $db->prepare($sql);

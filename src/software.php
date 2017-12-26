@@ -103,16 +103,11 @@ function __autoload($classe) {
 		</div>
 		<div id="direita">
 			
-			<form action="insereobjeto.php" method="post">
-			<fieldset>
-			<legend>Inserir Objeto A Este Software</legend>
-			<label for="nomedoobjeto">Nome do Objeto</label>
-			<input type="text" id="nomedoobjeto" name="nomedoobjeto" />
-
-			<input type="submit" value="Inserir Objeto" />
+			<?php 
+			$controller = new ObjetoController();
+			$controller->cadastrar();
 			
-			</fieldset>
-			</form>
+			?>
 			<hr/>
 			<form action="insereatributo.php" method="post">
 			<fieldset>

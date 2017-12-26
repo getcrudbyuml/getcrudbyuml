@@ -6,18 +6,16 @@
  *
  */				
 class ObjetoView {
-	public function mostraFormInserir() {	
+	public function mostraFormInserir(Software $software) {	
 		echo '<form action="" method="post">
 					<fieldset>
 						<legend>
 							Adicionar Objeto
 						</legend>
-						<label for="nome">nome:</label>
-						<input type="text" name="nome" id="nome" />
-						<label for="idsoftware">idsoftware:</label>
-						<input type="text" name="idsoftware" id="idsoftware" />
-						<input type="submit" name="cadastrar" value="Cadastrar">
+						<input type="text" placeholder="Nome" name="nome" id="nome" />
+						<input type="hidden" name="id_software" value="'.$software->getId().'" id="id_software" />
+						<input type="submit" name="enviar_objeto" value="Cadastrar">
 					</fieldset>
 				</form>';
-	}	
+	}
 }
