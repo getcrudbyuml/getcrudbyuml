@@ -36,67 +36,13 @@ function __autoload($classe) {
 	</div>
 
 	<div id="conteiner">
-		<?php
-		if ($_GET ['idsoftware']) {
-			
-			$softwaredao = new SoftwareDAO();	
-			$software = new Software ();
-			$software->setId ( $_GET ['idsoftware'] );
-			
-			$software = $softwaredao->retornaPorId($software);
-			
-			
-			?>	
-				
 		<div id="esquerda">
 
-			<?php 
-			echo '<h1>'.$software->getNome().'</h1>';
+			<?php
 			
 			
-			
-			?> 
-			
-			
-			<h2>Objetos:</h2>
-
-			<?php 
-			if($software->getObjetos()){
-			
-				foreach ($software->getObjetos() as $objeto){
-					
-					echo '<div class="classe">
-							<h1>'.$objeto->getNome().'<img src="images/delete.png" alt="" width="20"/></h1>
-								<ul>';
-					foreach ($objeto->getAtributos() as $atributo){
-						
-						if($atributo->getIndice() == "padrao"){
-							echo '		<li>'.$atributo->getNome().' - '.$atributo->getTipo().'<a href="deletaratributo.php?id_atributo='.$atributo->getId().'"> <img src="images/delete.png" alt="" width="20"/></a></li>';	
-						}else
-						{
-							echo '		<li>'.$atributo->getNome().' - '.$atributo->getTipo().'; '.$atributo->getIndice() .'<img src="images/delete.png" alt="" width="20"/></li>';
-						}
-						 						
-
-
-					}
-					echo '
-				
-							
-
-
-
-								</ul>
-								
-
-							</div>
-							'; 
-				}	
-
-			}
-			
-			echo '<a href="escreversoftware.php?idsoftware='. $_GET ['idsoftware'].'">Escrever Software</a>';
-			
+				$controller = new ObjetoController();
+				$controller->listar();
 			
 			?>
 			
@@ -104,7 +50,7 @@ function __autoload($classe) {
 		<div id="direita">
 			
 			<?php 
-			$controller = new ObjetoController();
+			
 			$controller->cadastrar();
 			
 			?>
@@ -177,15 +123,6 @@ function __autoload($classe) {
 
 
 		</div>
-	<?php
-		}
-		// fechando o if($_GET['idsoftware'])
-		
-		?>
-			
-
-
 	</div>
-
 </body>
 </html>

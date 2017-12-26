@@ -51,19 +51,52 @@ class ObjetoController {
 		echo json_encode ( $listagem );
 	}
 	public function listar() {
-		$objetoDao = new ObjetoDAO ();
-		$lista = $objetoDao->retornaLista ();
-		echo '<table border="1">';
-		echo '<th>Id</th>';
-		echo '<th>Nome</th>';
-		
-		foreach ( $lista as $objeto ) {
-			echo '<tr>';
-			echo '<td>' . $objeto->getId () . '</td>';
-			echo '<td>' . $objeto->getNome () . '</td>';
-			echo '</tr>';
+		if (!isset($_GET ['idsoftware'])) {
+			return;
 		}
-		echo '</table>';
+		$softwaredao = new SoftwareDAO();
+		$software = new Software ();
+		$software->setId ( $_GET ['idsoftware'] );
+		$software = $softwaredao->retornaPorId($software);
+		echo '<h1>'.$software->getNome().'</h1>';
+		echo '<h2>Objetos:</h2>';
+		if($software->getObjetos()){
+				
+			foreach ($software->getObjetos() as $objeto){
+					
+				echo '<div class="classe">
+							<h1>'.$objeto->getNome().'<img src="images/delete.png" alt="" width="20"/></h1>
+								<ul>';
+				foreach ($objeto->getAtributos() as $atributo){
+		
+					if($atributo->getIndice() == "padrao"){
+						echo '		<li>'.$atributo->getNome().' - '.$atributo->getTipo().'<a href="deletaratributo.php?id_atributo='.$atributo->getId().'"> <img src="images/delete.png" alt="" width="20"/></a></li>';
+					}else
+					{
+						echo '		<li>'.$atributo->getNome().' - '.$atributo->getTipo().'; '.$atributo->getIndice() .'<img src="images/delete.png" alt="" width="20"/></li>';
+					}
+					 
+		
+		
+				}
+				echo '
+		
+				
+		
+		
+		
+								</ul>
+		
+		
+							</div>
+							';
+			}
+		
+		}
+
+		echo '<a href="escreversoftware.php?idsoftware='. $_GET ['idsoftware'].'">Escrever Software</a>';
+			
+		
 	}
 }
 ?>
