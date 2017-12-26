@@ -28,10 +28,7 @@ class Objeto
 	
 	public function setNome($nome)
 	{
-
-		$nome = strtoupper(substr($nome, 0, 1)).substr($nome, 1, 100);
-		$novo_nome = preg_replace("/[^a-zA-Z0-9]/", "", $nome);
-		$this->nome = $novo_nome;
+		$this->nome = $nome;
 		
 	}
 	public function getNome(){

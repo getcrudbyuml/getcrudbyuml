@@ -58,60 +58,52 @@ class SoftwareDAO extends DAO {
     }
     
 
-	public function retornaSoftwareDetalhado(Software $software)
+	public function retornaPorId(Software $software)
 	{
-		if($software->getId())
+	    $lista = array();
+		if(!$software->getId())
 		{
-			//Pega dados do software. 
-			$idSoftware = $software->getId();
-			$selectSoftware = "Select * From software Where id_software = $idSoftware";
-			$result = $this->getConexao()->query($selectSoftware);
-			foreach ($result as $linha)
-			{
-
-				$software->setNome($linha['nome_software']);
-				
-				
-			}
-
+		    return $lista;
+		}
+		
+		$idSoftware = $software->getId();
+		$selectSoftware = "Select * From software Where id_software = $idSoftware";
+		$result = $this->getConexao()->query($selectSoftware);
+		foreach ($result as $linha)
+		{
+			$software->setNome($linha['nome_software']);	
+		}
+		
+		$selectObjetos = "SELECT * FROM objeto WHERE id_software = $idSoftware";
+		
+		$result = $this->getConexao()->query($selectObjetos);
+		foreach ($result as $linha)
+		{
+			$objeto = new Objeto();
+			$objeto->setNome($linha['nome_objeto']);
+			$objeto->setId($linha['id_objeto']);
+			$idObjeto = $linha['id_objeto'];
 			
-			$selectObjetos = "SELECT * FROM objeto WHERE id_software = $idSoftware";
-			$result = $this->getConexao()->query($selectObjetos);
-			foreach ($result as $linha)
-			{
-				$objeto = new Objeto();
-				$objeto->setNome($linha['nome_objeto']);
-				
-				$objeto->setId($linha['id_objeto']);
-				$idObjeto = $linha['id_objeto'];
-				
-				$selectAtributo = "SELECT * FROM atributo WHERE id_objeto = $idObjeto";
-				$resultAtributo = $this->getConexao()->query($selectAtributo);
-				foreach ($resultAtributo as $linhaatributo){
-					$atributo = new Atributo();
-					$atributo->setId($linhaatributo['id_atributo']);
-					$atributo->setNome($linhaatributo['nome_atributo']);
-					$atributo->setTipo($linhaatributo['tipo_atributo']);
-					$atributo->setIndice($linhaatributo['indice_atributo']);
-					$atributo->setTipoDeRelacionamentoComObjeto($linhaatributo['relacionamento_atributo']);
-					$objeto->addAtributo($atributo);
-					
-				}
-				
-				
-				$software->addObjeto($objeto);
-				
+			$selectAtributo = "SELECT * FROM atributo WHERE id_objeto = $idObjeto";
+			$resultAtributo = $this->getConexao()->query($selectAtributo);
+			foreach ($resultAtributo as $linhaatributo){
+				$atributo = new Atributo();
+				$atributo->setId($linhaatributo['id_atributo']);
+				$atributo->setNome($linhaatributo['nome_atributo']);
+				$atributo->setTipo($linhaatributo['tipo_atributo']);
+				$atributo->setIndice($linhaatributo['indice_atributo']);
+				$atributo->setRelacionamento($linhaatributo['relacionamento_atributo']);
+				$objeto->addAtributo($atributo);
 				
 			}
 			
-			return $software;
+			
+			$software->addObjeto($objeto);
+			
 			
 		}
-		else
-		{
-			
-			return null;
-		}
+		
+		return $software;
 		
 	}
 	

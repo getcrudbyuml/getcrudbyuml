@@ -16,6 +16,9 @@ class ObjetoController {
 	}
 	public function cadastrar() {
 		$this->view->mostraFormInserir();
+		if(!isset($this->post['enviar'])){
+		    return;
+		}
 		if (! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['idsoftware'] ))) {
 			echo "Incompleto";
 			return;

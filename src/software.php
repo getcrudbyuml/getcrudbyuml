@@ -42,7 +42,7 @@ function __autoload($classe) {
 			$software = new Software ();
 			$software->setId ( $_GET ['idsoftware'] );
 			
-			$software = $softwaredao->retornaSoftwareDetalhado($software);
+			$software = $softwaredao->retornaPorId($software);
 			
 			
 			?>	

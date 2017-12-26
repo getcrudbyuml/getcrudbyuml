@@ -44,7 +44,7 @@ class Software
     }
     public function addObjeto(Objeto $objeto)
     {
-        $this->listaDeObjetos[] = $objeto;
+        $this->objetos[] = $objeto;
     }
     public function setObjetos($objetos)
     {
