@@ -40,7 +40,7 @@ if($_GET['id_atributo']){
 	$atributo->setId($_GET['id_atributo']);
 	$atributodao = new AtributoDAO();
 	
-	if($atributodao->deletarAtributo($atributo)){
+	if($atributodao->excluir($atributo)){
 		
 		echo 'Atributo deletado com sucesso<META HTTP-EQUIV="REFRESH" CONTENT="5; URL=software.php">
 				<a href="javascript:window.history.go(-1)">Voltar</a>';
