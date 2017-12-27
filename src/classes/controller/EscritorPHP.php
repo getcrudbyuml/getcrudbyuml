@@ -132,7 +132,6 @@ class EscritorPHP extends Escritor{
 		$gerador = new GeradorDeCodigoPHP();
 		$gerador->geraStyle($this->software);
 		self::criaArquivo($gerador->getCaminho(), $gerador->getCodigo());
-		
 			
 	}
 	

@@ -84,8 +84,20 @@ class ObjetoController {
 			}
 		
 		}
-
-		echo '<a href="escreversoftware.php?idsoftware='. $_GET ['idsoftware'].'">Escrever Software</a>';
+		echo '<a href="index.php?pagina=objeto&idsoftware='. $_GET ['idsoftware'].'&escrever=1">Escrever Software</a>';
+		
+		if(isset($_GET['escrever'])){
+		    $escritorPHP = new EscritorPHP();
+		    $escritorPHP->setSoftware($software);
+		    $escritorPHP->escreverSoftware();
+		    $zipador = new Zipador();
+		    $zipador->zipaArquivo('sistemasphp/'.$software->getNome(), 'sistemasphp/'.$software->getNome().'.zip');
+		    echo '<br><br><br><a href="sistemasphp/'.$software->getNome().'/src">Acessar Software</a><br>';
+		    echo '<h1><a href="sistemasphp/'.$software->getNome().'.zip">Baixar Software</a></h1>';
+		    
+		}
+		
+		
 			
 		
 	}

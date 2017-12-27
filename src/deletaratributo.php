@@ -42,7 +42,7 @@ if($_GET['id_atributo']){
 	
 	if($atributodao->excluir($atributo)){
 		
-		echo 'Atributo deletado com sucesso<META HTTP-EQUIV="REFRESH" CONTENT="5; URL=software.php">
+		echo 'Atributo deletado com sucesso
 				<a href="javascript:window.history.go(-1)">Voltar</a>';
 	}else{
 		echo 'Falha.
