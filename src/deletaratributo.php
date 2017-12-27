@@ -1,5 +1,5 @@
 <?php
-session_start();
+
  
 function __autoload($classe) {
 	if (file_exists ( 'classes/dao/' . $classe . '.php' )){

@@ -19,7 +19,7 @@ class GeradorDeCodigoPHP extends GeradorDeCodigo{
 		//primeiro iremos percorrer cada um dos objetos deste software.
 		//primeira vez pra criar os codigos
 		 
-		$listaDeObjetos = $software->getListaDeObjetos();
+		$listaDeObjetos = $software->getObjetos();
 		if($listaDeObjetos){
 			foreach ($listaDeObjetos as $objeto){
 			
@@ -56,7 +56,7 @@ class GeradorDeCodigoPHP extends GeradorDeCodigo{
 	 * @return multitype:GeradorDeCodigoPHP |NULL
 	 */
 	public static function geraClassesController(Software $software){
-		$listaDeObjetos = $software->getListaDeObjetos();
+		$listaDeObjetos = $software->getObjetos();
 		if($listaDeObjetos){
 			foreach ($listaDeObjetos as $objeto){
 
@@ -83,7 +83,7 @@ class GeradorDeCodigoPHP extends GeradorDeCodigo{
 	}
 
 	public static function geraFormularios(Software $software){		
-		$listaDeObjetos = $software->getListaDeObjetos();
+		$listaDeObjetos = $software->getObjetos();
 		if($listaDeObjetos){
 			foreach ($listaDeObjetos as $objeto){
 				$nomedosite = $software->getNome();
@@ -116,7 +116,7 @@ class GeradorDeCodigoPHP extends GeradorDeCodigo{
 	
 	public static function geraDaos(Software $software){
 
-		$listaDeObjetos = $software->getListaDeObjetos();
+		$listaDeObjetos = $software->getObjetos();
 		if($listaDeObjetos){
 			foreach ($listaDeObjetos as $objeto){
 					
@@ -560,7 +560,7 @@ class '.$nomeDoObjetoMa.' {';
 		$bdNome = 'sistemasphp/'.$software->getNome().'/'.strtolower($software->getNome()).'.db';
 		$pdo = new PDO('sqlite:'.$bdNome);
 		$this->codigo = '';
-		foreach ($software->getListaDeObjetos() as $objeto){
+		foreach ($software->getObjetos() as $objeto){
 			$this->codigo .= 'CREATE TABLE `'.strtolower($objeto->getNome());
 			$this->codigo .= "` (\n";
 			$i = 0;
@@ -603,7 +603,7 @@ senha = 123
 	public function geraIndex(Software $software){
 		$this->caminho = "sistemasphp/".$software->getNome().'/src/index.php';
 		$this->codigo = '';
-		if(!count($software->getListaDeObjetos())){
+		if(!count($software->getObjetos())){
 			return;
 		}
 		$this->codigo = '<?php
@@ -642,7 +642,7 @@ function __autoload($classe) {
 		<div id="menu">
 			<ul>
 				<li><a href="index.php">Inicio</a></li>';
-		foreach($software->getListaDeObjetos() as $objeto){
+		foreach($software->getObjetos() as $objeto){
 			
 			$this->codigo .= '
 				<li><a href="?pagina='.strtolower($objeto->getNome()).'">'.$objeto->getNome().'</a></li>';
@@ -658,7 +658,7 @@ function __autoload($classe) {
 				if(isset($_GET[\'pagina\'])){
 					switch ($_GET[\'pagina\']){';
 		
-		foreach ($software->getListaDeObjetos() as $objeto){
+		foreach ($software->getObjetos() as $objeto){
 			$this->codigo .= '
 						case \''.strtolower($objeto->getNome()).'\':
 							$controller = new '.$objeto->getNome().'Controller();	
@@ -667,11 +667,11 @@ function __autoload($classe) {
 		
 		$this->codigo .= '
 						default:
-							$controller = new '.$software->getListaDeObjetos()[0]->getNome().'Controller();				
+							$controller = new '.$software->getObjetos()[0]->getNome().'Controller();				
 							break;
 					}
 				}else{
-					$controller = new '.$software->getListaDeObjetos()[0]->getNome().'Controller();
+					$controller = new '.$software->getObjetos()[0]->getNome().'Controller();
 				}
 				
 				$controller->cadastrar();

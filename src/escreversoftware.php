@@ -36,8 +36,7 @@ function __autoload($classe) {
 	<div id="conteiner">
 		<?php
 		if ($_GET ['idsoftware']) {
-		 // vou fechar isso lá no final
-			
+		
 			
 			
 			$softwaredao = new SoftwareDAO();
@@ -47,7 +46,7 @@ function __autoload($classe) {
 			$software = new Software ();
 			$software->setId ( $_GET ['idsoftware'] );
 			
-			$software = $softwaredao->retornaSoftwareDetalhado($software);
+			$software = $softwaredao->retornaPorId($software);
 			
 			
 			?>	
@@ -56,21 +55,16 @@ function __autoload($classe) {
 
 			<?php 
 			echo '<h1>'.$software->getNome().'</h1>';
-			echo '<h2>Informações:</h2>
-				<p>Linguagem: '.$software->getLinguagem();
 			
-			if($software->getBancoDeDados()){
-				echo '; Banco: '.$software->getBancoDeDados()->getSistemaGerenciadorDeBancoDeDados().'</p>';
-			}
 			?> 
 			
 			
 			<h2>Objetos:</h2>
 
 			<?php 
-			if($software->getListaDeObjetos()){
+			if($software->getObjetos()){
 			
-				foreach ($software->getListaDeObjetos() as $objeto){
+				foreach ($software->getObjetos() as $objeto){
 					
 					echo '<div class="classe">
 							<h1>'.$objeto->getNome().'</h1>
@@ -96,33 +90,17 @@ function __autoload($classe) {
 			}
 			
 			
-			switch ($software->getLinguagem()){
-				case "php":
-					$escritorPHP = new EscritorPHP();
-					$escritorPHP->setSoftware($software);
-					$escritorPHP->escreverSoftware();
-					$zipador = new Zipador();
-					$zipador->zipaArquivo('sistemasphp/'.$software->getNome(), 'sistemasphp/'.$software->getNome().'.zip');
-					echo '<br><br><br><a href="sistemasphp/'.$software->getNome().'/src">Acessar Software</a><br>';
-					echo '<h1><a href="sistemasphp/'.$software->getNome().'.zip">Baixar Software</a></h1>';
-					
-					
-					break;
-				case "java":
-					echo "Ainda falta implementar as classes que criam java";
-					//As classes deverao criar o codigo e compilar. 
-					break;
-				case "c":
-					echo "Ainda falta implementar as classes que criam c";
-					break;
-
-				case "c++":
-					echo "Ainda falta implementar as classes que criam c++";
-					break;
-				case "pyton":
-					echo "Ainda falta implementar as classes que criam pyton";
-					break;
-			}
+		
+			$escritorPHP = new EscritorPHP();
+			$escritorPHP->setSoftware($software);
+			$escritorPHP->escreverSoftware();
+			$zipador = new Zipador();
+			$zipador->zipaArquivo('sistemasphp/'.$software->getNome(), 'sistemasphp/'.$software->getNome().'.zip');
+			echo '<br><br><br><a href="sistemasphp/'.$software->getNome().'/src">Acessar Software</a><br>';
+			echo '<h1><a href="sistemasphp/'.$software->getNome().'.zip">Baixar Software</a></h1>';
+			
+			
+		
 			
 			
 			
@@ -155,10 +133,10 @@ function __autoload($classe) {
 				<select id="objeto" name="objeto" >
 					
 						<?php 
-						if($software->getListaDeObjetos())
+						if($software->getObjetos())
 						{
 			
-						foreach ($software->getListaDeObjetos() as $objeto)
+							foreach ($software->getObjetos() as $objeto)
 							{
 								echo '<option value="'.$objeto->getId().'">'.$objeto->getNome().'</option>';
 					
@@ -175,10 +153,10 @@ function __autoload($classe) {
 					<option>Inteiro</option>
 					<option>Ponto Flutuante</option>
 					<?php 
-						if($software->getListaDeObjetos())
+						if($software->getObjetos())
 						{
 			
-						foreach ($software->getListaDeObjetos() as $objeto)
+						foreach ($software->getObjetos() as $objeto)
 							{
 								echo '<option value="'.$objeto->getNome().'">'.$objeto->getNome().'</option>';
 					
@@ -215,7 +193,7 @@ function __autoload($classe) {
 		</div>
 	<?php
 		}
-		// fechando o if($_GET['idsoftware'])
+
 		
 		?>
 			

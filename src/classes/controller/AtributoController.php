@@ -71,7 +71,7 @@ class AtributoController {
 		$objetoDao->retornaPorId($objeto);
 		
 		echo '<div class="classe">
-							<h1><a href="objeto.php?idobjeto='.$objeto->getId().'">'.$objeto->getNome().'</a><img src="images/delete.png" alt="" width="20"/></h1>
+							<h1>'.$objeto->getNome().'<img src="images/delete.png" alt="" width="20"/></h1>
 								<ul>';
 		foreach ($objeto->getAtributos() as $atributo){
 		

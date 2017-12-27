@@ -10,11 +10,11 @@ class EscritorPHP extends Escritor{
 	 * @see Escritor::criaEstrutura()
 	 */
 	public function escreverSoftware(){
-		if(!count($this->software->getListaDeObjetos())){
+		if(!count($this->software->getObjetos())){
 			echo "Ausencia de Objetos, software não criado";
 			return;
 		}
-		foreach ($this->software->getListaDeObjetos() as $objeto){
+		foreach ($this->software->getObjetos() as $objeto){
 			if(!count($objeto->getAtributos())){
 				echo "Encontrado objeto sem atributos, software não criado";
 				return;
