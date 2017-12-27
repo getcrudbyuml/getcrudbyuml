@@ -6,7 +6,7 @@ class DAO {
 	
 	protected $conexao;
 	private $tipoDeConexao;
-	private $sgbb;
+	private $sgdb;
 
 	public function getSgdb(){
 		return $this->sgdb;

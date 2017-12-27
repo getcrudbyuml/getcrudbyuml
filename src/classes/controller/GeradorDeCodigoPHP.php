@@ -157,7 +157,7 @@ class DAO {
 	
 	protected $conexao;
 	private $tipoDeConexao;
-	private $sgbb;
+	private $sgdb;
 
 	public function getSgdb(){
 		return $this->sgdb;
@@ -369,7 +369,7 @@ class '.$nomeDoObjetoDAO.' extends DAO {
 /**
  * Classe feita para manipulação do objeto '.$nomeDoObjetoMa.'
  * feita automaticamente com programa gerador de software inventado por
- * @author Jefferson UchÃ´a Ponte <j.pontee@gmail.com>
+ * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
  */
 class '.$nomeDoObjetoMa.'Controller {
 	private $post;
@@ -500,7 +500,7 @@ class '.$nomeDoObjetoMa.'Controller {
 /**
  * Classe feita para manipulaÃ§Ã£o do objeto '.$nomeDoObjetoMa.'
  * feita automaticamente com programa gerador de software inventado por
- * @author Jefferson UchÃ´a Ponte <j.pontee@gmail.com>
+ * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
  */
 class '.$nomeDoObjetoMa.' {';
 		if($objeto->getAtributos())
