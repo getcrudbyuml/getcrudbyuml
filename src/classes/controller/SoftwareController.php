@@ -32,10 +32,11 @@ class SoftwareController {
 		
 		if ($idSoftware) {
 			echo "Sucesso";
-			echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php">';
+		
 		} else {
 			echo "Fracasso";
 		}
+		echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php">';
 	}
 	public function listarJSON() {
 		$softwareDao = new SoftwareDAO ();

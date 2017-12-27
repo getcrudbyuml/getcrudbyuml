@@ -382,6 +382,9 @@ class '.$nomeDoObjetoMa.'Controller {
 	}
 	public function cadastrar() {
 		$this->view->mostraFormInserir();
+        if(!isset($this->post[\'enviar_'.$nomeDoObjeto.'\'])){
+		    return;
+		}
 		if (! ( ';
 		$i = 0;
 		foreach ($objeto->getAtributos() as $atributo){
@@ -418,6 +421,7 @@ class '.$nomeDoObjetoMa.'Controller {
 		} else {
 			echo "Fracasso";
 		}
+        echo \'<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina='.$nomeDoObjeto.'">\';
 	}
 				
 	public function listarJSON() {
@@ -825,8 +829,8 @@ select{
 	
 	public static function geraForm(Objeto $objeto, Software $software){
 		
-		$nomeDoObjeto = $objeto->getNome();
-		$nomeDOObjeto = strtolower($objeto->getNome());
+		
+		$nomeDoObjeto = strtolower($objeto->getNome());
 		$nomeDoObjetoMa = strtoupper(substr($objeto->getNome(), 0, 1)).substr($objeto->getNome(), 1,100);
 		
 		$nomeDoSite = $software->getNome();
@@ -865,7 +869,7 @@ class '.$nomeDoObjetoMa.'View {
 		
 		
 		$codigo .='
-						<input type="submit" name="cadastrar" value="Cadastrar">
+						<input type="submit" name="enviar_'.$nomeDoObjeto.'" value="Cadastrar">
 					</fieldset>
 				</form>\';
 	}	
