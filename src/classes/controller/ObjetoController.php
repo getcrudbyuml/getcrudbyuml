@@ -84,7 +84,7 @@ class ObjetoController {
 			}
 		
 		}
-		echo '<a href="index.php?pagina=objeto&idsoftware='. $_GET ['idsoftware'].'&escrever=1">Escrever Software</a>';
+		echo '<a href="index.php?pagina=objeto&idsoftware='. $_GET ['idsoftware'].'&escrever=1">Escrever Software</a><br>';
 		
 		if(isset($_GET['escrever'])){
 		    $escritorPHP = new EscritorPHP();
