@@ -25,7 +25,7 @@ class AtributoController {
 		if(!(isset($this->post['envia_atributo']))){
 			return;
 		}
-		if (! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['tipo'] ) && isset ( $this->post ['indice'] ) && isset ( $this->post ['id_objeto'] ))) {
+		if (strlen ( $this->post ['nome'] ) < 2 || ! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['tipo'] ) && isset ( $this->post ['indice'] ) && isset ( $this->post ['id_objeto'] ))) {
 			echo "Incompleto";
 			return;
 		}
@@ -41,7 +41,7 @@ class AtributoController {
 		} else {
 			echo "Fracasso";
 		}
-		echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=objeto.php?idobjeto=' . $_GET ['idobjeto'] . '">';
+		echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=atributo&idobjeto=' . $_GET ['idobjeto'] . '">';
 	}
 				
 	public function listarJSON() {
@@ -75,17 +75,17 @@ class AtributoController {
 								<ul>';
 		foreach ($objeto->getAtributos() as $atributo){
 		
-			if($atributo->getIndice() == "padrao"){
-				echo '		<li>'.$atributo->getNome().' - '.$atributo->getTipo().'<a href="deletaratributo.php?id_atributo='.$atributo->getId().'"> <img src="images/delete.png" alt="" width="20"/></a></li>';
-			}else
-			{
-				echo '<li>'.$atributo->getNome().' - '.$atributo->getTipo().'; '.$atributo->getIndice() .'<img src="images/delete.png" alt="" width="20"/></li>';
-			}
-		
-		
+			
+			echo '		<li>'.$atributo->getNome().' - '.$atributo->getTipo().'<a href="deletaratributo.php?id_atributo='.$atributo->getId().'"> <img src="images/delete.png" alt="" width="20"/></a></li>';
+			
 		
 		}
-		echo '</ul></div>
+		$idSoftware = $objetoDao->retornaIdDoSoftware($objeto);
+		echo '</ul>
+				
+				</div>
+				
+				<a href="index.php?pagina=objeto&idsoftware='.$idSoftware.'">Voltar</a>
 							';
 		
 		

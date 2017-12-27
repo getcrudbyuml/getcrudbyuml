@@ -21,7 +21,7 @@ class ObjetoController {
 		if (! isset ( $this->post ['enviar_objeto'] )) {
 			return;
 		}
-		if (! (isset ( $this->post ['nome'] ))) {
+		if (! (isset ( $this->post ['nome'] )) || strlen ( $this->post ['nome'] ) < 2) {
 			echo "Incompleto";
 			return;
 		}
@@ -34,7 +34,7 @@ class ObjetoController {
 		} else {
 			echo "Fracasso";
 		}
-		echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=software.php?idsoftware=' . $_GET ['idsoftware'] . '">';
+		echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=objeto&idsoftware=' . $_GET ['idsoftware'] . '">';
 	}
 	public function listarJSON() {
 		$objetoDao = new ObjetoDAO ();
@@ -65,7 +65,7 @@ class ObjetoController {
 			foreach ($software->getObjetos() as $objeto){
 					
 				echo '<div class="classe">
-							<h1><a href="objeto.php?idobjeto='.$objeto->getId().'">'.$objeto->getNome().'</a><img src="images/delete.png" alt="" width="20"/></h1>
+							<h1><a href="index.php?pagina=atributo&idobjeto='.$objeto->getId().'">'.$objeto->getNome().'</a><img src="images/delete.png" alt="" width="20"/></h1>
 								<ul>';
 				foreach ($objeto->getAtributos() as $atributo){
 		

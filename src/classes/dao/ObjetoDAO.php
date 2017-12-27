@@ -89,6 +89,16 @@ class ObjetoDAO extends DAO {
 		}
 		
 	}
+	public function retornaIdDoSoftware(Objeto $objeto){
+		$id = $objeto->getId();
+		$selectObjetos = "SELECT * FROM objeto WHERE id_objeto = $id";
+		$result = $this->getConexao()->query($selectObjetos);
+		foreach ($result as $linha)
+		{
+			return $linha['id_software'];	
+		
+		}
+	}
 }
 
 
