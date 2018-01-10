@@ -17,7 +17,7 @@ class Atributo {
         return $this->id;
     }
     public function setNome($nome) {
-        $this->nome = $nome;
+        $this->nome = preg_replace('/[^a-z0-9\s]/i', null, $nome);
     }
     public function getNome() {
         return $this->nome;
