@@ -47,7 +47,7 @@ class AtributoController {
 	public function listarJSON() {
 		$atributoDao = new AtributoDAO ();
 		$lista = $atributoDao->retornaLista ();
-		$listagem ['lista'] = array ();
+		$listagem = array ();
 		foreach ( $lista as $linha ) {
 			$listagem ['lista'] [] = array (
 					'id' => $linha->getId (), 

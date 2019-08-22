@@ -18,15 +18,15 @@ class Zipador {
 	}
 	/**
 	 *
-	 * @param unknown $diretorio        	
-	 * @param unknown $arquivoFinal        	
+	 * @param string $diretorio        	
+	 * @param string $arquivoFinal        	
 	 */
 	public function zipaArquivo($diretorio, $arquivoFinal) {
 		$this->browse ( $diretorio );
 		if (! count ( $this->arrayDeArquivos )) {
 			return;
 		}
-		$directory = $diretorio;
+		
 		$zipfile = $arquivoFinal;
 		$filenames = $this->arrayDeArquivos;		
 		$zip = new ZipArchive ();
@@ -35,8 +35,6 @@ class Zipador {
 		}
 		
 		foreach ( $filenames as $filename ) {
-			$file = $filename;
-			$arquivo = substr ( $file, - 3 );
 			$zip->addFile ( $filename, $filename );
 		}
 		
@@ -47,8 +45,8 @@ class Zipador {
 	 * O objetivo deste método é receber o nome de um dretorio e retornar um array com todos
 	 * os arquivos de dentro, inclusive os arquivos em subpastas.
 	 *
-	 * @param unknown $directory
-	 *        	Retorna merda nenhuma.
+	 * @param string $directory
+	 *        	
 	 */
 	public function browse($dir) {
 		if (! file_exists ( $dir )) {

@@ -121,7 +121,6 @@ class EscritorPHP extends Escritor{
 	}
 	public function criaClasseDAO(){
 	
-		$software = $this->software;
 		$gerador = GeradorDeCodigoPHP::geraClasseDao($this->software);
 		self::criaArquivo($gerador->getCaminho(), $gerador->getCodigo());
 		

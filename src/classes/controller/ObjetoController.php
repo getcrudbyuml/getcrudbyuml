@@ -39,7 +39,7 @@ class ObjetoController {
 	public function listarJSON() {
 		$objetoDao = new ObjetoDAO ();
 		$lista = $objetoDao->retornaLista ();
-		$listagem ['lista'] = array ();
+		$listagem = array ();
 		foreach ( $lista as $linha ) {
 			$listagem ['lista'] [] = array (
 					'id' => $linha->getId (),

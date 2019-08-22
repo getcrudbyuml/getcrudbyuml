@@ -26,7 +26,7 @@ class DAO {
 	
 	public function fazerConexao() {
 		$config = parse_ini_file ( self::ARQUIVO_CONFIGURACAO );
-		
+        $bd = array();		
 		$bd ['sgdb'] = $config ['sgdb'];
 		$bd ['bd_nome'] = $config ['bd_nome'];
 		$bd ['host'] = $config ['host'];
@@ -40,7 +40,7 @@ class DAO {
 			$this->conexao = new PDO ( 'dblib:host=' . $bd ['host'] . ';dbname=' . $bd ['bd_nome'], $bd ['usuario'], $bd ['senha'] );
 			
 		}else if($bd['sgdb'] == "mysql"){
-			$this->conexao = $PDO = new PDO( 'mysql:host=' . $bd ['host'] . ';dbname=' .  $bd ['bd_nome'], $bd ['usuario'], $bd ['senha']);
+			$this->conexao = new PDO( 'mysql:host=' . $bd ['host'] . ';dbname=' .  $bd ['bd_nome'], $bd ['usuario'], $bd ['senha']);
 		}else if($bd['sgdb']== "sqlite"){
 			$this->conexao = new PDO('sqlite:'.$bd ['bd_nome']);
 		}

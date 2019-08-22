@@ -41,7 +41,7 @@ class SoftwareController {
 	public function listarJSON() {
 		$softwareDao = new SoftwareDAO ();
 		$lista = $softwareDao->retornaLista ();
-		$listagem ['lista'] = array ();
+		$listagem  = array ();
 		foreach ( $lista as $linha ) {
 			$listagem ['lista'] [] = array (
 					'id' => $linha->getId (),

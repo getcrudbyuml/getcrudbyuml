@@ -19,6 +19,7 @@ class GeradorDeCodigoPHP extends GeradorDeCodigo
     {
         $listaDeObjetos = $software->getObjetos();
         if ($listaDeObjetos) {
+            $geradores = array();
             foreach ($listaDeObjetos as $objeto) {
                 
                 $nomedosite = $software->getNome();
@@ -44,6 +45,7 @@ class GeradorDeCodigoPHP extends GeradorDeCodigo
     {
         $listaDeObjetos = $software->getObjetos();
         if ($listaDeObjetos) {
+            $geradores = array();
             foreach ($listaDeObjetos as $objeto) {
                 
                 $nomedosite = $software->getNome();
@@ -62,8 +64,8 @@ class GeradorDeCodigoPHP extends GeradorDeCodigo
     {
         $listaDeObjetos = $software->getObjetos();
         if ($listaDeObjetos) {
+            $geradores = array();
             foreach ($listaDeObjetos as $objeto) {
-                $nomedosite = $software->getNome();
                 $gerador = GeradorDeCodigoPHP::geraForm($objeto, $software);
                 $geradores[] = $gerador;
             }
@@ -86,6 +88,7 @@ class GeradorDeCodigoPHP extends GeradorDeCodigo
     {
         $listaDeObjetos = $software->getObjetos();
         if ($listaDeObjetos) {
+            $geradores = array();
             foreach ($listaDeObjetos as $objeto) {
                 
                 // Gera o codigo de cada objeto
@@ -194,7 +197,6 @@ class DAO {
      */
     public static function geraCodigoDeObjetoDAO(Objeto $objeto, $nomeDoSite)
     {
-        $geradorDeCodigo = new GeradorDeCodigoPHP();
         $nomeDoObjeto = strtolower($objeto->getNome());
         $nomeDoObjetoMA = strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100);
         $nomeDoObjetoDAO = strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100) . 'DAO';
@@ -452,7 +454,6 @@ class ' . $nomeDoObjetoMa . 'Controller {
     public static function geraCodigoDeObjeto(Objeto $objeto, $nomeDoSite)
     {
         $geradorDeCodigo = new GeradorDeCodigoPHP();
-        $nomeDoObjeto = strtolower($objeto->getNome());
         $nomeDoObjetoMa = strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100);
         
         $codigo = '<?php
@@ -476,7 +477,6 @@ class ' . $nomeDoObjetoMa . ' {';
                 
                 $nome = strtolower($atributo->getNome());
                 $nome2 = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
-                $tipo = $atributo->getTipo();
                 
                 if ($atributo->getTipo() == 'int' || $atributo->getTipo() == 'float' || $atributo->getTipo() == 'string' || $atributo->getTipo() == 'Texto') {
                     
@@ -795,9 +795,6 @@ class ' . $nomeDoObjetoMa . 'View {
         
         foreach ($atributos as $atributo) {
             $variavel = $atributo->getNome();
-            $tipo = $atributo->getTipo();
-            
-            $indice = $atributo->getIndice();
             if ($atributo->getIndice() == 'primary_key') {
                 continue;
             }
