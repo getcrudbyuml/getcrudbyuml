@@ -8,7 +8,9 @@
  */
 class Zipador {
 	private $arrayDeArquivos;
-	
+	public function __construct(){
+	    $this->arrayDeArquivos = array();
+	}
 	/**
 	 *
 	 * @return string
