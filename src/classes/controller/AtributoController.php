@@ -8,7 +8,7 @@
 class AtributoController {
 	private $post;
 	private $view;
-	public function AtributoController(){		
+	public function __construct(){		
 		$this->view = new AtributoView();
 		foreach($_POST as $chave => $valor){
 			$this->post[$chave] = $valor;

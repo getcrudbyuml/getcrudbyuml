@@ -8,7 +8,7 @@
 class SoftwareController {
 	private $post;
 	private $view;
-	public function SoftwareController() {
+	public function __construct() {
 		$this->view = new SoftwareView ();
 		foreach ( $_POST as $chave => $valor ) {
 			$this->post [$chave] = $valor;

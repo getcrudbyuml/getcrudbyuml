@@ -8,7 +8,7 @@
 class ObjetoController {
 	private $post;
 	private $view;
-	public function ObjetoController() {
+	public function __construct() {
 		$this->view = new ObjetoView ();
 		foreach ( $_POST as $chave => $valor ) {
 			$this->post [$chave] = $valor;
