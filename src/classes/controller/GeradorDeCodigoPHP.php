@@ -283,10 +283,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
 			echo \'{"error":{"text":\'. $e->getMessage() .\'}}\';
 		}
 	}
-	public function alterar(){
-		//Aqui vc escreve o codigo pra alterar ' . $nomeDoObjeto . '
-	
-	}
+
 	
 	public function retornaLista() {
 		$lista = array ();
@@ -295,7 +292,8 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
 	
 		foreach ( $result as $linha ) {
 				
-			$' . $nomeDoObjeto . ' = new ' . $nomeDoObjetoMA . "();\n";
+			$' . $nomeDoObjeto . ' = new ' . $nomeDoObjetoMA . '();
+        ';
         
         foreach ($objeto->getAtributos() as $atributo) {
             $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
@@ -307,7 +305,76 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
 			$lista [] = $' . $nomeDoObjeto . ';
 		}
 		return $lista;
-	}			
+	}';
+
+       
+        foreach ($objeto->getAtributos() as $atributo) {
+            if ($atributo->getIndice() == 'primary_key') {
+                $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
+                $id = $atributo->getNome();
+                $codigo .= '
+                    
+    public function pesquisaPorID(' . $nomeDoObjetoMA . ' $' . $nomeDoObjeto . ') {
+	    $id = $'.$nomeDoObjeto.'->get'.$nomeDoAtributoMA.'();
+	    $sql = "SELECT * FROM ' . $nomeDoObjeto . ' WHERE '.$id.' = $id";
+	    $result = $this->getConexao ()->query ( $sql );
+	        
+	    foreach ( $result as $linha ) {';
+                foreach ($objeto->getAtributos() as $atributo2) {
+                    
+                    $nomeDoAtributoMA = strtoupper(substr($atributo2->getNome(), 0, 1)) . substr($atributo2->getNome(), 1, 100);
+                    $codigo .= '
+	        $'.$nomeDoObjeto.'->set'.$nomeDoAtributoMA.'( $linha [\''.$atributo2->getNome().'\'] );';
+                    
+                }
+                    $codigo .= '
+    	        
+                        
+            return $'.$nomeDoObjeto.';
+	    }
+	    return null;
+	}
+';
+                break;
+            }
+        }
+        
+        
+        
+        
+        foreach ($objeto->getAtributos() as $atributo) {
+            if ($atributo->getIndice() == 'primary_key') {
+                continue;
+            }
+                $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
+                $id = $atributo->getNome();
+                $codigo .= '
+
+    public function pesquisaPor'.$nomeDoAtributoMA.'(' . $nomeDoObjetoMA . ' $' . $nomeDoObjeto . ') {
+        $lista = array();
+	    $'.$id.' = $'.$nomeDoObjeto.'->get'.$nomeDoAtributoMA.'();
+	    $sql = "SELECT * FROM ' . $nomeDoObjeto . ' WHERE '.$id.' like \'%$'.$id.'%\'";
+	    $result = $this->getConexao ()->query ( $sql );
+	        
+	    foreach ( $result as $linha ) {';
+                foreach ($objeto->getAtributos() as $atributo2) {
+                    
+                    $nomeDoAtributoMA = strtoupper(substr($atributo2->getNome(), 0, 1)) . substr($atributo2->getNome(), 1, 100);
+                    $codigo .= '
+	        $'.$nomeDoObjeto.'->set'.$nomeDoAtributoMA.'( $linha [\''.$atributo2->getNome().'\'] );';
+                    
+                }
+                $codigo .= '
+			$lista [] = $' . $nomeDoObjeto . ';
+		}
+		return $lista;
+	}';
+                
+               
+        }
+        
+ $codigo .= '
+		
 				
 }';
         
@@ -390,7 +457,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
 	public function listarJSON() {
 		$' . $nomeDoObjeto . 'Dao = new ' . $nomeDoObjetoMa . 'DAO ();
 		$lista = $' . $nomeDoObjeto . 'Dao->retornaLista ();
-		$listagem [\'lista\'] = array ();
+		$listagem = array ();
 		foreach ( $lista as $linha ) {
 			$listagem [\'lista\'] [] = array (';
         $i = 0;
@@ -414,27 +481,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
 	public function listar() {
 		$' . $nomeDoObjeto . 'Dao = new ' . $nomeDoObjetoMa . 'DAO ();
 		$lista = $' . $nomeDoObjeto . 'Dao->retornaLista ();
-		echo \'<table border="1">\';';
-        foreach ($objeto->getAtributos() as $atributo) {
-            $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
-            $codigo .= '
-			echo \'<th>' . $nomeDoAtributoMA . '</th>\';';
-        }
-        
-        $codigo .= '
-		foreach ( $lista as $' . $nomeDoObjeto . ') {
-			echo \'<tr>\';		
-		';
-        foreach ($objeto->getAtributos() as $atributo) {
-            $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
-            $codigo .= '
-			echo \'<td>\'.$' . $nomeDoObjeto . '->get' . $nomeDoAtributoMA . ' ().\'</td>\';';
-        }
-        
-        $codigo .= '
-			echo \'</tr>\';
-		}
-		echo \'</table>\';
+		$this->view->exibirLista($lista);
 		
 		
 	}			
@@ -617,7 +664,7 @@ function __autoload($classe) {
 			</ul>
 		</div>
 		<div id="corpo">
-			<div id="esquerda">
+
 			<?php
 				if(isset($_GET[\'pagina\'])){
 					switch ($_GET[\'pagina\']){';
@@ -637,20 +684,12 @@ function __autoload($classe) {
 				}else{
 					$controller = new ' . $software->getObjetos()[0]->getNome() . 'Controller();
 				}
-				
+                $controller->cadastrar();
 				$controller->listar();
-			?>
-			</div>
-					
-			<div id="direita">
-			<h1>Listagem</h1>
-			<?php
-
-				 $controller->cadastrar();
 
 			?>
 						
-			</div>		
+			
 			
 		</div>
 		<div id="footer">
@@ -663,11 +702,15 @@ function __autoload($classe) {
     public function geraStyle(Software $software)
     {
         $this->caminho = "sistemasphp/" . $software->getNome() . '/src/css/style.css';
-        $this->codigo = "/*Esse Ã© um arquivo css*/
+        $this->codigo = "/*Arquivo css*/
 body{
-	background-color:#5DD0C0;	
-	font:Arial, Helvetica, sans-serif;
-	color:#FFF;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #858796;
+  text-align: left;
+  background-color: #c0c0c0;
 }
 #topo{
 	width: 1000px;
@@ -741,35 +784,7 @@ body{
 a{
 	color:#FFF;	
 }
-fieldset{
-	border:none;	
-}
-fieldset legend{
-	font-size:30px;
-}
-label{
-	font-size:30px;
-	display: block;
-}
-input{
-	margin-top:5px;
-	margin-left:30px;
-	border:none;
-	width:300px;	
-	height:30px;
-	display: block;
-	color: #00685A;
-	font-size: 13px;
-}
-select{
-	margin-top:5px;
-	margin-left:30px;
-	width:300px;	
-	height:30px;
-	border:none;	
-	color: #00685A;
-	font-size: 13px;
-}
+
 #topo img{
 	margin-left:200px;
 	margin-top:30px;
@@ -793,11 +808,24 @@ select{
  */				
 class ' . $nomeDoObjetoMa . 'View {
 	public function mostraFormInserir() {	
-		echo \'<form action="" method="post">
-					<fieldset>
-						<legend>
-							Adicionar ' . $nomeDoObjetoMa . '
-						</legend>';
+		echo \'<div class="container">
+            
+		<!-- Outer Row -->
+		<div class="row justify-content-center">
+            
+			<div class="col-xl-6 col-lg-12 col-md-9">
+            
+				<div class="card o-hidden border-0 shadow-lg my-5">
+					<div class="card-body p-0">
+						<!-- Nested Row within Card Body -->
+						<div class="row">
+            
+							<div class="col-lg-12">
+								<div class="p-5">
+									<div class="text-center">
+										<h1 class="h4 text-gray-900 mb-4"> Adicionar ' . $nomeDoObjetoMa . '</h1>
+									</div>
+						              <form class="user" method="post">';
         
         $atributos = $objeto->getAtributos();
         
@@ -807,15 +835,114 @@ class ' . $nomeDoObjetoMa . 'View {
                 continue;
             }
             $codigo .= '
-						<label for="' . $variavel . '">' . $variavel . ':</label>' . '
-						<input type="text" name="' . $variavel . '" id="' . $variavel . '" />';
+                                        <div class="form-group">
+                						  <input type="text" class="form-control form-control-user" id="' . $variavel . '" name="' . $variavel . '" placeholder="' . $variavel . '">
+                						</div>';
+            }
+        
+        $codigo .= '  
+                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastre-se" name="enviar_' . $nomeDoObjeto . '">
+                                        <hr>
+            
+						              </form>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+            
+			</div>
+            
+		</div>
+            
+	</div>\';
+	}	
+
+    public function exibirLista($lista){
+           echo \'
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+	<div class="card-header py-3">
+		<h6 class="m-0 font-weight-bold text-primary">Listagem</h6>
+	</div>
+	<div class="card-body">
+		<div class="table-responsive">
+			<table class="table table-bordered" id="dataTable" width="100%"
+				cellspacing="0">
+				<thead>
+					<tr>';
+        foreach($objeto->getAtributos() as $atributo){
+            
+            $codigo .= '
+						<th>'.$atributo->getNome().'</th>';
+        }
+        $codigo .= '
+					</tr>
+				</thead>
+				<tfoot>
+					<tr>';
+        foreach($objeto->getAtributos() as $atributo){
+            
+            $codigo .= '
+                        <th>'.$atributo->getNome().'</th>';
+        }
+        $codigo .= '
+					</tr>
+				</tfoot>
+				<tbody>';
+        $codigo .= '\';';
+        
+        $codigo .= '
+
+            foreach($lista as $elemento){
+                echo \'<tr>\';';
+        foreach($objeto->getAtributos() as $atributo){
+            $codigo .= '
+                echo \'<td>\'.$elemento->get'.ucfirst ($atributo->getNome()).'().\'</td>\';';
         }
         
         $codigo .= '
-						<input type="submit" name="enviar_' . $nomeDoObjeto . '" value="Cadastrar">
-					</fieldset>
-				</form>\';
-	}	
+                echo \'<tr>\';
+            }
+
+        ';
+        
+        $codigo .= 'echo \'';
+        $codigo .= '
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>\';
+    }
+
+
+        public function mostrarSelecionado('.$nomeDoObjetoMa.' $'.$nomeDoObjeto.'){
+        echo \'
+            <div class="col-lg-3">
+              <!-- Default Card Example -->
+              <div class="card mb-4">
+                <div class="card-header">
+                  '.$nomeDoObjetoMa.' selecionado
+                </div>
+                <div class="card-body">';
+
+        foreach($objeto->getAtributos() as $atributo){
+            $codigo .= '
+                '.ucfirst($atributo->getNome()).': \'.$'.$nomeDoObjeto.'->get'.ucfirst ($atributo->getNome()).'().\'<br>';
+        }
+        
+        $codigo .= '
+
+                </div>
+              </div>
+            </div>\';
+    }
+    
+
+
+
 }';
         $gerador = new GeradorDeCodigoPHP();
         $gerador->caminho = 'sistemasphp/' . $nomeDoSite . '/src/classes/view/' . $nomeDoObjetoMa . 'View.php';
