@@ -561,6 +561,9 @@ class ' . $nomeDoObjetoMa . ' {';
     public function geraBancoSqlite(Software $software)
     {
         $bdNome = 'sistemasphp/' . $software->getNome() . '/' . strtolower($software->getNome()) . '.db';
+        if(file_exists($bdNome)){
+            unlink($bdNome);
+        }
         $pdo = new PDO('sqlite:' . $bdNome);
         $this->codigo = '';
         foreach ($software->getObjetos() as $objeto) {
