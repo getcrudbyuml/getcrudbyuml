@@ -613,9 +613,9 @@ senha = 123
             return;
         }
         $this->codigo = '<?php
-
+            
 function __autoload($classe) {
-				
+            
 	if (file_exists ( \'classes/dao/\' . $classe . \'.php\' )){
 		include_once \'classes/dao/\' . $classe . \'.php\';
 	}
@@ -632,72 +632,98 @@ function __autoload($classe) {
 		include_once \'classes/view/\' . $classe . \'.php\';
 	}
 }
-
+            
 ?>
+            
 <!doctype html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
-    <title>Escritor De Software</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css"/>
-
-		<title>' . $software->getNome() . '</title>
-	</head>
-  	<body>
-		<div id="topo">
-			<h1>' . $software->getNome() . '</h1>
-		</div>
-		<div id="menu">
-			<ul>
-				<li><a href="index.php">Inicio</a></li>';
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="css/style.css" />
+<title>' . $software->getNome() . '</title>
+</head>
+<body id="page-top" class="sidebar-toggled">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">'.$software->getNome().'</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Alterna navegação">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">';
+        
+        
+        
         foreach ($software->getObjetos() as $objeto) {
             
-            $this->codigo .= '
-				<li><a href="?pagina=' . strtolower($objeto->getNome()) . '">' . $objeto->getNome() . '</a></li>';
+            $this->codigo .= '<a class="nav-item nav-link" href="?pagina=' . strtolower($objeto->getNome()) . '">' . $objeto->getNome() . '</a>';
         }
         
         $this->codigo .= '
-		
-			</ul>
-		</div>
-		<div id="corpo">
-
-			<?php
-				if(isset($_GET[\'pagina\'])){
+            
+    </div>
+  </div>
+</nav>
+	<div id="wrapper">
+		<div id="content-wrapper" class="d-flex flex-column">
+            
+            
+			<div id="content">
+            
+            
+				<div class="container-fluid">';
+        
+        
+        $this->codigo .= '
+            
+            
+            
+<?php
+if(isset($_GET[\'pagina\'])){
 					switch ($_GET[\'pagina\']){';
         
         foreach ($software->getObjetos() as $objeto) {
             $this->codigo .= '
 						case \'' . strtolower($objeto->getNome()) . '\':
-							$controller = new ' . $objeto->getNome() . 'Controller();	
+							$controller = new ' . $objeto->getNome() . 'Controller();
 							break;';
         }
         
         $this->codigo .= '
 						default:
-							$controller = new ' . $software->getObjetos()[0]->getNome() . 'Controller();				
+							$controller = new ' . $software->getObjetos()[0]->getNome() . 'Controller();
 							break;
 					}
 				}else{
 					$controller = new ' . $software->getObjetos()[0]->getNome() . 'Controller();
 				}
-                $controller->cadastrar();
-				$controller->listar();
-
-			?>
-						
-			
-			
-		</div>
-		<div id="footer">
-			<p>Base do site</p>
-		</div>		
+                if(isset($_GET[\'add\'])){
+                    $controller->cadastrar();
+                }else{
+                    echo "<br><br><br><br>";
+				    $controller->listar();
+                }
+?>';
+        
+        $this->codigo .= '
+            
+            
+    			</div>
+    		</div>
+    	</div>
+    </div>
+            
+';
+        
+        
+        
+        $this->codigo .= '
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 	</body>
 </html>';
     }
@@ -705,95 +731,7 @@ function __autoload($classe) {
     public function geraStyle(Software $software)
     {
         $this->caminho = "sistemasphp/" . $software->getNome() . '/src/css/style.css';
-        $this->codigo = "/*Arquivo css*/
-body{
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #858796;
-  text-align: left;
-  background-color: #c0c0c0;
-}
-#topo{
-	width: 1000px;
-	height:223px;
-	margin: 0px auto;
-	padding: 0px 0px 0px 0px;		
-}		
-#menu{
-	background-color:#00685A;
-	width: 1000px;
-	height:100px;
-	margin: 0px auto;
-	padding: 0px 0px 0px 0px;		
-}
-#menu ul
-{
-	list-style: none;
-}		
-#menu li
-{
-	display: inline-block;
-	margin-top:5px;
-	width:200px;
-	height:30px;
-}
-#menu a{
-	font-size:24px;	
-}			
-#corpo{
-
-	background-color:#00A08A;
-	width: 1000px;
-	height:1000px;
-	margin: 0px auto;
-	padding: 0px 0px 0px 0px;
-}
-#footer{
-	background-color:#00A08A;
-	width: 1000px;
-	height:200px;
-	margin: 0px auto;
-	padding: 0px 0px 0px 0px;
-}				
-#esquerda{
-	padding-left:10px;
-	padding-right:10px;
-	margin-left:20px;
-	margin-top:40px;
-	width:440px;
-	float:left;
-	background-color:#00685A;
-}
-#esquerda .classe {
-	background-color:#00A08A;
-}
-#esquerda .classe li{
-	list-style: none;
-}
-#esquerda .classe h1{
-	background-color:#1E786C;
-}
-#direita{
-	padding-left:10px;
-	padding-right:10px;
-	margin-left:20px;
-	margin-top:40px;
-	width:440px;
-	float:left;
-	background-color:#00685A;
-}
-a{
-	color:#FFF;	
-}
-
-#topo img{
-	margin-left:200px;
-	margin-top:30px;
-}			
-				
-";
+        $this->codigo = "/*Arquivo css*/";
     }
 
     public static function geraForm(Objeto $objeto, Software $software)
@@ -803,26 +741,26 @@ a{
         
         $nomeDoSite = $software->getNome();
         $codigo = '<?php
-				
+            
 /**
  * Classe de visao para ' . $nomeDoObjetoMa . '
  * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
  *
- */				
+ */
 class ' . $nomeDoObjetoMa . 'View {
-	public function mostraFormInserir() {	
+	public function mostraFormInserir() {
 		echo \'<div class="container">
-            
+    
 		<!-- Outer Row -->
 		<div class="row justify-content-center">
-            
+    
 			<div class="col-xl-6 col-lg-12 col-md-9">
-            
+    
 				<div class="card o-hidden border-0 shadow-lg my-5">
 					<div class="card-body p-0">
 						<!-- Nested Row within Card Body -->
 						<div class="row">
-            
+    
 							<div class="col-lg-12">
 								<div class="p-5">
 									<div class="text-center">
@@ -841,35 +779,48 @@ class ' . $nomeDoObjetoMa . 'View {
                                         <div class="form-group">
                 						  <input type="text" class="form-control form-control-user" id="' . $variavel . '" name="' . $variavel . '" placeholder="' . $variavel . '">
                 						</div>';
-            }
+        }
         
-        $codigo .= '  
+        $codigo .= '
                                         <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastre-se" name="enviar_' . $nomeDoObjeto . '">
                                         <hr>
-            
+                                            
 						              </form>
-
+                                            
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-            
+                                            
 			</div>
-            
+                                            
 		</div>
-            
+                                            
 	</div>\';
-	}	
-
+	}
+                                            
     public function exibirLista($lista){
            echo \'
-<!-- DataTales Example -->
+                                            
 <div class="card shadow mb-4">
-	<div class="card-header py-3">
-		<h6 class="m-0 font-weight-bold text-primary">Listagem</h6>
-	</div>
-	<div class="card-body">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-0 font-weight-bold text-primary">'.$nomeDoObjeto.'</h6>
+                  <div class="dropdown no-arrow">
+                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                      <div class="dropdown-header">Menu:</div>
+                      <a class="dropdown-item" href="?pagina='.$nomeDoObjeto.'&add=1">Adicionar '.$nomeDoObjeto.'</a>
+                    </div>
+                  </div>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                          
+                          
 		<div class="table-responsive">
 			<table class="table table-bordered" id="dataTable" width="100%"
 				cellspacing="0">
@@ -897,7 +848,7 @@ class ' . $nomeDoObjetoMa . 'View {
         $codigo .= '\';';
         
         $codigo .= '
-
+            
             foreach($lista as $elemento){
                 echo \'<tr>\';';
         foreach($objeto->getAtributos() as $atributo){
@@ -908,7 +859,7 @@ class ' . $nomeDoObjetoMa . 'View {
         $codigo .= '
                 echo \'<tr>\';
             }
-
+            
         ';
         
         $codigo .= 'echo \'';
@@ -916,11 +867,17 @@ class ' . $nomeDoObjetoMa . 'View {
 				</tbody>
 			</table>
 		</div>
-	</div>
-</div>\';
+            
+            
+            
+                </div>
+              </div>
+            
+            
+\';
     }
-
-
+            
+            
         public function mostrarSelecionado('.$nomeDoObjetoMa.' $'.$nomeDoObjeto.'){
         echo \'
             <div class="col-lg-3">
@@ -930,22 +887,22 @@ class ' . $nomeDoObjetoMa . 'View {
                   '.$nomeDoObjetoMa.' selecionado
                 </div>
                 <div class="card-body">';
-
+        
         foreach($objeto->getAtributos() as $atributo){
             $codigo .= '
                 '.ucfirst($atributo->getNome()).': \'.$'.$nomeDoObjeto.'->get'.ucfirst ($atributo->getNome()).'().\'<br>';
         }
         
         $codigo .= '
-
+            
                 </div>
               </div>
             </div>\';
     }
-    
-
-
-
+            
+            
+            
+            
 }';
         $gerador = new GeradorDeCodigoPHP();
         $gerador->caminho = 'sistemasphp/' . $nomeDoSite . '/src/classes/view/' . $nomeDoObjetoMa . 'View.php';
