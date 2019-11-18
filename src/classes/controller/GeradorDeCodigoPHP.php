@@ -826,21 +826,31 @@ class ' . $nomeDoObjetoMa . 'View {
 				cellspacing="0">
 				<thead>
 					<tr>';
+        $i = 0;
         foreach($objeto->getAtributos() as $atributo){
-            
+            $i++;
+            if($i >= 4){
+                break;
+            }
             $codigo .= '
 						<th>'.$atributo->getNome().'</th>';
         }
+        $codigo .= '<th>Ações</th>';
         $codigo .= '
 					</tr>
 				</thead>
 				<tfoot>
 					<tr>';
+        $i = 0;
         foreach($objeto->getAtributos() as $atributo){
-            
+            $i++;
+            if($i >= 4){
+                break;
+            }
             $codigo .= '
                         <th>'.$atributo->getNome().'</th>';
         }
+        $codigo .= '<th>Ações</th>';
         $codigo .= '
 					</tr>
 				</tfoot>
@@ -851,10 +861,20 @@ class ' . $nomeDoObjetoMa . 'View {
             
             foreach($lista as $elemento){
                 echo \'<tr>\';';
+        $i = 0;
         foreach($objeto->getAtributos() as $atributo){
+            $i++;
+            if($i >= 4){
+                break;
+            }
             $codigo .= '
                 echo \'<td>\'.$elemento->get'.ucfirst ($atributo->getNome()).'().\'</td>\';';
         }
+        $codigo .= 'echo \'<td>
+                        <a href="?pagina='.$nomeDoObjeto.'&selecionar=\'.$elemento->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'" class="btn btn-info">Selecionar</a> 
+                        <a href="?pagina='.$nomeDoObjeto.'&editar=\'.$elemento->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'" class="btn btn-success">Editar</a>
+                        <a href="?pagina='.$nomeDoObjeto.'&deletar=\'.$elemento->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'" class="btn btn-danger">Deletar</a>
+                      </td>\';';
         
         $codigo .= '
                 echo \'<tr>\';
