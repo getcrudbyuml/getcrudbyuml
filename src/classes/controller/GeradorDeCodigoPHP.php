@@ -189,7 +189,7 @@ class DAO {
 
     /**
      *
-     * Gera cÃ³digos das classes do pacote DAO
+     * Gera códigos das classes do pacote DAO
      * 
      * @param Objeto $objeto
      * @param String $nomeDoSite
@@ -307,45 +307,13 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
 		return $lista;
 	}';
 
-       
-        foreach ($objeto->getAtributos() as $atributo) {
-            if ($atributo->getIndice() == 'primary_key') {
-                $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
-                $id = $atributo->getNome();
-                $codigo .= '
-                    
-    public function pesquisaPorID(' . $nomeDoObjetoMA . ' $' . $nomeDoObjeto . ') {
-	    $id = $'.$nomeDoObjeto.'->get'.$nomeDoAtributoMA.'();
-	    $sql = "SELECT * FROM ' . $nomeDoObjeto . ' WHERE '.$id.' = $id";
-	    $result = $this->getConexao ()->query ( $sql );
-	        
-	    foreach ( $result as $linha ) {';
-                foreach ($objeto->getAtributos() as $atributo2) {
-                    
-                    $nomeDoAtributoMA = strtoupper(substr($atributo2->getNome(), 0, 1)) . substr($atributo2->getNome(), 1, 100);
-                    $codigo .= '
-	        $'.$nomeDoObjeto.'->set'.$nomeDoAtributoMA.'( $linha [\''.$atributo2->getNome().'\'] );';
-                    
-                }
-                    $codigo .= '
-    	        
-                        
-            return $'.$nomeDoObjeto.';
-	    }
-	    return null;
-	}
-';
-                break;
-            }
-        }
+
         
         
         
         
         foreach ($objeto->getAtributos() as $atributo) {
-            if ($atributo->getIndice() == 'primary_key') {
-                continue;
-            }
+
                 $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
                 $id = $atributo->getNome();
                 $codigo .= '
@@ -405,13 +373,43 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
 class ' . $nomeDoObjetoMa . 'Controller {
 	private $post;
 	private $view;
-	public function ' . $nomeDoObjetoMa . 'Controller(){		
+    private $dao;
+
+    public static function main(){
+        $controller = new '.$nomeDoObjetoMa.'Controller();
+        if (!(isset($_GET[\'cadastrar\']) || isset($_GET[\'selecionar\']) || isset($_GET[\'editar\']) || isset($_GET[\'deletar\']) )){
+            $controller->listar();
+        }
+        $controller->cadastrar();
+        $controller->selecionar();
+        $controller->editar();
+        $controller->deletar();
+    }
+	public function __construct(){
+		$this->dao = new ' . $nomeDoObjetoMa . 'DAO();
 		$this->view = new ' . $nomeDoObjetoMa . 'View();
 		foreach($_POST as $chave => $valor){
 			$this->post[$chave] = $valor;
 		}
 	}
+	public function listar() {
+		$' . $nomeDoObjeto . 'Dao = new ' . $nomeDoObjetoMa . 'DAO ();
+		$lista = $' . $nomeDoObjeto . 'Dao->retornaLista ();
+		$this->view->exibirLista($lista);
+	}			
+    public function selecionar(){
+	    if(!isset($_GET[\'selecionar\'])){
+	        return;
+	    }
+        $selecionado = new '.$nomeDoObjetoMa.'();
+	    $selecionado->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'selecionar\']);
+	    $this->dao->pesquisaPor'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selecionado);
+	    $this->view->mostrarSelecionado($selecionado);
+    }
 	public function cadastrar() {
+        if(!isset($_GET[\'cadastrar\'])){
+            return;
+        }
 		$this->view->mostraFormInserir();
         if(!isset($this->post[\'enviar_' . $nomeDoObjeto . '\'])){
 		    return;
@@ -445,16 +443,44 @@ class ' . $nomeDoObjetoMa . 'Controller {
         }
         
         $codigo .= '	
-		$' . $nomeDoObjeto . 'Dao = new ' . $nomeDoObjetoMa . 'DAO ();
-		if ($' . $nomeDoObjeto . 'Dao->inserir ( $' . $nomeDoObjeto . ' )) {
+		
+		if ($this->dao->inserir ( $' . $nomeDoObjeto . ' )) 
+        {
 			echo "Sucesso";
 		} else {
 			echo "Fracasso";
 		}
         echo \'<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=' . $nomeDoObjeto . '">\';
 	}
-				
-	public function listarJSON() {
+    public function editar(){
+	    if(!isset($_GET[\'editar\'])){
+	        return;
+	    }
+        $selecionado = new '.$nomeDoObjetoMa.'();
+	    $selecionado->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'editar\']);
+	    $this->dao->pesquisaPor'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selecionado);
+	    $this->view->mostraFormEditar($selecionado);
+    }
+    public function deletar(){
+	    if(!isset($_GET[\'deletar\'])){
+	        return;
+	    }
+        $selecionado = new '.$nomeDoObjetoMa.'();
+	    $selecionado->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'deletar\']);
+	    $this->dao->pesquisaPor'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selecionado);
+        if(!isset($_POST[\'deletar_' . $nomeDoObjeto . '\'])){
+            $this->view->confirmarDeletar($selecionado);
+            return;
+        }
+        if($this->dao->excluir($selecionado)){
+            echo "excluido com sucesso";
+        }else{
+            echo "Errou";
+        }
+    	echo \'<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=' . $nomeDoObjeto . '">\';    
+    }
+	public function listarJSON() 
+    {
 		$' . $nomeDoObjeto . 'Dao = new ' . $nomeDoObjetoMa . 'DAO ();
 		$lista = $' . $nomeDoObjeto . 'Dao->retornaLista ();
 		$listagem = array ();
@@ -478,13 +504,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
 		}
 		echo json_encode ( $listagem );
 	}			
-	public function listar() {
-		$' . $nomeDoObjeto . 'Dao = new ' . $nomeDoObjetoMa . 'DAO ();
-		$lista = $' . $nomeDoObjeto . 'Dao->retornaLista ();
-		$this->view->exibirLista($lista);
-		
-		
-	}			
+
 	
 		';
         
@@ -688,24 +708,19 @@ if(isset($_GET[\'pagina\'])){
         foreach ($software->getObjetos() as $objeto) {
             $this->codigo .= '
 						case \'' . strtolower($objeto->getNome()) . '\':
-							$controller = new ' . $objeto->getNome() . 'Controller();
+						    ' . ucfirst ($objeto->getNome()). 'Controller::main();
 							break;';
         }
         
         $this->codigo .= '
 						default:
-							$controller = new ' . $software->getObjetos()[0]->getNome() . 'Controller();
+							' . ucfirst ($software->getObjetos()[0]->getNome()) . 'Controller::main();
 							break;
 					}
 				}else{
-					$controller = new ' . $software->getObjetos()[0]->getNome() . 'Controller();
+					' . ucfirst ($software->getObjetos()[0]->getNome()) . 'Controller::main();
 				}
-                if(isset($_GET[\'add\'])){
-                    $controller->cadastrar();
-                }else{
-                    echo "<br><br><br><br>";
-				    $controller->listar();
-                }
+                
 ?>';
         
         $this->codigo .= '
@@ -813,7 +828,7 @@ class ' . $nomeDoObjetoMa . 'View {
                     </a>
                     <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                       <div class="dropdown-header">Menu:</div>
-                      <a class="dropdown-item" href="?pagina='.$nomeDoObjeto.'&add=1">Adicionar '.$nomeDoObjeto.'</a>
+                      <a class="dropdown-item" href="?pagina='.$nomeDoObjeto.'&cadastrar=1">Adicionar '.$nomeDoObjeto.'</a>
                     </div>
                   </div>
                 </div>
@@ -919,9 +934,105 @@ class ' . $nomeDoObjetoMa . 'View {
               </div>
             </div>\';
     }
+
+	public function mostraFormEditar('.$nomeDoObjetoMa.' $'.$nomeDoObjeto.') {
+		echo \'<div class="container">
+    
+		<!-- Outer Row -->
+		<div class="row justify-content-center">
+    
+			<div class="col-xl-6 col-lg-12 col-md-9">
+    
+				<div class="card o-hidden border-0 shadow-lg my-5">
+					<div class="card-body p-0">
+						<!-- Nested Row within Card Body -->
+						<div class="row">
+    
+							<div class="col-lg-12">
+								<div class="p-5">
+									<div class="text-center">
+										<h1 class="h4 text-gray-900 mb-4"> Adicionar ' . $nomeDoObjetoMa . '</h1>
+									</div>
+						              <form class="user" method="post">';
+        
+        $atributos = $objeto->getAtributos();
+        foreach ($atributos as $atributo) {
+            $variavel = $atributo->getNome();
+            if ($atributo->getIndice() == 'primary_key') {
+                continue;
+            }
+            $codigo .= '
+                                        <div class="form-group">
+                						  <input type="text" class="form-control form-control-user" value="\'.$'.$nomeDoObjeto.'->get'.ucfirst ($atributo->getNome()).'().\'" id="' . $variavel . '" name="' . $variavel . '" placeholder="' . $variavel . '">
+                						</div>';
+        }
+        
+        $codigo .= '
+                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Alterar" name="editar_' . $nomeDoObjeto . '">
+                                        <hr>
+                                            
+						              </form>
+                                            
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+                                            
+			</div>
+                                            
+		</div>
+                                            
+	</div>\';
+	}
+    
+    public function confirmarDeletar('.$nomeDoObjetoMa.' $'.$nomeDoObjeto.') {
+		echo \'<div class="container">
+    
+		<!-- Outer Row -->
+		<div class="row justify-content-center">
+    
+			<div class="col-xl-6 col-lg-12 col-md-9">
+    
+				<div class="card o-hidden border-0 shadow-lg my-5">
+					<div class="card-body p-0">
+						<!-- Nested Row within Card Body -->
+						<div class="row">
+    
+							<div class="col-lg-12">
+								<div class="p-5">
+									<div class="text-center">
+										<h1 class="h4 text-gray-900 mb-4"> Deletar ' . $nomeDoObjetoMa . '</h1>
+									</div>
+						              <form class="user" method="post">';
+        
+        $atributos = $objeto->getAtributos();
+        foreach ($atributos as $atributo) {
+            $variavel = $atributo->getNome();
+            if ($atributo->getIndice() == 'primary_key') {
+                continue;
+            }
             
-            
-            
+        }
+        
+        $codigo .= '                    Tem Certeza que deseja deletar o \'.$'.$nomeDoObjeto.'->get'.ucfirst ($objeto->getAtributos()[1]->getNome()).'().\'
+                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Deletar" name="deletar_' . $nomeDoObjeto . '">
+                                        <hr>
+                                            
+						              </form>
+                                            
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+                                            
+			</div>
+                                            
+		</div>
+                                            
+	</div>\';
+	}        
             
 }';
         $gerador = new GeradorDeCodigoPHP();
