@@ -672,6 +672,40 @@ class ' . $nomeDoObjetoMa . ' {';
         return $geradorDeCodigo;
     }
 
+    
+    public function geraBancoPG(Software $software)
+    {
+        
+        $this->codigo = '';
+        foreach ($software->getObjetos() as $objeto) {
+            $this->codigo .= 'CREATE TABLE ' . strtolower($objeto->getNome());
+            $this->codigo .= " (\n";
+            $i = 0;
+            foreach ($objeto->getAtributos() as $atributo) {
+                $i ++;
+                if ($atributo->getIndice() == 'primary_key') {
+                    $this->codigo .=  strtolower($atributo->getNome()) . ' serial NOT NULL';
+                } else {
+                    $this->codigo .= strtolower($atributo->getNome()) . ' character varying(150)';
+                }
+                if ($i == count($objeto->getAtributos())) {
+                    foreach ($objeto->getAtributos() as $atributo) {
+                        if ($atributo->getIndice() == 'primary_key') {
+                            $this->codigo .= ",\n";
+                            $this->codigo .= ' CONSTRAINT pk_'.strtolower($objeto->getNome()).'_'.strtolower($atributo->getNome()).' PRIMARY KEY ('.strtolower($atributo->getNome()).')';
+                            break;
+                        }
+                    }
+                    $this->codigo .= "\n";
+                    continue;
+                }
+                $this->codigo .= ",\n";
+            }
+
+            $this->codigo .= ");\n";
+        }
+        $this->caminho = 'sistemasphp/' . $software->getNome() . '/' . strtolower($software->getNome()) . '_banco_pg.sql';
+    }
     public function geraBancoSqlite(Software $software)
     {
         $bdNome = 'sistemasphp/' . $software->getNome() . '/' . strtolower($software->getNome()) . '.db';
@@ -700,12 +734,13 @@ class ' . $nomeDoObjetoMa . ' {';
             $this->codigo .= ");\n";
         }
         $pdo->exec($this->codigo);
-        $this->caminho = 'sistemasphp/' . $software->getNome() . '/' . strtolower($software->getNome()) . '_banco.sql';
+        $this->caminho = 'sistemasphp/' . $software->getNome() . '/' . strtolower($software->getNome()) . '_banco_sqlite.sql';
     }
 
     public function geraINI(Software $software)
     {
-        $this->codigo = ';configurações do banco de dados. 
+        $this->codigo = '
+;configurações do banco de dados. 
 ;Banco de regras de negócio do sistema. 
 
 sgdb = sqlite

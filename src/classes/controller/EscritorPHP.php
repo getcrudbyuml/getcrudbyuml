@@ -58,6 +58,10 @@ class EscritorPHP extends Escritor{
 		$gerador->geraBancoSqlite($this->software);
 		self::criaArquivo($gerador->getCaminho(), $gerador->getCodigo());
 		
+		$gerador = new GeradorDeCodigoPHP();
+		$gerador->geraBancoPG($this->software);
+		self::criaArquivo($gerador->getCaminho(), $gerador->getCodigo());
+		
 	}
 		
 	public function criaEstrutura(){
