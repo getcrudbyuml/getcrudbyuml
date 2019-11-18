@@ -212,6 +212,56 @@ class DAO {
  */
 class ' . $nomeDoObjetoDAO . ' extends DAO {
 	
+
+    public function atualizar('.$nomeDoObjetoMA.' $'.$nomeDoObjeto.')
+    {
+
+        $id = $'.$nomeDoObjeto.'->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'();
+        $sql = "UPDATE '.$nomeDoObjeto.' 
+                SET
+                ';
+        $i = 0;
+        foreach ($objeto->getAtributos() as $atributo) {
+            $i ++;
+            if ($atributo->getIndice() == 'primary_key') {
+                continue;
+            }
+            $codigo .= $atributo->getNome().' = :'.$atributo->getNome();
+            if ($i != count($objeto->getAtributos())) {
+                $codigo .= ', 
+                ';
+            }
+        }
+        $codigo .= '
+                WHERE '.$nomeDoObjeto.'.id = :id;";';
+        
+        
+        foreach ($objeto->getAtributos() as $atributo) {
+            if ($atributo->getIndice() == 'primary_key') {
+                continue;
+            }
+            $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
+            $codigo .= '
+			$' . $atributo->getNome() . ' = $' . $nomeDoObjeto . '->get' . $nomeDoAtributoMA . '();';
+        }
+        $codigo .= '
+
+        try {
+            
+            $stmt = $this->getConexao()->prepare($sql);';
+        foreach ($objeto->getAtributos() as $atributo) {
+            $codigo .= '
+			$stmt->bindParam("' . $atributo->getNome() . '", $' . $atributo->getNome() . ', PDO::PARAM_STR);';
+        }
+        
+        $codigo .= '
+           
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            echo $e->getMessage();   
+        }
+
+    }
 	
 	public function inserir(' . $nomeDoObjetoMA . ' $' . $nomeDoObjeto . '){
 		
@@ -459,7 +509,51 @@ class ' . $nomeDoObjetoMa . 'Controller {
         $selecionado = new '.$nomeDoObjetoMa.'();
 	    $selecionado->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'editar\']);
 	    $this->dao->pesquisaPor'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selecionado);
-	    $this->view->mostraFormEditar($selecionado);
+	    
+        if(!isset($_POST[\'editar_' . $nomeDoObjeto . '\'])){
+            $this->view->mostraFormEditar($selecionado);
+            return;
+        }
+
+		if (! ( ';
+        $i = 0;
+        foreach ($objeto->getAtributos() as $atributo) {
+            $i ++;
+            if ($atributo->getIndice() == 'primary_key') {
+                continue;
+            }
+            $codigo .= 'isset ( $this->post [\'' . $atributo->getNome() . '\'] )';
+            if ($i != count($objeto->getAtributos())) {
+                $codigo .= ' && ';
+            }
+        }
+        
+        $codigo .= ')) {
+			echo "Incompleto";
+			return;
+		}
+	
+		$' . $nomeDoObjeto . ' = new ' . $nomeDoObjetoMa . ' ();';
+        foreach ($objeto->getAtributos() as $atributo) {
+            $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
+            if ($atributo->getIndice() == 'primary_key') {
+                continue;
+            }
+            $codigo .= '		
+		$selecionado->set' . $nomeDoAtributoMA . ' ( $this->post [\'' . $atributo->getNome() . '\'] );';
+        }
+        
+        $codigo .= '	
+		
+		if ($this->dao->atualizar ($selecionado )) 
+        {
+
+			echo "Sucesso";
+		} else {
+			echo "Fracasso";
+		}
+        echo \'<META HTTP-EQUIV="REFRESH" CONTENT="3; URL=index.php?pagina=' . $nomeDoObjeto . '">\';
+
     }
     public function deletar(){
 	    if(!isset($_GET[\'deletar\'])){
