@@ -460,8 +460,9 @@ class ' . $nomeDoObjetoMa . 'Controller {
         if(!isset($_GET[\'cadastrar\'])){
             return;
         }
-		$this->view->mostraFormInserir();
+		
         if(!isset($this->post[\'enviar_' . $nomeDoObjeto . '\'])){
+            $this->view->mostraFormInserir();   
 		    return;
 		}
 		if (! ( ';
@@ -532,8 +533,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
 			echo "Incompleto";
 			return;
 		}
-	
-		$' . $nomeDoObjeto . ' = new ' . $nomeDoObjetoMa . ' ();';
+';
         foreach ($objeto->getAtributos() as $atributo) {
             $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
             if ($atributo->getIndice() == 'primary_key') {
