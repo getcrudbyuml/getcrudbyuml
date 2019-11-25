@@ -42,12 +42,9 @@ class SoftwareController {
 	    $this->view->mostrarSelecionado($selecionado);
     }
 	public function cadastrar() {
-        if(!isset($_GET['cadastrar'])){
-            return;
-        }
-		
-        if(!isset($this->post['enviar_software'])){
-            $this->view->mostraFormInserir();   
+	    $this->view->mostraFormInserir();
+	    
+        if(!isset($this->post['enviar_software'])){   
 		    return;
 		}
 		if (! ( isset ( $this->post ['nome'] ))) {

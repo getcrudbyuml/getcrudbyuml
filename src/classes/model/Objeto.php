@@ -8,7 +8,11 @@
 class Objeto {
 	private $id;
 	private $nome;
-	private $idsoftware;
+	private $atributos;
+	
+	public function __construct(){
+	    $this->atributos = array();
+	}
 	public function setId($id) {
 		$this->id = $id;
 	}
@@ -21,11 +25,11 @@ class Objeto {
 	public function getNome() {
 		return $this->nome;
 	}
-	public function setIdsoftware($idsoftware) {
-		$this->idsoftware = $idsoftware;
+	public function addAtributo(Atributo $atributo){
+	    $this->atributos[] = $atributo;
 	}
-	public function getIdsoftware() {
-		return $this->idsoftware;
+	public function getAtributos(){
+	    return $this->atributos;
 	}
 }
 ?>

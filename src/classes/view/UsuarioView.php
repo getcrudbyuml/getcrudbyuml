@@ -2,7 +2,7 @@
 
 /**
  * Classe de visao para Usuario
- * @author Jefferson UchÃ´a Ponte <j.pontee@gmail.com>
+ * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
  *
  */
 class UsuarioView {
@@ -84,14 +84,14 @@ class UsuarioView {
 					<tr>
 						<th>id</th>
 						<th>nome</th>
-						<th>email</th><th>AÃ§Ãµes</th>
+						<th>email</th><th>Ações</th>
 					</tr>
 				</thead>
 				<tfoot>
 					<tr>
                         <th>id</th>
                         <th>nome</th>
-                        <th>email</th><th>AÃ§Ãµes</th>
+                        <th>email</th><th>Ações</th>
 					</tr>
 				</tfoot>
 				<tbody>';

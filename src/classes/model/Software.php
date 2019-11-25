@@ -8,6 +8,11 @@
 class Software {
 	private $id;
 	private $nome;
+	private $objetos;
+	
+	public function __construct(){
+	    $this->objetos = array();
+	}
 	public function setId($id) {
 		$this->id = $id;
 	}
@@ -19,6 +24,18 @@ class Software {
 	}
 	public function getNome() {
 		return $this->nome;
+	}
+	public function addObjeto(Objeto $objeto)
+	{
+	    $this->objetos[] = $objeto;
+	}
+	public function setObjetos($objetos)
+	{
+	    $this->objetos = $objetos;
+	}
+	public function getObjetos()
+	{
+	    return $this->objetos;
 	}
 }
 ?>

@@ -80,17 +80,43 @@ class SoftwareDAO extends DAO {
 	}
 
     public function pesquisaPorId(Software $software) {
-        $lista = array();
-	    $id = $software->getId();
-	    $sql = "SELECT * FROM software WHERE id like '%$id%'";
+	    $idSoftware = $software->getId();
+	    $sql = "SELECT * FROM software WHERE id = $idSoftware";
 	    $result = $this->getConexao ()->query ( $sql );
-	        
+	    
+	    
 	    foreach ( $result as $linha ) {
-	        $software->setId( $linha ['id'] );
 	        $software->setNome( $linha ['nome'] );
-			$lista [] = $software;
 		}
-		return $lista;
+		$selectObjetos = "SELECT * FROM objeto WHERE idsoftware = $idSoftware";
+		
+		$result = $this->getConexao()->query($selectObjetos);
+		foreach ($result as $linha)
+		{
+		    $objeto = new Objeto();
+		    $objeto->setNome($linha['nome']);
+		    $objeto->setId($linha['id']);
+		    $idObjeto = $linha['id'];
+		    
+		    $selectAtributo = "SELECT * FROM atributo WHERE idobjeto = $idObjeto";
+		    $resultAtributo = $this->getConexao()->query($selectAtributo);
+		    foreach ($resultAtributo as $linhaatributo){
+		        $atributo = new Atributo();
+		        $atributo->setId($linhaatributo['id']);
+		        $atributo->setNome($linhaatributo['nome']);
+		        $atributo->setTipo($linhaatributo['tipo']);
+		        $atributo->setIndice($linhaatributo['indice']);
+		        $objeto->addAtributo($atributo);
+		        
+		    }
+		    
+		    
+		    $software->addObjeto($objeto);
+		    
+		    
+		}
+
+		return $software;
 	}
 
     public function pesquisaPorNome(Software $software) {

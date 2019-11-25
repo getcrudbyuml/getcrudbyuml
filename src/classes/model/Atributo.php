@@ -10,7 +10,7 @@ class Atributo {
 	private $nome;
 	private $tipo;
 	private $indice;
-	private $idobjeto;
+
 	public function setId($id) {
 		$this->id = $id;
 	}
@@ -35,11 +35,6 @@ class Atributo {
 	public function getIndice() {
 		return $this->indice;
 	}
-	public function setIdobjeto($idobjeto) {
-		$this->idobjeto = $idobjeto;
-	}
-	public function getIdobjeto() {
-		return $this->idobjeto;
-	}
+
 }
 ?>
