@@ -1,105 +1,134 @@
 <?php
-
+		
 /**
- * Classe feita para manipulaÃ§Ã£o do objeto Objeto
+ * Classe feita para manipulação do objeto Objeto
  * feita automaticamente com programa gerador de software inventado por
- * @author Jefferson UchÃ´a Ponte
+ * @author Jefferson Uchôa Ponte
  *
  *
  */
 class ObjetoDAO extends DAO {
-
 	
-	/**
-	 * Este serve para inserir objeto em um software.  
-	 * @param Objeto $objeto
-	 * @param Software $software
-	 * @return bool
-	 */
-	public function inserir(Objeto $objeto, Software $software){
+
+    public function atualizar(Objeto $objeto)
+    {
+
+        $id = $objeto->getId();
+        $sql = "UPDATE objeto 
+                SET
+                nome = :nome, 
+                idsoftware = :idsoftware
+                WHERE objeto.id = :id;";
+			$nome = $objeto->getNome();
+			$idsoftware = $objeto->getIdsoftware();
+
+        try {
+            
+            $stmt = $this->getConexao()->prepare($sql);
+			$stmt->bindParam("id", $id, PDO::PARAM_STR);
+			$stmt->bindParam("nome", $nome, PDO::PARAM_STR);
+			$stmt->bindParam("idsoftware", $idsoftware, PDO::PARAM_STR);
+           
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            echo $e->getMessage();   
+        }
+
+    }
+	
+	public function inserir(Objeto $objeto){
 		
-	    $idSoftware = $software->getId();
-	    $nome = $objeto->getNome();
-	    $sql = "INSERT INTO objeto(nome_objeto, id_software)
-				VALUES(:nome, :idSoftware)";
-	    try {
-	        $db = $this->getConexao();
-	        $stmt = $db->prepare($sql);
-	        $stmt->bindParam("nome", $nome, PDO::PARAM_STR);
-	        $stmt->bindParam("idSoftware", $idSoftware, PDO::PARAM_STR);
-	        return $stmt->execute();
-	    } catch(PDOException $e) {
-	        echo '{"error":{"text":'. $e->getMessage() .'}}';
-	    }
-
+		$sql = "INSERT INTO objeto(nome, idsoftware)
+				VALUES(:nome, :idsoftware)";
+			$nome = $objeto->getNome();
+			$idsoftware = $objeto->getIdsoftware();
+		try {
+			$db = $this->getConexao();
+			$stmt = $db->prepare($sql);		
+			$stmt->bindParam("nome", $nome, PDO::PARAM_STR);		
+			$stmt->bindParam("idsoftware", $idsoftware, PDO::PARAM_STR);
+			return $stmt->execute();
+		} catch(PDOException $e) {
+			echo '{"error":{"text":'. $e->getMessage() .'}}';
+		}
 	}
-
 	public function excluir(Objeto $objeto){
-	    $id = $objeto->getId();
-	    $sql = "DELETE FROM objeto WHERE id_objeto = :id";
-	    
-	    try {
-	        $db = $this->getConexao();
-	        $stmt = $db->prepare($sql);
-	        $stmt->bindParam("id", $id, PDO::PARAM_INT);
-	        return $stmt->execute();
-	        
-	    } catch(PDOException $e) {
-	        echo '{"error":{"text":'. $e->getMessage() .'}}';
-	    }
+		$id = $objeto->getId();
+		$sql = "DELETE FROM objeto WHERE id = :id";
+		
+		try {
+			$db = $this->getConexao();
+			$stmt = $db->prepare($sql);
+			$stmt->bindParam("id", $id, PDO::PARAM_INT);
+			return $stmt->execute();
+	
+		} catch(PDOException $e) {
+			echo '{"error":{"text":'. $e->getMessage() .'}}';
+		}
 	}
+
 	
 	public function retornaLista() {
-	    $lista = array ();
-	    $sql = "SELECT * FROM objeto LIMIT 1000";
-	    $result = $this->getConexao ()->query ( $sql );
-	    
-	    foreach ( $result as $linha ) {
-	        
-	        $objeto = new Objeto();
-	        $objeto->setId( $linha ['id_objeto'] );
-	        $objeto->setNome( $linha ['nome_objeto'] );
-
-	        $lista [] = $objeto;
-	    }
-	    return $lista;
-	}
-	public function retornaPorId(Objeto $objeto){
-		$id = $objeto->getId();
-		$selectObjetos = "SELECT * FROM objeto WHERE id_objeto = $id";
-		$result = $this->getConexao()->query($selectObjetos);
-		foreach ($result as $linha)
-		{
-			
-			$objeto->setNome($linha['nome_objeto']);
-			$objeto->setId($linha['id_objeto']);
-			$idObjeto = $linha['id_objeto'];
+		$lista = array ();
+		$sql = "SELECT * FROM objeto LIMIT 1000";
+		$result = $this->getConexao ()->query ( $sql );
+	
+		foreach ( $result as $linha ) {
 				
-			$selectAtributo = "SELECT * FROM atributo WHERE id_objeto = $idObjeto";
-			$resultAtributo = $this->getConexao()->query($selectAtributo);
-			foreach ($resultAtributo as $linhaatributo){
-				$atributo = new Atributo();
-				$atributo->setId($linhaatributo['id_atributo']);
-				$atributo->setNome($linhaatributo['nome_atributo']);
-				$atributo->setTipo($linhaatributo['tipo_atributo']);
-				$atributo->setIndice($linhaatributo['indice_atributo']);
-				$objeto->addAtributo($atributo);
-		
-			}	
+			$objeto = new Objeto();
+        
+			$objeto->setId( $linha ['id'] );
+			$objeto->setNome( $linha ['nome'] );
+			$objeto->setIdsoftware( $linha ['idsoftware'] );
+			$lista [] = $objeto;
 		}
-		
+		return $lista;
 	}
-	public function retornaIdDoSoftware(Objeto $objeto){
-		$id = $objeto->getId();
-		$selectObjetos = "SELECT * FROM objeto WHERE id_objeto = $id";
-		$result = $this->getConexao()->query($selectObjetos);
-		foreach ($result as $linha)
-		{
-			return $linha['id_software'];	
-		
+
+    public function pesquisaPorId(Objeto $objeto) {
+        $lista = array();
+	    $id = $objeto->getId();
+	    $sql = "SELECT * FROM objeto WHERE id like '%$id%'";
+	    $result = $this->getConexao ()->query ( $sql );
+	        
+	    foreach ( $result as $linha ) {
+	        $objeto->setId( $linha ['id'] );
+	        $objeto->setNome( $linha ['nome'] );
+	        $objeto->setIdsoftware( $linha ['idsoftware'] );
+			$lista [] = $objeto;
 		}
+		return $lista;
 	}
+
+    public function pesquisaPorNome(Objeto $objeto) {
+        $lista = array();
+	    $nome = $objeto->getNome();
+	    $sql = "SELECT * FROM objeto WHERE nome like '%$nome%'";
+	    $result = $this->getConexao ()->query ( $sql );
+	        
+	    foreach ( $result as $linha ) {
+	        $objeto->setId( $linha ['id'] );
+	        $objeto->setNome( $linha ['nome'] );
+	        $objeto->setIdsoftware( $linha ['idsoftware'] );
+			$lista [] = $objeto;
+		}
+		return $lista;
+	}
+
+    public function pesquisaPorIdsoftware(Objeto $objeto) {
+        $lista = array();
+	    $idsoftware = $objeto->getIdsoftware();
+	    $sql = "SELECT * FROM objeto WHERE idsoftware like '%$idsoftware%'";
+	    $result = $this->getConexao ()->query ( $sql );
+	        
+	    foreach ( $result as $linha ) {
+	        $objeto->setId( $linha ['id'] );
+	        $objeto->setNome( $linha ['nome'] );
+	        $objeto->setIdsoftware( $linha ['idsoftware'] );
+			$lista [] = $objeto;
+		}
+		return $lista;
+	}
+		
+				
 }
-
-
-?>

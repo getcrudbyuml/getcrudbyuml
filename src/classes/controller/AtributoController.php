@@ -3,29 +3,54 @@
 /**
  * Classe feita para manipulação do objeto Atributo
  * feita automaticamente com programa gerador de software inventado por
- * @author Jefferson UchÃ´a Ponte <j.pontee@gmail.com>
+ * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
  */
 class AtributoController {
 	private $post;
 	private $view;
-	public function __construct(){		
+    private $dao;
+
+    public static function main(){
+        $controller = new AtributoController();
+        if (!(isset($_GET['cadastrar']) || isset($_GET['selecionar']) || isset($_GET['editar']) || isset($_GET['deletar']) )){
+            $controller->listar();
+        }
+        $controller->cadastrar();
+        $controller->selecionar();
+        $controller->editar();
+        $controller->deletar();
+    }
+	public function __construct(){
+		$this->dao = new AtributoDAO();
 		$this->view = new AtributoView();
 		foreach($_POST as $chave => $valor){
 			$this->post[$chave] = $valor;
 		}
 	}
+	public function listar() {
+		$atributoDao = new AtributoDAO ();
+		$lista = $atributoDao->retornaLista ();
+		$this->view->exibirLista($lista);
+	}			
+    public function selecionar(){
+	    if(!isset($_GET['selecionar'])){
+	        return;
+	    }
+        $selecionado = new Atributo();
+	    $selecionado->setId($_GET['selecionar']);
+	    $this->dao->pesquisaPorId($selecionado);
+	    $this->view->mostrarSelecionado($selecionado);
+    }
 	public function cadastrar() {
-		if(!(isset($_GET['idobjeto']))){
-			return;
-		}
-		$objeto = new Objeto();
-		$objeto->setId($_GET['idobjeto']);
+        if(!isset($_GET['cadastrar'])){
+            return;
+        }
 		
-		$this->view->mostraFormInserir($objeto);
-		if(!(isset($this->post['envia_atributo']))){
-			return;
+        if(!isset($this->post['enviar_atributo'])){
+            $this->view->mostraFormInserir();   
+		    return;
 		}
-		if (strlen ( $this->post ['nome'] ) < 2 || ! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['tipo'] ) && isset ( $this->post ['indice'] ) && isset ( $this->post ['id_objeto'] ))) {
+		if (! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['tipo'] ) && isset ( $this->post ['indice'] ) && isset ( $this->post ['idobjeto'] ))) {
 			echo "Incompleto";
 			return;
 		}
@@ -33,18 +58,70 @@ class AtributoController {
 		$atributo = new Atributo ();		
 		$atributo->setNome ( $this->post ['nome'] );		
 		$atributo->setTipo ( $this->post ['tipo'] );		
-		$atributo->setIndice( $this->post ['indice'] );		
+		$atributo->setIndice ( $this->post ['indice'] );		
+		$atributo->setIdobjeto ( $this->post ['idobjeto'] );	
 		
-		$atributoDao = new AtributoDAO ();
-		if ($atributoDao->inserir ( $atributo , $objeto)) {
+		if ($this->dao->inserir ( $atributo )) 
+        {
 			echo "Sucesso";
 		} else {
 			echo "Fracasso";
 		}
-		echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=atributo&idobjeto=' . $_GET ['idobjeto'] . '">';
+        echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=atributo">';
 	}
-				
-	public function listarJSON() {
+    public function editar(){
+	    if(!isset($_GET['editar'])){
+	        return;
+	    }
+        $selecionado = new Atributo();
+	    $selecionado->setId($_GET['editar']);
+	    $this->dao->pesquisaPorId($selecionado);
+	    
+        if(!isset($_POST['editar_atributo'])){
+            $this->view->mostraFormEditar($selecionado);
+            return;
+        }
+
+		if (! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['tipo'] ) && isset ( $this->post ['indice'] ) && isset ( $this->post ['idobjeto'] ))) {
+			echo "Incompleto";
+			return;
+		}
+		
+		$selecionado->setNome ( $this->post ['nome'] );		
+		$selecionado->setTipo ( $this->post ['tipo'] );		
+		$selecionado->setIndice ( $this->post ['indice'] );		
+		$selecionado->setIdobjeto ( $this->post ['idobjeto'] );	
+		
+		if ($this->dao->atualizar ($selecionado )) 
+        {
+
+			echo "Sucesso";
+		} else {
+			echo "Fracasso";
+		}
+        echo '<META HTTP-EQUIV="REFRESH" CONTENT="3; URL=index.php?pagina=atributo">';
+
+    }
+    public function deletar(){
+	    if(!isset($_GET['deletar'])){
+	        return;
+	    }
+        $selecionado = new Atributo();
+	    $selecionado->setId($_GET['deletar']);
+	    $this->dao->pesquisaPorId($selecionado);
+        if(!isset($_POST['deletar_atributo'])){
+            $this->view->confirmarDeletar($selecionado);
+            return;
+        }
+        if($this->dao->excluir($selecionado)){
+            echo "excluido com sucesso";
+        }else{
+            echo "Errou";
+        }
+    	echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=atributo">';    
+    }
+	public function listarJSON() 
+    {
 		$atributoDao = new AtributoDAO ();
 		$lista = $atributoDao->retornaLista ();
 		$listagem = array ();
@@ -53,7 +130,7 @@ class AtributoController {
 					'id' => $linha->getId (), 
 					'nome' => $linha->getNome (), 
 					'tipo' => $linha->getTipo (), 
-					'relacionamento' => $linha->getRelacionamento (), 
+					'indice' => $linha->getIndice (), 
 					'idobjeto' => $linha->getIdobjeto ()
 						
 						
@@ -61,35 +138,7 @@ class AtributoController {
 		}
 		echo json_encode ( $listagem );
 	}			
-	public function listar() {
-		if (!isset($_GET ['idobjeto'])) {
-			return;
-		}
-		$objeto = new Objeto();
-		$objeto->setId($_GET['idobjeto']);
-		$objetoDao = new ObjetoDAO();
-		$objetoDao->retornaPorId($objeto);
-		
-		echo '<div class="classe">
-							<h1>'.$objeto->getNome().'<img src="images/delete.png" alt="" width="20"/></h1>
-								<ul>';
-		foreach ($objeto->getAtributos() as $atributo){
-		
-			
-			echo '		<li>'.$atributo->getNome().' - '.$atributo->getTipo().'<a href="deletaratributo.php?id_atributo='.$atributo->getId().'"> <img src="images/delete.png" alt="" width="20"/></a></li>';
-			
-		
-		}
-		$idSoftware = $objetoDao->retornaIdDoSoftware($objeto);
-		echo '</ul>
-				
-				</div>
-				
-				<a href="index.php?pagina=objeto&idsoftware='.$idSoftware.'">Voltar</a>
-							';
-		
-		
-	}			
+
 	
 		
 }

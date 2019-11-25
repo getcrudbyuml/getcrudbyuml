@@ -26,7 +26,7 @@ class DAO {
 	
 	public function fazerConexao() {
 		$config = parse_ini_file ( self::ARQUIVO_CONFIGURACAO );
-        $bd = array();		
+		$bd = array();
 		$bd ['sgdb'] = $config ['sgdb'];
 		$bd ['bd_nome'] = $config ['bd_nome'];
 		$bd ['host'] = $config ['host'];

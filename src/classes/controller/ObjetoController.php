@@ -1,105 +1,139 @@
-<?php
+<?php	
 
 /**
  * Classe feita para manipulação do objeto Objeto
  * feita automaticamente com programa gerador de software inventado por
- * @author Jefferson UchÃ´a Ponte <j.pontee@gmail.com>
+ * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
  */
 class ObjetoController {
 	private $post;
 	private $view;
-	public function __construct() {
-		$this->view = new ObjetoView ();
-		foreach ( $_POST as $chave => $valor ) {
-			$this->post [$chave] = $valor;
+    private $dao;
+
+    public static function main(){
+        $controller = new ObjetoController();
+        if (!(isset($_GET['cadastrar']) || isset($_GET['selecionar']) || isset($_GET['editar']) || isset($_GET['deletar']) )){
+            $controller->listar();
+        }
+        $controller->cadastrar();
+        $controller->selecionar();
+        $controller->editar();
+        $controller->deletar();
+    }
+	public function __construct(){
+		$this->dao = new ObjetoDAO();
+		$this->view = new ObjetoView();
+		foreach($_POST as $chave => $valor){
+			$this->post[$chave] = $valor;
 		}
 	}
+	public function listar() {
+		$objetoDao = new ObjetoDAO ();
+		$lista = $objetoDao->retornaLista ();
+		$this->view->exibirLista($lista);
+	}			
+    public function selecionar(){
+	    if(!isset($_GET['selecionar'])){
+	        return;
+	    }
+        $selecionado = new Objeto();
+	    $selecionado->setId($_GET['selecionar']);
+	    $this->dao->pesquisaPorId($selecionado);
+	    $this->view->mostrarSelecionado($selecionado);
+    }
 	public function cadastrar() {
-		$software = new Software ();
-		$software->setId ( $_GET ['idsoftware'] );
-		$this->view->mostraFormInserir ( $software );
-		if (! isset ( $this->post ['enviar_objeto'] )) {
-			return;
+        if(!isset($_GET['cadastrar'])){
+            return;
+        }
+		
+        if(!isset($this->post['enviar_objeto'])){
+            $this->view->mostraFormInserir();   
+		    return;
 		}
-		if (! (isset ( $this->post ['nome'] )) || strlen ( $this->post ['nome'] ) < 2) {
+		if (! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['idsoftware'] ))) {
 			echo "Incompleto";
 			return;
 		}
+	
+		$objeto = new Objeto ();		
+		$objeto->setNome ( $this->post ['nome'] );		
+		$objeto->setIdsoftware ( $this->post ['idsoftware'] );	
 		
-		$objeto = new Objeto ();
-		$objeto->setNome ( $this->post ['nome'] );
-		$objetoDao = new ObjetoDAO ();
-		if ($objetoDao->inserir ( $objeto, $software )) {
+		if ($this->dao->inserir ( $objeto )) 
+        {
 			echo "Sucesso";
 		} else {
 			echo "Fracasso";
 		}
-		echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=objeto&idsoftware=' . $_GET ['idsoftware'] . '">';
+        echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=objeto">';
 	}
-	public function listarJSON() {
+    public function editar(){
+	    if(!isset($_GET['editar'])){
+	        return;
+	    }
+        $selecionado = new Objeto();
+	    $selecionado->setId($_GET['editar']);
+	    $this->dao->pesquisaPorId($selecionado);
+	    
+        if(!isset($_POST['editar_objeto'])){
+            $this->view->mostraFormEditar($selecionado);
+            return;
+        }
+
+		if (! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['idsoftware'] ))) {
+			echo "Incompleto";
+			return;
+		}
+		
+		$selecionado->setNome ( $this->post ['nome'] );		
+		$selecionado->setIdsoftware ( $this->post ['idsoftware'] );	
+		
+		if ($this->dao->atualizar ($selecionado )) 
+        {
+
+			echo "Sucesso";
+		} else {
+			echo "Fracasso";
+		}
+        echo '<META HTTP-EQUIV="REFRESH" CONTENT="3; URL=index.php?pagina=objeto">';
+
+    }
+    public function deletar(){
+	    if(!isset($_GET['deletar'])){
+	        return;
+	    }
+        $selecionado = new Objeto();
+	    $selecionado->setId($_GET['deletar']);
+	    $this->dao->pesquisaPorId($selecionado);
+        if(!isset($_POST['deletar_objeto'])){
+            $this->view->confirmarDeletar($selecionado);
+            return;
+        }
+        if($this->dao->excluir($selecionado)){
+            echo "excluido com sucesso";
+        }else{
+            echo "Errou";
+        }
+    	echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=objeto">';    
+    }
+	public function listarJSON() 
+    {
 		$objetoDao = new ObjetoDAO ();
 		$lista = $objetoDao->retornaLista ();
 		$listagem = array ();
 		foreach ( $lista as $linha ) {
 			$listagem ['lista'] [] = array (
-					'id' => $linha->getId (),
-					'nome' => $linha->getNome (),
-					'idsoftware' => $linha->getIdsoftware () 
-			)
-			;
+					'id' => $linha->getId (), 
+					'nome' => $linha->getNome (), 
+					'idsoftware' => $linha->getIdsoftware ()
+						
+						
+			);
 		}
 		echo json_encode ( $listagem );
-	}
-	public function listar() {
-		if (!isset($_GET ['idsoftware'])) {
-			return;
-		}
-		$softwaredao = new SoftwareDAO();
-		$software = new Software ();
-		$software->setId ( $_GET ['idsoftware'] );
-		$software = $softwaredao->retornaPorId($software);
-		echo '<h1>'.$software->getNome().'</h1>';
-		echo '<h2>Objetos:</h2>';
-		if($software->getObjetos()){
-				
-			foreach ($software->getObjetos() as $objeto){
-					
-				echo '<div class="classe">
-							<h1><a href="index.php?pagina=atributo&idobjeto='.$objeto->getId().'">'.$objeto->getNome().'</a><img src="images/delete.png" alt="" width="20"/></h1>
-								<ul>';
-				foreach ($objeto->getAtributos() as $atributo){
+	}			
+
+	
 		
-					if($atributo->getIndice() == "padrao"){
-						echo '		<li>'.$atributo->getNome().' - '.$atributo->getTipo().'<a href="deletaratributo.php?id_atributo='.$atributo->getId().'"> <img src="images/delete.png" alt="" width="20"/></a></li>';
-					}else
-					{
-						echo '		<li>'.$atributo->getNome().' - '.$atributo->getTipo().'; '.$atributo->getIndice() .'<img src="images/delete.png" alt="" width="20"/></li>';
-					}
-					 
-		
-		
-				}
-				echo '</ul></div>
-							';
-			}
-		
-		}
-		echo '<a href="index.php?pagina=objeto&idsoftware='. $_GET ['idsoftware'].'&escrever=1">Escrever Software</a><br>';
-		
-		if(isset($_GET['escrever'])){
-		    $escritorPHP = new EscritorPHP();
-		    $escritorPHP->setSoftware($software);
-		    $escritorPHP->escreverSoftware();
-		    $zipador = new Zipador();
-		    $zipador->zipaArquivo('sistemasphp/'.$software->getNome(), 'sistemasphp/'.$software->getNome().'.zip');
-		    echo '<br><br><br><a href="sistemasphp/'.$software->getNome().'/src">Acessar Software</a><br>';
-		    echo '<h1><a href="sistemasphp/'.$software->getNome().'.zip">Baixar Software</a></h1>';
-		    
-		}
-		
-		
-			
-		
-	}
 }
 ?>
