@@ -12,23 +12,15 @@ class SoftwareView {
                       <div class="card mb-6 shadow-sm">
 
                           <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                          <h6 class="m-0 font-weight-bold text-primary">software</h6>
-                          <div class="dropdown no-arrow">
-                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                              <div class="dropdown-header">Menu:</div>
-                              <a class="dropdown-item" href="?pagina=software&cadastrar=1">Adicionar software</a>
-                            </div>
-                          </div>
+                          <h6 class="m-0 font-weight-bold text-primary">Adicionar Software</h6>
+                          
                         </div>
                         <div class="card-body">
                                       <form class="user" method="post">
                                         <div class="form-group">
                 						  <input type="text" class="form-control form-control-user" id="nome" name="nome" placeholder="nome">
                 						</div>
-                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastre-se" name="enviar_software">
+                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastrar" name="enviar_software">
                                         <hr>
                                             
 						              </form>
@@ -102,13 +94,18 @@ class SoftwareView {
             
             
         public function mostrarSelecionado(Software $software){
+
+            echo '<h2>Software: '.$software->getNome().'</h2>';
+
+            echo '<div class="row">';
+            
             foreach($software->getObjetos() as $objeto){
                 echo '
                         <div class="col-lg-3">
                           <!-- Default Card Example -->
                           <div class="card mb-4">
                             <div class="card-header">
-                              <a href="">'.$objeto->getNome().'</a>
+                              <a href="?pagina=objeto&selecionar='.$objeto->getId().'">'.$objeto->getNome().'</a>
                             </div>
                             <div class="card-body">';
                 foreach($objeto->getAtributos() as $atributo){
@@ -126,7 +123,8 @@ class SoftwareView {
                           </div>
                         </div>';
             }
-        
+            echo '</div>';
+
     }
 
 	public function mostraFormEditar(Software $software) {

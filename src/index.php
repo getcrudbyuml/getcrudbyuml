@@ -61,7 +61,7 @@ function __autoload($classe)
       
         <div class="album py-5 bg-light">
             <div class="container">
-              <div class="row">
+              
               <?php
 if (isset($_GET['pagina'])) {
     switch ($_GET['pagina']) {
@@ -104,7 +104,6 @@ if (isset($_GET['pagina'])) {
               </div>
                 
             </div>
-        </div>
       
      </main>            
             

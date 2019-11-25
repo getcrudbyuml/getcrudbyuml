@@ -16,8 +16,8 @@ class SoftwareController {
             $controller->selecionar();
             return;
         }
-        $controller->listar();
         $controller->cadastrar();
+        $controller->listar();
         $controller->editar();
         $controller->deletar();
     }
@@ -46,7 +46,6 @@ class SoftwareController {
         foreach($selecionado->getObjetos() as $objeto){
             $atributoDao->pesquisaPorIdObjeto($objeto);
         }
-        
         $this->view->mostrarSelecionado($selecionado);
         
         
