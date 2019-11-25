@@ -41,11 +41,9 @@ class ObjetoController {
 	    $this->dao->pesquisaPorId($selecionado);
 	    $this->view->mostrarSelecionado($selecionado);
     }
-	public function cadastrar() {
-        if(!isset($_GET['cadastrar'])){
-            return;
-        }
-		
+	public function cadastrar(Software $software = null) 
+	{
+
         if(!isset($this->post['enviar_objeto'])){
             $this->view->mostraFormInserir();   
 		    return;
@@ -57,7 +55,6 @@ class ObjetoController {
 	
 		$objeto = new Objeto ();		
 		$objeto->setNome ( $this->post ['nome'] );		
-		$objeto->setIdsoftware ( $this->post ['idsoftware'] );	
 		
 		if ($this->dao->inserir ( $objeto )) 
         {

@@ -16,10 +16,14 @@ class SoftwareController {
             $controller->selecionar();
             return;
         }
+        echo '<div class="row">';
+        
         $controller->cadastrar();
         $controller->listar();
         $controller->editar();
         $controller->deletar();
+        
+        echo '</div>';
     }
 	public function __construct(){
 		$this->dao = new SoftwareDAO();
@@ -46,6 +50,8 @@ class SoftwareController {
         foreach($selecionado->getObjetos() as $objeto){
             $atributoDao->pesquisaPorIdObjeto($objeto);
         }
+        $objetoController = new ObjetoController();
+        $objetoController->cadastrar();
         $this->view->mostrarSelecionado($selecionado);
         
         

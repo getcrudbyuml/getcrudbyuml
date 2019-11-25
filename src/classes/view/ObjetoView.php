@@ -7,6 +7,7 @@
  */
 class ObjetoView {
 	public function mostraFormInserir() {
+	    
 		echo '<div class="container">
     
 		<!-- Outer Row -->
