@@ -40,14 +40,15 @@ class SoftwareController {
         $selecionado = new Software();
 	    $selecionado->setId($_GET['selecionar']);
 	    $this->dao->pesquisaPorId($selecionado);
-	    $this->view->mostrarSelecionado($selecionado);
 	    $objetoDao = new ObjetoDAO($this->dao->getConexao());    
         $objetoDao->pesquisaPorIdSoftware($selecionado);
         $atributoDao = new AtributoDAO($this->dao->getConexao());
         foreach($selecionado->getObjetos() as $objeto){
             $atributoDao->pesquisaPorIdObjeto($objeto);
         }
-        print_r($selecionado);
+        
+        $this->view->mostrarSelecionado($selecionado);
+        
         
     }
 	public function cadastrar() {

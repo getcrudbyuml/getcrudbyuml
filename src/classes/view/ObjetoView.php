@@ -77,14 +77,14 @@ class ObjetoView {
 					<tr>
 						<th>id</th>
 						<th>nome</th>
-						<th>idsoftware</th><th>Ações</th>
+						<th>Ações</th>
 					</tr>
 				</thead>
 				<tfoot>
 					<tr>
                         <th>id</th>
                         <th>nome</th>
-                        <th>idsoftware</th><th>Ações</th>
+                        <th>Ações</th>
 					</tr>
 				</tfoot>
 				<tbody>';
@@ -93,7 +93,7 @@ class ObjetoView {
                 echo '<tr>';
                 echo '<td>'.$elemento->getId().'</td>';
                 echo '<td>'.$elemento->getNome().'</td>';
-                echo '<td>'.$elemento->getIdsoftware().'</td>';echo '<td>
+                echo '<td>
                         <a href="?pagina=objeto&selecionar='.$elemento->getId().'" class="btn btn-info">Selecionar</a> 
                         <a href="?pagina=objeto&editar='.$elemento->getId().'" class="btn btn-success">Editar</a>
                         <a href="?pagina=objeto&deletar='.$elemento->getId().'" class="btn btn-danger">Deletar</a>
@@ -122,12 +122,12 @@ class ObjetoView {
               <!-- Default Card Example -->
               <div class="card mb-4">
                 <div class="card-header">
-                  Objeto selecionado
+                  '.$objeto->getNome().'
                 </div>
                 <div class="card-body">
                 Id: '.$objeto->getId().'<br>
                 Nome: '.$objeto->getNome().'<br>
-                Idsoftware: '.$objeto->getIdsoftware().'<br>
+               
             
                 </div>
               </div>

@@ -79,7 +79,6 @@ class ObjetoDAO extends DAO {
         
 			$objeto->setId( $linha ['id'] );
 			$objeto->setNome( $linha ['nome'] );
-			$objeto->setIdsoftware( $linha ['idsoftware'] );
 			$lista [] = $objeto;
 		}
 		return $lista;

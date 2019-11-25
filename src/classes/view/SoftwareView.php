@@ -102,20 +102,31 @@ class SoftwareView {
             
             
         public function mostrarSelecionado(Software $software){
-        echo '
-            <div class="col-lg-3">
-              <!-- Default Card Example -->
-              <div class="card mb-4">
-                <div class="card-header">
-                  Software selecionado
-                </div>
-                <div class="card-body">
-                Id: '.$software->getId().'<br>
-                Nome: '.$software->getNome().'<br>
-            
-                </div>
-              </div>
-            </div>';
+            foreach($software->getObjetos() as $objeto){
+                echo '
+                        <div class="col-lg-3">
+                          <!-- Default Card Example -->
+                          <div class="card mb-4">
+                            <div class="card-header">
+                              <a href="">'.$objeto->getNome().'</a>
+                            </div>
+                            <div class="card-body">';
+                foreach($objeto->getAtributos() as $atributo){
+                    echo ' - '.$atributo->getNome().' : '.$atributo->getTipo().' '.$atributo->getIndice().'<br>';
+                    
+                    
+                    
+                }
+                
+                
+                echo '
+                            
+                                
+                            </div>
+                          </div>
+                        </div>';
+            }
+        
     }
 
 	public function mostraFormEditar(Software $software) {
