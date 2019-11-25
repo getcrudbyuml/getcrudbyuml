@@ -91,7 +91,6 @@ class AtributoDAO extends DAO {
 			$atributo->setNome( $linha ['nome'] );
 			$atributo->setTipo( $linha ['tipo'] );
 			$atributo->setIndice( $linha ['indice'] );
-			$atributo->setIdobjeto( $linha ['idobjeto'] );
 			$lista [] = $atributo;
 		}
 		return $lista;
@@ -108,7 +107,6 @@ class AtributoDAO extends DAO {
 	        $atributo->setNome( $linha ['nome'] );
 	        $atributo->setTipo( $linha ['tipo'] );
 	        $atributo->setIndice( $linha ['indice'] );
-	        $atributo->setIdobjeto( $linha ['idobjeto'] );
 			$lista [] = $atributo;
 		}
 		return $lista;
@@ -125,7 +123,6 @@ class AtributoDAO extends DAO {
 	        $atributo->setNome( $linha ['nome'] );
 	        $atributo->setTipo( $linha ['tipo'] );
 	        $atributo->setIndice( $linha ['indice'] );
-	        $atributo->setIdobjeto( $linha ['idobjeto'] );
 			$lista [] = $atributo;
 		}
 		return $lista;
@@ -142,7 +139,6 @@ class AtributoDAO extends DAO {
 	        $atributo->setNome( $linha ['nome'] );
 	        $atributo->setTipo( $linha ['tipo'] );
 	        $atributo->setIndice( $linha ['indice'] );
-	        $atributo->setIdobjeto( $linha ['idobjeto'] );
 			$lista [] = $atributo;
 		}
 		return $lista;
@@ -159,27 +155,25 @@ class AtributoDAO extends DAO {
 	        $atributo->setNome( $linha ['nome'] );
 	        $atributo->setTipo( $linha ['tipo'] );
 	        $atributo->setIndice( $linha ['indice'] );
-	        $atributo->setIdobjeto( $linha ['idobjeto'] );
 			$lista [] = $atributo;
 		}
 		return $lista;
 	}
 
-    public function pesquisaPorIdobjeto(Atributo $atributo) {
-        $lista = array();
-	    $idobjeto = $atributo->getIdobjeto();
-	    $sql = "SELECT * FROM atributo WHERE idobjeto like '%$idobjeto%'";
+    public function pesquisaPorIdObjeto(Objeto $objeto) {
+	    $idobjeto = $objeto->getId();
+	    $sql = "SELECT * FROM atributo WHERE idobjeto = $idobjeto";
 	    $result = $this->getConexao ()->query ( $sql );
 	        
 	    foreach ( $result as $linha ) {
+	        $atributo = new Atributo();
 	        $atributo->setId( $linha ['id'] );
 	        $atributo->setNome( $linha ['nome'] );
 	        $atributo->setTipo( $linha ['tipo'] );
 	        $atributo->setIndice( $linha ['indice'] );
-	        $atributo->setIdobjeto( $linha ['idobjeto'] );
-			$lista [] = $atributo;
+	        $objeto->addAtributo($atributo);
 		}
-		return $lista;
+		return $objeto->getAtributos();
 	}
 		
 				

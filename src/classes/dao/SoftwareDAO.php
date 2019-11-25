@@ -88,34 +88,7 @@ class SoftwareDAO extends DAO {
 	    foreach ( $result as $linha ) {
 	        $software->setNome( $linha ['nome'] );
 		}
-		$selectObjetos = "SELECT * FROM objeto WHERE idsoftware = $idSoftware";
 		
-		$result = $this->getConexao()->query($selectObjetos);
-		foreach ($result as $linha)
-		{
-		    $objeto = new Objeto();
-		    $objeto->setNome($linha['nome']);
-		    $objeto->setId($linha['id']);
-		    $idObjeto = $linha['id'];
-		    
-		    $selectAtributo = "SELECT * FROM atributo WHERE idobjeto = $idObjeto";
-		    $resultAtributo = $this->getConexao()->query($selectAtributo);
-		    foreach ($resultAtributo as $linhaatributo){
-		        $atributo = new Atributo();
-		        $atributo->setId($linhaatributo['id']);
-		        $atributo->setNome($linhaatributo['nome']);
-		        $atributo->setTipo($linhaatributo['tipo']);
-		        $atributo->setIndice($linhaatributo['indice']);
-		        $objeto->addAtributo($atributo);
-		        
-		    }
-		    
-		    
-		    $software->addObjeto($objeto);
-		    
-		    
-		}
-
 		return $software;
 	}
 

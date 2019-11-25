@@ -55,10 +55,7 @@ function __autoload($classe)
         <div class="container">
           <h1 class="jumbotron-heading">Escritor de Software</h1>
           <p class="lead text-muted">Algo curto e direto, sobre a coleção abaixo (conteúdo, criador e etc). Faça com que seja curto e legal, mas não tão curto ao ponto de as pessoas pularem ele.</p>
-          <p>
-            <a href="#" class="btn btn-primary my-2">Call-to-action principal</a>
-            <a href="#" class="btn btn-secondary my-2">Call-to-action secundário</a>
-          </p>
+
         </div>
       </section>
       

@@ -12,11 +12,12 @@ class SoftwareController {
 
     public static function main(){
         $controller = new SoftwareController();
-        if (!(isset($_GET['cadastrar']) || isset($_GET['selecionar']) || isset($_GET['editar']) || isset($_GET['deletar']) )){
-            $controller->listar();
+        if(isset($_GET['selecionar'])){
+            $controller->selecionar();
+            return;
         }
+        $controller->listar();
         $controller->cadastrar();
-        $controller->selecionar();
         $controller->editar();
         $controller->deletar();
     }
@@ -40,6 +41,14 @@ class SoftwareController {
 	    $selecionado->setId($_GET['selecionar']);
 	    $this->dao->pesquisaPorId($selecionado);
 	    $this->view->mostrarSelecionado($selecionado);
+	    $objetoDao = new ObjetoDAO($this->dao->getConexao());    
+        $objetoDao->pesquisaPorIdSoftware($selecionado);
+        $atributoDao = new AtributoDAO($this->dao->getConexao());
+        foreach($selecionado->getObjetos() as $objeto){
+            $atributoDao->pesquisaPorIdObjeto($objeto);
+        }
+        print_r($selecionado);
+        
     }
 	public function cadastrar() {
 	    $this->view->mostraFormInserir();
