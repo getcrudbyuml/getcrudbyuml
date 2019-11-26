@@ -1,4 +1,4 @@
-<?php
+<?php	
 
 /**
  * Classe feita para manipulação do objeto Software
@@ -8,63 +8,162 @@
 class SoftwareController {
 	private $post;
 	private $view;
-	public function __construct() {
-		$this->view = new SoftwareView ();
-		foreach ( $_POST as $chave => $valor ) {
-			$this->post [$chave] = $valor;
+    private $dao;
+
+    public static function main(){
+        $controller = new SoftwareController();
+        if(isset($_GET['selecionar'])){
+            $controller->selecionar();
+            return;
+        }
+        if(isset($_GET['deletar'])){
+            $controller->deletar();
+            return;
+        }
+        if(isset($_GET['editar'])){
+            $controller->editar();
+            return;
+        }
+        $controller->cadastrar();
+        $controller->listar();
+
+        
+    }
+	public function __construct(){
+		$this->dao = new SoftwareDAO();
+		$this->view = new SoftwareView();
+		foreach($_POST as $chave => $valor){
+			$this->post[$chave] = $valor;
 		}
 	}
+	public function listar() {
+		$softwareDao = new SoftwareDAO ();
+		$lista = $softwareDao->retornaLista ();
+		$this->view->exibirLista($lista);
+	}			
+    public function selecionar(){
+	    if(!isset($_GET['selecionar'])){
+	        return;
+	    }
+        $selecionado = new Software();
+	    $selecionado->setId($_GET['selecionar']);
+	    $this->dao->pesquisaPorId($selecionado);
+	    $objetoDao = new ObjetoDAO($this->dao->getConexao());    
+        $objetoDao->pesquisaPorIdSoftware($selecionado);
+        $atributoDao = new AtributoDAO($this->dao->getConexao());
+        foreach($selecionado->getObjetos() as $objeto){
+            $atributoDao->pesquisaPorIdObjeto($objeto);
+        }
+        $objetoController = new ObjetoController();
+        $objetoController->cadastrar($selecionado);
+        
+        $this->view->mostrarSelecionado($selecionado);
+        echo '<div class="row justify-content-center">
+                    <a href="?pagina=software" class="btn btn-success">Voltar Para Início</a>
+                    <a href="?pagina=software&selecionar='.$selecionado->getId().'&escrever=1" class="btn btn-success">Escrever Software</a>
+                </div>';
+        
+
+        if(isset($_GET['escrever'])){
+            $escritorPHP = new EscritorPHP();
+            $escritorPHP->setSoftware($selecionado);
+            $escritorPHP->escreverSoftware();
+            $zipador = new Zipador();
+            echo '<br><hr>';
+            echo '<div class="row justify-content-center">';
+            $zipador->zipaArquivo('sistemasphp/'.$selecionado->getNome(), 'sistemasphp/'.$selecionado->getNome().'.zip');
+            echo ' - <a href="sistemasphp/'.$selecionado->getNome().'/src"> Acessar Software</a>';
+            echo ' - <a href="sistemasphp/'.$selecionado->getNome().'.zip"> Baixar Software</a>';
+            echo '</div>';
+        }
+    }
 	public function cadastrar() {
-		$this->view->mostraFormInserir ();
-		if (! isset ( $this->post ['enviar'] )) {
+	    $this->view->mostraFormInserir();
+	    
+        if(!isset($this->post['enviar_software'])){   
+		    return;
+		}
+		if (! ( isset ( $this->post ['nome'] ))) {
+			echo "Incompleto";
 			return;
 		}
+	
+		$software = new Software ();		
+		$software->setNome ( $this->post ['nome'] );	
 		
-		if (! (isset ( $this->post ['nome'] )) || strlen ( $this->post ['nome'] ) < 2) {
+		if ($this->dao->inserir ( $software )) 
+        {
+			echo "Sucesso";
+		} else {
+			echo "Fracasso";
+		}
+        echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=software">';
+	}
+    public function editar(){
+	    if(!isset($_GET['editar'])){
+	        return;
+	    }
+        $selecionado = new Software();
+	    $selecionado->setId($_GET['editar']);
+	    $this->dao->pesquisaPorId($selecionado);
+	    
+        if(!isset($_POST['editar_software'])){
+            $this->view->mostraFormEditar($selecionado);
+            return;
+        }
+
+		if (! ( isset ( $this->post ['nome'] ))) {
 			echo "Incompleto";
 			return;
 		}
 		
-		$software = new Software ();
-		$software->setNome ( $this->post ['nome'] );
-		$softwareDao = new SoftwareDAO ();
-		$idSoftware = $softwareDao->inserir ( $software );
+		$selecionado->setNome ( $this->post ['nome'] );	
 		
-		if ($idSoftware) {
+		if ($this->dao->atualizar ($selecionado )) 
+        {
+
 			echo "Sucesso";
-		
 		} else {
 			echo "Fracasso";
 		}
-		echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php">';
-	}
-	public function listarJSON() {
+        echo '<META HTTP-EQUIV="REFRESH" CONTENT="3; URL=index.php?pagina=software">';
+
+    }
+    public function deletar(){
+	    if(!isset($_GET['deletar'])){
+	        return;
+	    }
+        $selecionado = new Software();
+	    $selecionado->setId($_GET['deletar']);
+	    $this->dao->pesquisaPorId($selecionado);
+        if(!isset($_POST['deletar_software'])){
+            $this->view->confirmarDeletar($selecionado);
+            return;
+        }
+        if($this->dao->excluir($selecionado)){
+            echo "excluido com sucesso";
+        }else{
+            echo "Errou";
+        }
+    	echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=software">';    
+    }
+	public function listarJSON() 
+    {
 		$softwareDao = new SoftwareDAO ();
 		$lista = $softwareDao->retornaLista ();
-		$listagem  = array ();
+		$listagem = array ();
 		foreach ( $lista as $linha ) {
 			$listagem ['lista'] [] = array (
-					'id' => $linha->getId (),
-					'nome' => $linha->getNome () 
-			)
-			;
+					'id' => $linha->getId (), 
+					'nome' => $linha->getNome ()
+						
+						
+			);
 		}
 		echo json_encode ( $listagem );
-	}
-	public function listar() {
-		$softwaredao = new SoftwareDAO ();
-		$softwares = $softwaredao->retornaLista ();
-		echo '<h1>Lista de Softwares</h1>';
+	}			
+
+	
 		
-		echo '<ul>';
-		if ($softwares) {
-			foreach ( $softwares as $software ) {
-				echo '<li><a href="index.php?pagina=objeto&idsoftware=' . $software->getId () . '">' . $software->getNome () . '</a></li>';
-			}
-		} else {
-			echo "Nenhum software adicionado ainda.";
-		}
-		echo '</ul>';
-	}
 }
 ?>

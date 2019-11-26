@@ -1,72 +1,177 @@
 <?php
-
+		
 /**
  * Classe feita para manipulação do objeto Atributo
  * feita automaticamente com programa gerador de software inventado por
  * @author Jefferson Uchôa Ponte
+ *
+ *
  */
-
 class AtributoDAO extends DAO {
+	
 
-	
-	
-    public function excluir(Atributo $atributo){
+    public function atualizar(Atributo $atributo)
+    {
+
         $id = $atributo->getId();
-        $sql = "DELETE FROM atributo WHERE id_atributo = :id";
-        
-        try {
-            $db = $this->getConexao();
-            $stmt = $db->prepare($sql);
-            $stmt->bindParam("id", $id, PDO::PARAM_INT);
-            return $stmt->execute();
-            
-        } catch(PDOException $e) {
-            echo '{"error":{"text":'. $e->getMessage() .'}}';
-        }
-    }
+        $sql = "UPDATE atributo 
+                SET
+                nome = :nome, 
+                tipo = :tipo, 
+                indice = :indice
+                WHERE atributo.id = :id;";
+			$nome = $atributo->getNome();
+			$tipo = $atributo->getTipo();
+			$indice = $atributo->getIndice();
 
+        try {
+            
+            $stmt = $this->getConexao()->prepare($sql);
+			$stmt->bindParam("id", $id, PDO::PARAM_STR);
+			$stmt->bindParam("nome", $nome, PDO::PARAM_STR);
+			$stmt->bindParam("tipo", $tipo, PDO::PARAM_STR);
+			$stmt->bindParam("indice", $indice, PDO::PARAM_STR);
+           
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            echo $e->getMessage();   
+        }
+
+    }
+	
 	public function inserir(Atributo $atributo, Objeto $objeto){
 		
-	    
-	    $sql = "INSERT INTO atributo(nome_atributo, tipo_atributo, indice_atributo, id_objeto)
+		$sql = "INSERT INTO atributo(nome, tipo, indice, idobjeto)
 				VALUES(:nome, :tipo, :indice, :idobjeto)";
-	    $nome = $atributo->getNome();
-	    $tipo = $atributo->getTipo();
-	    $indice = $atributo->getIndice();
-	    $idobjeto = $objeto->getId();
-	    
-	    try {
-	        $db = $this->getConexao();
-	        $stmt = $db->prepare($sql);
-	        $stmt->bindParam("nome", $nome, PDO::PARAM_STR);
-	        $stmt->bindParam("tipo", $tipo, PDO::PARAM_STR);
-	        $stmt->bindParam("indice", $indice, PDO::PARAM_STR);
-	        $stmt->bindParam("idobjeto", $idobjeto, PDO::PARAM_INT);
-	        return $stmt->execute();
-	    } catch(PDOException $e) {
-	        echo '{"error":{"text":'. $e->getMessage() .'}}';
-	    }
+			$nome = $atributo->getNome();
+			$tipo = $atributo->getTipo();
+			$indice = $atributo->getIndice();
+			$idobjeto = $objeto->getId();
+		try {
+			$db = $this->getConexao();
+			$stmt = $db->prepare($sql);		
+			$stmt->bindParam("nome", $nome, PDO::PARAM_STR);		
+			$stmt->bindParam("tipo", $tipo, PDO::PARAM_STR);		
+			$stmt->bindParam("indice", $indice, PDO::PARAM_STR);		
+			$stmt->bindParam("idobjeto", $idobjeto, PDO::PARAM_STR);
+			return $stmt->execute();
+		} catch(PDOException $e) {
+			echo '{"error":{"text":'. $e->getMessage() .'}}';
+		}
 	}
+	public function excluir(Atributo $atributo){
+		$id = $atributo->getId();
+		$sql = "DELETE FROM atributo WHERE id = :id";
+		
+		try {
+			$db = $this->getConexao();
+			$stmt = $db->prepare($sql);
+			$stmt->bindParam("id", $id, PDO::PARAM_INT);
+			return $stmt->execute();
 	
-	public function retornaLista(Objeto $objeto) {
-		$id = $objeto->getId();
-	    $lista = array ();
-	    $sql = "SELECT * FROM atributo WHERE id_objeto = $id LIMIT 1000";
+		} catch(PDOException $e) {
+			echo '{"error":{"text":'. $e->getMessage() .'}}';
+		}
+	}
+
+	
+	public function retornaLista() {
+		$lista = array ();
+		$sql = "SELECT * FROM atributo LIMIT 1000";
+		$result = $this->getConexao ()->query ( $sql );
+	
+		foreach ( $result as $linha ) {
+				
+			$atributo = new Atributo();
+        
+			$atributo->setId( $linha ['id'] );
+			$atributo->setNome( $linha ['nome'] );
+			$atributo->setTipo( $linha ['tipo'] );
+			$atributo->setIndice( $linha ['indice'] );
+			$lista [] = $atributo;
+		}
+		return $lista;
+	}
+
+    public function pesquisaPorId(Atributo $atributo) {
+        $lista = array();
+	    $id = $atributo->getId();
+	    $sql = "SELECT * FROM atributo WHERE id = $id";
 	    $result = $this->getConexao ()->query ( $sql );
-	    
+	        
 	    foreach ( $result as $linha ) {
-	        
-	        $atributo = new Atributo();
-	        
 	        $atributo->setId( $linha ['id'] );
 	        $atributo->setNome( $linha ['nome'] );
 	        $atributo->setTipo( $linha ['tipo'] );
-	        $atributo->setRelacionamento( $linha ['relacionamento'] );
-	        $atributo->setIdobjeto( $linha ['idobjeto'] );
-	        $lista [] = $atributo;
-	    }
-	    return $lista;
-	}			
-	
+	        $atributo->setIndice( $linha ['indice'] );
+			$lista [] = $atributo;
+		}
+		return $lista;
+	}
+
+    public function pesquisaPorNome(Atributo $atributo) {
+        $lista = array();
+	    $nome = $atributo->getNome();
+	    $sql = "SELECT * FROM atributo WHERE nome like '%$nome%'";
+	    $result = $this->getConexao ()->query ( $sql );
+	        
+	    foreach ( $result as $linha ) {
+	        $atributo->setId( $linha ['id'] );
+	        $atributo->setNome( $linha ['nome'] );
+	        $atributo->setTipo( $linha ['tipo'] );
+	        $atributo->setIndice( $linha ['indice'] );
+			$lista [] = $atributo;
+		}
+		return $lista;
+	}
+
+    public function pesquisaPorTipo(Atributo $atributo) {
+        $lista = array();
+	    $tipo = $atributo->getTipo();
+	    $sql = "SELECT * FROM atributo WHERE tipo like '%$tipo%'";
+	    $result = $this->getConexao ()->query ( $sql );
+	        
+	    foreach ( $result as $linha ) {
+	        $atributo->setId( $linha ['id'] );
+	        $atributo->setNome( $linha ['nome'] );
+	        $atributo->setTipo( $linha ['tipo'] );
+	        $atributo->setIndice( $linha ['indice'] );
+			$lista [] = $atributo;
+		}
+		return $lista;
+	}
+
+    public function pesquisaPorIndice(Atributo $atributo) {
+        $lista = array();
+	    $indice = $atributo->getIndice();
+	    $sql = "SELECT * FROM atributo WHERE indice like '%$indice%'";
+	    $result = $this->getConexao ()->query ( $sql );
+	        
+	    foreach ( $result as $linha ) {
+	        $atributo->setId( $linha ['id'] );
+	        $atributo->setNome( $linha ['nome'] );
+	        $atributo->setTipo( $linha ['tipo'] );
+	        $atributo->setIndice( $linha ['indice'] );
+			$lista [] = $atributo;
+		}
+		return $lista;
+	}
+
+    public function pesquisaPorIdObjeto(Objeto $objeto) {
+	    $idobjeto = $objeto->getId();
+	    $sql = "SELECT * FROM atributo WHERE idobjeto = $idobjeto";
+	    $result = $this->getConexao ()->query ( $sql );
+	        
+	    foreach ( $result as $linha ) {
+	        $atributo = new Atributo();
+	        $atributo->setId( $linha ['id'] );
+	        $atributo->setNome( $linha ['nome'] );
+	        $atributo->setTipo( $linha ['tipo'] );
+	        $atributo->setIndice( $linha ['indice'] );
+	        $objeto->addAtributo($atributo);
+		}
+		return $objeto->getAtributos();
+	}
+		
+				
 }
-?>
