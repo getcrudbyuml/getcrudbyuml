@@ -63,11 +63,18 @@ class SoftwareController {
                     <a href="?pagina=software&selecionar='.$selecionado->getId().'&escrever=1" class="btn btn-success">Escrever Software</a>
                 </div>';
         
+
         if(isset($_GET['escrever'])){
-            echo '<div class="row justify-content-center">
-                    <p>Iniciando Processo</p>
-                </div>';
-            
+            $escritorPHP = new EscritorPHP();
+            $escritorPHP->setSoftware($selecionado);
+            $escritorPHP->escreverSoftware();
+            $zipador = new Zipador();
+            echo '<br><hr>';
+            echo '<div class="row justify-content-center">';
+            $zipador->zipaArquivo('sistemasphp/'.$selecionado->getNome(), 'sistemasphp/'.$selecionado->getNome().'.zip');
+            echo ' - <a href="sistemasphp/'.$selecionado->getNome().'/src"> Acessar Software</a>';
+            echo ' - <a href="sistemasphp/'.$selecionado->getNome().'.zip"> Baixar Software</a>';
+            echo '</div>';
         }
     }
 	public function cadastrar() {
