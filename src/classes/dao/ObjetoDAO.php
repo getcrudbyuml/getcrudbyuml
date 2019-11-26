@@ -126,6 +126,26 @@ class ObjetoDAO extends DAO {
 		}
 		return $software->getObjetos();
 	}
+	
+	public function softwareDoObjeto(Objeto $objeto){
+	    $software= new Software();
+	    $idObjeto = $objeto->getId();
+	    $sql = "SELECT 
+                    objeto.id as id_objeto,
+                    objeto.idsoftware as idsoftware, 
+                    software.id as id_software, 
+                    software.nome as nome_software 
+                 FROM software INNER JOIN objeto 
+                ON idsoftware = id_software
+                WHERE id_objeto = $idObjeto";
+	    $result = $this->getConexao ()->query ( $sql );
+	    
+	    foreach ( $result as $linha ) {
+	        $software->setId( $linha ['id_software'] );
+	        $software->setNome( $linha ['nome_software'] );
+	    }
+	    return $software;
+	}
 		
 				
 }

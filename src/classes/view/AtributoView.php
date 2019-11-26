@@ -6,7 +6,12 @@
  *
  */
 class AtributoView {
-	public function mostraFormInserir($listaObjetos) {
+    /**
+     * 
+     * @param array Objeto $listaObjetos
+     * @param array Objeto $listaTipos
+     */
+	public function mostraFormInserir($listaObjetos, $listaTipos = array()) {
 		echo '
     
 		<!-- Outer Row -->
@@ -29,10 +34,21 @@ class AtributoView {
                 						  <input type="text" class="form-control form-control-user" id="nome" name="nome" placeholder="nome">
                 						</div>
                                         <div class="form-group">
-                						  <input type="text" class="form-control form-control-user" id="tipo" name="tipo" placeholder="tipo">
+                						  <select class="form-control form-control-user" id="tipo" name="tipo" placeholder="tipo">
+                                            <option value="'.Atributo::TIPO_STRING.'">String</option>
+                                            <option value="'.Atributo::TIPO_INT.'">Inteiro</option>
+                                            <option value="'.Atributo::TIPO_FLOAT.'">Float</option>';
+		foreach($listaTipos as $tipo){
+		    echo '<option value="lista '.$tipo->getNome().'">Lista de '.$tipo->getNome().'</option>';
+		}
+                                          echo '
+                                            </select>
                 						</div>
                                         <div class="form-group">
-                						  <input type="text" class="form-control form-control-user" id="indice" name="indice" placeholder="indice">
+                						  <select class="form-control form-control-user" id="indice" name="indice">
+                                                <option value="">Nenhum Indice</option>
+                                                <option value="'.Atributo::INDICE_PRIMARY.'">PRIMARY KEY</option>
+                                           </select>
                 						</div>';
 		if(count($listaObjetos)){
 		    
@@ -221,7 +237,6 @@ class AtributoView {
 									</div>
 						              <form class="user" method="post">                    Tem Certeza que deseja deletar o '.$atributo->getNome().'
                                         <input type="submit" class="btn btn-primary btn-user btn-block" value="Deletar" name="deletar_atributo">
-                                        <hr>
                                             
 						              </form>
                                             

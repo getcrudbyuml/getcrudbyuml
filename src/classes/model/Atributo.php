@@ -36,5 +36,10 @@ class Atributo {
 		return $this->indice;
 	}
 
+	const INDICE_PRIMARY = "PRIMARY";
+	const TIPO_INT = "Int";
+	const TIPO_STRING = "string";
+	const TIPO_FLOAT = "float";
+	
 }
 ?>

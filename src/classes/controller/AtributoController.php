@@ -52,12 +52,18 @@ class AtributoController {
     }
 	public function cadastrar(Objeto $objeto = null) {		
         if(!isset($this->post['enviar_atributo'])){
+            $objetoDao = new ObjetoDAO($this->dao->getConexao());
             $listaObjetos = array();
-            if($objeto == null){
-                $objetoDao = new ObjetoDAO($this->dao->getConexao());
+            $listaTipos = array();
+            if($objeto == null)
+            {
                 $listaObjetos = $objetoDao->retornaLista();
+            }else{
+                $software = $objetoDao->softwareDoObjeto($objeto);
+                $listaTipos = $objetoDao->pesquisaPorIdSoftware($software);
             }
-            $this->view->mostraFormInserir($listaObjetos);   
+            $this->view->mostraFormInserir($listaObjetos, $listaTipos); 
+            
 		    return;
 		}
 		if (! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['tipo'] ) && isset ( $this->post ['indice'] ))) {

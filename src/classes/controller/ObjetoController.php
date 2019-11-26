@@ -17,7 +17,6 @@ class ObjetoController {
             return;
         }
         $controller->cadastrar();
-        $controller->selecionar();
         $controller->editar();
         $controller->deletar();
     }
@@ -44,8 +43,13 @@ class ObjetoController {
 	    $atributoDao = new AtributoDAO($this->dao->getConexao());
 	    $atributoDao->pesquisaPorIdObjeto($selecionado);
 	    $atributoController = new AtributoController();
+	    
 	    $atributoController->cadastrar($selecionado);
 	    $this->view->mostrarSelecionado($selecionado);
+	    $software = $this->dao->softwareDoObjeto($selecionado);
+	    echo '<div class="row justify-content-center">
+                    <a href="?pagina=software&selecionar='.$software->getId().'" class="btn btn-success">Voltar Para '.$software->getNome().'</a>
+                </div>';
     }
 	public function cadastrar(Software $software = null) 
 	{

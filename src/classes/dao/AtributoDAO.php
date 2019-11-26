@@ -96,7 +96,7 @@ class AtributoDAO extends DAO {
     public function pesquisaPorId(Atributo $atributo) {
         $lista = array();
 	    $id = $atributo->getId();
-	    $sql = "SELECT * FROM atributo WHERE id like '%$id%'";
+	    $sql = "SELECT * FROM atributo WHERE id = $id";
 	    $result = $this->getConexao ()->query ( $sql );
 	        
 	    foreach ( $result as $linha ) {

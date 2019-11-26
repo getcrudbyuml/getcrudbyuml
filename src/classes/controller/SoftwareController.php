@@ -57,9 +57,11 @@ class SoftwareController {
         $objetoController = new ObjetoController();
         $objetoController->cadastrar($selecionado);
         
-
         $this->view->mostrarSelecionado($selecionado);
-        
+        echo '<div class="row justify-content-center">
+                    <a href="?pagina=software" class="btn btn-success">Voltar Para Início</a>
+                    <a href="?pagina=software" class="btn btn-success">Escrever Software</a>
+                </div>';
         
     }
 	public function cadastrar() {
