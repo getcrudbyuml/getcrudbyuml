@@ -16,14 +16,18 @@ class SoftwareController {
             $controller->selecionar();
             return;
         }
-        echo '<div class="row">';
-        
+        if(isset($_GET['deletar'])){
+            $controller->deletar();
+            return;
+        }
+        if(isset($_GET['editar'])){
+            $controller->editar();
+            return;
+        }
         $controller->cadastrar();
         $controller->listar();
-        $controller->editar();
-        $controller->deletar();
+
         
-        echo '</div>';
     }
 	public function __construct(){
 		$this->dao = new SoftwareDAO();
@@ -52,6 +56,8 @@ class SoftwareController {
         }
         $objetoController = new ObjetoController();
         $objetoController->cadastrar($selecionado);
+        
+
         $this->view->mostrarSelecionado($selecionado);
         
         

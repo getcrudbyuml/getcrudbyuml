@@ -18,7 +18,7 @@ function __autoload($classe)
 ?>
 
 <!doctype html>
-<html lang="en">
+<html lang="pt-br">
 <head>
 <!-- Required meta tags -->
 <meta charset="utf-8">
@@ -54,7 +54,6 @@ function __autoload($classe)
       <section class="jumbotron text-center">
         <div class="container">
           <h1 class="jumbotron-heading">Escritor de Software</h1>
-          <p class="lead text-muted">Algo curto e direto, sobre a coleção abaixo (conteúdo, criador e etc). Faça com que seja curto e legal, mas não tão curto ao ponto de as pessoas pularem ele.</p>
 
         </div>
       </section>
@@ -63,6 +62,9 @@ function __autoload($classe)
             <div class="container">
               
               <?php
+              
+              //https://getbootstrap.com.br/docs/4.1/examples/album/
+              
 if (isset($_GET['pagina'])) {
     switch ($_GET['pagina']) {
         case 'software':

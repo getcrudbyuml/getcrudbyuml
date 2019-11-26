@@ -9,8 +9,7 @@ class ObjetoView {
 	public function mostraFormInserir($listaSoftware) {
 	    
 	    
-		echo '<div class="container">
-    
+		echo '
 		<!-- Outer Row -->
 		<div class="row justify-content-center">
     
@@ -26,6 +25,7 @@ class ObjetoView {
 									<div class="text-center">
 										<h1 class="h4 text-gray-900 mb-4"> Adicionar Objeto</h1>
 									</div>
+
 						              <form class="user" method="post">
                                         <div class="form-group">
                 						  <input type="text" class="form-control form-control-user" id="nome" name="nome" placeholder="nome">
@@ -45,11 +45,12 @@ class ObjetoView {
 		}
 		echo '
                                         
-                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastre-se" name="enviar_objeto">
-                                        <hr>
+                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastrar" name="enviar_objeto">
                                             
 						              </form>
                                             
+								
+				            
 								</div>
 							</div>
 						</div>
@@ -59,8 +60,8 @@ class ObjetoView {
 			</div>
                                             
 		</div>
-                                            
-	</div>';
+                                                    
+	';
 	}
                                             
     public function exibirLista($lista){

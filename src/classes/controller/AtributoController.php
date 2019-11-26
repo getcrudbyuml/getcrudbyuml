@@ -12,13 +12,22 @@ class AtributoController {
 
     public static function main(){
         $controller = new AtributoController();
-        if (!(isset($_GET['cadastrar']) || isset($_GET['selecionar']) || isset($_GET['editar']) || isset($_GET['deletar']) )){
-            $controller->listar();
+        if(isset($_GET['selecionar'])){
+            $controller->selecionar();
+            return;
         }
+        if(isset($_GET['deletar'])){
+            $controller->deletar();
+            return;
+        }
+        if(isset($_GET['editar'])){
+            $controller->editar();
+            return;
+        }
+        
         $controller->cadastrar();
-        $controller->selecionar();
-        $controller->editar();
-        $controller->deletar();
+        $controller->listar();
+
     }
 	public function __construct(){
 		$this->dao = new AtributoDAO();
@@ -92,7 +101,7 @@ class AtributoController {
             return;
         }
 
-		if (! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['tipo'] ) && isset ( $this->post ['indice'] ) && isset ( $this->post ['idobjeto'] ))) {
+		if (! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['tipo'] ) && isset ( $this->post ['indice'] ))) {
 			echo "Incompleto";
 			return;
 		}
@@ -100,7 +109,6 @@ class AtributoController {
 		$selecionado->setNome ( $this->post ['nome'] );		
 		$selecionado->setTipo ( $this->post ['tipo'] );		
 		$selecionado->setIndice ( $this->post ['indice'] );		
-		$selecionado->setIdobjeto ( $this->post ['idobjeto'] );	
 		
 		if ($this->dao->atualizar ($selecionado )) 
         {

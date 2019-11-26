@@ -18,13 +18,11 @@ class AtributoDAO extends DAO {
                 SET
                 nome = :nome, 
                 tipo = :tipo, 
-                indice = :indice, 
-                idobjeto = :idobjeto
+                indice = :indice
                 WHERE atributo.id = :id;";
 			$nome = $atributo->getNome();
 			$tipo = $atributo->getTipo();
 			$indice = $atributo->getIndice();
-			$idobjeto = $atributo->getIdobjeto();
 
         try {
             
@@ -33,7 +31,6 @@ class AtributoDAO extends DAO {
 			$stmt->bindParam("nome", $nome, PDO::PARAM_STR);
 			$stmt->bindParam("tipo", $tipo, PDO::PARAM_STR);
 			$stmt->bindParam("indice", $indice, PDO::PARAM_STR);
-			$stmt->bindParam("idobjeto", $idobjeto, PDO::PARAM_STR);
            
             return $stmt->execute();
         } catch (PDOException $e) {

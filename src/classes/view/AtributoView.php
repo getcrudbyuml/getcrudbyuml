@@ -7,7 +7,7 @@
  */
 class AtributoView {
 	public function mostraFormInserir($listaObjetos) {
-		echo '<div class="container">
+		echo '
     
 		<!-- Outer Row -->
 		<div class="row justify-content-center">
@@ -38,13 +38,19 @@ class AtributoView {
 		    
 		    echo '
                                         <div class="form-group">
-                						  <input type="text" class="form-control form-control-user" id="idobjeto" name="idobjeto" placeholder="idobjeto">
+                						  <select class="form-control form-control-user" id="idobjeto" name="idobjeto">
+                                            <option>Selecione um Objeto</option>';
+		    foreach($listaObjetos as $objeto){
+		        echo '                    <option value="'.$objeto->getId().'">'.$objeto->getNome().'</option>';
+		    }
+		    echo '
+                                            
+                                          </select>
                 						</div>';
 		}
 		echo '
 
                                         <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastre-se" name="enviar_atributo">
-                                        <hr>
                                             
 						              </form>
                                             
@@ -56,9 +62,7 @@ class AtributoView {
                                             
 			</div>
                                             
-		</div>
-                                            
-	</div>';
+		</div>';
 	}
                                             
     public function exibirLista($lista){
@@ -142,7 +146,9 @@ class AtributoView {
                 Tipo: '.$atributo->getTipo().'<br>
                 Indice: '.$atributo->getIndice().'<br>
 
-            
+
+                        <a href="?pagina=atributo&editar='.$atributo->getId().'" class="btn btn-success">Editar</a>
+                        <a href="?pagina=atributo&deletar='.$atributo->getId().'" class="btn btn-danger">Deletar</a>
                 </div>
               </div>
             </div>';
