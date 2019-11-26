@@ -6,7 +6,7 @@
  *
  */
 class AtributoView {
-	public function mostraFormInserir() {
+	public function mostraFormInserir($listaObjetos) {
 		echo '<div class="container">
     
 		<!-- Outer Row -->
@@ -33,10 +33,16 @@ class AtributoView {
                 						</div>
                                         <div class="form-group">
                 						  <input type="text" class="form-control form-control-user" id="indice" name="indice" placeholder="indice">
-                						</div>
+                						</div>';
+		if(count($listaObjetos)){
+		    
+		    echo '
                                         <div class="form-group">
                 						  <input type="text" class="form-control form-control-user" id="idobjeto" name="idobjeto" placeholder="idobjeto">
-                						</div>
+                						</div>';
+		}
+		echo '
+
                                         <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastre-se" name="enviar_atributo">
                                         <hr>
                                             
@@ -135,7 +141,7 @@ class AtributoView {
                 Nome: '.$atributo->getNome().'<br>
                 Tipo: '.$atributo->getTipo().'<br>
                 Indice: '.$atributo->getIndice().'<br>
-                Idobjeto: '.$atributo->getIdobjeto().'<br>
+
             
                 </div>
               </div>
@@ -170,9 +176,7 @@ class AtributoView {
                                         <div class="form-group">
                 						  <input type="text" class="form-control form-control-user" value="'.$atributo->getIndice().'" id="indice" name="indice" placeholder="indice">
                 						</div>
-                                        <div class="form-group">
-                						  <input type="text" class="form-control form-control-user" value="'.$atributo->getIdobjeto().'" id="idobjeto" name="idobjeto" placeholder="idobjeto">
-                						</div>
+                                        
                                         <input type="submit" class="btn btn-primary btn-user btn-block" value="Alterar" name="editar_atributo">
                                         <hr>
                                             

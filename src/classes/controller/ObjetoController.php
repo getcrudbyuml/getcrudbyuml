@@ -43,6 +43,8 @@ class ObjetoController {
 	    
 	    $atributoDao = new AtributoDAO($this->dao->getConexao());
 	    $atributoDao->pesquisaPorIdObjeto($selecionado);
+	    $atributoController = new AtributoController();
+	    $atributoController->cadastrar($selecionado);
 	    $this->view->mostrarSelecionado($selecionado);
     }
 	public function cadastrar(Software $software = null) 

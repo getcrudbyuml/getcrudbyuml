@@ -42,14 +42,14 @@ class AtributoDAO extends DAO {
 
     }
 	
-	public function inserir(Atributo $atributo){
+	public function inserir(Atributo $atributo, Objeto $objeto){
 		
 		$sql = "INSERT INTO atributo(nome, tipo, indice, idobjeto)
 				VALUES(:nome, :tipo, :indice, :idobjeto)";
 			$nome = $atributo->getNome();
 			$tipo = $atributo->getTipo();
 			$indice = $atributo->getIndice();
-			$idobjeto = $atributo->getIdobjeto();
+			$idobjeto = $objeto->getId();
 		try {
 			$db = $this->getConexao();
 			$stmt = $db->prepare($sql);		

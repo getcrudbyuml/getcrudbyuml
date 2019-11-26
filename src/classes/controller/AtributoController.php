@@ -41,16 +41,17 @@ class AtributoController {
 	    $this->dao->pesquisaPorId($selecionado);
 	    $this->view->mostrarSelecionado($selecionado);
     }
-	public function cadastrar() {
-        if(!isset($_GET['cadastrar'])){
-            return;
-        }
-		
+	public function cadastrar(Objeto $objeto = null) {		
         if(!isset($this->post['enviar_atributo'])){
-            $this->view->mostraFormInserir();   
+            $listaObjetos = array();
+            if($objeto == null){
+                $objetoDao = new ObjetoDAO($this->dao->getConexao());
+                $listaObjetos = $objetoDao->retornaLista();
+            }
+            $this->view->mostraFormInserir($listaObjetos);   
 		    return;
 		}
-		if (! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['tipo'] ) && isset ( $this->post ['indice'] ) && isset ( $this->post ['idobjeto'] ))) {
+		if (! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['tipo'] ) && isset ( $this->post ['indice'] ))) {
 			echo "Incompleto";
 			return;
 		}
@@ -59,15 +60,24 @@ class AtributoController {
 		$atributo->setNome ( $this->post ['nome'] );		
 		$atributo->setTipo ( $this->post ['tipo'] );		
 		$atributo->setIndice ( $this->post ['indice'] );		
-		$atributo->setIdobjeto ( $this->post ['idobjeto'] );	
+		if($objeto == null){
+		    if(isset ( $this->post ['idobjeto'] )){
+		        $objeto = new Objeto();
+		        $objeto->setId($this->post['idobjeto']);
+		    }else{
+		        echo "Incompleto";
+		        return;
+		    }
+		}
 		
-		if ($this->dao->inserir ( $atributo )) 
+		
+		if ($this->dao->inserir ( $atributo, $objeto )) 
         {
 			echo "Sucesso";
 		} else {
 			echo "Fracasso";
 		}
-        echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=atributo">';
+        echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=objeto&selecionar='.$objeto->getId().'">';
 	}
     public function editar(){
 	    if(!isset($_GET['editar'])){
