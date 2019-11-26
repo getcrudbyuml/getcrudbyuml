@@ -12,8 +12,9 @@ class ObjetoController {
 
     public static function main(){
         $controller = new ObjetoController();
-        if (!(isset($_GET['cadastrar']) || isset($_GET['selecionar']) || isset($_GET['editar']) || isset($_GET['deletar']) )){
-            $controller->listar();
+        if(isset($_GET['selecionar'])){
+            $controller->selecionar();
+            return;
         }
         $controller->cadastrar();
         $controller->selecionar();
@@ -39,30 +40,46 @@ class ObjetoController {
         $selecionado = new Objeto();
 	    $selecionado->setId($_GET['selecionar']);
 	    $this->dao->pesquisaPorId($selecionado);
+	    
+	    $atributoDao = new AtributoDAO($this->dao->getConexao());
+	    $atributoDao->pesquisaPorIdObjeto($selecionado);
 	    $this->view->mostrarSelecionado($selecionado);
     }
 	public function cadastrar(Software $software = null) 
 	{
-
+	    
         if(!isset($this->post['enviar_objeto'])){
-            $this->view->mostraFormInserir();   
+            $listaSoftware = array();
+            if($software == null){
+                $softwareDao = new SoftwareDAO($this->dao->getConexao());
+                $listaSoftware = $softwareDao->retornaLista();
+            }
+            $this->view->mostraFormInserir($listaSoftware);
 		    return;
 		}
-		if (! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['idsoftware'] ))) {
+		if (! ( isset ( $this->post ['nome'] ))) {
 			echo "Incompleto";
 			return;
 		}
-	
+
 		$objeto = new Objeto ();		
-		$objeto->setNome ( $this->post ['nome'] );		
-		
-		if ($this->dao->inserir ( $objeto )) 
+		$objeto->setNome ( $this->post ['nome'] );
+		if($software == null){
+		    if(isset($this->post['idsoftware'])){
+		        $software = new Software();
+		        $software->setId($this->post['idsoftware']);
+		    }else{
+		        echo "incompleto";
+		        return;
+		    }
+		}
+		if ($this->dao->inserir ( $objeto, $software )) 
         {
 			echo "Sucesso";
 		} else {
 			echo "Fracasso";
 		}
-        echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=objeto">';
+        echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=software&selecionar='.$software->getId().'">';
 	}
     public function editar(){
 	    if(!isset($_GET['editar'])){

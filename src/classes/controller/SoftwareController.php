@@ -50,8 +50,8 @@ class SoftwareController {
         foreach($selecionado->getObjetos() as $objeto){
             $atributoDao->pesquisaPorIdObjeto($objeto);
         }
-//         $objetoController = new ObjetoController();
-//         $objetoController->cadastrar();
+        $objetoController = new ObjetoController();
+        $objetoController->cadastrar($selecionado);
         $this->view->mostrarSelecionado($selecionado);
         
         

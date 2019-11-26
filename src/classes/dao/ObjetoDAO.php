@@ -36,12 +36,13 @@ class ObjetoDAO extends DAO {
 
     }
 	
-	public function inserir(Objeto $objeto){
+	public function inserir(Objeto $objeto, Software $software){
 		
 		$sql = "INSERT INTO objeto(nome, idsoftware)
 				VALUES(:nome, :idsoftware)";
 			$nome = $objeto->getNome();
-			$idsoftware = $objeto->getIdsoftware();
+			$idsoftware = $software->getId();
+			
 		try {
 			$db = $this->getConexao();
 			$stmt = $db->prepare($sql);		
@@ -114,7 +115,7 @@ class ObjetoDAO extends DAO {
 
     public function pesquisaPorIdSoftware(Software $software) {
 	    $idsoftware = $software->getId();
-	    $sql = "SELECT * FROM objeto WHERE idsoftware = $idsoftware";
+	    $sql = "SELECT * FROM objeto WHERE idsoftware = $idsoftware ORDER BY id DESC";
 	    $result = $this->getConexao ()->query ( $sql );
 	        
 	    foreach ( $result as $linha ) {

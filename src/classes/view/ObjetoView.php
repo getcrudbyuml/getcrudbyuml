@@ -6,7 +6,8 @@
  *
  */
 class ObjetoView {
-	public function mostraFormInserir() {
+	public function mostraFormInserir($listaSoftware) {
+	    
 	    
 		echo '<div class="container">
     
@@ -28,10 +29,22 @@ class ObjetoView {
 						              <form class="user" method="post">
                                         <div class="form-group">
                 						  <input type="text" class="form-control form-control-user" id="nome" name="nome" placeholder="nome">
-                						</div>
+                						</div>';
+		
+		if(count($listaSoftware)){
+		    echo '
                                         <div class="form-group">
-                						  <input type="text" class="form-control form-control-user" id="idsoftware" name="idsoftware" placeholder="idsoftware">
-                						</div>
+                						  <select class="form-control form-control-user" id="idsoftware" name="idsoftware">
+                                            <option>Selecione Um Software</option>';
+		    foreach($listaSoftware as $software){
+		        echo '<option value="'.$software->getId().'">'.$software->getNome().'</option>';
+		    }
+		    echo '
+                                          </select>
+                						</div>';
+		}
+		echo '
+                                        
                                         <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastre-se" name="enviar_objeto">
                                         <hr>
                                             
@@ -118,21 +131,26 @@ class ObjetoView {
             
             
         public function mostrarSelecionado(Objeto $objeto){
-        echo '
-            <div class="col-lg-3">
-              <!-- Default Card Example -->
-              <div class="card mb-4">
-                <div class="card-header">
-                  '.$objeto->getNome().'
-                </div>
-                <div class="card-body">
-                Id: '.$objeto->getId().'<br>
-                Nome: '.$objeto->getNome().'<br>
-               
+            echo '
+                        <div class="col-lg-3">
+                          <!-- Default Card Example -->
+                          <div class="card mb-4">
+                            <div class="card-header">
+                              <a href="?pagina=objeto&selecionar='.$objeto->getId().'">'.$objeto->getNome().'</a>
+                            </div>
+                            <div class="card-body">';
+            foreach($objeto->getAtributos() as $atributo){
+                echo '<a href="?pagina=atributo&selecionar='.$atributo->getId().'"> - '.$atributo->getNome().' : '.$atributo->getTipo().' '.$atributo->getIndice().'</a><br>';
+                
+            }
             
-                </div>
-              </div>
-            </div>';
+            
+            echo '
+                
+                
+                            </div>
+                          </div>
+                        </div>';
     }
 
 	public function mostraFormEditar(Objeto $objeto) {
