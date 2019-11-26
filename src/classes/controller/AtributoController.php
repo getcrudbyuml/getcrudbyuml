@@ -49,6 +49,12 @@ class AtributoController {
 	    $selecionado->setId($_GET['selecionar']);
 	    $this->dao->pesquisaPorId($selecionado);
 	    $this->view->mostrarSelecionado($selecionado);
+	    echo '<div class="row justify-content-center">
+                            
+                            <a href="?pagina=atributo&editar='.$selecionado->getId().'" class="btn btn-success">Editar</a>
+                            <a href="?pagina=atributo&deletar='.$selecionado->getId().'" class="btn btn-danger">Deletar</a>
+                                
+                </div>';
     }
 	public function cadastrar(Objeto $objeto = null) {		
         if(!isset($this->post['enviar_atributo'])){

@@ -149,25 +149,25 @@ class AtributoView {
             
             
         public function mostrarSelecionado(Atributo $atributo){
-        echo '
-            <div class="col-lg-3">
-              <!-- Default Card Example -->
-              <div class="card mb-4">
-                <div class="card-header">
-                  Atributo selecionado
-                </div>
-                <div class="card-body">
-                Id: '.$atributo->getId().'<br>
-                Nome: '.$atributo->getNome().'<br>
-                Tipo: '.$atributo->getTipo().'<br>
-                Indice: '.$atributo->getIndice().'<br>
+            echo '<div class="row justify-content-center">';
+            echo '
+                <div class="col-lg-3">
+                  <!-- Default Card Example -->
+                  <div class="card mb-4">
+                    <div class="card-header">
+                      Atributo selecionado
+                    </div>
+                    <div class="card-body">
+                    Id: '.$atributo->getId().'<br>
+                    Nome: '.$atributo->getNome().'<br>
+                    Tipo: '.$atributo->getTipo().'<br>
+                    Indice: '.$atributo->getIndice().'<br>
+                           
+                    </div>
+                  </div>
+                </div>';
+            echo '</div>';
 
-
-                        <a href="?pagina=atributo&editar='.$atributo->getId().'" class="btn btn-success">Editar</a>
-                        <a href="?pagina=atributo&deletar='.$atributo->getId().'" class="btn btn-danger">Deletar</a>
-                </div>
-              </div>
-            </div>';
     }
 
 	public function mostraFormEditar(Atributo $atributo) {
@@ -186,7 +186,7 @@ class AtributoView {
 							<div class="col-lg-12">
 								<div class="p-5">
 									<div class="text-center">
-										<h1 class="h4 text-gray-900 mb-4"> Adicionar Atributo</h1>
+										<h1 class="h4 text-gray-900 mb-4"> Editar Atributo</h1>
 									</div>
 						              <form class="user" method="post">
                                         <div class="form-group">

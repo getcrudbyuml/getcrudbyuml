@@ -132,6 +132,7 @@ class ObjetoView {
             
             
         public function mostrarSelecionado(Objeto $objeto){
+            echo '<div class="row justify-content-center">';
             echo '
                         <div class="col-lg-3">
                           <!-- Default Card Example -->
@@ -152,6 +153,7 @@ class ObjetoView {
                             </div>
                           </div>
                         </div>';
+            echo '</div>';
     }
 
 	public function mostraFormEditar(Objeto $objeto) {

@@ -60,9 +60,15 @@ class SoftwareController {
         $this->view->mostrarSelecionado($selecionado);
         echo '<div class="row justify-content-center">
                     <a href="?pagina=software" class="btn btn-success">Voltar Para Início</a>
-                    <a href="?pagina=software" class="btn btn-success">Escrever Software</a>
+                    <a href="?pagina=software&selecionar='.$selecionado->getId().'&escrever=1" class="btn btn-success">Escrever Software</a>
                 </div>';
         
+        if(isset($_GET['escrever'])){
+            echo '<div class="row justify-content-center">
+                    <p>Iniciando Processo</p>
+                </div>';
+            
+        }
     }
 	public function cadastrar() {
 	    $this->view->mostraFormInserir();
