@@ -38,9 +38,14 @@ class AtributoView {
                                             <option value="'.Atributo::TIPO_STRING.'">String</option>
                                             <option value="'.Atributo::TIPO_INT.'">Inteiro</option>
                                             <option value="'.Atributo::TIPO_FLOAT.'">Float</option>';
+
+// 		foreach($listaTipos as $tipo){
+// 		    echo '<option value="'.$tipo->getNome().'">'.$tipo->getNome().'</option>';
+// 		}
 		foreach($listaTipos as $tipo){
-		    echo '<option value="lista '.$tipo->getNome().'">Lista de '.$tipo->getNome().'</option>';
+		    echo '<option value="Array '.$tipo->getNome().'">Array '.$tipo->getNome().'</option>';
 		}
+
                                           echo '
                                             </select>
                 						</div>

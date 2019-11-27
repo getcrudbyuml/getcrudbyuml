@@ -220,14 +220,21 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
         $sql = "UPDATE '.$nomeDoObjeto.' 
                 SET
                 ';
-        $i = 0;
+        $listaAtributo = array();
         foreach ($objeto->getAtributos() as $atributo) {
-            $i ++;
-            if ($atributo->getIndice() == 'primary_key') {
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
+            if(substr($atributo->getTipo(), 0, 6) == 'Array '){
+                continue;
+            }
+            $listaAtributo[] = $atributo;
+        }
+        $i = 0;
+        foreach ($listaAtributo as $atributo) {
+            $i ++;
             $codigo .= $atributo->getNome().' = :'.$atributo->getNome();
-            if ($i != count($objeto->getAtributos())) {
+            if ($i != count($listaAtributo)) {
                 $codigo .= ', 
                 ';
             }
@@ -236,8 +243,8 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
                 WHERE '.$nomeDoObjeto.'.id = :id;";';
         
         
-        foreach ($objeto->getAtributos() as $atributo) {
-            if ($atributo->getIndice() == 'primary_key') {
+        foreach ($listaAtributo as $atributo) {
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
             $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
@@ -250,12 +257,15 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
             
             $stmt = $this->getConexao()->prepare($sql);';
         foreach ($objeto->getAtributos() as $atributo) {
+            if(substr($atributo->getTipo(), 0, 6) == 'Array '){
+                continue;
+            }
             $codigo .= '
 			$stmt->bindParam("' . $atributo->getNome() . '", $' . $atributo->getNome() . ', PDO::PARAM_STR);';
         }
         
         $codigo .= '
-           
+
             return $stmt->execute();
         } catch (PDOException $e) {
             echo $e->getMessage();   
@@ -269,7 +279,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
         $i = 0;
         foreach ($objeto->getAtributos() as $atributo) {
             $i ++;
-            if ($atributo->getIndice() == 'primary_key') {
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
             $codigo .= $atributo->getNome();
@@ -282,7 +292,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
         $i = 0;
         foreach ($objeto->getAtributos() as $atributo) {
             $i ++;
-            if ($atributo->getIndice() == 'primary_key') {
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
             $codigo .= ':' . $atributo->getNome();
@@ -293,7 +303,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
         
         $codigo .= ')";';
         foreach ($objeto->getAtributos() as $atributo) {
-            if ($atributo->getIndice() == 'primary_key') {
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
             $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
@@ -306,7 +316,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
 			$db = $this->getConexao();
 			$stmt = $db->prepare($sql);';
         foreach ($objeto->getAtributos() as $atributo) {
-            if ($atributo->getIndice() == 'primary_key') {
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
             $codigo .= '		
@@ -469,7 +479,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
         $i = 0;
         foreach ($objeto->getAtributos() as $atributo) {
             $i ++;
-            if ($atributo->getIndice() == 'primary_key') {
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
             $codigo .= 'isset ( $this->post [\'' . $atributo->getNome() . '\'] )';
@@ -486,7 +496,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
 		$' . $nomeDoObjeto . ' = new ' . $nomeDoObjetoMa . ' ();';
         foreach ($objeto->getAtributos() as $atributo) {
             $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
-            if ($atributo->getIndice() == 'primary_key') {
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
             $codigo .= '		
@@ -520,7 +530,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
         $i = 0;
         foreach ($objeto->getAtributos() as $atributo) {
             $i ++;
-            if ($atributo->getIndice() == 'primary_key') {
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
             $codigo .= 'isset ( $this->post [\'' . $atributo->getNome() . '\'] )';
@@ -536,7 +546,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
 ';
         foreach ($objeto->getAtributos() as $atributo) {
             $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
-            if ($atributo->getIndice() == 'primary_key') {
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
             $codigo .= '		
@@ -633,26 +643,56 @@ class ' . $nomeDoObjetoMa . ' {';
                 $codigo .= '
 	private $' . $nome . ';';
             }
-            
+            $codigo .= '
+    public function __construct(){
+';
+            foreach ($objeto->getAtributos() as $atributo) {
+                if(substr(trim($atributo->getTipo()), 0, 6) == 'Array '){
+                    $atrb = explode(' ', $atributo->getTipo())[1];
+                    $codigo .= '
+        $this->'.$atributo->getNome().' = array();';
+                    
+                }
+            }
+            $codigo .= '
+    }';
             foreach ($objeto->getAtributos() as $atributo) {
                 
                 $nome = strtolower($atributo->getNome());
                 $nome2 = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
                 
-                if ($atributo->getTipo() == 'int' || $atributo->getTipo() == 'float' || $atributo->getTipo() == 'string' || $atributo->getTipo() == 'Texto') {
+                if ($atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_FLOAT || $atributo->getTipo() == Atributo::TIPO_STRING) 
+                {
                     
                     $codigo .= '
 	public function set' . $nome2 . '($' . $nome . ') {';
                     $codigo .= '
 		$this->' . $nome . ' = $' . $nome . ';
 	}';
-                } else {
-                    $codigo .= '
-	public function set' . $nome2 . '(' . $atributo->getTipo() . ' $' . $nome . ') {';
+                } 
+                else {
                     
-                    $codigo .= '
+                    if(substr(trim($atributo->getTipo()), 0, 6) == 'Array '){
+                        $atrb = explode(' ', $atributo->getTipo())[1];
+                        $codigo .= '
+
+    public function add'.ucfirst($atrb).'('.ucfirst($atrb).' $'.strtolower($atrb).'){
+        $this->'.$nome.'[] = $'.strtolower($atrb).';
+    
+    }';
+                        
+                        
+                        
+                    }else{
+                        $codigo .= '
+	public function set' . $nome2 . '(' . $atributo->getTipo() . ' $' . $nome . ') {';
+                        
+                        $codigo .= '
 		$this->' . $nome . ' = $' . $nome . ';
 	}';
+                    }
+                    
+                    
                 } // fecha o caso contrario. o atributo sendo objeto
                 
                 $codigo .= '
@@ -683,14 +723,14 @@ class ' . $nomeDoObjetoMa . ' {';
             $i = 0;
             foreach ($objeto->getAtributos() as $atributo) {
                 $i ++;
-                if ($atributo->getIndice() == 'primary_key') {
+                if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                     $this->codigo .=  strtolower($atributo->getNome()) . ' serial NOT NULL';
                 } else {
                     $this->codigo .= strtolower($atributo->getNome()) . ' character varying(150)';
                 }
                 if ($i == count($objeto->getAtributos())) {
                     foreach ($objeto->getAtributos() as $atributo) {
-                        if ($atributo->getIndice() == 'primary_key') {
+                        if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                             $this->codigo .= ",\n";
                             $this->codigo .= ' CONSTRAINT pk_'.strtolower($objeto->getNome()).'_'.strtolower($atributo->getNome()).' PRIMARY KEY ('.strtolower($atributo->getNome()).')';
                             break;
@@ -720,7 +760,7 @@ class ' . $nomeDoObjetoMa . ' {';
             $i = 0;
             foreach ($objeto->getAtributos() as $atributo) {
                 $i ++;
-                if ($atributo->getIndice() == 'primary_key') {
+                if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                     $this->codigo .= '`' . strtolower($atributo->getNome()) . '`	INTEGER PRIMARY KEY AUTOINCREMENT';
                 } else {
                     $this->codigo .= '`' . strtolower($atributo->getNome()) . '`	TEXT';
@@ -783,19 +823,21 @@ function __autoload($classe) {
 }
             
 ?>
-            
+    
 <!doctype html>
-<html lang="en">
+<html lang="pt-br">
 <head>
-<!-- Required meta tags -->
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<!-- Bootstrap CSS -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="css/style.css" />
 <title>' . $software->getNome() . '</title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="css/style.css" />
+<title>EscritorDeSoftware</title>
 </head>
-<body id="page-top" class="sidebar-toggled">
+<body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="#">'.$software->getNome().'</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Alterna navegação">
@@ -816,14 +858,17 @@ function __autoload($classe) {
     </div>
   </div>
 </nav>
-	<div id="wrapper">
-		<div id="content-wrapper" class="d-flex flex-column">
-            
-            
-			<div id="content">
-            
-            
-				<div class="container-fluid">';
+	<main role="main">
+
+      <section class="jumbotron text-center">
+        <div class="container">
+          <h1 class="jumbotron-heading">'.$software->getNome().'</h1>
+
+        </div>
+      </section>
+      
+        <div class="album py-5 bg-light">
+            <div class="container">';
         
         
         $this->codigo .= '
@@ -854,11 +899,23 @@ if(isset($_GET[\'pagina\'])){
         
         $this->codigo .= '
             
-            
-    			</div>
-    		</div>
-    	</div>
-    </div>
+                       
+              </div>
+                
+            </div>
+      
+     </main>        
+
+
+    <footer class="text-muted">
+      <div class="container">
+        <p class="float-right">
+          <a href="#">Voltar ao topo</a>
+        </p>
+        <p>Este é um software desenvolvido automaticamente pelo escritor de Software.</p>
+        <p>Novo no Escritor De Software? Problema o seu.</p>
+      </div>
+    </footer>   
             
 ';
         
@@ -916,7 +973,10 @@ class ' . $nomeDoObjetoMa . 'View {
         
         foreach ($atributos as $atributo) {
             $variavel = $atributo->getNome();
-            if ($atributo->getIndice() == 'primary_key') {
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
+                continue;
+            }
+            if(substr($atributo->getTipo(), 0, 6) == 'Array '){
                 continue;
             }
             $codigo .= '
@@ -1087,7 +1147,7 @@ class ' . $nomeDoObjetoMa . 'View {
         $atributos = $objeto->getAtributos();
         foreach ($atributos as $atributo) {
             $variavel = $atributo->getNome();
-            if ($atributo->getIndice() == 'primary_key') {
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
             $codigo .= '
@@ -1138,7 +1198,7 @@ class ' . $nomeDoObjetoMa . 'View {
         $atributos = $objeto->getAtributos();
         foreach ($atributos as $atributo) {
             $variavel = $atributo->getNome();
-            if ($atributo->getIndice() == 'primary_key') {
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
             
