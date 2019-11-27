@@ -648,7 +648,7 @@ class ' . $nomeDoObjetoMa . ' {';
 ';
             foreach ($objeto->getAtributos() as $atributo) {
                 if(substr(trim($atributo->getTipo()), 0, 6) == 'Array '){
-                    $atrb = explode(' ', $atributo->getTipo())[1];
+                    $atrb = explode(' ', $atributo->getTipo())[2];
                     $codigo .= '
         $this->'.$atributo->getNome().' = array();';
                     
@@ -673,7 +673,7 @@ class ' . $nomeDoObjetoMa . ' {';
                 else {
                     
                     if(substr(trim($atributo->getTipo()), 0, 6) == 'Array '){
-                        $atrb = explode(' ', $atributo->getTipo())[1];
+                        $atrb = explode(' ', $atributo->getTipo())[2];
                         $codigo .= '
 
     public function add'.ucfirst($atrb).'('.ucfirst($atrb).' $'.strtolower($atrb).'){
@@ -715,7 +715,7 @@ class ' . $nomeDoObjetoMa . ' {';
     
     public function geraBancoPG(Software $software)
     {
-        
+        $objetosComRelacionamento = array();
         $this->codigo = '';
         foreach ($software->getObjetos() as $objeto) {
             $this->codigo .= 'CREATE TABLE ' . strtolower($objeto->getNome());
@@ -723,15 +723,27 @@ class ' . $nomeDoObjetoMa . ' {';
             $i = 0;
             foreach ($objeto->getAtributos() as $atributo) {
                 $i ++;
+                $flagPulei = false;
                 if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                     $this->codigo .=  strtolower($atributo->getNome()) . ' serial NOT NULL';
-                } else {
+                } else if($atributo->getTipo() == Atributo::TIPO_STRING){
                     $this->codigo .= strtolower($atributo->getNome()) . ' character varying(150)';
+                }else if($atributo->getTipo() == Atributo::TIPO_INT){
+                    $this->codigo .= strtolower($atributo->getNome()) . '  integer';
+                }else if($atributo->getTipo() == Atributo::TIPO_FLOAT){
+                    $this->codigo .= strtolower($atributo->getNome()) . ' character  numeric(8,2)';
+                }else if(substr($atributo->getTipo(),0,6) == 'Array '){
+                    $objetosComRelacionamento[] = $objeto;
+                    $flagPulei = true;
+                }else{
+                    $this->codigo .= 'id_'.strtolower($atributo->getTipo())._.strtolower($atributo->getNome()) . ' integer NOT NULL';
                 }
                 if ($i == count($objeto->getAtributos())) {
                     foreach ($objeto->getAtributos() as $atributo) {
                         if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                            $this->codigo .= ",\n";
+                            if(!$flagPulei){
+                                $this->codigo .= ",\n";
+                            }
                             $this->codigo .= ' CONSTRAINT pk_'.strtolower($objeto->getNome()).'_'.strtolower($atributo->getNome()).' PRIMARY KEY ('.strtolower($atributo->getNome()).')';
                             break;
                         }
@@ -739,7 +751,10 @@ class ' . $nomeDoObjetoMa . ' {';
                     $this->codigo .= "\n";
                     continue;
                 }
-                $this->codigo .= ",\n";
+                if(!$flagPulei){
+                    $this->codigo .= ",\n";
+                }
+
             }
 
             $this->codigo .= ");\n";
