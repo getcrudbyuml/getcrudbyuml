@@ -97,7 +97,7 @@ class GeradorDeCodigoPHP extends GeradorDeCodigo
                 
                 // instancia no geradorDePHP
                 // Armazena em Um vetor.
-                $gerador = GeradorDeCodigoPHP::geraCodigoDeObjetoDAO($objeto, $nomedosite);
+                $gerador = GeradorDeCodigoPHP::geraCodigoDeObjetoDAO($objeto, $nomedosite, $software);
                 
                 $geradores[] = $gerador;
             }
@@ -195,21 +195,22 @@ class DAO {
      * @param String $nomeDoSite
      * @return GeradorDeCodigoPHP
      */
-    public static function geraCodigoDeObjetoDAO(Objeto $objeto, $nomeDoSite)
+    public static function geraCodigoDeObjetoDAO(Objeto $objeto, $nomeDoSite, Software $software)
     {
         $nomeDoObjeto = strtolower($objeto->getNome());
         $nomeDoObjetoMA = strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100);
         $nomeDoObjetoDAO = strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100) . 'DAO';
         $atributosComuns = array();
+        $atributosNN = array();
         foreach ($objeto->getAtributos() as $atributo) {
             if(substr($atributo->getTipo(),0,6) == 'Array '){
                 if(explode(' ', $atributo->getTipo())[1]  == 'n:n'){
-                    $objetosNN[] = $objeto;
+                    $atributosNN[] = $atributo;
                 }
             }else if($atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_FLOAT)
             {
                 $atributosComuns[] = $atributo;
-            }///Depois faremos um else if pra objeto.
+            }
         }
         
         $codigo = '<?php
@@ -387,12 +388,22 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
 
                 $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
                 $id = $atributo->getNome();
+                
                 $codigo .= '
 
     public function pesquisaPor'.$nomeDoAtributoMA.'(' . $nomeDoObjetoMA . ' $' . $nomeDoObjeto . ') {
         $lista = array();
-	    $'.$id.' = $'.$nomeDoObjeto.'->get'.$nomeDoAtributoMA.'();
-	    $sql = "SELECT * FROM ' . $nomeDoObjeto . ' WHERE '.$id.' like \'%$'.$id.'%\'";
+	    $'.$id.' = $'.$nomeDoObjeto.'->get'.$nomeDoAtributoMA.'();';
+                
+                if($atributo->getTipo() == Atributo::TIPO_STRING){
+                    $codigo .= '
+	    $sql = "SELECT * FROM ' . $nomeDoObjeto . ' WHERE '.$id.' like \'%$'.$id.'%\'";';
+                }else if($atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_FLOAT){
+                    $codigo .= '
+	    $sql = "SELECT * FROM ' . $nomeDoObjeto . ' WHERE '.$id.' = $'.$id.'";';
+                }
+                
+                $codigo .= '
 	    $result = $this->getConexao ()->query ( $sql );
 	        
 	    foreach ( $result as $linha ) {';
@@ -407,9 +418,47 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
 			$lista [] = $' . $nomeDoObjeto . ';
 		}
 		return $lista;
-	}';
+    }';
                 
                
+        }
+        
+        foreach($atributosNN as $atributo){
+            $codigo .= '
+    public function buscar'.ucfirst($atributo->getNome()).'('.ucfirst($objeto->getNome()).' $'.strtolower($objeto->getNome()).')
+    {
+        $id = $'.strtolower($objeto->getNome()).'->getId();
+        $sql = "SELECT * FROM 
+                '.strtolower($objeto->getNome()).'_'.strtolower(explode(' ', $atributo->getTipo())[2]).'
+                INNER JOIN '.strtolower(explode(' ', $atributo->getTipo())[2]).'
+                ON  '.strtolower($objeto->getNome()).'_'.strtolower(explode(' ', $atributo->getTipo())[2]).'.id'.strtolower(explode(' ', $atributo->getTipo())[2]).' = '.strtolower(explode(' ', $atributo->getTipo())[2]).'.id
+                 WHERE '.strtolower($objeto->getNome()).'_'.strtolower(explode(' ', $atributo->getTipo())[2]).'.id'.strtolower($objeto->getNome()).' = $id";
+        $result = $this->getConexao ()->query ( $sql );
+        
+        foreach ($result as $linha) {
+            $'.strtolower(explode(' ', $atributo->getTipo())[2]).' = new '.ucfirst(explode(' ', $atributo->getTipo())[2]).'();';
+            
+            foreach($software->getObjetos() as $obj){
+                if(strtolower($obj->getNome()) == strtolower(explode(' ', $atributo->getTipo())[2]))
+                {
+                    foreach($obj->getAtributos() as $atr){
+                        $nomeDoAtributoMA = ucfirst($atr->getNome());
+                        $codigo .= '
+	        $'.strtolower(explode(' ', $atributo->getTipo())[2]).'->set'.$nomeDoAtributoMA.'( $linha [\''.strtolower($atr->getNome()).'\'] );';
+                    }
+                    $codigo .= '';
+                    break;   
+                }
+            }
+            
+            
+            $codigo .= '
+            $'.strtolower($objeto->getNome()).'->add'.ucfirst(explode(' ', $atributo->getTipo())[2]).'($'.strtolower(explode(' ', $atributo->getTipo())[2]).');
+
+        }
+        return $'.strtolower($objeto->getNome()).';
+    }
+';
         }
         
  $codigo .= '
@@ -460,13 +509,15 @@ class ' . $nomeDoObjetoMa . 'Controller {
 
     public static function main(){
         $controller = new '.$nomeDoObjetoMa.'Controller();
-        if (!(isset($_GET[\'cadastrar\']) || isset($_GET[\'selecionar\']) || isset($_GET[\'editar\']) || isset($_GET[\'deletar\']) )){
-            $controller->listar();
+        if (isset($_GET[\'selecionar\'])){
+            $controller->selecionar();
+            return;
         }
         $controller->cadastrar();
-        $controller->selecionar();
         $controller->editar();
         $controller->deletar();
+        $controller->listar();
+        
     }
 	public function __construct(){
 		$this->dao = new ' . $nomeDoObjetoMa . 'DAO();
@@ -487,13 +538,17 @@ class ' . $nomeDoObjetoMa . 'Controller {
         $selecionado = new '.$nomeDoObjetoMa.'();
 	    $selecionado->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'selecionar\']);
 	    $this->dao->pesquisaPor'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selecionado);
+        
 	    $this->view->mostrarSelecionado($selecionado);';
 
         foreach($atributosNN as $atributo){
+            $codigo .= '
+        $this->dao->buscar'.ucfirst($atributo->getNome()).'($selecionado);
+            ';
             $codigo .= 'echo \'<div class="row">\';';
             $codigo .= '
-        $'.strtolower(explode(" ", $atributo->getTipo())[2]).'Controller = new '.ucfirst(explode(" ", $atributo->getTipo())[2]).'Controller();
-        $'.strtolower(explode(" ", $atributo->getTipo())[2]).'Controller->listar();
+        //$'.strtolower(explode(" ", $atributo->getTipo())[2]).'View = new '.ucfirst(explode(" ", $atributo->getTipo())[2]).'View();
+        //$'.strtolower(explode(" ", $atributo->getTipo())[2]).'View->listar();
         ';
             $codigo .= 'echo \'</div>\';';
             
@@ -1058,10 +1113,11 @@ if(isset($_GET[\'pagina\'])){
         $nomeDoSite = $software->getNome();
         
         $atributosComuns = array();
+        $atributosNN = array();
         foreach ($objeto->getAtributos() as $atributo) {
             if(substr($atributo->getTipo(),0,6) == 'Array '){
                 if(explode(' ', $atributo->getTipo())[1]  == 'n:n'){
-                    $objetosNN[] = $objeto;
+                    $atributosNN[] = $objeto;
                 }
             }else if($atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_FLOAT)
             {
@@ -1077,6 +1133,7 @@ if(isset($_GET[\'pagina\'])){
  *
  */
 class ' . $nomeDoObjetoMa . 'View {
+
 	public function mostraFormInserir() {
 		echo \'<div class="container">
     
@@ -1112,7 +1169,7 @@ class ' . $nomeDoObjetoMa . 'View {
         }
         
         $codigo .= '
-                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastre-se" name="enviar_' . $nomeDoObjeto . '">
+                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastrar" name="enviar_' . $nomeDoObjeto . '">
                                         <hr>
                                             
 						              </form>
