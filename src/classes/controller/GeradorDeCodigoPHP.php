@@ -1117,7 +1117,7 @@ if(isset($_GET[\'pagina\'])){
         foreach ($objeto->getAtributos() as $atributo) {
             if(substr($atributo->getTipo(),0,6) == 'Array '){
                 if(explode(' ', $atributo->getTipo())[1]  == 'n:n'){
-                    $atributosNN[] = $objeto;
+                    $atributosNN[] = $atributo;
                 }
             }else if($atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_FLOAT)
             {
@@ -1186,7 +1186,8 @@ class ' . $nomeDoObjetoMa . 'View {
                                             
 	</div>\';
 	}
-                                            
+    
+                                             
     public function exibirLista($lista){
            echo \'
                                             
@@ -1403,9 +1404,66 @@ class ' . $nomeDoObjetoMa . 'View {
 		</div>
                                             
 	</div>\';
-	}        
+	}';
+        
+        foreach($atributosNN as $atributoNN){
+            $codigo .= '
+    public function adicionar'.ucfirst(explode(' ', $atributoNN->getTipo())[2]).'(){
+        
+		echo \'<div class="container">
+		<div class="row justify-content-center">
+        
+			<div class="col-xl-6 col-lg-12 col-md-9">
+        
+				<div class="card o-hidden border-0 shadow-lg my-5">
+					<div class="card-body p-0">
+						<!-- Nested Row within Card Body -->
+						<div class="row">
+        
+							<div class="col-lg-12">
+								<div class="p-5">
+									<div class="text-center">
+										<h1 class="h4 text-gray-900 mb-4"> Adicionar ' . $nomeDoObjetoMa . '</h1>
+									</div>
+						              <form class="user" method="post">';
             
-}';
+            $codigo .= '
+                                        <div class="form-group">
+                						  <select type="text" class="form-control form-control-user" id="' . $variavel . '" name="' . $variavel . '" >
+                                                <option>Adicione Uma</option>
+                                          </select>
+                						</div>';
+            
+            $codigo .= '
+                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastrar" name="enviar_' . $nomeDoObjeto . '">
+                                        <hr>
+                                            
+						              </form>
+                                            
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+                                            
+			</div>
+                                            
+		</div>
+                                            
+	</div>\';
+                                            
+                                            
+                                            
+                                            
+    }
+
+}
+';
+            
+        }
+        
+       
+
         $gerador = new GeradorDeCodigoPHP();
         $gerador->caminho = 'sistemasphp/' . $nomeDoSite . '/src/classes/view/' . $nomeDoObjetoMa . 'View.php';
         $gerador->codigo = $codigo;
