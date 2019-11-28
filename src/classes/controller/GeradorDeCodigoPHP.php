@@ -435,11 +435,10 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
         $nomeDoObjetoMa = strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100);
         
         $atributosComuns = array();
+        $atributosNN = array();
         foreach ($objeto->getAtributos() as $atributo) {
             if(substr($atributo->getTipo(),0,6) == 'Array '){
-                if(explode(' ', $atributo->getTipo())[1]  == 'n:n'){
-                    $objetosNN[] = $objeto;
-                }
+                $atributosNN[] = $atributo;
             }else if($atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_FLOAT)
             {
                 $atributosComuns[] = $atributo;
@@ -488,7 +487,21 @@ class ' . $nomeDoObjetoMa . 'Controller {
         $selecionado = new '.$nomeDoObjetoMa.'();
 	    $selecionado->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'selecionar\']);
 	    $this->dao->pesquisaPor'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selecionado);
-	    $this->view->mostrarSelecionado($selecionado);
+	    $this->view->mostrarSelecionado($selecionado);';
+
+        foreach($atributosNN as $atributo){
+            $codigo .= 'echo \'<div class="row">\';';
+            $codigo .= '
+        $'.strtolower(explode(" ", $atributo->getTipo())[2]).'Controller = new '.ucfirst(explode(" ", $atributo->getTipo())[2]).'Controller();
+        $'.strtolower(explode(" ", $atributo->getTipo())[2]).'Controller->listar();
+        ';
+            $codigo .= 'echo \'</div>\';';
+            
+        
+            
+        }
+        $codigo .= '
+        
     }
 	public function cadastrar() {
         if(!isset($_GET[\'cadastrar\'])){
