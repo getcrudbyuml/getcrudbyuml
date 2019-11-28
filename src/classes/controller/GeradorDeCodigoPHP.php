@@ -458,6 +458,38 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
         }
         return $'.strtolower($objeto->getNome()).';
     }
+
+
+	public function inserir'.ucfirst(explode(" ", $atributo->getTipo())[2]).'('. $nomeDoObjetoMA . ' $' . $nomeDoObjeto . ', '.ucfirst(explode(" ", $atributo->getTipo())[2]).' $'.strtolower(explode(" ", $atributo->getTipo())[2]).'){
+        $id'.strtolower($objeto->getNome()).' =  $' . $nomeDoObjeto.'->getId();     
+        $id'.strtolower(explode(' ', $atributo->getTipo())[2]).' = $'.strtolower(explode(" ", $atributo->getTipo())[2]).'->getId();
+		$sql = "INSERT INTO '.strtolower($objeto->getNome()).'_'.strtolower(explode(' ', $atributo->getTipo())[2]).'(';
+        $codigo .= '
+                    id'.strtolower($objeto->getNome()).', 
+                    id'.strtolower(explode(' ', $atributo->getTipo())[2]).')
+				VALUES(';
+        $codigo .= '
+                :id'.strtolower($objeto->getNome()).',
+                :id'.strtolower(explode(' ', $atributo->getTipo())[2]);
+        $codigo .= ')";';
+        $codigo .= '
+		try {
+			$db = $this->getConexao();
+			$stmt = $db->prepare($sql);';
+            
+        $codigo .= '		
+		    $stmt->bindParam("id'.strtolower($objeto->getNome()).'", $id'.strtolower($objeto->getNome()).', PDO::PARAM_INT);
+            $stmt->bindParam("id'.strtolower(explode(' ', $atributo->getTipo())[2]). '", $id'.strtolower(explode(' ', $atributo->getTipo())[2]) . ', PDO::PARAM_INT);
+
+';
+        
+        $codigo .= '
+			return $stmt->execute();
+		} catch(PDOException $e) {
+			echo \'{"error":{"text":\'. $e->getMessage() .\'}}\';
+		}
+	}
+
 ';
         }
         
@@ -557,7 +589,25 @@ class ' . $nomeDoObjetoMa . 'Controller {
         }
         $codigo .= '
         
-    }
+    }';
+        
+        foreach($atributosNN as $atributoNN){
+            $codigo .= '
+                
+                
+	public function cadastrar'.ucfirst(explode(' ', $atributoNN->getTipo())[2]).'() {
+        
+    }';
+            
+            
+            
+            
+            
+        }
+        
+        $codigo .= '
+
+
 	public function cadastrar() {
         if(!isset($_GET[\'cadastrar\'])){
             return;
@@ -1449,7 +1499,7 @@ class ' . $nomeDoObjetoMa . 'View {
                 						</div>';
             
             $codigo .= '
-                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastrar" name="enviar_' . $nomeDoObjeto . '">
+                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastrar" name="enviar_'.strtolower(explode(' ', $atributoNN->getTipo())[2]).'">
                                         <hr>
                                             
 						              </form>
