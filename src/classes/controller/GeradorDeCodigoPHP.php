@@ -1408,9 +1408,10 @@ class ' . $nomeDoObjetoMa . 'View {
         
         foreach($atributosNN as $atributoNN){
             $codigo .= '
-    public function adicionar'.ucfirst(explode(' ', $atributoNN->getTipo())[2]).'(){
+    public function adicionar'.ucfirst(explode(' ', $atributoNN->getTipo())[2]).'($lista){
         
-		echo \'<div class="container">
+
+        echo \'
 		<div class="row justify-content-center">
         
 			<div class="col-xl-6 col-lg-12 col-md-9">
@@ -1423,14 +1424,27 @@ class ' . $nomeDoObjetoMa . 'View {
 							<div class="col-lg-12">
 								<div class="p-5">
 									<div class="text-center">
-										<h1 class="h4 text-gray-900 mb-4"> Adicionar ' . $nomeDoObjetoMa . '</h1>
+										<h1 class="h4 text-gray-900 mb-4"> Adicione '.explode(" ", $atributoNN->getTipo())[2].' ao '.$objeto->getNome().'</h1>
 									</div>
 						              <form class="user" method="post">';
             
             $codigo .= '
                                         <div class="form-group">
-                						  <select type="text" class="form-control form-control-user" id="' . $variavel . '" name="' . $variavel . '" >
-                                                <option>Adicione Uma</option>
+                						  <select type="text" class="form-control form-control-user" id="id'.explode(" ", $atributoNN->getTipo())[2].'" name="id'.explode(" ", $atributoNN->getTipo())[2].'" >
+                                                <option>Adicione '.explode(" ", $atributoNN->getTipo())[2].'</option>\';
+';
+            $codigo .= '
+            foreach($lista as $elemento){
+                echo \'             
+
+                                                <option value=""></option>\';
+
+            }
+
+';
+            $codigo .= '
+            echo \'
+
                                           </select>
                 						</div>';
             
@@ -1447,10 +1461,9 @@ class ' . $nomeDoObjetoMa . 'View {
 				</div>
                                             
 			</div>
+
                                             
-		</div>
-                                            
-	</div>\';
+	   </div>\';
                                             
                                             
                                             
