@@ -200,6 +200,17 @@ class DAO {
         $nomeDoObjeto = strtolower($objeto->getNome());
         $nomeDoObjetoMA = strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100);
         $nomeDoObjetoDAO = strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100) . 'DAO';
+        $atributosComuns = array();
+        foreach ($objeto->getAtributos() as $atributo) {
+            if(substr($atributo->getTipo(),0,6) == 'Array '){
+                if(explode(' ', $atributo->getTipo())[1]  == 'n:n'){
+                    $objetosNN[] = $objeto;
+                }
+            }else if($atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_FLOAT)
+            {
+                $atributosComuns[] = $atributo;
+            }///Depois faremos um else if pra objeto.
+        }
         
         $codigo = '<?php
 		
@@ -221,7 +232,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
                 SET
                 ';
         $listaAtributo = array();
-        foreach ($objeto->getAtributos() as $atributo) {
+        foreach ($atributosComuns as $atributo) {
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
@@ -256,7 +267,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
         try {
             
             $stmt = $this->getConexao()->prepare($sql);';
-        foreach ($objeto->getAtributos() as $atributo) {
+        foreach ($atributosComuns as $atributo) {
             if(substr($atributo->getTipo(), 0, 6) == 'Array '){
                 continue;
             }
@@ -277,32 +288,32 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
 		
 		$sql = "INSERT INTO ' . $nomeDoObjeto . '(';
         $i = 0;
-        foreach ($objeto->getAtributos() as $atributo) {
+        foreach ($atributosComuns as $atributo) {
             $i ++;
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
             $codigo .= $atributo->getNome();
-            if ($i != count($objeto->getAtributos())) {
+            if ($i != count($atributosComuns)) {
                 $codigo .= ', ';
             }
         }
         $codigo .= ')
 				VALUES(';
         $i = 0;
-        foreach ($objeto->getAtributos() as $atributo) {
+        foreach ($atributosComuns as $atributo) {
             $i ++;
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
             $codigo .= ':' . $atributo->getNome();
-            if ($i != count($objeto->getAtributos())) {
+            if ($i != count($atributosComuns)) {
                 $codigo .= ', ';
             }
         }
         
         $codigo .= ')";';
-        foreach ($objeto->getAtributos() as $atributo) {
+        foreach ($atributosComuns as $atributo) {
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
@@ -315,7 +326,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
 		try {
 			$db = $this->getConexao();
 			$stmt = $db->prepare($sql);';
-        foreach ($objeto->getAtributos() as $atributo) {
+        foreach ($atributosComuns as $atributo) {
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
@@ -355,7 +366,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
 			$' . $nomeDoObjeto . ' = new ' . $nomeDoObjetoMA . '();
         ';
         
-        foreach ($objeto->getAtributos() as $atributo) {
+        foreach ($atributosComuns as $atributo) {
             $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
             
             $codigo .= '
@@ -372,7 +383,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
         
         
         
-        foreach ($objeto->getAtributos() as $atributo) {
+        foreach ($atributosComuns as $atributo) {
 
                 $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
                 $id = $atributo->getNome();
@@ -385,7 +396,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
 	    $result = $this->getConexao ()->query ( $sql );
 	        
 	    foreach ( $result as $linha ) {';
-                foreach ($objeto->getAtributos() as $atributo2) {
+                foreach ($atributosComuns as $atributo2) {
                     
                     $nomeDoAtributoMA = strtoupper(substr($atributo2->getNome(), 0, 1)) . substr($atributo2->getNome(), 1, 100);
                     $codigo .= '
@@ -422,6 +433,19 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
         $geradorDeCodigo = new GeradorDeCodigoPHP();
         $nomeDoObjeto = strtolower($objeto->getNome());
         $nomeDoObjetoMa = strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100);
+        
+        $atributosComuns = array();
+        foreach ($objeto->getAtributos() as $atributo) {
+            if(substr($atributo->getTipo(),0,6) == 'Array '){
+                if(explode(' ', $atributo->getTipo())[1]  == 'n:n'){
+                    $objetosNN[] = $objeto;
+                }
+            }else if($atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_FLOAT)
+            {
+                $atributosComuns[] = $atributo;
+            }///Depois faremos um else if pra objeto. 
+        }
+        
         
         $codigo = '<?php	
 
@@ -477,13 +501,13 @@ class ' . $nomeDoObjetoMa . 'Controller {
 		}
 		if (! ( ';
         $i = 0;
-        foreach ($objeto->getAtributos() as $atributo) {
+        foreach ($atributosComuns as $atributo) {
             $i ++;
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
             $codigo .= 'isset ( $this->post [\'' . $atributo->getNome() . '\'] )';
-            if ($i != count($objeto->getAtributos())) {
+            if ($i != count($atributosComuns)) {
                 $codigo .= ' && ';
             }
         }
@@ -494,7 +518,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
 		}
 	
 		$' . $nomeDoObjeto . ' = new ' . $nomeDoObjetoMa . ' ();';
-        foreach ($objeto->getAtributos() as $atributo) {
+        foreach ($atributosComuns as $atributo) {
             $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
@@ -528,13 +552,13 @@ class ' . $nomeDoObjetoMa . 'Controller {
 
 		if (! ( ';
         $i = 0;
-        foreach ($objeto->getAtributos() as $atributo) {
+        foreach ($atributosComuns as $atributo) {
             $i ++;
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
             $codigo .= 'isset ( $this->post [\'' . $atributo->getNome() . '\'] )';
-            if ($i != count($objeto->getAtributos())) {
+            if ($i != count($atributosComuns)) {
                 $codigo .= ' && ';
             }
         }
@@ -544,7 +568,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
 			return;
 		}
 ';
-        foreach ($objeto->getAtributos() as $atributo) {
+        foreach ($atributosComuns as $atributo) {
             $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
@@ -591,7 +615,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
 		foreach ( $lista as $linha ) {
 			$listagem [\'lista\'] [] = array (';
         $i = 0;
-        foreach ($objeto->getAtributos() as $atributo) {
+        foreach ($atributosComuns as $atributo) {
             $i ++;
             $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
             $codigo .= '
@@ -801,7 +825,7 @@ class ' . $nomeDoObjetoMa . ' {';
             $this->codigo .= " (\n";
             $i = 0;
             $atributosComuns = array();
-            $atributosNN = array();
+
             
             foreach ($objeto->getAtributos() as $atributo) {
                 if(substr($atributo->getTipo(),0,6) == 'Array '){
@@ -910,13 +934,10 @@ function __autoload($classe) {
 <head>
 <meta charset="utf-8">
 <title>' . $software->getNome() . '</title>
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <!-- Bootstrap CSS -->
-<link rel="stylesheet"
-	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="css/style.css" />
-<title>EscritorDeSoftware</title>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -1022,6 +1043,19 @@ if(isset($_GET[\'pagina\'])){
         $nomeDoObjetoMa = strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100);
         
         $nomeDoSite = $software->getNome();
+        
+        $atributosComuns = array();
+        foreach ($objeto->getAtributos() as $atributo) {
+            if(substr($atributo->getTipo(),0,6) == 'Array '){
+                if(explode(' ', $atributo->getTipo())[1]  == 'n:n'){
+                    $objetosNN[] = $objeto;
+                }
+            }else if($atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_FLOAT)
+            {
+                $atributosComuns[] = $atributo;
+            }///Depois faremos um else if pra objeto.
+        }
+        
         $codigo = '<?php
             
 /**
@@ -1050,16 +1084,14 @@ class ' . $nomeDoObjetoMa . 'View {
 									</div>
 						              <form class="user" method="post">';
         
-        $atributos = $objeto->getAtributos();
+
         
-        foreach ($atributos as $atributo) {
+        foreach ($atributosComuns as $atributo) {
             $variavel = $atributo->getNome();
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
-            if(substr($atributo->getTipo(), 0, 6) == 'Array '){
-                continue;
-            }
+
             $codigo .= '
                                         <div class="form-group">
                 						  <input type="text" class="form-control form-control-user" id="' . $variavel . '" name="' . $variavel . '" placeholder="' . $variavel . '">
@@ -1112,7 +1144,7 @@ class ' . $nomeDoObjetoMa . 'View {
 				<thead>
 					<tr>';
         $i = 0;
-        foreach($objeto->getAtributos() as $atributo){
+        foreach($atributosComuns as $atributo){
             $i++;
             if($i >= 4){
                 break;
@@ -1127,7 +1159,7 @@ class ' . $nomeDoObjetoMa . 'View {
 				<tfoot>
 					<tr>';
         $i = 0;
-        foreach($objeto->getAtributos() as $atributo){
+        foreach($atributosComuns as $atributo){
             $i++;
             if($i >= 4){
                 break;
@@ -1147,7 +1179,7 @@ class ' . $nomeDoObjetoMa . 'View {
             foreach($lista as $elemento){
                 echo \'<tr>\';';
         $i = 0;
-        foreach($objeto->getAtributos() as $atributo){
+        foreach($atributosComuns as $atributo){
             $i++;
             if($i >= 4){
                 break;
@@ -1193,7 +1225,7 @@ class ' . $nomeDoObjetoMa . 'View {
                 </div>
                 <div class="card-body">';
         
-        foreach($objeto->getAtributos() as $atributo){
+        foreach($atributosComuns as $atributo){
             $codigo .= '
                 '.ucfirst($atributo->getNome()).': \'.$'.$nomeDoObjeto.'->get'.ucfirst ($atributo->getNome()).'().\'<br>';
         }
@@ -1225,8 +1257,8 @@ class ' . $nomeDoObjetoMa . 'View {
 									</div>
 						              <form class="user" method="post">';
         
-        $atributos = $objeto->getAtributos();
-        foreach ($atributos as $atributo) {
+
+        foreach ($atributosComuns as $atributo) {
             $variavel = $atributo->getNome();
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
@@ -1276,8 +1308,7 @@ class ' . $nomeDoObjetoMa . 'View {
 									</div>
 						              <form class="user" method="post">';
         
-        $atributos = $objeto->getAtributos();
-        foreach ($atributos as $atributo) {
+        foreach ($atributosComuns as $atributo) {
             $variavel = $atributo->getNome();
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
