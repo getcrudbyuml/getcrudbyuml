@@ -1457,12 +1457,13 @@ class ' . $nomeDoObjetoMa . 'View {
                                             
     }
 
-}
+
 ';
             
         }
         
-       
+       $codigo .= '
+}';
 
         $gerador = new GeradorDeCodigoPHP();
         $gerador->caminho = 'sistemasphp/' . $nomeDoSite . '/src/classes/view/' . $nomeDoObjetoMa . 'View.php';
