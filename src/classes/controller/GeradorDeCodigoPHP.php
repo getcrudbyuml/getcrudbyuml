@@ -573,18 +573,17 @@ class ' . $nomeDoObjetoMa . 'Controller {
         
 	    $this->view->mostrarSelecionado($selecionado);';
 
-        foreach($atributosNN as $atributo){
+        foreach($atributosNN as $atributoNN){
             $codigo .= '
-        $this->dao->buscar'.ucfirst($atributo->getNome()).'($selecionado);
+        $this->dao->buscar'.ucfirst($atributoNN->getNome()).'($selecionado);
             ';
             $codigo .= 'echo \'<div class="row">\';';
             $codigo .= '
-        //$'.strtolower(explode(" ", $atributo->getTipo())[2]).'View = new '.ucfirst(explode(" ", $atributo->getTipo())[2]).'View();
-        //$'.strtolower(explode(" ", $atributo->getTipo())[2]).'View->listar();
+        //$'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'View = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'View();
+        //$'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'View->listar();
+        
         ';
             $codigo .= 'echo \'</div>\';';
-            
-        
             
         }
         $codigo .= '
@@ -593,11 +592,18 @@ class ' . $nomeDoObjetoMa . 'Controller {
         
         foreach($atributosNN as $atributoNN){
             $codigo .= '
-                
-                
-	public function cadastrar'.ucfirst(explode(' ', $atributoNN->getTipo())[2]).'() {
+                            
+	public function cadastrar'.ucfirst(explode(' ', $atributoNN->getTipo())[2]).'() 
+    {
+
         
-    }';
+    }
+	public function remover'.ucfirst(explode(' ', $atributoNN->getTipo())[2]).'() 
+    {
+        
+    }
+
+';
             
             
             
@@ -606,7 +612,6 @@ class ' . $nomeDoObjetoMa . 'Controller {
         }
         
         $codigo .= '
-
 
 	public function cadastrar() {
         if(!isset($_GET[\'cadastrar\'])){
