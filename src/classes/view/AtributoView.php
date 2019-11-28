@@ -39,12 +39,13 @@ class AtributoView {
                                             <option value="'.Atributo::TIPO_INT.'">Inteiro</option>
                                             <option value="'.Atributo::TIPO_FLOAT.'">Float</option>';
 
-		foreach($listaTipos as $tipo){
-		    echo '<option value="'.$tipo->getNome().'">'.$tipo->getNome().'</option>';
-		}
-		foreach($listaTipos as $tipo){
-		    echo '<option value="Array 1:n '.$tipo->getNome().'">Array 1:n '.$tipo->getNome().'</option>';
-		}
+		//Objetos e relacionamentos 1:n ainda não funcionam. 
+// 		foreach($listaTipos as $tipo){
+// 		    echo '<option value="'.$tipo->getNome().'">'.$tipo->getNome().'</option>';
+// 		}
+// 		foreach($listaTipos as $tipo){
+// 		    echo '<option value="Array 1:n '.$tipo->getNome().'">Array 1:n '.$tipo->getNome().'</option>';
+// 		}
 		foreach($listaTipos as $tipo){
 		    echo '<option value="Array n:n '.$tipo->getNome().'">Array n:n '.$tipo->getNome().'</option>';
 		}

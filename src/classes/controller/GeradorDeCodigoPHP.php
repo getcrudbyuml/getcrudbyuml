@@ -715,7 +715,7 @@ class ' . $nomeDoObjetoMa . ' {';
     
     public function geraBancoPG(Software $software)
     {
-        $objetosComRelacionamento = array();
+        $objetosNN = array();
         $this->codigo = '';
         foreach ($software->getObjetos() as $objeto) {
             $this->codigo .= 'CREATE TABLE ' . strtolower($objeto->getNome());
@@ -733,10 +733,13 @@ class ' . $nomeDoObjetoMa . ' {';
                 }else if($atributo->getTipo() == Atributo::TIPO_FLOAT){
                     $this->codigo .= strtolower($atributo->getNome()) . ' character  numeric(8,2)';
                 }else if(substr($atributo->getTipo(),0,6) == 'Array '){
-                    $objetosComRelacionamento[] = $objeto;
+                    if(explode(' ', $atributo->getTipo())[1]  == 'n:n'){
+                        $objetosNN[] = $objeto;
+                    }
                     $flagPulei = true;
+
                 }else{
-                    $this->codigo .= 'id_'.strtolower($atributo->getTipo())._.strtolower($atributo->getNome()) . ' integer NOT NULL';
+                    $this->codigo .= 'id_'.strtolower($atributo->getTipo()).'_'.strtolower($atributo->getNome()) . ' integer NOT NULL';
                 }
                 if ($i == count($objeto->getAtributos())) {
                     foreach ($objeto->getAtributos() as $atributo) {
@@ -758,11 +761,35 @@ class ' . $nomeDoObjetoMa . ' {';
             }
 
             $this->codigo .= ");\n";
+            
         }
+        foreach($objetosNN as $objeto){
+  
+            //explode(' ', $string);
+            foreach($objeto->getAtributos() as $atributo){
+                if(substr($atributo->getTipo(),0,6) == 'Array '){
+                    $this->codigo .= 'CREATE TABLE ' . strtolower($objeto->getNome()).'_'.strtolower(explode(" ", $atributo->getTipo())[2]);
+                    $this->codigo .= '(
+    id serial NOT NULL,
+    id'.strtolower($objeto->getNome()).' integer NOT NULL,
+    id'.strtolower(explode(" ", $atributo->getTipo())[2]).' integer NOT NULL,
+    CONSTRAINT pk_'.strtolower($objeto->getNome()).'_'.strtolower(explode(" ", $atributo->getTipo())[2]).'_id PRIMARY KEY (id),
+    CONSTRAINT fk_'.strtolower($objeto->getNome()).'_id FOREIGN KEY (id'.strtolower($objeto->getNome()).') REFERENCES '.strtolower($objeto->getNome()).' (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT fk_'.strtolower(explode(" ", $atributo->getTipo())[2]).'_id FOREIGN KEY (id'.strtolower(explode(" ", $atributo->getTipo())[2]).') REFERENCES '.strtolower(explode(" ", $atributo->getTipo())[2]).' (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION
+);';
+
+                }
+                
+            }
+
+        }
+        $this->codigo .= '';
         $this->caminho = 'sistemasphp/' . $software->getNome() . '/' . strtolower($software->getNome()) . '_banco_pg.sql';
     }
     public function geraBancoSqlite(Software $software)
     {
+        $objetosNN = array();
+        
         $bdNome = 'sistemasphp/' . $software->getNome() . '/' . strtolower($software->getNome()) . '.db';
         if(file_exists($bdNome)){
             unlink($bdNome);
@@ -770,23 +797,62 @@ class ' . $nomeDoObjetoMa . ' {';
         $pdo = new PDO('sqlite:' . $bdNome);
         $this->codigo = '';
         foreach ($software->getObjetos() as $objeto) {
-            $this->codigo .= 'CREATE TABLE `' . strtolower($objeto->getNome());
-            $this->codigo .= "` (\n";
+            $this->codigo .= 'CREATE TABLE ' . strtolower($objeto->getNome());
+            $this->codigo .= " (\n";
             $i = 0;
+            $atributosComuns = array();
+            $atributosNN = array();
+            
             foreach ($objeto->getAtributos() as $atributo) {
+                if(substr($atributo->getTipo(),0,6) == 'Array '){
+                    if(explode(' ', $atributo->getTipo())[1]  == 'n:n'){
+                        $objetosNN[] = $objeto;
+                    }
+                }else{
+                    $atributosComuns[] = $atributo;
+                }
+            }
+            foreach($atributosComuns as $atributo){
                 $i ++;
                 if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                    $this->codigo .= '`' . strtolower($atributo->getNome()) . '`	INTEGER PRIMARY KEY AUTOINCREMENT';
-                } else {
-                    $this->codigo .= '`' . strtolower($atributo->getNome()) . '`	TEXT';
+                    $this->codigo .= strtolower($atributo->getNome()) . '	INTEGER PRIMARY KEY AUTOINCREMENT';
+                } else if($atributo->getTipo() == Atributo::TIPO_STRING){
+                    $this->codigo .= strtolower($atributo->getNome()) . '	TEXT';
+                }else if($atributo->getTipo() == Atributo::TIPO_INT){
+                    $this->codigo .= strtolower($atributo->getNome()) . '  INTEGER';
+                }else if($atributo->getTipo() == Atributo::TIPO_FLOAT){
+                    $this->codigo .= strtolower($atributo->getNome()) . ' NUMERIC';
                 }
-                if ($i == count($objeto->getAtributos())) {
+                else{
+                    $this->codigo .= 'id_'.strtolower($atributo->getTipo()).'_'.strtolower($atributo->getNome()) . ' integer NOT NULL';
+                }
+                if ($i >= count($atributosComuns)) {
                     $this->codigo .= "\n";
                     continue;
                 }
+
                 $this->codigo .= ",\n";
+
             }
             $this->codigo .= ");\n";
+        }
+        
+        foreach($objetosNN as $objeto){
+            
+            //explode(' ', $string);
+            foreach($objeto->getAtributos() as $atributo){
+                if(substr($atributo->getTipo(),0,6) == 'Array '){
+                    $this->codigo .= 'CREATE TABLE ' . strtolower($objeto->getNome()).'_'.strtolower(explode(" ", $atributo->getTipo())[2]);
+                    $this->codigo .= '(
+    id 	INTEGER PRIMARY KEY AUTOINCREMENT,
+    id'.strtolower($objeto->getNome()).' INTEGER,
+    id'.strtolower(explode(" ", $atributo->getTipo())[2]).' INTEGER    
+);';
+                    
+                }
+                
+            }
+            
         }
         $pdo->exec($this->codigo);
         $this->caminho = 'sistemasphp/' . $software->getNome() . '/' . strtolower($software->getNome()) . '_banco_sqlite.sql';
