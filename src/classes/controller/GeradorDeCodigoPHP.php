@@ -579,12 +579,18 @@ class ' . $nomeDoObjetoMa . 'Controller {
         }
         echo \'
 		<div class="row justify-content-center">\';
+        echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
         $controller->listar();
-        $controller->editar();
-        $controller->deletar();
-        if(!isset($_GET[\'editar\']) && !isset($_GET[\'deletar\'])){
-	       $controller->cadastrar();    
-	    }
+        echo \'</div>\';
+        echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
+        if(isset($_GET[\'editar\'])){
+            $controller->editar();
+        }else if(isset($_GET[\'deletar\'])){
+            $controller->deletar();
+	    }else{
+            $controller->cadastrar();
+        }
+        echo \'</div>\';
         echo \'</div>\';
         
     }
@@ -611,7 +617,11 @@ class ' . $nomeDoObjetoMa . 'Controller {
 	        $this->view->mensagem("Página Inexistente");
 	        return;
 	    }
-	    $this->view->mostrarSelecionado($selecionado);';
+        echo \'<div class="col-xl-7 col-lg-7 col-md-12 col-sm-12">\';
+	    $this->view->mostrarSelecionado($selecionado);
+        echo \'</div>\';
+
+';
 
         foreach($atributosNN as $atributoNN){
             $codigo .= '
@@ -619,31 +629,43 @@ class ' . $nomeDoObjetoMa . 'Controller {
         $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'Dao = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'DAO($this->dao->getConexao());
         $lista = $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'Dao->retornaLista();
         
-        
+        echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
         $this->view->exibir'.ucfirst($atributoNN->getNome()).'($selecionado);
-        $this->view->adicionar'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($lista);
+        echo \'</div>\';
+        
 
-        if(isset($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']))
-        {
+        if(!isset($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']) && !isset($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
+            echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
+            $this->view->adicionar'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($lista);
+            echo \'</div>\';
+        }else if(isset($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
             $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).' = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'();
             $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'->setId($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']);
-            if($this->dao->inserir'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selecionado, $pergunta)){
+            if($this->dao->inserir'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selecionado, $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).')){
+                echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
     			$this->view->mensagem("Sucesso ao Inserir!");
+                echo \'</div>\';
     		} else {
+                echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
     			$this->view->mensagem("Erro ao Inserir!");
+                echo \'</div>\';
     		}
-            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina=grupo&selecionar=\'.$selecionado->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
+            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina='.$nomeDoObjeto.'&selecionar=\'.$selecionado->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
             return;
-        }else if(isset($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
+        }else  if(isset($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
         
             $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).' = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'();
             $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'->setId($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']);
-            if($this->dao->remover'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selecionado, $pergunta)){
-    			$this->view->mensagem("Sucesso ao Inserir!");
+            if($this->dao->remover'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selecionado, $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).')){
+                echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
+    			$this->view->mensagem("Sucesso ao Remover!");
+                echo \'</div>\';
     		} else {
-    			$this->view->mensagem("Erro ao Inserir!");
+                echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
+    			$this->view->mensagem("Erro ao tentar Remover!");
+                echo \'</div>\';
     		}
-            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina=grupo&selecionar=\'.$selecionado->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
+            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina='.$nomeDoObjeto.'&selecionar=\'.$selecionado->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
             return;
         }
 
@@ -1234,7 +1256,7 @@ class ' . $nomeDoObjetoMa . 'View {
 	public function mostraFormInserir() {
 		echo \'
     
-<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+
     
 				<div class="card o-hidden border-0 shadow-lg my-5">
 					<div class="card-body p-0">
@@ -1272,7 +1294,7 @@ class ' . $nomeDoObjetoMa . 'View {
 							</div>
 						</div>
 					</div>
-				</div>
+
                                             
 			</div>
 \';
@@ -1282,7 +1304,7 @@ class ' . $nomeDoObjetoMa . 'View {
     public function exibirLista($lista){
            echo \'
                                             
-<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+
 
 	<div class="card o-hidden border-0 shadow-lg my-5">
               <div class="card mb-4">
@@ -1361,7 +1383,7 @@ class ' . $nomeDoObjetoMa . 'View {
             
             
     
-        </div>
+
       </div>
   </div>
 </div>  
@@ -1372,7 +1394,7 @@ class ' . $nomeDoObjetoMa . 'View {
             
         public function mostrarSelecionado('.$nomeDoObjetoMa.' $'.$nomeDoObjeto.'){
         echo \'
-<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+
 	<div class="card o-hidden border-0 shadow-lg my-5">
         <div class="card mb-4">
             <div class="card-header">
@@ -1390,7 +1412,7 @@ class ' . $nomeDoObjetoMa . 'View {
             </div>
         </div>
     </div>
-</div>
+
 
 \';
     }
@@ -1398,7 +1420,7 @@ class ' . $nomeDoObjetoMa . 'View {
 	public function mostraFormEditar('.$nomeDoObjetoMa.' $'.$nomeDoObjeto.') {
 		echo \'
     
-			<div class="col-xl-6 col-lg-12 col-md-9">
+
     
 				<div class="card o-hidden border-0 shadow-lg my-5">
 					<div class="card-body p-0">
@@ -1434,8 +1456,7 @@ class ' . $nomeDoObjetoMa . 'View {
 							</div>
 						</div>
 					</div>
-				</div>
-                                            
+                   
 
                                             
 	</div>\';
@@ -1444,7 +1465,7 @@ class ' . $nomeDoObjetoMa . 'View {
     public function confirmarDeletar('.$nomeDoObjetoMa.' $'.$nomeDoObjeto.') {
 		echo \'
     
-			<div class="col-xl-6 col-lg-6 col-md-9">
+
     
 				<div class="card o-hidden border-0 shadow-lg my-5">
 					<div class="card-body p-0">
@@ -1476,7 +1497,7 @@ class ' . $nomeDoObjetoMa . 'View {
 							</div>
 						</div>
 					</div>
-				</div>
+
                                             
 
                                             
@@ -1486,7 +1507,7 @@ class ' . $nomeDoObjetoMa . 'View {
     public function mensagem($mensagem) {
 		echo \'
     
-			<div class="col-xl-6 col-lg-6 col-md-9">
+
     
 				<div class="card o-hidden border-0 shadow-lg my-5">
 					<div class="card-body p-0">
@@ -1504,7 +1525,7 @@ class ' . $nomeDoObjetoMa . 'View {
 							</div>
 						</div>
 					</div>
-				</div>
+
                        
 	</div>\';
 	}
@@ -1536,10 +1557,7 @@ class ' . $nomeDoObjetoMa . 'View {
     public function exibir'.ucfirst($atributoNN->getNome()).'('.ucfirst($objeto->getNome()).' $'.strtolower($objeto->getNome()).'){
         echo \'
            
-          
-<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                    
-	<div class="card o-hidden border-0 shadow-lg my-5">
+    	<div class="card o-hidden border-0 shadow-lg my-5">
               <div class="card mb-4">
                 <div class="card-header">
                   '.explode(" ", $atributoNN->getTipo())[2].' do '.$objeto->getNome().'
@@ -1615,7 +1633,7 @@ class ' . $nomeDoObjetoMa . 'View {
                     
                     
                     
-        </div>
+
       </div>
   </div>
 </div>
@@ -1632,7 +1650,7 @@ class ' . $nomeDoObjetoMa . 'View {
         echo \'
 		
         
-<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+
     <div class="card o-hidden border-0 shadow-lg my-5">
 	   <div class="card-body p-0">
 		  <div class="row">
@@ -1688,7 +1706,7 @@ class ' . $nomeDoObjetoMa . 'View {
 							</div>
 						</div>
 					</div>
-				</div>
+
                                             
 	   </div>\';
                                             
