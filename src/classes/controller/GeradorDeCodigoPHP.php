@@ -490,6 +490,36 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
 		}
 	}
 
+
+
+
+	public function remover'.ucfirst(explode(" ", $atributo->getTipo())[2]).'('. $nomeDoObjetoMA . ' $' . $nomeDoObjeto . ', '.ucfirst(explode(" ", $atributo->getTipo())[2]).' $'.strtolower(explode(" ", $atributo->getTipo())[2]).'){
+        $id'.strtolower($objeto->getNome()).' =  $' . $nomeDoObjeto.'->getId();     
+        $id'.strtolower(explode(' ', $atributo->getTipo())[2]).' = $'.strtolower(explode(" ", $atributo->getTipo())[2]).'->getId();
+		$sql = "DELETE FROM  '.strtolower($objeto->getNome()).'_'.strtolower(explode(' ', $atributo->getTipo())[2]).' WHERE ';
+        $codigo .= '
+                    id'.strtolower($objeto->getNome()).' = :id'.strtolower($objeto->getNome()).' 
+                    AND 
+                    id'.strtolower(explode(' ', $atributo->getTipo())[2]).' = :id'.strtolower(explode(' ', $atributo->getTipo())[2]).'";';
+        
+        $codigo .= '
+		try {
+			$db = $this->getConexao();
+			$stmt = $db->prepare($sql);';
+            
+        $codigo .= '		
+		    $stmt->bindParam("id'.strtolower($objeto->getNome()).'", $id'.strtolower($objeto->getNome()).', PDO::PARAM_INT);
+            $stmt->bindParam("id'.strtolower(explode(' ', $atributo->getTipo())[2]). '", $id'.strtolower(explode(' ', $atributo->getTipo())[2]) . ', PDO::PARAM_INT);
+';
+        
+        $codigo .= '
+			return $stmt->execute();
+		} catch(PDOException $e) {
+			echo \'{"error":{"text":\'. $e->getMessage() .\'}}\';
+		}
+	}
+
+
 ';
         }
         
@@ -542,13 +572,20 @@ class ' . $nomeDoObjetoMa . 'Controller {
     public static function main(){
         $controller = new '.$nomeDoObjetoMa.'Controller();
         if (isset($_GET[\'selecionar\'])){
-            $controller->selecionar();
+            echo \'<div class="row justify-content-center">\';
+                $controller->selecionar();
+            echo \'</div>\';
             return;
         }
-        $controller->cadastrar();
+        echo \'
+		<div class="row justify-content-center">\';
+        $controller->listar();
         $controller->editar();
         $controller->deletar();
-        $controller->listar();
+        if(!isset($_GET[\'editar\']) && !isset($_GET[\'deletar\'])){
+	       $controller->cadastrar();    
+	    }
+        echo \'</div>\';
         
     }
 	public function __construct(){
@@ -569,54 +606,59 @@ class ' . $nomeDoObjetoMa . 'Controller {
 	    }
         $selecionado = new '.$nomeDoObjetoMa.'();
 	    $selecionado->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'selecionar\']);
-	    $this->dao->pesquisaPor'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selecionado);
-        
+	    
+        if(count($this->dao->pesquisaPor'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selecionado)) == 0){
+	        $this->view->mensagem("Página Inexistente");
+	        return;
+	    }
 	    $this->view->mostrarSelecionado($selecionado);';
 
         foreach($atributosNN as $atributoNN){
             $codigo .= '
         $this->dao->buscar'.ucfirst($atributoNN->getNome()).'($selecionado);
-            ';
-            $codigo .= 'echo \'<div class="row">\';';
-            $codigo .= '
-        //$'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'View = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'View();
-        //$'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'View->listar();
+        $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'Dao = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'DAO($this->dao->getConexao());
+        $lista = $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'Dao->retornaLista();
         
+        
+        $this->view->exibir'.ucfirst($atributoNN->getNome()).'($selecionado);
+        $this->view->adicionar'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($lista);
+
+        if(isset($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']))
+        {
+            $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).' = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'();
+            $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'->setId($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']);
+            if($this->dao->inserir'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selecionado, $pergunta)){
+    			$this->view->mensagem("Sucesso ao Inserir!");
+    		} else {
+    			$this->view->mensagem("Erro ao Inserir!");
+    		}
+            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina=grupo&selecionar=\'.$selecionado->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
+            return;
+        }else if(isset($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
+        
+            $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).' = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'();
+            $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'->setId($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']);
+            if($this->dao->remover'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selecionado, $pergunta)){
+    			$this->view->mensagem("Sucesso ao Inserir!");
+    		} else {
+    			$this->view->mensagem("Erro ao Inserir!");
+    		}
+            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina=grupo&selecionar=\'.$selecionado->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
+            return;
+        }
+
+
         ';
-            $codigo .= 'echo \'</div>\';';
+
             
         }
         $codigo .= '
         
     }';
         
-        foreach($atributosNN as $atributoNN){
-            $codigo .= '
-                            
-	public function cadastrar'.ucfirst(explode(' ', $atributoNN->getTipo())[2]).'() 
-    {
-
-        
-    }
-	public function remover'.ucfirst(explode(' ', $atributoNN->getTipo())[2]).'() 
-    {
-        
-    }
-
-';
-            
-            
-            
-            
-            
-        }
-        
         $codigo .= '
 
 	public function cadastrar() {
-        if(!isset($_GET[\'cadastrar\'])){
-            return;
-        }
 		
         if(!isset($this->post[\'enviar_' . $nomeDoObjeto . '\'])){
             $this->view->mostraFormInserir();   
@@ -1190,12 +1232,9 @@ if(isset($_GET[\'pagina\'])){
 class ' . $nomeDoObjetoMa . 'View {
 
 	public function mostraFormInserir() {
-		echo \'<div class="container">
+		echo \'
     
-		<!-- Outer Row -->
-		<div class="row justify-content-center">
-    
-			<div class="col-xl-6 col-lg-12 col-md-9">
+<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
     
 				<div class="card o-hidden border-0 shadow-lg my-5">
 					<div class="card-body p-0">
@@ -1236,31 +1275,20 @@ class ' . $nomeDoObjetoMa . 'View {
 				</div>
                                             
 			</div>
-                                            
-		</div>
-                                            
-	</div>\';
+\';
 	}
     
                                              
     public function exibirLista($lista){
            echo \'
                                             
-<div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">'.$nomeDoObjeto.'</h6>
-                  <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                      <div class="dropdown-header">Menu:</div>
-                      <a class="dropdown-item" href="?pagina='.$nomeDoObjeto.'&cadastrar=1">Adicionar '.$nomeDoObjeto.'</a>
-                    </div>
-                  </div>
+<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+
+	<div class="card o-hidden border-0 shadow-lg my-5">
+              <div class="card mb-4">
+                <div class="card-header">
+                  Grupo selecionado
                 </div>
-                <!-- Card Body -->
                 <div class="card-body">
                           
                           
@@ -1332,10 +1360,11 @@ class ' . $nomeDoObjetoMa . 'View {
 		</div>
             
             
-            
-                </div>
-              </div>
-            
+    
+        </div>
+      </div>
+  </div>
+</div>  
             
 \';
     }
@@ -1343,13 +1372,13 @@ class ' . $nomeDoObjetoMa . 'View {
             
         public function mostrarSelecionado('.$nomeDoObjetoMa.' $'.$nomeDoObjeto.'){
         echo \'
-            <div class="col-lg-3">
-              <!-- Default Card Example -->
-              <div class="card mb-4">
-                <div class="card-header">
+<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+	<div class="card o-hidden border-0 shadow-lg my-5">
+        <div class="card mb-4">
+            <div class="card-header">
                   '.$nomeDoObjetoMa.' selecionado
-                </div>
-                <div class="card-body">';
+            </div>
+            <div class="card-body">';
         
         foreach($atributosComuns as $atributo){
             $codigo .= '
@@ -1358,16 +1387,16 @@ class ' . $nomeDoObjetoMa . 'View {
         
         $codigo .= '
             
-                </div>
-              </div>
-            </div>\';
+            </div>
+        </div>
+    </div>
+</div>
+
+\';
     }
 
 	public function mostraFormEditar('.$nomeDoObjetoMa.' $'.$nomeDoObjeto.') {
-		echo \'<div class="container">
-    
-		<!-- Outer Row -->
-		<div class="row justify-content-center">
+		echo \'
     
 			<div class="col-xl-6 col-lg-12 col-md-9">
     
@@ -1407,20 +1436,15 @@ class ' . $nomeDoObjetoMa . 'View {
 					</div>
 				</div>
                                             
-			</div>
-                                            
-		</div>
+
                                             
 	</div>\';
 	}
     
     public function confirmarDeletar('.$nomeDoObjetoMa.' $'.$nomeDoObjeto.') {
-		echo \'<div class="container">
+		echo \'
     
-		<!-- Outer Row -->
-		<div class="row justify-content-center">
-    
-			<div class="col-xl-6 col-lg-12 col-md-9">
+			<div class="col-xl-6 col-lg-6 col-md-9">
     
 				<div class="card o-hidden border-0 shadow-lg my-5">
 					<div class="card-body p-0">
@@ -1454,27 +1478,164 @@ class ' . $nomeDoObjetoMa . 'View {
 					</div>
 				</div>
                                             
-			</div>
-                                            
-		</div>
+
                                             
 	</div>\';
-	}';
-        
-        foreach($atributosNN as $atributoNN){
-            $codigo .= '
-    public function adicionar'.ucfirst(explode(' ', $atributoNN->getTipo())[2]).'($lista){
-        
+	}
 
-        echo \'
-		<div class="row justify-content-center">
-        
-			<div class="col-xl-6 col-lg-12 col-md-9">
-        
+    public function mensagem($mensagem) {
+		echo \'
+    
+			<div class="col-xl-6 col-lg-6 col-md-9">
+    
 				<div class="card o-hidden border-0 shadow-lg my-5">
 					<div class="card-body p-0">
 						<!-- Nested Row within Card Body -->
 						<div class="row">
+    
+							<div class="col-lg-12">
+								<div class="p-5">
+									<div class="text-center">
+										<h1 class="h4 text-gray-900 mb-4">\'.$mensagem.\'</h1>
+									</div>
+						              
+                                            
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+                       
+	</div>\';
+	}
+
+
+
+';
+        
+        foreach($atributosNN as $atributoNN){
+            foreach($software->getObjetos() as $objeto3){
+                if($objeto3->getNome() == explode(' ', $atributoNN->getTipo())[2]){
+                    $objetoNN = $objeto3;
+                    break;
+                }
+            }
+            foreach ($objetoNN->getAtributos() as $atributo2) {
+                if(substr($atributo2->getTipo(),0,6) == 'Array '){
+//                     if(explode(' ', $atributo2->getTipo())[1]  == 'n:n'){
+//                         $atributosNN2[] = $atributo2;
+//                     }
+                }else if($atributo2->getTipo() == Atributo::TIPO_INT || $atributo2->getTipo() == Atributo::TIPO_STRING || $atributo2->getTipo() == Atributo::TIPO_FLOAT)
+                {
+                    $atributosComuns2[] = $atributo2;
+                }///Depois faremos um else if pra objeto.
+            }
+            
+            $codigo .= '
+     
+    public function exibir'.ucfirst($atributoNN->getNome()).'('.ucfirst($objeto->getNome()).' $'.strtolower($objeto->getNome()).'){
+        echo \'
+           
+          
+<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                    
+	<div class="card o-hidden border-0 shadow-lg my-5">
+              <div class="card mb-4">
+                <div class="card-header">
+                  '.explode(" ", $atributoNN->getTipo())[2].' do '.$objeto->getNome().'
+                </div>
+                <div class="card-body">
+                    
+                    
+		<div class="table-responsive">
+			<table class="table table-bordered" id="dataTable" width="100%"
+				cellspacing="0">
+				<thead>
+					<tr>';
+                $i = 0;
+                foreach($atributosComuns2 as $atributo3){
+                    $i++;
+                    if($i >= 4){
+                        break;
+                    }
+                    $codigo .= '
+						<th>'.$atributo3->getNome().'</th>';
+                }
+                $codigo .= '<th>Ações</th>';
+                $codigo .= '
+					</tr>
+				</thead>
+				<tfoot>
+					<tr>';
+                $i = 0;
+                foreach($atributosComuns2 as $atributo3){
+                    $i++;
+                    if($i >= 4){
+                        break;
+                    }
+                    $codigo .= '
+                        <th>'.$atributo3->getNome().'</th>';
+                }
+                $codigo .= '<th>Ações</th>';
+                $codigo .= '
+					</tr>
+				</tfoot>
+				<tbody>';
+                $codigo .= '\';';
+                
+                $codigo .= '
+                    
+            foreach($'.strtolower($objeto->getNome()).'->get'.ucfirst($atributoNN->getNome()).'() as $elemento){
+                echo \'<tr>\';';
+                $i = 0;
+                foreach($atributosComuns2 as $atributo3){
+                    $i++;
+                    if($i >= 4){
+                        break;
+                    }
+                    $codigo .= '
+                echo \'<td>\'.$elemento->get'.ucfirst ($atributo3->getNome()).'().\'</td>\';';
+                }
+                $codigo .= 'echo \'<td>
+                        <a href="?pagina='.strtolower(explode(' ', $atributoNN->getTipo())[2]).'&selecionar=\'.$elemento->get'.ucfirst ($objetoNN->getAtributos()[0]->getNome()).'().\'" class="btn btn-info">Selecionar</a>
+                        <a href="?pagina='.strtolower($objeto->getNome()).'&selecionar=\'.$'.strtolower($objeto->getNome()).'->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'&remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'=\'.$elemento->get'.ucfirst($atributosComuns2[0]->getNome()).'().\'" class="btn btn-danger">Remover</a>
+                      </td>\';';
+                
+                $codigo .= '
+                echo \'<tr>\';
+            }
+                    
+        ';
+                
+                $codigo .= 'echo \'';
+                $codigo .= '
+				</tbody>
+			</table>
+		</div>
+                    
+                    
+                    
+        </div>
+      </div>
+  </div>
+</div>
+
+
+
+        \';
+
+    }
+
+    public function adicionar'.ucfirst(explode(' ', $atributoNN->getTipo())[2]).'($lista){
+        
+
+        echo \'
+		
+        
+<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+    <div class="card o-hidden border-0 shadow-lg my-5">
+	   <div class="card-body p-0">
+		  <div class="row">
         
 							<div class="col-lg-12">
 								<div class="p-5">
@@ -1485,14 +1646,28 @@ class ' . $nomeDoObjetoMa . 'View {
             
             $codigo .= '
                                         <div class="form-group">
-                						  <select type="text" class="form-control form-control-user" id="id'.explode(" ", $atributoNN->getTipo())[2].'" name="id'.explode(" ", $atributoNN->getTipo())[2].'" >
+                						  <select type="text" class="form-control form-control-user" id="add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'" name="add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'" >
                                                 <option>Adicione '.explode(" ", $atributoNN->getTipo())[2].'</option>\';
 ';
             $codigo .= '
-            foreach($lista as $elemento){
+            foreach($lista as $elemento){';
+            $atributosLabel = array();
+            foreach($objetoNN->getAtributos() as $atributo2){
+                if($atributo2->getIndice() == Atributo::INDICE_PRIMARY){
+                    $atributoChave = $atributo2;                    
+                }else if($atributo2->getTipo() == Atributo::TIPO_INT || $atributo2->getTipo() == Atributo::TIPO_STRING){
+                    $atributosLabel[] = $atributo2; 
+                }
+            }
+            $codigo .= '
                 echo \'             
 
-                                                <option value=""></option>\';
+                                                <option value="\'.$elemento->get'.ucfirst($atributoChave->getNome()).'().\'">';
+            foreach($atributosLabel as $atributo2){
+                $codigo .= '\'.$elemento->get'.ucfirst($atributo2->getNome()).'().\' - ';
+
+            }
+                                                $codigo .= '</option>\';
 
             }
 
@@ -1514,9 +1689,6 @@ class ' . $nomeDoObjetoMa . 'View {
 						</div>
 					</div>
 				</div>
-                                            
-			</div>
-
                                             
 	   </div>\';
                                             
