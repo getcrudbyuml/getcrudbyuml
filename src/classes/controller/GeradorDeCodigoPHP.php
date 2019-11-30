@@ -442,9 +442,21 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
                 if(strtolower($obj->getNome()) == strtolower(explode(' ', $atributo->getTipo())[2]))
                 {
                     foreach($obj->getAtributos() as $atr){
+                        
                         $nomeDoAtributoMA = ucfirst($atr->getNome());
-                        $codigo .= '
+                        
+                        if($atr->getTipo() == Atributo::TIPO_INT || $atr->getTipo() == Atributo::TIPO_STRING || $atr->getTipo() == Atributo::TIPO_FLOAT)
+                        {
+                            $codigo .= '
 	        $'.strtolower(explode(' ', $atributo->getTipo())[2]).'->set'.$nomeDoAtributoMA.'( $linha [\''.strtolower($atr->getNome()).'\'] );';
+                        }else if(substr($atr->getTipo(), 0, 6) == 'Array '){
+                            //
+                            $codigo .= '
+            $'.strtolower(explode(' ', $atributo->getTipo())[2]).'Dao = new '.ucfirst(explode(' ', $atributo->getTipo())[2]).'DAO($this->getConexao());
+            $'.strtolower(explode(' ', $atributo->getTipo())[2]).'Dao->buscar'.ucfirst($atr->getNome()).'($'.strtolower(explode(' ', $atributo->getTipo())[2]).');';
+                            //$objetoDao->buscar
+                        }
+                        
                     }
                     $codigo .= '';
                     break;   
@@ -547,6 +559,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
         
         $atributosComuns = array();
         $atributosNN = array();
+        $atributosObjetos = array();
         foreach ($objeto->getAtributos() as $atributo) {
             if(substr($atributo->getTipo(),0,6) == 'Array '){
                 $atributosNN[] = $atributo;
@@ -554,6 +567,10 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
             {
                 $atributosComuns[] = $atributo;
             }///Depois faremos um else if pra objeto. 
+            else {
+                $atributosObjetos[] = $atributo;
+                
+            }
         }
         
         
@@ -682,8 +699,27 @@ class ' . $nomeDoObjetoMa . 'Controller {
 
 	public function cadastrar() {
 		
-        if(!isset($this->post[\'enviar_' . $nomeDoObjeto . '\'])){
-            $this->view->mostraFormInserir();   
+        if(!isset($this->post[\'enviar_' . $nomeDoObjeto . '\'])){';
+        foreach($atributosObjetos as $atributoObjeto){
+            $codigo .= '
+            $'.strtolower($atributoObjeto->getTipo()).'Dao = new '.ucfirst ($atributoObjeto->getTipo()).'DAO($this->dao->getConexao());
+            $lista'.ucfirst ($atributoObjeto->getTipo()).' = $'.strtolower($atributoObjeto->getTipo()).'Dao->retornaLista();
+';
+
+
+        }
+        $codigo .= '
+            $this->view->mostraFormInserir(';     
+        $i = count($atributosObjetos);
+        foreach($atributosObjetos as $atributoObjeto){
+            $i--;
+            $codigo .= '$lista'.ucfirst ($atributoObjeto->getTipo());
+            if($i != 0){
+                $codigo .= ', ';
+            }
+        }
+        $codigo .= ');';
+        $codigo .= '
 		    return;
 		}
 		if (! ( ';
@@ -879,7 +915,12 @@ class ' . $nomeDoObjetoMa . ' {';
 	public function set' . $nome2 . '($' . $nome . ') {';
                     $codigo .= '
 		$this->' . $nome . ' = $' . $nome . ';
+	}
+
+	public function get' . $nome2 . '() {
+		return $this->' . $nome . ';
 	}';
+                    
                 } 
                 else {
                     
@@ -890,9 +931,11 @@ class ' . $nomeDoObjetoMa . ' {';
     public function add'.ucfirst($atrb).'('.ucfirst($atrb).' $'.strtolower($atrb).'){
         $this->'.$nome.'[] = $'.strtolower($atrb).';
     
-    }';
-                        
-                        
+    }
+	public function get' . $nome2 . '() {
+		return $this->' . $nome . ';
+	}';
+
                         
                     }else{
                         $codigo .= '
@@ -900,17 +943,34 @@ class ' . $nomeDoObjetoMa . ' {';
                         
                         $codigo .= '
 		$this->' . $nome . ' = $' . $nome . ';
+	}
+
+	public function get' . $nome2 . '() {
+		return $this->' . $nome . ';
 	}';
                     }
                     
                     
-                } // fecha o caso contrario. o atributo sendo objeto
-                
-                $codigo .= '
-	public function get' . $nome2 . '() {
-		return $this->' . $nome . ';
-	}';
+                }
+             
             }
+        $codigo .= '
+	public function __toString(){
+	    return ';
+            $i = count($objeto->getAtributos());
+            foreach ($objeto->getAtributos() as $atributo) {
+                $i--;
+                $codigo .= '$this->'.$atributo->getNome();
+                if($i != 0){
+                    $codigo .= '.\' - \'.';
+                }
+                
+            }
+            $codigo .= '; 
+	}
+
+';
+            
         }
         
         $codigo .= '
@@ -994,6 +1054,47 @@ class ' . $nomeDoObjetoMa . ' {';
             }
 
         }
+        //Adicionar outras chaves estrangeiras. 
+        
+        foreach ($software->getObjetos() as $objeto) {
+            foreach($objeto->getAtributos() as $atributo){
+                if($atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_FLOAT)
+                {
+                    continue;
+                }else if(substr($atributo->getTipo(),0,6) == 'Array '){
+                    continue;
+                }else{
+                    foreach($software->getObjetos() as $objeto2){
+                        if($atributo->getTipo() == $objeto2->getNome()){
+                            $objetoDoAtributo = $objeto2;
+                            break;
+                        }
+
+                    }
+                    foreacH($objetoDoAtributo->getAtributos() as $atributo3){
+                        if($atributo3->getIndice() == Atributo::INDICE_PRIMARY){
+                            $atributoPrimary = $atributo3;
+                            break;
+                        }
+                    }
+                    $this->codigo .= '
+ALTER TABLE ' . strtolower($objeto->getNome()).'
+ADD CONSTRAINT 
+fk_'.strtolower($objeto->getNome()).'_'.strtolower($atributo->getTipo()).'_'.strtolower($atributo->getNome()) . ' FOREIGN KEY (id_'.strtolower($atributo->getTipo()).'_'.strtolower($atributo->getNome()) . ')
+REFERENCES '.strtolower($atributo->getTipo()).'('.$atributoPrimary->getNome().');
+';
+                }
+                
+            }
+        }
+        /*
+         * 
+         * Modelo de Adicionar Chave estrangeira. 
+ALTER TABLE historico
+ADD CONSTRAINT 
+fk_historico_procedimento FOREIGN KEY (id_procedimento) 
+REFERENCES procedimento(id);
+         */
         $this->codigo .= '';
         $this->caminho = 'sistemasphp/' . $software->getNome() . '/' . strtolower($software->getNome()) . '_banco_pg.sql';
     }
@@ -1233,6 +1334,7 @@ if(isset($_GET[\'pagina\'])){
         
         $atributosComuns = array();
         $atributosNN = array();
+        $atributosObjetos = array();
         foreach ($objeto->getAtributos() as $atributo) {
             if(substr($atributo->getTipo(),0,6) == 'Array '){
                 if(explode(' ', $atributo->getTipo())[1]  == 'n:n'){
@@ -1241,7 +1343,9 @@ if(isset($_GET[\'pagina\'])){
             }else if($atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_FLOAT)
             {
                 $atributosComuns[] = $atributo;
-            }///Depois faremos um else if pra objeto.
+            }else{
+                $atributosObjetos[] = $atributo;
+            }
         }
         
         $codigo = '<?php
@@ -1252,8 +1356,17 @@ if(isset($_GET[\'pagina\'])){
  *
  */
 class ' . $nomeDoObjetoMa . 'View {
-
-	public function mostraFormInserir() {
+	public function mostraFormInserir(';
+        $i = count($atributosObjetos);
+        foreach($atributosObjetos as $atributoObjeto){
+            $i--;
+            $codigo .= '$lista'.ucfirst($atributoObjeto->getTipo());
+            if($i != 0){
+                $codigo .= ', ';
+            }
+            
+        }
+$codigo .= ') {
 		echo \'
     
 
@@ -1273,15 +1386,29 @@ class ' . $nomeDoObjetoMa . 'View {
 
         
         foreach ($atributosComuns as $atributo) {
-            $variavel = $atributo->getNome();
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
 
             $codigo .= '
                                         <div class="form-group">
-                						  <input type="text" class="form-control form-control-user" id="' . $variavel . '" name="' . $variavel . '" placeholder="' . $variavel . '">
+                						  <input type="text" class="form-control form-control-user" id="' . $atributo->getNome() . '" name="' . $atributo->getNome(). '" placeholder="' . $atributo->getNome(). '">
                 						</div>';
+        }
+        foreach($atributosObjetos as $atributo){
+            $codigo .= '
+                                        <div class="form-group">
+                						  <select class="form-control form-control-user" id="' . $atributo->getNome() . '" name="' . $atributo->getNome(). '">
+                                            <option>Selecione o '.$atributo->getNome().'</option>\';
+
+        foreach( $lista'.ucfirst($atributo->getTipo()).' as $elemento){
+            echo \'<option>\'.$elemento.\'</option>\';
+        }
+
+        echo \'
+                                          </select>
+                						</div>';
+            
         }
         
         $codigo .= '
@@ -1309,7 +1436,7 @@ class ' . $nomeDoObjetoMa . 'View {
 	<div class="card o-hidden border-0 shadow-lg my-5">
               <div class="card mb-4">
                 <div class="card-header">
-                  Grupo selecionado
+                  Lista 
                 </div>
                 <div class="card-body">
                           
