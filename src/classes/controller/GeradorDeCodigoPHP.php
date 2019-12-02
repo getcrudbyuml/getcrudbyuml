@@ -21,9 +21,7 @@ class GeradorDeCodigoPHP extends GeradorDeCodigo
         if ($listaDeObjetos) {
             $geradores = array();
             foreach ($listaDeObjetos as $objeto) {
-                
-                $nomedosite = $software->getNome();
-                $gerador = GeradorDeCodigoPHP::geraCodigoDeObjeto($objeto, $nomedosite);
+                $gerador = GeradorDeCodigoPHP::geraCodigoDeObjeto($objeto, $software);
                 $geradores[] = $gerador;
             }
         }
@@ -48,8 +46,7 @@ class GeradorDeCodigoPHP extends GeradorDeCodigo
             $geradores = array();
             foreach ($listaDeObjetos as $objeto) {
                 
-                $nomedosite = $software->getNome();
-                $gerador = GeradorDeCodigoPHP::geraCodigoDeController($objeto, $nomedosite);
+                $gerador = GeradorDeCodigoPHP::geraCodigoDeController($objeto, $software);
                 $geradores[] = $gerador;
             }
         }
@@ -202,6 +199,7 @@ class DAO {
         $nomeDoObjetoDAO = strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100) . 'DAO';
         $atributosComuns = array();
         $atributosNN = array();
+        $atributosObjetos = array();
         foreach ($objeto->getAtributos() as $atributo) {
             if(substr($atributo->getTipo(),0,6) == 'Array '){
                 if(explode(' ', $atributo->getTipo())[1]  == 'n:n'){
@@ -210,6 +208,8 @@ class DAO {
             }else if($atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_FLOAT)
             {
                 $atributosComuns[] = $atributo;
+            }else{
+                $atributosObjetos[] = $atributo;
             }
         }
         
@@ -294,7 +294,21 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
-            $codigo .= $atributo->getNome();
+            $codigo .= strtolower($atributo->getNome());            
+            if ($i != count($atributosComuns)) {
+                $codigo .= ', ';
+            }
+        }
+        $i = 0;
+        foreach ($atributosObjetos as $atributo) {
+            $i ++;
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
+                continue;
+            }
+            if(count($atributosComuns) && $i == 1){
+                $codigo .= ', ';
+            }
+            $codigo .= 'id_'.strtolower($atributo->getTipo()).'_'.strtolower($atributo->getNome());
             if ($i != count($atributosComuns)) {
                 $codigo .= ', ';
             }
@@ -312,6 +326,17 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
                 $codigo .= ', ';
             }
         }
+        $i = 0;
+        foreach ($atributosObjetos as $atributo) {
+            $i ++;
+            if(count($atributosComuns) && $i == 1){
+                $codigo .= ', ';
+            }
+            $codigo .= ':' . $atributo->getNome();
+            if ($i != count($atributosComuns)) {
+                $codigo .= ', ';
+            }
+        }
         
         $codigo .= ')";';
         foreach ($atributosComuns as $atributo) {
@@ -322,7 +347,10 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
             $codigo .= '
 			$' . $atributo->getNome() . ' = $' . $nomeDoObjeto . '->get' . $nomeDoAtributoMA . '();';
         }
-        
+        foreach ($atributosObjetos as $atributo) {
+            $codigo .= '
+			$' . $atributo->getNome() . ' = $' . $nomeDoObjeto . '->get' . ucfirst($atributo->getNome()) . '()->getId();';
+        }
         $codigo .= '
 		try {
 			$db = $this->getConexao();
@@ -331,10 +359,24 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
-            $codigo .= '		
+            if($atributo->getTipo() == Atributo::TIPO_INT){
+                
+                $codigo .= '
+			$stmt->bindParam("' . $atributo->getNome() . '", $' . $atributo->getNome() . ', PDO::PARAM_INT);';
+            }else if($atributo->getTipo() == Atributo::TIPO_FLOAT){
+                $codigo .= '
+			$stmt->bindParam("' . $atributo->getNome() . '", $' . $atributo->getNome() . ', PDO::PARAM_INT);';
+            }else if($atributo->getTipo() == Atributo::TIPO_STRING){
+                $codigo .= '
 			$stmt->bindParam("' . $atributo->getNome() . '", $' . $atributo->getNome() . ', PDO::PARAM_STR);';
+            }
         }
-        
+        foreach ($atributosObjetos as $atributo) {
+
+            $codigo .= '
+			$stmt->bindParam("' . $atributo->getNome() . '", $' . $atributo->getNome() . ', PDO::PARAM_INT);';
+
+        }
         $codigo .= '
 			return $stmt->execute();
 		} catch(PDOException $e) {
@@ -551,7 +593,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
      * @param Objeto $objeto
      * @return GeradorDeCodigoPHP
      */
-    public static function geraCodigoDeController(Objeto $objeto, $nomeDoSite)
+    public static function geraCodigoDeController(Objeto $objeto, Software $software)
     {
         $geradorDeCodigo = new GeradorDeCodigoPHP();
         $nomeDoObjeto = strtolower($objeto->getNome());
@@ -749,6 +791,21 @@ class ' . $nomeDoObjetoMa . 'Controller {
             $codigo .= '		
 		$' . $nomeDoObjeto . '->set' . $nomeDoAtributoMA . ' ( $this->post [\'' . $atributo->getNome() . '\'] );';
         }
+        foreach($atributosObjetos as $atributoObjeto){
+            foreach($software->getObjetos() as $objeto3){
+                if($atributoObjeto->getTipo() == $objeto3->getNome())
+                {
+                    foreach($objeto3->getAtributos() as $atributo2){
+                        if($atributo2->getIndice() == Atributo::INDICE_PRIMARY){
+                            $codigo .= '
+		$' . $nomeDoObjeto . '->get' .ucfirst($atributoObjeto->getNome()) . '()->set'.ucfirst ($atributo2->getNome()).' ( $this->post [\'' . $atributoObjeto->getNome() . '\'] );';
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
         
         $codigo .= '	
 		
@@ -862,6 +919,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
         $codigo .= '
 }
 ?>';
+        $nomeDoSite = $software->getNome();
         
         $geradorDeCodigo->codigo = $codigo;
         $geradorDeCodigo->caminho = 'sistemasphp/' . $nomeDoSite . '/src/classes/controller/' . strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100) . 'Controller.php';
@@ -869,11 +927,11 @@ class ' . $nomeDoObjetoMa . 'Controller {
         return $geradorDeCodigo;
     }
 
-    public static function geraCodigoDeObjeto(Objeto $objeto, $nomeDoSite)
+    public static function geraCodigoDeObjeto(Objeto $objeto, Software $software)
     {
         $geradorDeCodigo = new GeradorDeCodigoPHP();
         $nomeDoObjetoMa = strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100);
-        
+        $nomeDoSite = $software->getNome();
         $codigo = '<?php
 	
 /**
@@ -899,6 +957,14 @@ class ' . $nomeDoObjetoMa . ' {';
                     $codigo .= '
         $this->'.$atributo->getNome().' = array();';
                     
+                }else if($atributo->getTipo() == Atributo::TIPO_FLOAT || $atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_STRING){
+                    continue;
+                }
+                else
+                {
+                    $codigo .= '
+        $this->'.strtolower($atributo->getNome()).' = new '.ucfirst($atributo->getTipo()).'();';
+
                 }
             }
             $codigo .= '
