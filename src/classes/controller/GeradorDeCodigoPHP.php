@@ -1556,14 +1556,15 @@ $codigo .= ') {
             $codigo .= '
                 echo \'<td>\'.$elemento->get'.ucfirst ($atributo->getNome()).'().\'</td>\';';
         }
-        $codigo .= 'echo \'<td>
+        $codigo .= '
+                echo \'<td>
                         <a href="?pagina='.$nomeDoObjeto.'&selecionar=\'.$elemento->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'" class="btn btn-info">Selecionar</a> 
                         <a href="?pagina='.$nomeDoObjeto.'&editar=\'.$elemento->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'" class="btn btn-success">Editar</a>
                         <a href="?pagina='.$nomeDoObjeto.'&deletar=\'.$elemento->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'" class="btn btn-danger">Deletar</a>
                       </td>\';';
         
         $codigo .= '
-                echo \'<tr>\';
+                echo \'</tr>\';
             }
             
         ';
