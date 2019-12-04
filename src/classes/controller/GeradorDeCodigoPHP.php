@@ -213,6 +213,7 @@ class DAO {
             }
         }
         
+        
         $codigo = '<?php
 		
 /**
@@ -401,7 +402,28 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
 	
 	public function retornaLista() {
 		$lista = array ();
-		$sql = "SELECT * FROM ' . $nomeDoObjeto . ' LIMIT 1000";
+		$sql = "SELECT * FROM ' . $nomeDoObjeto;
+        foreach($atributosObjetos as $atributoObjeto){
+            
+            foreach($software->getObjetos() as $objeto2){
+                if($objeto2->getNome() == $atributoObjeto->getTipo()){
+                    foreach($objeto2->getAtributos() as $atributo3){
+                        if($atributo3->getIndice() == Atributo::INDICE_PRIMARY){
+                            $codigo .= '
+                INNER JOIN '.strtolower($atributoObjeto->getTipo()).'
+                ON '.strtolower($atributoObjeto->getTipo()).'.'.$atributo3->getNome().' = '.$nomeDoObjeto.'.'.strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome());
+                            break;
+                        }
+                        
+                    }
+                    break;
+                }
+            }
+            
+        }
+		
+		$codigo .= '
+                 LIMIT 1000";
 		$result = $this->getConexao ()->query ( $sql );
 	
 		foreach ( $result as $linha ) {
@@ -415,17 +437,29 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
             $codigo .= '
 			$' . $nomeDoObjeto . '->set' . $nomeDoAtributoMA . '( $linha [\'' . $atributo->getNome() . '\'] );';
         }
+        foreach($atributosObjetos as $atributoObjeto){
+            
+            foreach($software->getObjetos() as $objeto2){
+                if($objeto2->getNome() == $atributoObjeto->getTipo()){
+                    foreach($objeto2->getAtributos() as $atributo3){
+                        if($atributo3->getIndice() == Atributo::INDICE_PRIMARY){
+                            $codigo .= '
+			$' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set'.ucfirst($atributo3->getNome()).'( $linha [\'' . strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome()) . '\'] );';
+                            break;
+                        }
+                        
+                    }
+                    break;
+                }
+            }
+            
+        }
         $codigo .= '
 			$lista [] = $' . $nomeDoObjeto . ';
 		}
 		return $lista;
 	}';
 
-
-        
-        
-        
-        
         foreach ($atributosComuns as $atributo) {
 
                 $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
@@ -1515,7 +1549,7 @@ $codigo .= ') {
         $i = 0;
         foreach($atributosComuns as $atributo){
             $i++;
-            if($i >= 4){
+            if($i >= 5){
                 break;
             }
             $codigo .= '
@@ -1530,7 +1564,7 @@ $codigo .= ') {
         $i = 0;
         foreach($atributosComuns as $atributo){
             $i++;
-            if($i >= 4){
+            if($i >= 5){
                 break;
             }
             $codigo .= '
@@ -1550,7 +1584,7 @@ $codigo .= ') {
         $i = 0;
         foreach($atributosComuns as $atributo){
             $i++;
-            if($i >= 4){
+            if($i >= 5){
                 break;
             }
             $codigo .= '
