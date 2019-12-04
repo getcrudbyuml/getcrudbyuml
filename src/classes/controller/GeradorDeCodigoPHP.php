@@ -1602,8 +1602,20 @@ $codigo .= ') {
             }
             $codigo .= '
 						<th>'.$atributo->getNome().'</th>';
+            
         }
-        $codigo .= '<th>Ações</th>';
+        $i = 0;
+        foreach($atributosObjetos as $atributo){
+            $i++;
+            if($i >= 5){
+                break;
+            }
+            $codigo .= '
+						<th>'.$atributo->getNome().'</th>';
+            
+        }
+        $codigo .= '
+                        <th>Ações</th>';
         $codigo .= '
 					</tr>
 				</thead>
@@ -1618,7 +1630,18 @@ $codigo .= ') {
             $codigo .= '
                         <th>'.$atributo->getNome().'</th>';
         }
-        $codigo .= '<th>Ações</th>';
+        $i = 0;
+        foreach($atributosObjetos as $atributo){
+            $i++;
+            if($i >= 5){
+                break;
+            }
+            $codigo .= '
+						<th>'.$atributo->getNome().'</th>';
+            
+        }
+        $codigo .= '
+                        <th>Ações</th>';
         $codigo .= '
 					</tr>
 				</tfoot>
@@ -1638,7 +1661,15 @@ $codigo .= ') {
             $codigo .= '
                 echo \'<td>\'.$elemento->get'.ucfirst ($atributo->getNome()).'().\'</td>\';';
         }
-        
+        $i = 0;
+        foreach($atributosObjetos as $atributo){
+            $i++;
+            if($i >= 5){
+                break;
+            }
+            $codigo .= '
+                echo \'<td>\'.$elemento->get'.ucfirst ($atributo->getNome()).'().\'</td>\';';
+        }
         $codigo .= '
                 echo \'<td>
                         <a href="?pagina='.$nomeDoObjeto.'&selecionar=\'.$elemento->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'" class="btn btn-info">Selecionar</a> 
