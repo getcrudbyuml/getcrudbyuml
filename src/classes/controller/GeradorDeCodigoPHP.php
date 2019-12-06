@@ -306,11 +306,11 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
-            if(count($atributosComuns) && $i == 1){
+            if(count($atributosComuns) != 0 && $i == 1){
                 $codigo .= ', ';
             }
             $codigo .= 'id_'.strtolower($atributo->getTipo()).'_'.strtolower($atributo->getNome());
-            if ($i != count($atributosComuns)) {
+            if ($i != count($atributosObjetos)) {
                 $codigo .= ', ';
             }
         }
@@ -334,7 +334,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
                 $codigo .= ', ';
             }
             $codigo .= ':' . $atributo->getNome();
-            if ($i != count($atributosComuns)) {
+            if ($i != count($atributosObjetos)) {
                 $codigo .= ', ';
             }
         }
