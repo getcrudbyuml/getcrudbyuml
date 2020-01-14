@@ -595,7 +595,8 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
                 $codigo .= '
 	    $result = $this->getConexao ()->query ( $sql );
 	        
-	    foreach ( $result as $linha ) {';
+	    foreach ( $result as $linha ) {
+            $'.$nomeDoObjeto.' = new '.ucfirst($nomeDoObjeto).'();';
                 foreach ($atributosComuns as $atributo2) {
                     
                     $nomeDoAtributoMA = strtoupper(substr($atributo2->getNome(), 0, 1)) . substr($atributo2->getNome(), 1, 100);
