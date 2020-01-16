@@ -9,13 +9,14 @@ class EscritorDeSoftware{
         
         $escritor = new EscritorDeSoftware($software);
         $escritor->gerarCodigo();
-        $escritor->criarArquivos();
         
     }
     public function __construct(Software $software){
         $this->software = $software;
     }
     public function gerarCodigo(){
+        $this->criarDiretorios();
+        
         $gerador = new ModelGerador($this->software);
         $gerador->gerarCodigo(self::PHP_LINGUAGEM);
         $listas[0] = $gerador->getListaDeArquivos();
@@ -30,8 +31,7 @@ class EscritorDeSoftware{
         $this->criarArquivos();
     }
 
-    public function criarArquivos(){
-
+    public function criarDiretorios(){
         $pathPhp = 'sistemas/'.$this->software->getNome().'/php/src';
         $pathJava = 'sistemas/'.$this->software->getNome().'/java/src/br/com/escritordesoftware/'.strtolower($this->software->getNome());
         
@@ -54,6 +54,9 @@ class EscritorDeSoftware{
                 mkdir ($pasta, 0777, true );
             }
         }
+    }
+    public function criarArquivos(){
+
         foreach($this->listaDeArquivos as $path => $codigo){
             if(file_exists($path)){
                 unlink($path);

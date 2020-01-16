@@ -12,11 +12,20 @@ class DBGerador{
     }
     public function gerarCodigo(){
         $codigo = $this->geraINI();
-        $path = 'sistemas/'.$this->software->getNome().'/'.strtolower($this->software->getNome() . '_bd.ini');
+        $path = 'sistemas/'.$this->software->getNome().'/'.strtolower($this->software->getNome()). '_bd.ini';
         
         $this->listaDeArquivos[$path] = $codigo;
         
-
+        $path = 'sistemas/'.$this->software->getNome().'/'.strtolower($this->software->getNome()) . '_banco_pg.sql';
+        $codigo = $this->geraBancoPG($this->software);
+        $this->listaDeArquivos[$path] = $codigo;
+        
+        $path = 'sistemas/'.$this->software->getNome().'/'.strtolower($this->software->getNome()) . '_banco_sqlite.sql';
+        $codigo = $this->geraBancoSqlite($this->software);
+        $this->listaDeArquivos[$path] = $codigo;
+        
+        
+        
     }
 
     public function geraINI()
@@ -41,22 +50,22 @@ senha = 123
     public function geraBancoPG(Software $software)
     {
         $objetosNN = array();
-        $this->codigo = '';
+        $codigo = '';
         foreach ($software->getObjetos() as $objeto) {
-            $this->codigo .= 'CREATE TABLE ' . strtolower($objeto->getNome());
-            $this->codigo .= " (\n";
+            $codigo .= 'CREATE TABLE ' . strtolower($objeto->getNome());
+            $codigo .= " (\n";
             $i = 0;
             foreach ($objeto->getAtributos() as $atributo) {
                 $i ++;
                 $flagPulei = false;
                 if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                    $this->codigo .=  strtolower($atributo->getNome()) . ' serial NOT NULL';
+                    $codigo .=  strtolower($atributo->getNome()) . ' serial NOT NULL';
                 } else if($atributo->getTipo() == Atributo::TIPO_STRING){
-                    $this->codigo .= strtolower($atributo->getNome()) . ' character varying(150)';
+                    $codigo .= strtolower($atributo->getNome()) . ' character varying(150)';
                 }else if($atributo->getTipo() == Atributo::TIPO_INT){
-                    $this->codigo .= strtolower($atributo->getNome()) . '  integer';
+                    $codigo .= strtolower($atributo->getNome()) . '  integer';
                 }else if($atributo->getTipo() == Atributo::TIPO_FLOAT){
-                    $this->codigo .= strtolower($atributo->getNome()) . ' character  numeric(8,2)';
+                    $codigo .= strtolower($atributo->getNome()) . ' character  numeric(8,2)';
                 }else if(substr($atributo->getTipo(),0,6) == 'Array '){
                     if(explode(' ', $atributo->getTipo())[1]  == 'n:n'){
                         $objetosNN[] = $objeto;
@@ -64,28 +73,28 @@ senha = 123
                     $flagPulei = true;
                     
                 }else{
-                    $this->codigo .= 'id_'.strtolower($atributo->getTipo()).'_'.strtolower($atributo->getNome()) . ' integer NOT NULL';
+                    $codigo .= 'id_'.strtolower($atributo->getTipo()).'_'.strtolower($atributo->getNome()) . ' integer NOT NULL';
                 }
                 if ($i == count($objeto->getAtributos())) {
                     foreach ($objeto->getAtributos() as $atributo) {
                         if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                             if(!$flagPulei){
-                                $this->codigo .= ",\n";
+                                $codigo .= ",\n";
                             }
-                            $this->codigo .= ' CONSTRAINT pk_'.strtolower($objeto->getNome()).'_'.strtolower($atributo->getNome()).' PRIMARY KEY ('.strtolower($atributo->getNome()).')';
+                            $codigo .= ' CONSTRAINT pk_'.strtolower($objeto->getNome()).'_'.strtolower($atributo->getNome()).' PRIMARY KEY ('.strtolower($atributo->getNome()).')';
                             break;
                         }
                     }
-                    $this->codigo .= "\n";
+                    $codigo .= "\n";
                     continue;
                 }
                 if(!$flagPulei){
-                    $this->codigo .= ",\n";
+                    $codigo .= ",\n";
                 }
                 
             }
             
-            $this->codigo .= ");\n";
+            $codigo .= ");\n";
             
         }
         foreach($objetosNN as $objeto){
@@ -93,8 +102,8 @@ senha = 123
             //explode(' ', $string);
             foreach($objeto->getAtributos() as $atributo){
                 if(substr($atributo->getTipo(),0,6) == 'Array '){
-                    $this->codigo .= 'CREATE TABLE ' . strtolower($objeto->getNome()).'_'.strtolower(explode(" ", $atributo->getTipo())[2]);
-                    $this->codigo .= '(
+                    $codigo .= 'CREATE TABLE ' . strtolower($objeto->getNome()).'_'.strtolower(explode(" ", $atributo->getTipo())[2]);
+                    $codigo .= '(
     id serial NOT NULL,
     id'.strtolower($objeto->getNome()).' integer NOT NULL,
     id'.strtolower(explode(" ", $atributo->getTipo())[2]).' integer NOT NULL,
@@ -131,7 +140,7 @@ senha = 123
                             break;
                         }
                     }
-                    $this->codigo .= '
+                    $codigo .= '
 ALTER TABLE ' . strtolower($objeto->getNome()).'
 ADD CONSTRAINT
 fk_'.strtolower($objeto->getNome()).'_'.strtolower($atributo->getTipo()).'_'.strtolower($atributo->getNome()) . ' FOREIGN KEY (id_'.strtolower($atributo->getTipo()).'_'.strtolower($atributo->getNome()) . ')
@@ -142,22 +151,22 @@ REFERENCES '.strtolower($atributo->getTipo()).'('.$atributoPrimary->getNome().')
             }
         }
 
-        $this->codigo .= '';
-        $this->caminho = 'sistemasphp/' . $software->getNome() . '/' . strtolower($software->getNome()) . '_banco_pg.sql';
+        return $codigo;
+        
     }
     public function geraBancoSqlite(Software $software)
     {
         $objetosNN = array();
         
-        $bdNome = 'sistemasphp/' . $software->getNome() . '/' . strtolower($software->getNome()) . '.db';
+        $bdNome = 'sistemas/' . $software->getNome() . '/' . strtolower($software->getNome()) . '.db';
         if(file_exists($bdNome)){
             unlink($bdNome);
         }
         $pdo = new PDO('sqlite:' . $bdNome);
-        $this->codigo = '';
+        $codigo = '';
         foreach ($software->getObjetos() as $objeto) {
-            $this->codigo .= 'CREATE TABLE ' . strtolower($objeto->getNome());
-            $this->codigo .= " (\n";
+            $codigo .= 'CREATE TABLE ' . strtolower($objeto->getNome());
+            $codigo .= " (\n";
             $i = 0;
             $atributosComuns = array();
             
@@ -174,26 +183,26 @@ REFERENCES '.strtolower($atributo->getTipo()).'('.$atributoPrimary->getNome().')
             foreach($atributosComuns as $atributo){
                 $i ++;
                 if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                    $this->codigo .= strtolower($atributo->getNome()) . '	INTEGER PRIMARY KEY AUTOINCREMENT';
+                    $codigo .= strtolower($atributo->getNome()) . '	INTEGER PRIMARY KEY AUTOINCREMENT';
                 } else if($atributo->getTipo() == Atributo::TIPO_STRING){
-                    $this->codigo .= strtolower($atributo->getNome()) . '	TEXT';
+                    $codigo .= strtolower($atributo->getNome()) . '	TEXT';
                 }else if($atributo->getTipo() == Atributo::TIPO_INT){
-                    $this->codigo .= strtolower($atributo->getNome()) . '  INTEGER';
+                    $codigo .= strtolower($atributo->getNome()) . '  INTEGER';
                 }else if($atributo->getTipo() == Atributo::TIPO_FLOAT){
-                    $this->codigo .= strtolower($atributo->getNome()) . ' NUMERIC';
+                    $codigo .= strtolower($atributo->getNome()) . ' NUMERIC';
                 }
                 else{
-                    $this->codigo .= 'id_'.strtolower($atributo->getTipo()).'_'.strtolower($atributo->getNome()) . ' integer NOT NULL';
+                    $codigo .= 'id_'.strtolower($atributo->getTipo()).'_'.strtolower($atributo->getNome()) . ' integer NOT NULL';
                 }
                 if ($i >= count($atributosComuns)) {
-                    $this->codigo .= "\n";
+                    $codigo .= "\n";
                     continue;
                 }
                 
-                $this->codigo .= ",\n";
+                $codigo .= ",\n";
                 
             }
-            $this->codigo .= ");\n";
+            $codigo .= ");\n";
         }
         
         foreach($objetosNN as $objeto){
@@ -201,8 +210,8 @@ REFERENCES '.strtolower($atributo->getTipo()).'('.$atributoPrimary->getNome().')
             //explode(' ', $string);
             foreach($objeto->getAtributos() as $atributo){
                 if(substr($atributo->getTipo(),0,6) == 'Array '){
-                    $this->codigo .= 'CREATE TABLE ' . strtolower($objeto->getNome()).'_'.strtolower(explode(" ", $atributo->getTipo())[2]);
-                    $this->codigo .= '(
+                    $codigo .= 'CREATE TABLE ' . strtolower($objeto->getNome()).'_'.strtolower(explode(" ", $atributo->getTipo())[2]);
+                    $codigo .= '(
     id 	INTEGER PRIMARY KEY AUTOINCREMENT,
     id'.strtolower($objeto->getNome()).' INTEGER,
     id'.strtolower(explode(" ", $atributo->getTipo())[2]).' INTEGER
@@ -213,8 +222,8 @@ REFERENCES '.strtolower($atributo->getTipo()).'('.$atributoPrimary->getNome().')
             }
             
         }
-        $pdo->exec($this->codigo);
-        $this->caminho = 'sistemasphp/' . $software->getNome() . '/' . strtolower($software->getNome()) . '_banco_sqlite.sql';
+        $pdo->exec($codigo);
+        return $codigo;
     }
     
 }
