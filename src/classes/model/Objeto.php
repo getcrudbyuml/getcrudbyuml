@@ -31,5 +31,13 @@ class Objeto {
 	public function getAtributos(){
 	    return $this->atributos;
 	}
+	public function possuiArray(){
+	    foreach($this->atributos as $atributo){
+	        if($atributo->isArray()){
+	            return true;
+	        }
+	    }
+	    return false;
+	}
 }
 ?>
