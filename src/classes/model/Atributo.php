@@ -35,11 +35,32 @@ class Atributo {
 	public function getIndice() {
 		return $this->indice;
 	}
-
+	public function tipoListado(){
+	    if($this->tipo == self::TIPO_INT || $this->tipo == self::TIPO_STRING || $this->tipo == self::TIPO_FLOAT){
+	        return true;
+	    }
+	}
+	public function getTipoJava(){
+	    $tipo = $this->getTipo();
+	    if($this->tipoListado()){
+	        if($this->getTipo() == self::TIPO_INT){
+	            $tipo = 'int';
+	        }else if($this->getTipo() == self::TIPO_STRING){
+	            $tipo = 'String';
+	        }else if($this->getTipo() == self::TIPO_FLOAT){
+	            $tipo = 'String';
+	        }
+	    }
+	    if(substr(trim($this->getTipo()), 0, 6) == 'Array '){
+	        $tipo = "ArrayList<".explode(' ', $this->getTipo())[2].'>';
+	    }
+	    return $tipo;
+	}
 	const INDICE_PRIMARY = "PRIMARY";
 	const TIPO_INT = "Int";
 	const TIPO_STRING = "string";
 	const TIPO_FLOAT = "float";
+	
 	
 }
 ?>
