@@ -26,7 +26,7 @@ class ModelGerador{
     }
     private function geraCodigoJava(){
         
-        $path = 'sistemas/'.$this->software->getNome().'/java/src';
+        $path = 'sistemas/'.$this->software->getNome().'/java/'.$this->software->getNome().'/src/main/java';
         foreach($this->software->getObjetos() as $objeto){
             $codigo = $this->geraModelJava($objeto, $this->software);
             $caminho = $path.'/br/com/escritordesoftware/'.strtolower($this->software->getNome()).'/model/' . ucfirst($objeto->getNome()) . '.java';

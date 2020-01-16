@@ -18,22 +18,32 @@ class EscritorDeSoftware{
         $this->criarDiretorios();
         
         $gerador = new ModelGerador($this->software);
-        $gerador->gerarCodigo(self::PHP_LINGUAGEM);
+        $gerador->gerarCodigo();
         $listas[0] = $gerador->getListaDeArquivos();
         
         $gerador = new DBGerador($this->software);
-        $gerador->gerarCodigo(self::PHP_LINGUAGEM);
+        $gerador->gerarCodigo();
         $listas[1] = $gerador->getListaDeArquivos();
+        
+        $gerador = new MainGerador($this->software);
+        $gerador->gerarCodigo();
+        $listas[2] = $gerador->getListaDeArquivos();
+        
         
         $this->listaDeArquivos = $listas[0];
         $this->criarArquivos();
+        
         $this->listaDeArquivos = $listas[1];
+        $this->criarArquivos();
+        
+        $this->listaDeArquivos = $listas[2];
         $this->criarArquivos();
     }
 
     public function criarDiretorios(){
         $pathPhp = 'sistemas/'.$this->software->getNome().'/php/src';
-        $pathJava = 'sistemas/'.$this->software->getNome().'/java/src/br/com/escritordesoftware/'.strtolower($this->software->getNome());
+        $pathJava = 'sistemas/'.$this->software->getNome().'/java/'.$this->software->getNome().'/src/main/java/br/com/escritordesoftware/'.strtolower($this->software->getNome());
+        $pastas[] = 'sistemas/'.$this->software->getNome().'/java/'.$this->software->getNome().'/src/main/resources/images';
         
         
         $pastas[] =  $pathPhp.'/classes/model';
@@ -48,6 +58,7 @@ class EscritorDeSoftware{
         $pastas[] = $pathJava.'/view';
         $pastas[] = $pathJava.'/controller';
         $pastas[] = $pathJava.'/dao';
+        $pastas[] = $pathJava.'/main';
         
         foreach($pastas as $pasta){
             if(!file_exists ($pasta)){
