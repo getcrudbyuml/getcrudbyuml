@@ -10,31 +10,15 @@ class DBGerador{
     public function getListaDeArquivos(){
         return $this->listaDeArquivos;
     }
-    public function gerarCodigo($linguagem = self::PHP_LINGUAGEM){
-        switch ($linguagem){
-            case EscritorDeSoftware::PHP_LINGUAGEM:
-                $this->geraCodigoPHP();
-                break;
-            case EscritorDeSoftware::JAVA_LINGUAGEM:
-                $this->geraCodigoJava();
-                break;
-            default:
-                $this->geraCodigoPHP();
-                break;
-        }
+    public function gerarCodigo(){
+        $codigo = $this->geraINI();
+        $path = 'sistemas/'.$this->software->getNome().'/'.strtolower($this->software->getNome() . '_bd.ini');
         
+        $this->listaDeArquivos[$path] = $codigo;
+        
+
     }
-    private function geraCodigoJava(){
-        $codigo = $this->geraINI($this->software);
-        $caminho = "sistemas/sistemasjava/" . $this->software->getNome() . '/' . strtolower($this->software->getNome() . '_bd.ini');
-        $this->listaDeArquivos[$caminho] = $codigo;
-    }
-    private function geraCodigoPHP(){
-        $codigo = $this->geraINI($this->software);
-        $caminho = "sistemas/sistemasphp/" . $this->software->getNome() . '/' . strtolower($this->software->getNome()) . '_bd.ini';
-        $this->listaDeArquivos[$caminho] = $codigo;
-    }
-    
+
     public function geraINI()
     {
         $codigo = '

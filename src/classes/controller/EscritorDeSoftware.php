@@ -24,31 +24,31 @@ class EscritorDeSoftware{
         $gerador->gerarCodigo(self::PHP_LINGUAGEM);
         $listas[1] = $gerador->getListaDeArquivos();
         
-        $this->listaDeArquivos = array_merge($listas[0], $listas[1]);
-        
+        $this->listaDeArquivos = $listas[0];
         $this->criarArquivos();
-        
+        $this->listaDeArquivos = $listas[1];
+        $this->criarArquivos();
     }
 
     public function criarArquivos(){
 
-        
-        $pastas[] = 'sistemas/sistemasphp/'.$this->software->getNome().'/src';
-        $pastas[] = 'sistemas/sistemasphp/'.$this->software->getNome() .'/src/classes';
-        $pastas[] = 'sistemas/sistemasphp/'.$this->software->getNome().'/src/classes/model';
-        $pastas[] = 'sistemas/sistemasphp/'.$this->software->getNome().'/src/classes/view';
-        $pastas[] = 'sistemas/sistemasphp/'.$this->software->getNome().'/src/classes/controller';
-        $pastas[] = 'sistemas/sistemasphp/'.$this->software->getNome().'/src/classes/view';
-        $pastas[] = 'sistemas/sistemasphp/'.$this->software->getNome().'/src/classes/dao';
-        $pastas[] = 'sistemas/sistemasphp/'.$this->software->getNome().'/src/img';
-        $pastas[] = 'sistemas/sistemasphp/'.$this->software->getNome().'/src/css';
-        $pastas[] = 'sistemas/sistemasphp/'.$this->software->getNome().'/src/js';
+        $pathPhp = 'sistemas/'.$this->software->getNome().'/php/src';
+        $pathJava = 'sistemas/'.$this->software->getNome().'/java/src/br/com/escritordesoftware/'.strtolower($this->software->getNome());
         
         
-        $pastas[] = 'sistemas/sistemasjava/'.$this->software->getNome() .'/src/br/com/escritordesoftware/'.strtolower($this->software->getNome()).'/model';
-        $pastas[] = 'sistemas/sistemasjava/'.$this->software->getNome() .'/src/br/com/escritordesoftware/'.strtolower($this->software->getNome()).'/view';
-        $pastas[] = 'sistemas/sistemasjava/'.$this->software->getNome() .'/src/br/com/escritordesoftware/'.strtolower($this->software->getNome()).'/controller';
-        $pastas[] = 'sistemas/sistemasjava/'.$this->software->getNome() .'/src/br/com/escritordesoftware/'.strtolower($this->software->getNome()).'/dao';
+        $pastas[] =  $pathPhp.'/classes/model';
+        $pastas[] =  $pathPhp.'/classes/view';
+        $pastas[] =  $pathPhp.'/classes/controller';
+        $pastas[] =  $pathPhp.'/classes/dao';
+        $pastas[] =  $pathPhp.'/img';
+        $pastas[] =  $pathPhp.'/css';
+        $pastas[] =  $pathPhp.'/js';
+        
+        $pastas[] = $pathJava.'/model';
+        $pastas[] = $pathJava.'/view';
+        $pastas[] = $pathJava.'/controller';
+        $pastas[] = $pathJava.'/dao';
+        
         foreach($pastas as $pasta){
             if(!file_exists ($pasta)){
                 mkdir ($pasta, 0777, true );
@@ -63,6 +63,7 @@ class EscritorDeSoftware{
             fclose($file);
         }
     }
+    
     const PHP_LINGUAGEM = 0;
     const JAVA_LINGUAGEM = 1;
     

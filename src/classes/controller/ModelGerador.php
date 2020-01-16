@@ -19,31 +19,25 @@ class ModelGerador{
      * Selecione uma linguagem
      * @param int $linguagem
      */
-    public function gerarCodigo($linguagem = self::PHP_LINGUAGEM){
-        switch ($linguagem){
-            case EscritorDeSoftware::PHP_LINGUAGEM:
-                $this->geraCodigoPHP();
-                break;
-            case EscritorDeSoftware::JAVA_LINGUAGEM:
-                $this->geraCodigoJava();
-                break;
-            default:
-                $this->geraCodigoPHP();
-                break;
-        }
+    public function gerarCodigo(){
+        $this->geraCodigoPHP();
+        $this->geraCodigoJava();
         
     }
     private function geraCodigoJava(){
+        
+        $path = 'sistemas/'.$this->software->getNome().'/java/src';
         foreach($this->software->getObjetos() as $objeto){
             $codigo = $this->geraModelJava($objeto, $this->software);
-            $caminho = 'sistemas/sistemasjava/' .strtolower($this->software->getNome()) . '/src/br/com/escritordesoftware/'.strtolower($this->software->getNome()).'/model/' . ucfirst($objeto->getNome()) . '.java';
+            $caminho = $path.'/br/com/escritordesoftware/'.strtolower($this->software->getNome()).'/model/' . ucfirst($objeto->getNome()) . '.java';
             $this->listaDeArquivos[$caminho] = $codigo;
         }
     }
     private function geraCodigoPHP(){
+        $path = 'sistemas/'.$this->software->getNome().'/php/src';
         foreach($this->software->getObjetos() as $objeto){
             $codigo = $this->geraModelPHP($objeto, $this->software);
-            $caminho = 'sistemas/sistemasphp/' .strtolower($this->software->getNome()) . '/src/classes/model/' . strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100) . '.php';
+            $caminho = $path.'/classes/model/' . strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100) . '.php';
             $this->listaDeArquivos[$caminho] = $codigo;
         }
     }
