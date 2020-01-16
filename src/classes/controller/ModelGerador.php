@@ -36,7 +36,7 @@ class ModelGerador{
     private function geraCodigoJava(){
         foreach($this->software->getObjetos() as $objeto){
             $codigo = $this->geraModelJava($objeto, $this->software);
-            $caminho = 'sistemasjava/' .strtolower($this->software->getNome()) . '/src/classes/model/' . strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100) . '.php';
+            $caminho = 'sistemasjava/' .strtolower($this->software->getNome()) . '/src/br/com/escritordesoftware/escola/model/' . ucfirst($objeto->getNome()) . '.java';
             $this->listaDeArquivos[$caminho] = $codigo;
         }
     }
@@ -187,85 +187,85 @@ class ' . ucfirst ($objeto->getNome()) . ' {';
         }
         
         
-            $codigo .= '
+        $codigo .= '
     public ' . ucfirst ($objeto->getNome()) . '(){
 ';
-            foreach ($objeto->getAtributos() as $atributo) {
-                if(substr(trim($atributo->getTipo()), 0, 6) == 'Array '){
-                    $atrb = explode(' ', $atributo->getTipo())[2];
+        foreach ($objeto->getAtributos() as $atributo) {
+            if($atributo->isArray()){
                     $codigo .= '
-        this->'.$atributo->getNome().' = ArrayList();';
+        this.'.$atributo->getNome().' = new ArrayList<'.$atributo->getTipoDeArray().'>();';
                     
-                }else if($atributo->getTipo() == Atributo::TIPO_FLOAT || $atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_STRING){
-                    continue;
-                }
-                else
-                {
-                    $codigo .= '
-        this->'.strtolower($atributo->getNome()).' = new '.ucfirst($atributo->getTipo()).'();';
-                    
-                }
+            }else if($atributo->tipoListado()){
+                
+                continue;
             }
+            else
+            {
+                    $codigo .= '
+        this.'.strtolower($atributo->getNome()).' = new '.ucfirst($atributo->getTipo()).'();';
+                    
+            }
+            
+        }
             $codigo .= '
     }';
-            foreach ($objeto->getAtributos() as $atributo) {
+        foreach ($objeto->getAtributos() as $atributo) {
                 
-                $nome = strtolower($atributo->getNome());
-                $nome2 = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
+            
+            if ($atributo->tipoListado())
+            {
                 
-                if ($atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_FLOAT || $atributo->getTipo() == Atributo::TIPO_STRING)
-                {
-                    
                     $codigo .= '
-	public void set' . $nome2 . '($' . $nome . ') {';
+	public void set' . ucfirst ($atributo->getNome()) .'(' .$atributo->getTipoJava().' '. strtolower($atributo->getNome()) . ') {';
                     $codigo .= '
-		this->' . $nome . ' = $' . $nome . ';
+		this.' . strtolower($atributo->getNome()) . ' = ' . strtolower($atributo->getNome()) . ';
 	}
 		    
-	public function get' . $nome2 . '() {
-		return this->' . $nome . ';
+	public '.$atributo->getTipoJava().' get' . ucfirst ($atributo->getNome()) . '() {
+		return this.' . strtolower($atributo->getNome()) . ';
 	}';
                     
-                }
-                else {
+            }
+            else if($atributo->isArray()) {
                     
-                    if(substr(trim($atributo->getTipo()), 0, 6) == 'Array '){
-                        $atrb = explode(' ', $atributo->getTipo())[2];
-                        $codigo .= '
+                    
+                    $codigo .= '
                             
-    public function add'.ucfirst($atrb).'('.ucfirst($atrb).' $'.strtolower($atrb).'){
-        this->'.$nome.'[] = '.strtolower($atrb).';
+    public void add'.ucfirst($atributo->getTipoDeArray()).'('.ucfirst($atributo->getTipoDeArray()).' '.strtolower($atributo->getTipoDeArray()).'){
+        this.'.strtolower($atributo->getNome()).'.add('.strtolower($atributo->getTipoDeArray()).');
             
     }
-	public function get' . $nome2 . '() {
-		return this->' . $nome . ';
+	public ArrayList<'.$atributo->getTipoDeArray().'> get' . ucfirst($atributo->getNome()) . '() {
+		return this.' . strtolower($atributo->getNome()) . ';
 	}';
                         
                         
-                    }else{
+                    
+                }else{
                         $codigo .= '
-	public function set' . $nome2 . '(' . $atributo->getTipo() . ' $' . $nome . ') {';
+	public void set'. ucfirst ($atributo->getNome()) .'(' . $atributo->getTipo() . ' ' . strtolower($atributo->getNome()) . ') {';
                         
                         $codigo .= '
-		this->' . $nome . ' = ' . $nome . ';
+		this.' . strtolower($atributo->getNome()) . ' = ' . strtolower($atributo->getNome()) . ';
 	}
 		    
-	public function get' . $nome2 . '() {
-		return this->' . $nome . ';
+	public '.$atributo->getTipo().' get' . ucfirst($atributo->getNome()) . '() {
+		return this.' . strtolower($atributo->getNome()) . ';
 	}';
-                    }
-                    
                     
                 }
+                    
+                    
                 
             }
             $codigo .= '
-	public function __toString(){
-	    return ';
+	@Override
+	public String toString() {
+		return ';
             $i = count($objeto->getAtributos());
             foreach ($objeto->getAtributos() as $atributo) {
                 $i--;
-                $codigo .= 'this->'.$atributo->getNome();
+                $codigo .= 'this.'.$atributo->getNome();
                 if($i != 0){
                     $codigo .= '+" - "+';
                 }
@@ -279,7 +279,7 @@ class ' . ucfirst ($objeto->getNome()) . ' {';
         
         $codigo .= '
 }
-?>';
+';
         
         
         return $codigo;

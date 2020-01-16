@@ -40,6 +40,17 @@ class Atributo {
 	        return true;
 	    }
 	}
+	public function isArray(){
+	    if(substr(trim($this->getTipo()), 0, 6) == 'Array ')
+	    {
+	        return true;
+	    }
+	}
+	public function getTipoDeArray(){
+	    if(substr(trim($this->getTipo()), 0, 6) == 'Array '){
+	        return explode(' ', $this->getTipo())[2];
+	    }
+	}
 	public function getTipoJava(){
 	    $tipo = $this->getTipo();
 	    if($this->tipoListado()){

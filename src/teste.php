@@ -35,7 +35,15 @@ foreach($selecionado->getObjetos() as $objeto){
 $gerador = new ModelGerador($selecionado);
 $gerador->gerarCodigo(ModelGerador::JAVA_LINGUAGEM);
 $lista = $gerador->getListaDeArquivos();
+@mkdir (  'sistemasjava/'.$selecionado->getNome() .'/src/br/com/escritordesoftware/escola/model' , 0777, true );
 
-print_r($lista);
+foreach($lista as $path => $codigo){
+    if(file_exists($path)){
+        unlink($path);
+    }
+    $file = @fopen($path, "w+");
+    @fwrite($file, stripslashes($codigo));
+    @fclose($file);
+}
 
 ?>
