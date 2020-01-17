@@ -192,7 +192,7 @@ class DAO {
      * @param String $nomeDoSite
      * @return GeradorDeCodigoPHP
      */
-    public static function geraCodigoDeObjetoDAO(Objeto $objeto, $nomeDoSite, Software $software)
+    public static function geraCodigoDeObjetoDAO(Objeto $objeto, Software $software)
     {
         $nomeDoObjeto = strtolower($objeto->getNome());
         $nomeDoObjetoMA = strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100);

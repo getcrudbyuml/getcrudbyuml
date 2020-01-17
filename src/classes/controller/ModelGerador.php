@@ -5,9 +5,7 @@
 class ModelGerador{
     private $software;
     private $listaDeArquivos;
-    
-    const PHP_LINGUAGEM = 0;
-    const JAVA_LINGUAGEM = 1;
+
     
     public function getListaDeArquivos(){
         return $this->listaDeArquivos;

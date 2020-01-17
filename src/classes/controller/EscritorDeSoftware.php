@@ -25,19 +25,29 @@ class EscritorDeSoftware{
         $gerador->gerarCodigo();
         $listas[1] = $gerador->getListaDeArquivos();
         
-        $gerador = new MainGerador($this->software);
+        $gerador = new ViewGerador($this->software);
         $gerador->gerarCodigo();
         $listas[2] = $gerador->getListaDeArquivos();
         
         
-        $this->listaDeArquivos = $listas[0];
-        $this->criarArquivos();
+        $gerador = new ControllerGerador($this->software);
+        $gerador->gerarCodigo();
+        $listas[3] = $gerador->getListaDeArquivos();
         
-        $this->listaDeArquivos = $listas[1];
-        $this->criarArquivos();
         
-        $this->listaDeArquivos = $listas[2];
-        $this->criarArquivos();
+        $gerador = new DAOGerador($this->software);
+        $gerador->gerarCodigo();
+        $listas[4] = $gerador->getListaDeArquivos();
+
+        $gerador = new MainGerador($this->software);
+        $gerador->gerarCodigo();
+        $listas[5] = $gerador->getListaDeArquivos();
+        
+        for($i = 0; $i < 6; $i++){
+            $this->listaDeArquivos = $listas[$i];
+            $this->criarArquivos();
+        }
+        
     }
 
     public function criarDiretorios(){
