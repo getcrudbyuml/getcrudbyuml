@@ -18,7 +18,7 @@ spl_autoload_register('autoload');
 
 
 $selecionado = new Software();
-$selecionado->setId(13);
+$selecionado->setId(14);
 $softwareDao = new SoftwareDAO();
 $softwareDao->pesquisaPorId($selecionado);
 $objetoDao = new ObjetoDAO($softwareDao->getConexao());

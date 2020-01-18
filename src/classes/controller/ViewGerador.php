@@ -607,7 +607,7 @@ class ' . $nomeDoObjetoMa . 'View {
     {
         $codigo = '';
         $codigo = '
-package br.com.escritordesoftware.escola.view;
+package br.com.escritordesoftware.'.strtolower($this->software->getNome()).'.view;
 import javax.swing.JFrame;
 /**
  * Classe de visao para ' . ucfirst($objeto->getNome()) . '

@@ -945,7 +945,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import br.com.escritordesoftware.escola.model.*;
+import br.com.escritordesoftware.'.strtolower($this->software->getNome()).'.model.*;
 
 /**
  * Classe feita para manipulação do objeto '.ucfirst($objeto->getNome()).'

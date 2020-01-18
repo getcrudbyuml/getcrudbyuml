@@ -366,7 +366,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
     {
         $codigo = '';
         $codigo = '
-package br.com.escritordesoftware.escola.controller;
+package br.com.escritordesoftware.'.strtolower($this->software->getNome()).'.controller;
             
 /**
  * Classe de visao para ' . ucfirst($objeto->getNome()) . '
