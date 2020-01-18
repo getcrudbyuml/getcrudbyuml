@@ -65,15 +65,13 @@ class SoftwareController {
         
 
         if(isset($_GET['escrever'])){
-            $escritorPHP = new EscritorPHP();
-            $escritorPHP->setSoftware($selecionado);
-            $escritorPHP->escreverSoftware();
+            EscritorDeSoftware::main($selecionado);
             $zipador = new Zipador();
             echo '<br><hr>';
             echo '<div class="row justify-content-center">';
-            $zipador->zipaArquivo('sistemasphp/'.$selecionado->getNome(), 'sistemasphp/'.$selecionado->getNome().'.zip');
-            echo ' - <a href="sistemasphp/'.$selecionado->getNome().'/src"> Acessar Software</a>';
-            echo ' - <a href="sistemasphp/'.$selecionado->getNome().'.zip"> Baixar Software</a>';
+            $zipador->zipaArquivo('sistemas/'.$selecionado->getNome(), 'sistemas/'.$selecionado->getNome().'.zip');
+            echo ' - <a href="sistemas/'.$selecionado->getNome().'"> Acessar Software</a>';
+            echo ' - <a href="sistemas/'.$selecionado->getNome().'.zip"> Baixar Software</a>';
             echo '</div>';
         }
     }
