@@ -174,7 +174,7 @@ import java.util.ArrayList;
  * feita automaticamente com programa gerador de software inventado por
  * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
  */
-class ' . ucfirst ($objeto->getNome()) . ' {';
+public class ' . ucfirst ($objeto->getNome()) . ' {';
         foreach ($objeto->getAtributos() as $atributo) {
             
                 $codigo .= '

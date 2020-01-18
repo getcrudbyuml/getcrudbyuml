@@ -37,7 +37,6 @@ class ControllerGerador{
     private function geraControllersPHP(Objeto $objeto, Software $software)
     {
         $codigo = '';
-        $geradorDeCodigo = new GeradorDeCodigoPHP();
         $nomeDoObjeto = strtolower($objeto->getNome());
         $nomeDoObjetoMa = strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100);
         
@@ -374,7 +373,7 @@ package br.com.escritordesoftware.escola.controller;
  * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
  *
  */
-class ' . ucfirst($objeto->getNome()) . 'Controller {
+public class ' . ucfirst($objeto->getNome()) . 'Controller {
 
 }';
         

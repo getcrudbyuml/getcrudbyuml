@@ -608,13 +608,14 @@ class ' . $nomeDoObjetoMa . 'View {
         $codigo = '';
         $codigo = '
 package br.com.escritordesoftware.escola.view;
-            
+import javax.swing.JFrame;
 /**
  * Classe de visao para ' . ucfirst($objeto->getNome()) . '
  * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
  *
  */
-class ' . ucfirst($objeto->getNome()) . 'View {}';
+@SuppressWarnings("serial")
+public class ' . ucfirst($objeto->getNome()) . 'View extends JFrame {}';
         
         return $codigo;
     }

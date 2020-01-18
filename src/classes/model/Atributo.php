@@ -39,6 +39,7 @@ class Atributo {
 	    if($this->tipo == self::TIPO_INT || $this->tipo == self::TIPO_STRING || $this->tipo == self::TIPO_FLOAT){
 	        return true;
 	    }
+	    return false;
 	}
 	public function isArray(){
 	    if(substr(trim($this->getTipo()), 0, 6) == 'Array ')
@@ -59,7 +60,7 @@ class Atributo {
 	        }else if($this->getTipo() == self::TIPO_STRING){
 	            $tipo = 'String';
 	        }else if($this->getTipo() == self::TIPO_FLOAT){
-	            $tipo = 'String';
+	            $tipo = 'Float';
 	        }
 	    }
 	    if(substr(trim($this->getTipo()), 0, 6) == 'Array '){
