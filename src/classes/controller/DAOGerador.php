@@ -274,7 +274,7 @@ class DAO {
             return $codigo;
             
         }
-        private function geraDAOsPHP(Objeto $objeto, Software $software)
+        private function geraDAOsPHP(Objeto $objeto)
         {
             $codigo = '';
             $nomeDoObjeto = strtolower($objeto->getNome());
@@ -501,7 +501,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
             
             foreach($atributosObjetos as $atributoObjeto){
                 
-                foreach($software->getObjetos() as $objeto2){
+                foreach($this->software->getObjetos() as $objeto2){
                     if($objeto2->getNome() == $atributoObjeto->getTipo()){
                         $i = 0;
                         foreach($objeto2->getAtributos() as $atributo3){
@@ -532,7 +532,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
                 FROM ' . $nomeDoObjeto;
             foreach($atributosObjetos as $atributoObjeto){
                 
-                foreach($software->getObjetos() as $objeto2){
+                foreach($this->software->getObjetos() as $objeto2){
                     if($objeto2->getNome() == $atributoObjeto->getTipo()){
                         foreach($objeto2->getAtributos() as $atributo3){
                             if($atributo3->getIndice() == Atributo::INDICE_PRIMARY){
@@ -566,7 +566,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
             }
             foreach($atributosObjetos as $atributoObjeto){
                 
-                foreach($software->getObjetos() as $objeto2){
+                foreach($this->software->getObjetos() as $objeto2){
                     if($objeto2->getNome() == $atributoObjeto->getTipo()){
                         foreach($objeto2->getAtributos() as $atributo3){
                             if($atributo3->getIndice() == Atributo::INDICE_PRIMARY){
@@ -618,7 +618,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
                 
                 foreach($atributosObjetos as $atributoObjeto){
                     
-                    foreach($software->getObjetos() as $objeto2){
+                    foreach($this->software->getObjetos() as $objeto2){
                         if($objeto2->getNome() == $atributoObjeto->getTipo()){
                             $i = 0;
                             foreach($objeto2->getAtributos() as $atributo3){
@@ -649,7 +649,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
                 FROM ' . $nomeDoObjeto;
                 foreach($atributosObjetos as $atributoObjeto){
                     
-                    foreach($software->getObjetos() as $objeto2){
+                    foreach($this->software->getObjetos() as $objeto2){
                         if($objeto2->getNome() == $atributoObjeto->getTipo()){
                             foreach($objeto2->getAtributos() as $atributo3){
                                 if($atributo3->getIndice() == Atributo::INDICE_PRIMARY){
@@ -689,7 +689,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
                 }
                 foreach($atributosObjetos as $atributoObjeto){
                     
-                    foreach($software->getObjetos() as $objeto2){
+                    foreach($this->software->getObjetos() as $objeto2){
                         if($objeto2->getNome() == $atributoObjeto->getTipo()){
                             foreach($objeto2->getAtributos() as $atributo3){
                                 if($atributo3->getIndice() == Atributo::INDICE_PRIMARY){
@@ -732,7 +732,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
         foreach ($result as $linha) {
             $'.strtolower(explode(' ', $atributo->getTipo())[2]).' = new '.ucfirst(explode(' ', $atributo->getTipo())[2]).'();';
                 
-                foreach($software->getObjetos() as $obj){
+                foreach($this->software->getObjetos() as $obj){
                     if(strtolower($obj->getNome()) == strtolower(explode(' ', $atributo->getTipo())[2]))
                     {
                         foreach($obj->getAtributos() as $atr){
@@ -837,7 +837,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
             
             return $codigo;
         }
-        private function geraSQLConsulta(Objeto $objeto, Software $software){
+        private function geraSQLConsulta(Objeto $objeto){
             $codigo = '';
             
             $nomeDoObjeto = strtolower($objeto->getNome());
@@ -869,7 +869,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
             
             foreach($atributosObjetos as $atributoObjeto){
                 
-                foreach($software->getObjetos() as $objeto2){
+                foreach($this->software->getObjetos() as $objeto2){
                     if($objeto2->getNome() == $atributoObjeto->getTipo()){
                         $i = 0;
                         foreach($objeto2->getAtributos() as $atributo3){
@@ -897,7 +897,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
             $codigo .= ' FROM ' . $nomeDoObjeto;
             foreach($atributosObjetos as $atributoObjeto){
                 
-                foreach($software->getObjetos() as $objeto2){
+                foreach($this->software->getObjetos() as $objeto2){
                     if($objeto2->getNome() == $atributoObjeto->getTipo()){
                         foreach($objeto2->getAtributos() as $atributo3){
                             if($atributo3->getIndice() == Atributo::INDICE_PRIMARY){
@@ -914,7 +914,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
             return $codigo;
             
         }
-        private function geraDAOsJava(Objeto $objeto, Software $software)
+        private function geraDAOsJava(Objeto $objeto)
         {
             $codigo = '';
             
@@ -1163,7 +1163,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
 	public ArrayList<'.ucfirst($objeto->getNome()).'> retornaLista() {
 		ArrayList<'.ucfirst($objeto->getNome()).'>lista = new ArrayList<'.ucfirst($objeto->getNome()).'>();
 		String sql = "';
-        $codigo .= $this->geraSQLConsulta($objeto, $software);
+        $codigo .= $this->geraSQLConsulta($objeto, $this->software);
         
 		$codigo .= ' LIMIT 1000";
     		
@@ -1189,7 +1189,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
             }
             foreach($atributosObjetos as $atributoObjeto){
                 
-                foreach($software->getObjetos() as $objeto2){
+                foreach($this->software->getObjetos() as $objeto2){
                     if($objeto2->getNome() == $atributoObjeto->getTipo()){
                         foreach($objeto2->getAtributos() as $atributo3){
                             if($atributo3->getIndice() == Atributo::INDICE_PRIMARY){
@@ -1314,7 +1314,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
                 }
                 foreach($atributosObjetos as $atributoObjeto){
                     
-                    foreach($software->getObjetos() as $objeto2){
+                    foreach($this->software->getObjetos() as $objeto2){
                         if($objeto2->getNome() == $atributoObjeto->getTipo()){
                             foreach($objeto2->getAtributos() as $atributo3){
 
@@ -1363,7 +1363,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
         int id = '.strtolower($objeto->getNome()).'.getId();
         String sql = "SELECT ';
                 
-                foreach($software->getObjetos() as $obj){
+                foreach($this->software->getObjetos() as $obj){
                     if(strtolower($obj->getNome()) == strtolower(explode(' ', $atributo->getTipo())[2]))
                     {
                         $i = 0; 
@@ -1386,7 +1386,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
 			ResultSet resultSet = ps.executeQuery();
     		while(resultSet.next()){
                 '.ucfirst(explode(' ', $atributo->getTipo())[2]).' '.strtolower(explode(' ', $atributo->getTipo())[2]).' = new '.ucfirst(explode(' ', $atributo->getTipo())[2]).'();';
-                foreach($software->getObjetos() as $obj){
+                foreach($this->software->getObjetos() as $obj){
                     if(strtolower($obj->getNome()) == strtolower(explode(' ', $atributo->getTipo())[2]))
                     {
                         foreach($obj->getAtributos() as $atr){

@@ -47,11 +47,11 @@ senha = 123
     }
     
     
-    public function geraBancoPG(Software $software)
+    public function geraBancoPG()
     {
         $objetosNN = array();
         $codigo = '';
-        foreach ($software->getObjetos() as $objeto) {
+        foreach ($this->software->getObjetos() as $objeto) {
             $codigo .= 'CREATE TABLE ' . strtolower($objeto->getNome());
             $codigo .= " (\n";
             $i = 0;
@@ -119,7 +119,7 @@ senha = 123
         }
         //Adicionar outras chaves estrangeiras.
         
-        foreach ($software->getObjetos() as $objeto) {
+        foreach ($this->software->getObjetos() as $objeto) {
             foreach($objeto->getAtributos() as $atributo){
                 if($atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_FLOAT)
                 {
@@ -127,7 +127,7 @@ senha = 123
                 }else if(substr($atributo->getTipo(),0,6) == 'Array '){
                     continue;
                 }else{
-                    foreach($software->getObjetos() as $objeto2){
+                    foreach($this->software->getObjetos() as $objeto2){
                         if($atributo->getTipo() == $objeto2->getNome()){
                             $objetoDoAtributo = $objeto2;
                             break;
@@ -154,17 +154,17 @@ REFERENCES '.strtolower($atributo->getTipo()).'('.$atributoPrimary->getNome().')
         return $codigo;
         
     }
-    public function geraBancoSqlite(Software $software)
+    public function geraBancoSqlite()
     {
         $objetosNN = array();
         
-        $bdNome = 'sistemas/' . $software->getNome() . '/' . strtolower($software->getNome()) . '.db';
+        $bdNome = 'sistemas/' . $this->software->getNome() . '/' . strtolower($this->software->getNome()) . '.db';
         if(file_exists($bdNome)){
             unlink($bdNome);
         }
         $pdo = new PDO('sqlite:' . $bdNome);
         $codigo = '';
-        foreach ($software->getObjetos() as $objeto) {
+        foreach ($this->software->getObjetos() as $objeto) {
             $codigo .= 'CREATE TABLE ' . strtolower($objeto->getNome());
             $codigo .= " (\n";
             $i = 0;
