@@ -22,7 +22,7 @@ class ControllerGerador{
         
         $path = 'sistemas/'.$this->software->getNome().'/java/'.$this->software->getNome().'/src/main/java';
         foreach($this->software->getObjetos() as $objeto){
-            $codigo = $this->geraViewsJava($objeto, $this->software);
+            $codigo = $this->geraControllersJava($objeto, $this->software);
             $caminho = $path.'/br/com/escritordesoftware/'.strtolower($this->software->getNome()).'/controller/' . ucfirst($objeto->getNome()) . 'Controller.java';
             $this->listaDeArquivos[$caminho] = $codigo;
         }}
@@ -362,7 +362,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
 ?>';
         return $codigo;
     }
-    private function geraViewsJava(Objeto $objeto, Software $software)
+    private function geraControllersJava(Objeto $objeto, Software $software)
     {
         $codigo = '';
         $codigo = '
@@ -374,6 +374,7 @@ package br.com.escritordesoftware.'.strtolower($this->software->getNome()).'.con
  *
  */
 public class ' . ucfirst($objeto->getNome()) . 'Controller {
+
 
 }';
         
