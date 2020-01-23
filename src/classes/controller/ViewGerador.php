@@ -105,13 +105,16 @@ class ' . $nomeDoObjetoMa . 'View {
             }
             
             $codigo .= '
+
                                         <div class="form-group">
-                						  <input type="text" class="form-control form-control-user" id="' . $atributo->getNome() . '" name="' . $atributo->getNome(). '" placeholder="' . $atributo->getNome(). '">
-                						</div>';
+                                            <label for="' . $atributo->getNome(). '">' . $atributo->getNome(). '</label>
+                                            <input type="text" class="form-control"  name="' . $atributo->getNome(). '" id="' . $atributo->getNome(). '" placeholder="' . $atributo->getNome(). '">
+                                        </div>';
         }
         foreach($atributosObjetos as $atributo){
             $codigo .= '
                                         <div class="form-group">
+                                          <label for="' . $atributo->getNome(). '">' . $atributo->getNome(). '</label>
                 						  <select class="form-control form-control-user" id="' . $atributo->getNome() . '" name="' . $atributo->getNome(). '">
                                             <option>Selecione o '.$atributo->getNome().'</option>\';
                                                 

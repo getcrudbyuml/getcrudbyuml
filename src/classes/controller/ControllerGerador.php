@@ -113,10 +113,8 @@ class ' . $nomeDoObjetoMa . 'Controller {
         $selecionado = new '.$nomeDoObjetoMa.'();
 	    $selecionado->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'selecionar\']);
 	        
-        if(count($this->dao->pesquisaPor'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selecionado)) == 0){
-	        $this->view->mensagem("Página Inexistente");
-	        return;
-	    }
+        $this->dao->preenchePor'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selecionado);
+
         echo \'<div class="col-xl-7 col-lg-7 col-md-12 col-sm-12">\';
 	    $this->view->mostrarSelecionado($selecionado);
         echo \'</div>\';

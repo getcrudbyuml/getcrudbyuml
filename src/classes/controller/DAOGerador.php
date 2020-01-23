@@ -717,6 +717,130 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
                 
             }
             
+            foreach ($atributosComuns as $atributo) {
+                
+                $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
+                $id = $atributo->getNome();
+                
+                $codigo .= '
+                    
+    public function preenchePor'.$nomeDoAtributoMA.'(' . $nomeDoObjetoMA . ' $' . $nomeDoObjeto . ') {
+
+	    $'.$id.' = $'.$nomeDoObjeto.'->get'.$nomeDoAtributoMA.'();';
+                $codigo .= '
+	    $sql = "SELECT ';
+                $i = 0;
+                foreach($atributosComuns as $atributoComum){
+                    
+                    $i++;
+                    $codigo .= '
+                '.strtolower($objeto->getNome().'.'.$atributoComum->getNome()).'';
+                    
+                    if($i != count($atributosComuns))
+                    {
+                        $codigo .= ', ';
+                    }
+                }
+                
+                foreach($atributosObjetos as $atributoObjeto){
+                    
+                    foreach($this->software->getObjetos() as $objeto2){
+                        if($objeto2->getNome() == $atributoObjeto->getTipo()){
+                            $i = 0;
+                            foreach($objeto2->getAtributos() as $atributo3){
+                                $i++;
+                                if(count($atributosComuns) != 0 && $i == 1){
+                                    $codigo .= ',';
+                                }
+                                if($atributo3->getIndice() == Atributo::INDICE_PRIMARY){
+                                    
+                                    $codigo .= '
+                '.strtolower($objeto->getNome().'.'.$atributo3->getNome().'_'.$atributoObjeto->getTipo().'_'.$atributoObjeto->getNome());
+                                }else{
+                                    $codigo .= '
+                '.strtolower($atributoObjeto->getTipo().'.'.$atributo3->getNome().' as '.$atributo3->getNome().'_'.$atributoObjeto->getTipo().'_'.$atributoObjeto->getNome());
+                                }
+                                if($i != count($objeto2->getAtributos()))
+                                {
+                                    $codigo .= ', ';
+                                }
+                                
+                            }
+                            break;
+                        }
+                    }
+                    
+                }
+                $codigo .= '
+                FROM ' . $nomeDoObjeto;
+                foreach($atributosObjetos as $atributoObjeto){
+                    
+                    foreach($this->software->getObjetos() as $objeto2){
+                        if($objeto2->getNome() == $atributoObjeto->getTipo()){
+                            foreach($objeto2->getAtributos() as $atributo3){
+                                if($atributo3->getIndice() == Atributo::INDICE_PRIMARY){
+                                    $codigo .= '
+                INNER JOIN '.strtolower($atributoObjeto->getTipo()).'
+                ON '.strtolower($atributoObjeto->getTipo()).'.'.$atributo3->getNome().' = '.$nomeDoObjeto.'.'.strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome());
+                                    break;
+                                }
+                                
+                            }
+                            break;
+                        }
+                    }
+                    
+                }
+                
+                if($atributo->getTipo() == Atributo::TIPO_STRING){
+                    $codigo .=  '
+                WHERE '.strtolower($objeto->getNome()).'.'.$id.' like \'%$'.$id.'%\'";';
+                    
+                }else if($atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_FLOAT){
+                    $codigo .= '
+                WHERE '.strtolower($objeto->getNome()).'.'.$id.' = $'.$id.'";';
+                }
+                
+                $codigo .= '
+	    $result = $this->getConexao ()->query ( $sql );
+                    
+	    foreach ( $result as $linha ) {';
+                foreach ($atributosComuns as $atributo2) {
+                    
+                    $nomeDoAtributoMA = strtoupper(substr($atributo2->getNome(), 0, 1)) . substr($atributo2->getNome(), 1, 100);
+                    $codigo .= '
+	        $'.$nomeDoObjeto.'->set'.$nomeDoAtributoMA.'( $linha [\''.$atributo2->getNome().'\'] );';
+                    
+                }
+                foreach($atributosObjetos as $atributoObjeto){
+                    
+                    foreach($this->software->getObjetos() as $objeto2){
+                        if($objeto2->getNome() == $atributoObjeto->getTipo()){
+                            foreach($objeto2->getAtributos() as $atributo3){
+                                if($atributo3->getIndice() == Atributo::INDICE_PRIMARY){
+                                    $codigo .= '
+			$' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set'.ucfirst($atributo3->getNome()).'( $linha [\'' . strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome()) . '\'] );';
+                                }
+                                else
+                                {
+                                    $codigo .= '
+			$' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set'.ucfirst($atributo3->getNome()).'( $linha [\'' . strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome()) . '\'] );';
+                                }
+                                
+                            }
+                            break;
+                        }
+                    }
+                    
+                }
+                $codigo .= '
+
+		}
+		return $' . $nomeDoObjeto . ';
+    }';
+                
+                
+            }
             foreach($atributosNN as $atributo){
                 $codigo .= '
     public function buscar'.ucfirst($atributo->getNome()).'('.ucfirst($objeto->getNome()).' $'.strtolower($objeto->getNome()).')
