@@ -65,7 +65,7 @@ senha = 123
                 }else if($atributo->getTipo() == Atributo::TIPO_INT){
                     $codigo .= strtolower($atributo->getNome()) . '  integer';
                 }else if($atributo->getTipo() == Atributo::TIPO_FLOAT){
-                    $codigo .= strtolower($atributo->getNome()) . ' character  numeric(8,2)';
+                    $codigo .= strtolower($atributo->getNome()) . ' numeric(8,2)';
                 }else if(substr($atributo->getTipo(),0,6) == 'Array '){
                     if(explode(' ', $atributo->getTipo())[1]  == 'n:n'){
                         $objetosNN[] = $objeto;
@@ -102,7 +102,8 @@ senha = 123
             //explode(' ', $string);
             foreach($objeto->getAtributos() as $atributo){
                 if(substr($atributo->getTipo(),0,6) == 'Array '){
-                    $codigo .= 'CREATE TABLE ' . strtolower($objeto->getNome()).'_'.strtolower(explode(" ", $atributo->getTipo())[2]);
+                    $codigo .= '
+CREATE TABLE ' . strtolower($objeto->getNome()).'_'.strtolower(explode(" ", $atributo->getTipo())[2]);
                     $codigo .= '(
     id serial NOT NULL,
     id'.strtolower($objeto->getNome()).' integer NOT NULL,
