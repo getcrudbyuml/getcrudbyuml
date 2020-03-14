@@ -277,9 +277,9 @@ class DAO {
         private function geraDAOsPHP(Objeto $objeto)
         {
             $codigo = '';
-            $nomeDoObjeto = strtolower($objeto->getNome());
-            $nomeDoObjetoMA = strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100);
-            $nomeDoObjetoDAO = strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100) . 'DAO';
+            $nomeDoObjeto = lcfirst($objeto->getNome());
+            $nomeDoObjetoMA = ucfirst($objeto->getNome());
+            
             $atributosComuns = array();
             $atributosNN = array();
             $atributosObjetos = array();
@@ -306,7 +306,7 @@ class DAO {
  *
  *
  */
-class ' . $nomeDoObjetoDAO . ' extends DAO {
+class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
     
     
     public function atualizar('.$nomeDoObjetoMA.' $'.$nomeDoObjeto.')
@@ -373,11 +373,13 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
 	    
 		$sql = "INSERT INTO ' . $nomeDoObjeto . '(';
             $i = 0;
+            $nAtributosCCSemPk = 0;
             foreach ($atributosComuns as $atributo) {
                 $i ++;
                 if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                     continue;
                 }
+                $nAtributosCCSemPk++;
                 $codigo .= strtolower($atributo->getNome());
                 if ($i != count($atributosComuns)) {
                     $codigo .= ', ';
@@ -389,7 +391,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
                 if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                     continue;
                 }
-                if(count($atributosComuns) != 0 && $i == 1){
+                if($nAtributosCCSemPk != 0 && $i == 1){
                     $codigo .= ', ';
                 }
                 $codigo .= 'id_'.strtolower($atributo->getTipo()).'_'.strtolower($atributo->getNome());
@@ -413,7 +415,7 @@ class ' . $nomeDoObjetoDAO . ' extends DAO {
             $i = 0;
             foreach ($atributosObjetos as $atributo) {
                 $i ++;
-                if(count($atributosComuns) && $i == 1){
+                if($nAtributosCCSemPk != 0 && $i == 1){
                     $codigo .= ', ';
                 }
                 $codigo .= ':' . $atributo->getNome();
