@@ -115,7 +115,7 @@ class ' . $nomeDoObjetoMa . 'View {
             $codigo .= '
                                         <div class="form-group">
                                           <label for="' . $atributo->getNome(). '">' . $atributo->getNome(). '</label>
-                						  <select class="form-control form-control-user" id="' . $atributo->getNome() . '" name="' . $atributo->getNome(). '">
+                						  <select class="form-control" id="' . $atributo->getNome() . '" name="' . $atributo->getNome(). '">
                                             <option>Selecione o '.$atributo->getNome().'</option>\';
                                                 
         foreach( $lista'.ucfirst($atributo->getTipo()).' as $elemento){
@@ -324,7 +324,7 @@ class ' . $nomeDoObjetoMa . 'View {
             }
             $codigo .= '
                                         <div class="form-group">
-                						  <input type="text" class="form-control form-control-user" value="\'.$'.$nomeDoObjeto.'->get'.ucfirst ($atributo->getNome()).'().\'" id="' . $variavel . '" name="' . $variavel . '" placeholder="' . $variavel . '">
+                						  <input type="text" class="form-control" value="\'.$'.$nomeDoObjeto.'->get'.ucfirst ($atributo->getNome()).'().\'" id="' . $variavel . '" name="' . $variavel . '" placeholder="' . $variavel . '">
                 						</div>';
         }
         
@@ -546,7 +546,7 @@ class ' . $nomeDoObjetoMa . 'View {
             
             $codigo .= '
                                         <div class="form-group">
-                						  <select type="text" class="form-control form-control-user" id="add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'" name="add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'" >
+                						  <select type="text" class="form-control" id="add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'" name="add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'" >
                                                 <option>Adicione '.explode(" ", $atributoNN->getTipo())[2].'</option>\';
 ';
             $codigo .= '
