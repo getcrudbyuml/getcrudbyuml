@@ -40,9 +40,10 @@ class MainGerador{
         }
         $codigo = '<?php
         
-function __autoload($classe) {
-        
-	if (file_exists ( \'classes/dao/\' . $classe . \'.php\' )){
+
+function autoload($classe) {
+    
+    if (file_exists ( \'classes/dao/\' . $classe . \'.php\' )){
 		include_once \'classes/dao/\' . $classe . \'.php\';
 	}
 	else if (file_exists ( \'classes/model/\' . $classe . \'.php\' )){
@@ -58,6 +59,8 @@ function __autoload($classe) {
 		include_once \'classes/view/\' . $classe . \'.php\';
 	}
 }
+spl_autoload_register(\'autoload\');
+
         
 ?>
         
