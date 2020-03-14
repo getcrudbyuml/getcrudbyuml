@@ -52,28 +52,29 @@ senha = 123
         $objetosNN = array();
         $codigo = '';
         foreach ($this->software->getObjetos() as $objeto) {
-            $codigo .= 'CREATE TABLE ' . strtolower($objeto->getNome());
+            $codigo .= 'CREATE TABLE ' . $objeto->getNomeSnakeCase();
             $codigo .= " (\n";
             $i = 0;
             foreach ($objeto->getAtributos() as $atributo) {
                 $i ++;
                 $flagPulei = false;
-                if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                    $codigo .=  strtolower($atributo->getNome()) . ' serial NOT NULL';
-                } else if($atributo->getTipo() == Atributo::TIPO_STRING){
-                    $codigo .= strtolower($atributo->getNome()) . ' character varying(150)';
-                }else if($atributo->getTipo() == Atributo::TIPO_INT){
-                    $codigo .= strtolower($atributo->getNome()) . '  integer';
-                }else if($atributo->getTipo() == Atributo::TIPO_FLOAT){
-                    $codigo .= strtolower($atributo->getNome()) . ' numeric(8,2)';
-                }else if(substr($atributo->getTipo(),0,6) == 'Array '){
-                    if(explode(' ', $atributo->getTipo())[1]  == 'n:n'){
-                        $objetosNN[] = $objeto;
-                    }
-                    $flagPulei = true;
+                if ($atributo->getIndice() == Atributo::INDICE_PRIMARY && $atributo->tipoListado()) 
+                {
+                    $codigo .=  $atributo->getNomeSnakeCase().' '.$atributo->getTipoPostgres(). ' serial NOT NULL';
                     
+                }else if($atributo->tipoListado())
+                {
+                    $codigo .= $atributo->getNomeSnakeCase() . ' '.$atributo->getTipoPostgres();
+                }
+                else if($atributo->isArrayNN()){
+                    $objetosNN[] = $objeto;
+                    $flagPulei = true;
+                }else if($atributo->isObjeto())
+                {
+                    $codigo .= 'id_'.$atributo->getTipoSnakeCase().'_'.$atributo->getNomeSnakeCase() . ' integer NOT NULL';
                 }else{
-                    $codigo .= 'id_'.strtolower($atributo->getTipo()).'_'.strtolower($atributo->getNome()) . ' integer NOT NULL';
+                    //Tipo Array Comum não implementado
+                    $flagPulei = true;
                 }
                 if ($i == count($objeto->getAtributos())) {
                     foreach ($objeto->getAtributos() as $atributo) {
@@ -81,7 +82,7 @@ senha = 123
                             if(!$flagPulei){
                                 $codigo .= ",\n";
                             }
-                            $codigo .= ' CONSTRAINT pk_'.strtolower($objeto->getNome()).'_'.strtolower($atributo->getNome()).' PRIMARY KEY ('.strtolower($atributo->getNome()).')';
+                            $codigo .= ' CONSTRAINT pk_'.strtolower($objeto->getNome()).'_'.$atributo->getNomeSnakeCase().' PRIMARY KEY ('.$atributo->getNomeSnakeCase().')';
                             break;
                         }
                     }
@@ -103,14 +104,14 @@ senha = 123
             foreach($objeto->getAtributos() as $atributo){
                 if(substr($atributo->getTipo(),0,6) == 'Array '){
                     $codigo .= '
-CREATE TABLE ' . strtolower($objeto->getNome()).'_'.strtolower(explode(" ", $atributo->getTipo())[2]);
+CREATE TABLE ' . $objeto->getNomeSnakeCase().'_'.strtolower(explode(" ", $atributo->getTipoSnakeCase())[2]);
                     $codigo .= '(
     id serial NOT NULL,
-    id'.strtolower($objeto->getNome()).' integer NOT NULL,
-    id'.strtolower(explode(" ", $atributo->getTipo())[2]).' integer NOT NULL,
-    CONSTRAINT pk_'.strtolower($objeto->getNome()).'_'.strtolower(explode(" ", $atributo->getTipo())[2]).'_id PRIMARY KEY (id),
-    CONSTRAINT fk_'.strtolower($objeto->getNome()).'_id FOREIGN KEY (id'.strtolower($objeto->getNome()).') REFERENCES '.strtolower($objeto->getNome()).' (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION,
-    CONSTRAINT fk_'.strtolower(explode(" ", $atributo->getTipo())[2]).'_id FOREIGN KEY (id'.strtolower(explode(" ", $atributo->getTipo())[2]).') REFERENCES '.strtolower(explode(" ", $atributo->getTipo())[2]).' (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION
+    id_'.$objeto->getNomeSnakeCase().' integer NOT NULL,
+    id_'.strtolower(explode(" ", $atributo->getTipoSnakeCase())[2]).' integer NOT NULL,
+    CONSTRAINT pk_'.$objeto->getNomeSnakeCase().'_'.explode(" ", $atributo->getTipoSnakeCase())[2].'_id PRIMARY KEY (id),
+    CONSTRAINT fk_'.$objeto->getNomeSnakeCase().'_id FOREIGN KEY (id_'.$objeto->getNomeSnakeCase().') REFERENCES '.strtolower($objeto->getNome()).' (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT fk_'.strtolower(explode(" ", $atributo->getTipoSnakeCase())[2]).'_id FOREIGN KEY (id'.strtolower(explode(" ", $atributo->getTipo())[2]).') REFERENCES '.strtolower(explode(" ", $atributo->getTipo())[2]).' (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION
 );';
                     
                 }
@@ -144,7 +145,7 @@ CREATE TABLE ' . strtolower($objeto->getNome()).'_'.strtolower(explode(" ", $atr
                     $codigo .= '
 ALTER TABLE ' . strtolower($objeto->getNome()).'
 ADD CONSTRAINT
-fk_'.strtolower($objeto->getNome()).'_'.strtolower($atributo->getTipo()).'_'.strtolower($atributo->getNome()) . ' FOREIGN KEY (id_'.strtolower($atributo->getTipo()).'_'.strtolower($atributo->getNome()) . ')
+fk_'.strtolower($objeto->getNome()).'_'.strtolower($atributo->getTipo()).'_'.$atributo->getNomeSnakeCase() . ' FOREIGN KEY (id_'.strtolower($atributo->getTipo()).'_'.$atributo->getNomeSnakeCase() . ')
 REFERENCES '.strtolower($atributo->getTipo()).'('.$atributoPrimary->getNome().');
 ';
                 }
@@ -165,8 +166,9 @@ REFERENCES '.strtolower($atributo->getTipo()).'('.$atributoPrimary->getNome().')
         }
         $pdo = new PDO('sqlite:' . $bdNome);
         $codigo = '';
-        foreach ($this->software->getObjetos() as $objeto) {
-            $codigo .= 'CREATE TABLE ' . strtolower($objeto->getNome());
+        foreach ($this->software->getObjetos() as $objeto) 
+        {
+            $codigo .= 'CREATE TABLE ' . $objeto->getNomeSnakeCase();
             $codigo .= " (\n";
             $i = 0;
             $atributosComuns = array();
@@ -183,23 +185,19 @@ REFERENCES '.strtolower($atributo->getTipo()).'('.$atributoPrimary->getNome().')
             }
             foreach($atributosComuns as $atributo){
                 $i ++;
-                if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                    $codigo .= strtolower($atributo->getNome()) . '	INTEGER PRIMARY KEY AUTOINCREMENT';
-                } else if($atributo->getTipo() == Atributo::TIPO_STRING){
-                    $codigo .= strtolower($atributo->getNome()) . '	TEXT';
-                }else if($atributo->getTipo() == Atributo::TIPO_INT){
-                    $codigo .= strtolower($atributo->getNome()) . '  INTEGER';
-                }else if($atributo->getTipo() == Atributo::TIPO_FLOAT){
-                    $codigo .= strtolower($atributo->getNome()) . ' NUMERIC';
+                if($atributo->tipoListado()){
+                    $codigo .= $atributo->getNomeSnakeCase().' '.$atributo->getTipoSqlite().' ';
                 }
-                else{
-                    $codigo .= 'id_'.strtolower($atributo->getTipo()).'_'.strtolower($atributo->getNome()) . ' integer NOT NULL';
+                else if($atributo->isObjeto()){
+                    $codigo .= 'id_'.$atributo->getTipoSnakeCase().'_'.$atributo->getNomeSnakeCase() . ' INTEGER NOT NULL';
+                }
+                if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
+                    $codigo .= ' PRIMARY KEY AUTOINCREMENT';
                 }
                 if ($i >= count($atributosComuns)) {
                     $codigo .= "\n";
                     continue;
                 }
-                
                 $codigo .= ",\n";
                 
             }
@@ -211,11 +209,11 @@ REFERENCES '.strtolower($atributo->getTipo()).'('.$atributoPrimary->getNome().')
             //explode(' ', $string);
             foreach($objeto->getAtributos() as $atributo){
                 if(substr($atributo->getTipo(),0,6) == 'Array '){
-                    $codigo .= 'CREATE TABLE ' . strtolower($objeto->getNome()).'_'.strtolower(explode(" ", $atributo->getTipo())[2]);
+                    $codigo .= 'CREATE TABLE ' . $objeto->getNomeSnakeCase().'_'.strtolower(explode(" ", $atributo->getTipo())[2]);
                     $codigo .= '(
     id 	INTEGER PRIMARY KEY AUTOINCREMENT,
-    id'.strtolower($objeto->getNome()).' INTEGER,
-    id'.strtolower(explode(" ", $atributo->getTipo())[2]).' INTEGER
+    id_'.$objeto->getNomeSnakeCase().' INTEGER,
+    id_'.strtolower(explode(" ", $atributo->getTipo())[2]).' INTEGER
 );';
                     
                 }

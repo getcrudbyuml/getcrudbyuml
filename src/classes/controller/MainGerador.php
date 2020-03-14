@@ -30,9 +30,23 @@ class MainGerador{
         $caminho = 'sistemas/'.ucfirst($this->software->getNome()).'/php/src/css/style.css';
         $this->listaDeArquivos[$caminho] = $codigo;
         
+        $codigo = $this->geraHTACCESS();
+        $caminho = 'sistemas/'.ucfirst($this->software->getNome()).'/php/src/.htaccess';
+        $this->listaDeArquivos[$caminho] = $codigo;
         
     }
 
+    public function geraHTACCESS(){
+        if (! count($this->software->getObjetos())) {
+            return;
+        }
+        $codigo  = 'RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?api=$1 [QSA,L]
+';
+        return $codigo;
+    }
     public function geraMainPHP(){
 
         if (! count($this->software->getObjetos())) {
@@ -60,6 +74,19 @@ function autoload($classe) {
 	}
 }
 spl_autoload_register(\'autoload\');
+
+if(isset($_REQUEST[\'api\'])){
+';
+        foreach ($this->software->getObjetos() as $objeto) {
+            $codigo .= '
+    '.ucfirst($objeto->getNome()).'Controller::mainREST();';
+
+        }
+
+    
+    $codigo .= '
+    exit;
+}
 
         
 ?>

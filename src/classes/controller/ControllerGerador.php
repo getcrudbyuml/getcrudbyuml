@@ -94,6 +94,29 @@ class ' . $nomeDoObjetoMa . 'Controller {
         echo \'</div>\';
             
     }
+    public static function mainREST()
+    {
+        if(!isset($_SERVER[\'PHP_AUTH_USER\'])){
+            header("WWW-Authenticate: Basic realm=\\\\"Private Area\\\\" ");
+            header("HTTP/1.0 401 Unauthorized");
+            echo \'{"erro":[{"status":"error","message":"Authentication failed"}]}\';
+            return;
+        }
+        if($_SERVER[\'PHP_AUTH_USER\'] == \'usuario\' && ($_SERVER[\'PHP_AUTH_PW\'] == \'senha@12\')){
+            header(\'Content-type: application/json\');
+            $controller = new '.$nomeDoObjetoMa.'Controller();
+            $controller->restGET();
+            //$controller->restPOST();
+            //$controller->restPUT();
+            $controller->resDELETE();
+        }else{
+            header("WWW-Authenticate: Basic realm=\\\\"Private Area\\\\" ");
+            header("HTTP/1.0 401 Unauthorized");
+            echo \'{"erro":[{"status":"error","message":"Authentication failed"}]}\';
+        }
+
+    }
+
 	public function __construct(){
 		$this->dao = new ' . $nomeDoObjetoMa . 'DAO();
 		$this->view = new ' . $nomeDoObjetoMa . 'View();
@@ -180,7 +203,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
             
 	public function cadastrar() {
             
-        if(!isset($this->post[\'enviar_' . $nomeDoObjeto . '\'])){';
+        if(!isset($this->post[\'enviar_' . $objeto->getNomeSnakeCase() . '\'])){';
         foreach($atributosObjetos as $atributoObjeto){
             $codigo .= '
             $'.strtolower($atributoObjeto->getTipo()).'Dao = new '.ucfirst ($atributoObjeto->getTipo()).'DAO($this->dao->getConexao());
@@ -205,14 +228,38 @@ class ' . $nomeDoObjetoMa . 'Controller {
 		}
 		if (! ( ';
         $i = 0;
+        $numDeComunsSemPK = 0;
         foreach ($atributosComuns as $atributo) {
             $i ++;
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
+            $numDeComunsSemPK++;
             $codigo .= 'isset ( $this->post [\'' . $atributo->getNome() . '\'] )';
             if ($i != count($atributosComuns)) {
                 $codigo .= ' && ';
+            }
+        }
+        $i = 0;
+        foreach($atributosObjetos as $atributoObjeto){
+            foreach($software->getObjetos() as $objeto3){
+                if($atributoObjeto->getTipo() == $objeto3->getNome())
+                {
+                    foreach($objeto3->getAtributos() as $atributo2){
+                        if($atributo2->getIndice() == Atributo::INDICE_PRIMARY){
+                            
+                            if($numDeComunsSemPK > 0 && $i == 0){
+                                $codigo .= ' && FOI MAIOR ';
+                            }else if($i > 0){
+                                $codigo .= ' && ';
+                            }
+                            $i++;
+                            $codigo .= ' isset($this->post [\'' . $atributoObjeto->getNomeSnakeCase() . '\'])';
+                            break;
+                        }
+                    }
+                    break;
+                }
             }
         }
         
@@ -237,7 +284,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
                     foreach($objeto3->getAtributos() as $atributo2){
                         if($atributo2->getIndice() == Atributo::INDICE_PRIMARY){
                             $codigo .= '
-		$' . $nomeDoObjeto . '->get' .ucfirst($atributoObjeto->getNome()) . '()->set'.ucfirst ($atributo2->getNome()).' ( $this->post [\'' . $atributoObjeto->getNome() . '\'] );';
+		$' . $nomeDoObjeto . '->get' .ucfirst($atributoObjeto->getNome()) . '()->set'.ucfirst ($atributo2->getNome()).' ( $this->post [\'' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
                             break;
                         }
                     }
@@ -271,14 +318,38 @@ class ' . $nomeDoObjetoMa . 'Controller {
             
 		if (! ( ';
         $i = 0;
+        $numDeComunsSemPK = 0;
         foreach ($atributosComuns as $atributo) {
             $i ++;
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
+            $numDeComunsSemPK++;
             $codigo .= 'isset ( $this->post [\'' . $atributo->getNome() . '\'] )';
             if ($i != count($atributosComuns)) {
                 $codigo .= ' && ';
+            }
+        }
+        $i = 0;
+        foreach($atributosObjetos as $atributoObjeto){
+            foreach($software->getObjetos() as $objeto3){
+                if($atributoObjeto->getTipo() == $objeto3->getNome())
+                {
+                    foreach($objeto3->getAtributos() as $atributo2){
+                        if($atributo2->getIndice() == Atributo::INDICE_PRIMARY){
+                            
+                            if($numDeComunsSemPK > 0 && $i == 0){
+                                $codigo .= ' && FOI MAIOR ';
+                            }else if($i > 0){
+                                $codigo .= ' && ';
+                            }
+                            $i++;
+                            $codigo .= ' isset($this->post [\'' . $atributoObjeto->getNomeSnakeCase() . '\'])';
+                            break;
+                        }
+                    }
+                    break;
+                }
             }
         }
         
@@ -326,17 +397,62 @@ class ' . $nomeDoObjetoMa . 'Controller {
         }
     	echo \'<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=' . $nomeDoObjeto . '">\';
     }
-	public function listarJSON()
+	public function restGET()
     {
-		$' . $nomeDoObjeto . 'Dao = new ' . $nomeDoObjetoMa . 'DAO ();
-		$lista = $' . $nomeDoObjeto . 'Dao->retornaLista ();
-		$listagem = array ();
-		foreach ( $lista as $linha ) {
-			$listagem [\'lista\'] [] = array (';
+
+        if ($_SERVER[\'REQUEST_METHOD\'] != \'GET\') {
+            return;
+        }
+
+        if(!isset($_REQUEST[\'api\'])){
+            return;
+        }
+        $url = explode("/", $_REQUEST[\'api\']);
+        if (count($url) == 0 || $url[0] == "") {
+            return;
+        }
+        if ($url[1] != \''.$nomeDoObjeto.'\') {
+            return;
+        }
+
+        if(isset($url[1])){
+            $parametro = $url[1];
+            $id = intval($parametro);
+            $pesquisado = new '.ucfirst($objeto->getNome()).'();
+            $pesquisado->setId($id);
+            $pesquisado = $this->dao->pesquisaPorId($pesquisado);
+            if ($pesquisado == null) {
+                echo "{}";
+                return;
+            }
+
+            $pesquisado = array(';
         $i = 0;
         foreach ($atributosComuns as $atributo) {
             $i ++;
             $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
+            $codigo .= '
+					\'' . $atributo->getNome() . '\' => $pesquisado->get' . $nomeDoAtributoMA . ' ()';
+            if ($i != count($objeto->getAtributos())) {
+                $codigo .= ', ';
+            }
+        }
+        
+        $codigo .= '
+            
+            
+			);
+            echo json_encode($pesquisado);
+            return;
+        }        
+        $lista = $this->dao->retornaLista();
+        $listagem = array();
+        foreach ( $lista as $linha ) {
+			$listagem [\'lista\'] [] = array (';
+        $i = 0;
+        foreach ($atributosComuns as $atributo) {
+            $i ++;
+            $nomeDoAtributoMA = ucfirst($atributo->getNome());
             $codigo .= '
 					\'' . $atributo->getNome() . '\' => $linha->get' . $nomeDoAtributoMA . ' ()';
             if ($i != count($objeto->getAtributos())) {
@@ -350,8 +466,186 @@ class ' . $nomeDoObjetoMa . 'Controller {
 			);
 		}
 		echo json_encode ( $listagem );
+    
+		
+		
+		
+		
 	}
-            
+
+    public function resDELETE()
+    {
+        if ($_SERVER[\'REQUEST_METHOD\'] != \'DELETE\') {
+            return;
+        }
+        $path = explode(\'/\', $_GET[\'api\']);
+        $parametro = "";
+        if (count($path) < 2) {
+            return;
+        }
+        $parametro = $path[1];
+        if ($parametro == "") {
+            return;
+        }
+    
+        $id = intval($parametro);
+        $pesquisado = new '.ucfirst($objeto->getNome()).'();
+        $pesquisado->setId($id);
+        $pesquisado = $this->dao->pesquisaPorId($pesquisado);
+        if ($pesquisado == null) {
+            echo "{}";
+            return;
+        }
+
+        if($this->dao->excluir($pesquisado))
+        {
+            echo "{}";
+            return;
+        }
+        
+        echo "Erro.";
+        
+    }
+    public function restPUT()
+    {
+        if ($_SERVER[\'REQUEST_METHOD\'] != \'PUT\') {
+            return;
+        }
+
+        if (! array_key_exists(\'api\', $_GET)) {
+            return;
+        }
+        $path = explode(\'/\', $_GET[\'api\']);
+        if (count($path) == 0 || $path[0] == "") {
+            echo \'Error. Path missing.\';
+            return;
+        }
+        
+        $param1 = "";
+        if (count($path) > 1) {
+            $parametro = $path[1];
+        }
+
+        if ($path[0] != \'info\') {
+            return;
+        }
+
+        if ($param1 == "") {
+            echo \'error\';
+            return;
+        }
+
+        $id = intval($parametro);
+        $pesquisado = new '.ucfirst($objeto->getNome()).'();
+        $pesquisado->setId($id);
+        $pesquisado = $this->dao->pesquisaPorId($pesquisado);
+
+        if ($pesquisado == null) {
+            return;
+        }
+
+        $body = file_get_contents(\'php://input\');
+        $jsonBody = json_decode($body, true);
+        
+        ';
+        foreach($objeto->getAtributos() as $atributo){
+            if($atributo->tipoListado()){
+                $codigo .= '
+        if (isset($jsonBody[\''.$atributo->getNomeSnakeCase().'\'])) {
+            $pesquisado->set'.ucfirst($atributo->getNome()).'superficie($jsonBody[\''.$atributo->getNomeSnakeCase().'\']);
+        }
+                    
+';
+            }
+        }
+  
+        $codigo .= '
+        if ($this->dao->atualizar($pesquisado)) {
+            echo "Sucesso";
+        } else {
+            echo "Erro";
+        }
+    }
+
+    public function restPOST()
+    {
+        if ($_SERVER[\'REQUEST_METHOD\'] != \'POST\') {
+            return;
+        }
+        if (! array_key_exists(\'path\', $_GET)) {
+            echo \'Error. Path missing.\';
+            return;
+        }
+
+        $path = explode(\'/\', $_GET[\'path\']);
+
+        if (count($path) == 0 || $path[0] == "") {
+            echo \'Error. Path missing.\';
+            return;
+        }
+
+        $body = file_get_contents(\'php://input\');
+        $jsonBody = json_decode($body, true);
+
+        if (! ( ';
+        $i = 0;
+        $numDeComunsSemPK = 0;
+        foreach ($atributosComuns as $atributo) {
+            $i ++;
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
+                continue;
+            }
+            $numDeComunsSemPK++;
+            $codigo .= 'isset ( $jsonBody [\'' . $atributo->getNome() . '\'] )';
+            if ($i != count($atributosComuns)) {
+                $codigo .= ' && ';
+            }
+        }
+        $i = 0;
+        foreach($atributosObjetos as $atributoObjeto){
+            foreach($software->getObjetos() as $objeto3){
+                if($atributoObjeto->getTipo() == $objeto3->getNome())
+                {
+                    foreach($objeto3->getAtributos() as $atributo2){
+                        if($atributo2->getIndice() == Atributo::INDICE_PRIMARY){
+                            
+                            if($numDeComunsSemPK > 0 && $i == 0){
+                                $codigo .= ' && FOI MAIOR ';
+                            }else if($i > 0){
+                                $codigo .= ' && ';
+                            }
+                            $i++;
+                            $codigo .= ' isset($this->post [\'' . $atributoObjeto->getNomeSnakeCase() . '\'])';
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        
+        $codigo .= ')) {
+			echo "Incompleto";
+			return;
+		}
+
+        $adicionado = new '.ucfirst($objeto->getNome()).'();';
+        foreach($objeto->getAtributos() as $atributo){
+            if($atributo->tipoListado()){
+                
+                $codigo .= '
+        $adicionado->set'.ucfirst($atributo->getNome()).'($jsonBody[\''.$atributo->getNomeSnakeCase().'\']);
+';
+            }
+        }
+  
+        $codigo .= '
+        if ($this->dao->inserir($adicionado)) {
+            echo "Sucesso";
+        } else {
+            echo "Fracasso";
+        }
+    }            
             
 		';
         
