@@ -62,31 +62,99 @@ class SoftwareController {
         if(isset($_GET['escrever'])){
             EscritorDeSoftware::main($selecionado);
             $zipador = new Zipador();
-            echo '<div class="row">';
-            echo '<div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">';
-    
-            
-            echo '<textarea>';
-            include 'sistemas/'.$selecionado->getNome().'/'.strtolower($selecionado->getNome()).'_banco_pg.sql';
-            echo '</textarea>';
-            
-            echo '</div>';
-            echo '<div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">';
-            
-            echo '<textarea>';
-            include 'sistemas/'.$selecionado->getNome().'/'.strtolower($selecionado->getNome()).'_banco_sqlite.sql';
-            echo '</textarea>';
-            
-            echo '</div>';
-            echo '</div>';
-            
-            
-            echo '<br><hr>';
+         
             echo '<div class="row justify-content-center">';
             $zipador->zipaArquivo('sistemas/'.$selecionado->getNome(), 'sistemas/'.$selecionado->getNome().'.zip');
             echo ' - <a href="sistemas/'.$selecionado->getNome().'"> Acessar Software</a>';
             echo ' - <a href="sistemas/'.$selecionado->getNome().'.zip"> Baixar Software</a>';
             echo '</div>';
+            echo '<br><hr>';
+            
+            echo '<div class="row">';
+            echo '<div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">';
+    
+            
+            echo '  <div class="col-md-12">
+                      <div class="card mb-6 shadow-sm">
+            
+                        <div class="card-body">';
+
+            $sql = file_get_contents('sistemas/'.$selecionado->getNome().'/'.strtolower($selecionado->getNome()).'_banco_pg.sql');
+            $sql = str_replace(" ", "&nbsp;", $sql);
+            $sql = nl2br($sql);
+            
+            
+            $keyWords = array(
+                "CREATE",
+                "TABLE",
+                "CONSTRAINT",
+                "ALTER",
+                "PRIMARY",
+                "KEY"
+            );
+            $keyWords2 = array(
+                "<span class=\"text-danger font-weight-bold\">CREATE</span>",
+                "<span class=\"text-danger font-weight-bold\">TABLE</span>",
+                "<span class=\"text-danger font-weight-bold\">CONSTRAINT</span>",
+                "<span class=\"text-danger font-weight-bold\">ALTER</span>",
+                "<span class=\"text-danger font-weight-bold\">PRIMARY</span>",
+                "<span class=\"text-danger font-weight-bold\">KEY</span>"
+                
+            );
+            
+            $sql = str_replace($keyWords, $keyWords2, $sql);
+            
+            
+            echo $sql;
+            
+            echo '</div>';
+            echo '</div>';            
+            echo '</div>';
+            echo '</div>';
+            
+            
+            echo '<div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">';
+            echo '  <div class="col-md-12">
+                      <div class="card mb-6 shadow-sm">
+                
+                        <div class="card-body">';
+            
+            
+            
+            $sql = file_get_contents('sistemas/'.$selecionado->getNome().'/'.strtolower($selecionado->getNome()).'_banco_sqlite.sql');
+            $sql = str_replace(" ", "&nbsp;", $sql);
+            $sql = nl2br($sql);
+            
+            
+            $keyWords = array(
+                "CREATE",
+                "TABLE",
+                "CONSTRAINT",
+                "ALTER", 
+                "PRIMARY", 
+                "KEY"
+            );
+            $keyWords2 = array(
+                "<span class=\"text-danger font-weight-bold\">CREATE</span>",
+                "<span class=\"text-danger font-weight-bold\">TABLE</span>",
+                "<span class=\"text-danger font-weight-bold\">CONSTRAINT</span>",
+                "<span class=\"text-danger font-weight-bold\">ALTER</span>",
+                "<span class=\"text-danger font-weight-bold\">PRIMARY</span>",
+                "<span class=\"text-danger font-weight-bold\">KEY</span>"
+                
+            );
+            $sql = str_replace($keyWords, $keyWords2, $sql);
+            
+            
+            echo $sql;
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+            
+            return;
+
         }
         $objetoController = new ObjetoController();
         $objetoController->cadastrar($selecionado);

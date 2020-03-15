@@ -52,7 +52,8 @@ senha = 123
         $objetosNN = array();
         $codigo = '';
         foreach ($this->software->getObjetos() as $objeto) {
-            $codigo .= 'CREATE TABLE ' . $objeto->getNomeSnakeCase();
+            $codigo .= '
+CREATE TABLE ' . $objeto->getNomeSnakeCase();
             $codigo .= " (\n";
             $i = 0;
             foreach ($objeto->getAtributos() as $atributo) {
@@ -110,8 +111,12 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase().'_'.strtolower(explode(" ", $atribu
     id_'.$objeto->getNomeSnakeCase().' integer NOT NULL,
     id_'.strtolower(explode(" ", $atributo->getTipoSnakeCase())[2]).' integer NOT NULL,
     CONSTRAINT pk_'.$objeto->getNomeSnakeCase().'_'.explode(" ", $atributo->getTipoSnakeCase())[2].'_id PRIMARY KEY (id),
-    CONSTRAINT fk_'.$objeto->getNomeSnakeCase().'_id FOREIGN KEY (id_'.$objeto->getNomeSnakeCase().') REFERENCES '.strtolower($objeto->getNome()).' (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION,
-    CONSTRAINT fk_'.strtolower(explode(" ", $atributo->getTipoSnakeCase())[2]).'_id FOREIGN KEY (id'.strtolower(explode(" ", $atributo->getTipo())[2]).') REFERENCES '.strtolower(explode(" ", $atributo->getTipo())[2]).' (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION
+    CONSTRAINT fk_'.$objeto->getNomeSnakeCase().'_id FOREIGN KEY (id_'.$objeto->getNomeSnakeCase().') 
+    REFERENCES '.strtolower($objeto->getNome()).' (id) 
+    MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT fk_'.strtolower(explode(" ", $atributo->getTipoSnakeCase())[2]).'_id 
+    FOREIGN KEY (id'.strtolower(explode(" ", $atributo->getTipo())[2]).') REFERENCES '.strtolower(explode(" ", $atributo->getTipo())[2]).' (id) 
+    MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION
 );';
                     
                 }
@@ -144,9 +149,9 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase().'_'.strtolower(explode(" ", $atribu
                     }
                     $codigo .= '
 ALTER TABLE ' . strtolower($objeto->getNome()).'
-ADD CONSTRAINT
-fk_'.strtolower($objeto->getNome()).'_'.strtolower($atributo->getTipo()).'_'.$atributo->getNomeSnakeCase() . ' FOREIGN KEY (id_'.strtolower($atributo->getTipo()).'_'.$atributo->getNomeSnakeCase() . ')
-REFERENCES '.strtolower($atributo->getTipo()).'('.$atributoPrimary->getNome().');
+    ADD CONSTRAINT
+    fk_'.strtolower($objeto->getNome()).'_'.strtolower($atributo->getTipo()).'_'.$atributo->getNomeSnakeCase() . ' FOREIGN KEY (id_'.strtolower($atributo->getTipo()).'_'.$atributo->getNomeSnakeCase() . ')
+    REFERENCES '.strtolower($atributo->getTipo()).'('.$atributoPrimary->getNome().');
 ';
                 }
                 
@@ -168,7 +173,8 @@ REFERENCES '.strtolower($atributo->getTipo()).'('.$atributoPrimary->getNome().')
         $codigo = '';
         foreach ($this->software->getObjetos() as $objeto) 
         {
-            $codigo .= 'CREATE TABLE ' . $objeto->getNomeSnakeCase();
+            $codigo .= '
+CREATE TABLE ' . $objeto->getNomeSnakeCase();
             $codigo .= " (\n";
             $i = 0;
             $atributosComuns = array();
@@ -209,7 +215,8 @@ REFERENCES '.strtolower($atributo->getTipo()).'('.$atributoPrimary->getNome().')
             //explode(' ', $string);
             foreach($objeto->getAtributos() as $atributo){
                 if(substr($atributo->getTipo(),0,6) == 'Array '){
-                    $codigo .= 'CREATE TABLE ' . $objeto->getNomeSnakeCase().'_'.strtolower(explode(" ", $atributo->getTipo())[2]);
+                    $codigo .= '
+CREATE TABLE ' . $objeto->getNomeSnakeCase().'_'.strtolower(explode(" ", $atributo->getTipo())[2]);
                     $codigo .= '(
     id 	INTEGER PRIMARY KEY AUTOINCREMENT,
     id_'.$objeto->getNomeSnakeCase().' INTEGER,
