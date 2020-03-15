@@ -90,17 +90,30 @@ class SoftwareController {
                 "CONSTRAINT",
                 "ALTER",
                 "PRIMARY",
-                "KEY"
+                "KEY",
+                "NOT",
+                "NULL",
+                "FOREIGN", 
+                "ADD",
+                "MATCH", 
+                "REFERENCES"
             );
+            //  MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION
             $keyWords2 = array(
                 "<span class=\"text-danger font-weight-bold\">CREATE</span>",
                 "<span class=\"text-danger font-weight-bold\">TABLE</span>",
                 "<span class=\"text-danger font-weight-bold\">CONSTRAINT</span>",
                 "<span class=\"text-danger font-weight-bold\">ALTER</span>",
                 "<span class=\"text-danger font-weight-bold\">PRIMARY</span>",
-                "<span class=\"text-danger font-weight-bold\">KEY</span>"
-                
+                "<span class=\"text-danger font-weight-bold\">KEY</span>",
+                "<span class=\"text-danger font-weight-bold\">NOT</span>",
+                "<span class=\"text-danger font-weight-bold\">NULL</span>",
+                "<span class=\"text-danger font-weight-bold\">FOREIGN</span>",
+                "<span class=\"text-danger font-weight-bold\">ADD</span>",
+                "<span class=\"text-danger font-weight-bold\">MATCH</span>",
+                "<span class=\"text-danger font-weight-bold\">REFERENCES</span>"
             );
+            
             
             $sql = str_replace($keyWords, $keyWords2, $sql);
             
@@ -130,9 +143,12 @@ class SoftwareController {
                 "CREATE",
                 "TABLE",
                 "CONSTRAINT",
-                "ALTER", 
-                "PRIMARY", 
-                "KEY"
+                "ALTER",
+                "PRIMARY",
+                "KEY",
+                "NOT",
+                "NULL", 
+                "FOREIGN"
             );
             $keyWords2 = array(
                 "<span class=\"text-danger font-weight-bold\">CREATE</span>",
@@ -140,9 +156,13 @@ class SoftwareController {
                 "<span class=\"text-danger font-weight-bold\">CONSTRAINT</span>",
                 "<span class=\"text-danger font-weight-bold\">ALTER</span>",
                 "<span class=\"text-danger font-weight-bold\">PRIMARY</span>",
-                "<span class=\"text-danger font-weight-bold\">KEY</span>"
+                "<span class=\"text-danger font-weight-bold\">KEY</span>",
+                "<span class=\"text-danger font-weight-bold\">NOT</span>",
+                "<span class=\"text-danger font-weight-bold\">NULL</span>",
+                "<span class=\"text-danger font-weight-bold\">FOREIGN</span>"
                 
             );
+            
             $sql = str_replace($keyWords, $keyWords2, $sql);
             
             
