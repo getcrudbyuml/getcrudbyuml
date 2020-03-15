@@ -133,13 +133,13 @@ class Atributo {
 	public function getTipoPostgres(){
 	    $tipo = 'integer';
 	    if($this->getTipo() == Atributo::TIPO_STRING){
-	        $tipo = $this->getNomeSnakeCase() . 'character varying(150)';
+	        $tipo = 'character varying(150)';
 	    }else if($this->getTipo() == Atributo::TIPO_INT){
-	        $tipo = $this->getNomeSnakeCase() . 'integer';
+	        $tipo = 'integer';
 	    }else if($this->getTipo() == Atributo::TIPO_FLOAT){
-	        $tipo = $this->getNomeSnakeCase() . 'numeric(8,2)';
+	        $tipo = 'numeric(8,2)';
 	    }else if($this->getTipo() == Atributo::TIPO_DATA){
-	        $tipo = $this->getNomeSnakeCase() . 'timestamp without time zone';
+	        $tipo = 'timestamp without time zone';
 	    }
 	    return $tipo;
 	}

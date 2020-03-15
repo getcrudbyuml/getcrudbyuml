@@ -369,9 +369,9 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                 
     }
                 
-	public function inserir(' . $nomeDoObjetoMA . ' $' . $nomeDoObjeto . '){
+	public function inserir(' . ucfirst($objeto->getNome()) . ' $' . lcfirst($objeto->getNome()) . '){
 	    
-		$sql = "INSERT INTO ' . $nomeDoObjeto . '(';
+		$sql = "INSERT INTO ' . $objeto->getNomeSnakeCase(). '(';
             $i = 0;
             $nAtributosCCSemPk = 0;
             foreach ($atributosComuns as $atributo) {
@@ -380,7 +380,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                     continue;
                 }
                 $nAtributosCCSemPk++;
-                $codigo .= strtolower($atributo->getNome());
+                $codigo .= $atributo->getNomeSnakeCase();
                 if ($i != count($atributosComuns)) {
                     $codigo .= ', ';
                 }
@@ -394,7 +394,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                 if($nAtributosCCSemPk != 0 && $i == 1){
                     $codigo .= ', ';
                 }
-                $codigo .= 'id_'.strtolower($atributo->getTipo()).'_'.strtolower($atributo->getNome());
+                $codigo .= 'id_'.$atributo->getTipoSnakeCase().'_'.$atributo->getNomeSnakeCase();
                 if ($i != count($atributosObjetos)) {
                     $codigo .= ', ';
                 }

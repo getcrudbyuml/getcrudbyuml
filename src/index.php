@@ -27,13 +27,20 @@ function __autoload($classe)
 <title>EscritorDeSoftware</title>
 </head>
 <body>
+<nav class="navbar navbar-dark bg-dark box-shadow">
+  <a class="navbar-brand" href="#">CW - CodeWriter</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Alterna navegação">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav"><a class="nav-item nav-link" href="?pagina=informacoestempo">InformacoesTempo</a><a class="nav-item nav-link" href="?pagina=temperaturaar">TemperaturaAr</a><a class="nav-item nav-link" href="?pagina=temperatura">Temperatura</a>
+        
+    </div>
+  </div>
+</nav>
 	<main role="main">
 
-      <section class="jumbotron text-center">
-        <div class="container">
-          <h1 class="jumbotron-heading">Escritor de Software</h1>
-        </div>
-      </section>
+      
         <div class="album py-5 bg-light">
             <div class="container">
               <?php

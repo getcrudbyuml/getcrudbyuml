@@ -249,7 +249,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
                         if($atributo2->getIndice() == Atributo::INDICE_PRIMARY){
                             
                             if($numDeComunsSemPK > 0 && $i == 0){
-                                $codigo .= ' && FOI MAIOR ';
+                                $codigo .= ' && ';
                             }else if($i > 0){
                                 $codigo .= ' && ';
                             }
@@ -339,7 +339,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
                         if($atributo2->getIndice() == Atributo::INDICE_PRIMARY){
                             
                             if($numDeComunsSemPK > 0 && $i == 0){
-                                $codigo .= ' && FOI MAIOR ';
+                                $codigo .= ' && ';
                             }else if($i > 0){
                                 $codigo .= ' && ';
                             }
@@ -610,7 +610,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
                         if($atributo2->getIndice() == Atributo::INDICE_PRIMARY){
                             
                             if($numDeComunsSemPK > 0 && $i == 0){
-                                $codigo .= ' && FOI MAIOR ';
+                                $codigo .= ' && ';
                             }else if($i > 0){
                                 $codigo .= ' && ';
                             }

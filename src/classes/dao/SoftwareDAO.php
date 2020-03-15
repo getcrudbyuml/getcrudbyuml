@@ -65,7 +65,7 @@ class SoftwareDAO extends DAO {
 	
 	public function retornaLista() {
 		$lista = array ();
-		$sql = "SELECT * FROM software LIMIT 1000";
+		$sql = "SELECT * FROM software ORDER BY id DESC LIMIT 1000";
 		$result = $this->getConexao ()->query ( $sql );
 	
 		foreach ( $result as $linha ) {

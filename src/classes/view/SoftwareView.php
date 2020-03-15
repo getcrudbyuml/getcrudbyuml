@@ -9,23 +9,13 @@ class SoftwareView {
 	public function mostraFormInserir() {
 		echo '
                     
-		<!-- Outer Row -->
-		<div class="row justify-content-center">
-    
-			<div class="col-xl-6 col-lg-12 col-md-9">
-    
-				<div class="card o-hidden border-0 shadow-lg my-5">
-					<div class="card-body p-0">
-						<!-- Nested Row within Card Body -->
-						<div class="row">
-    
-							<div class="col-lg-12">
-								<div class="p-5">
-									<div class="text-center">
-										<h1 class="h4 text-gray-900 mb-4"> Adicionar Software</h1>
-									</div>
-
-                                      <form class="user" method="post">
+<div class="col-md-12">
+        <div class="card mb-6 shadow-sm">
+            <div class="card-header">
+                  Adicionar Software
+            </div>
+            <div class="card-body">
+                <form class="user" method="post">
                                         <div class="form-group">
                 						  <input type="text" class="form-control form-control-user" id="nome" name="nome" placeholder="nome">
                 						</div>
@@ -33,16 +23,17 @@ class SoftwareView {
                                         <hr>
                                             
 						              </form>
+            </div>
+        </div>
+    </div>
 
-                        </div>
-							</div>
-						</div>
-					</div>
-				</div>
+			
+    
+
                                             
-			</div>
+			
                                             
-		</div>
+
 ';
 	}
                                             
@@ -52,43 +43,31 @@ class SoftwareView {
                     <div class="col-md-12">
                       <div class="card mb-6 shadow-sm">
             
-                          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                           <h6 class="m-0 font-weight-bold text-primary">Lista de Softwares</h6>
                           
                         </div>
                         <div class="card-body">
-                    		<div class="table-responsive">
-                    			<table class="table table-bordered" id="dataTable" width="100%"
-                    				cellspacing="0">
-                    				<thead>
-                    					<tr>
-
-                    						<th>nome</th><th>Ações</th>
-                    					</tr>
-                    				</thead>
-                    				<tfoot>
-                    					<tr>
-
-                                            <th>nome</th><th>Ações</th>
-                    					</tr>
-                    				</tfoot>
-                    				<tbody>';
+<div class="list-group">';
+        
+        foreach($lista as $elemento){
+            echo '
+                
+  <a href="?pagina=software&selecionar='.$elemento->getId().'" class="list-group-item list-group-item-action">'.$elemento->getNome().'</a>';
             
-            foreach($lista as $elemento){
-                echo '<tr>';
-
-                echo '<td>'.$elemento->getNome().'</td>';echo '<td>
-                        <a href="?pagina=software&selecionar='.$elemento->getId().'" class="btn btn-info">Selecionar</a> 
-                        <a href="?pagina=software&editar='.$elemento->getId().'" class="btn btn-success">Editar</a>
-                        <a href="?pagina=software&deletar='.$elemento->getId().'" class="btn btn-danger">Deletar</a>
-                      </td>';
-                echo '<tr>';
-            }
             
+            
+        }
+        
+        
         echo '
-				</tbody>
-			</table>
-		</div>
+</div>                    		
+
+
+';
+                        
+        echo '
+				
             
                         </div>
                       </div>

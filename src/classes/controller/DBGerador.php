@@ -60,18 +60,18 @@ senha = 123
                 $flagPulei = false;
                 if ($atributo->getIndice() == Atributo::INDICE_PRIMARY && $atributo->tipoListado()) 
                 {
-                    $codigo .=  $atributo->getNomeSnakeCase().' '.$atributo->getTipoPostgres(). ' serial NOT NULL';
+                    $codigo .= '    '.$atributo->getNomeSnakeCase().' '.$atributo->getTipoPostgres(). ' serial NOT NULL';
                     
                 }else if($atributo->tipoListado())
                 {
-                    $codigo .= $atributo->getNomeSnakeCase() . ' '.$atributo->getTipoPostgres();
+                    $codigo .= '    '.$atributo->getNomeSnakeCase() . ' '.$atributo->getTipoPostgres();
                 }
                 else if($atributo->isArrayNN()){
                     $objetosNN[] = $objeto;
                     $flagPulei = true;
                 }else if($atributo->isObjeto())
                 {
-                    $codigo .= 'id_'.$atributo->getTipoSnakeCase().'_'.$atributo->getNomeSnakeCase() . ' integer NOT NULL';
+                    $codigo .= '    id_'.$atributo->getTipoSnakeCase().'_'.$atributo->getNomeSnakeCase() . ' integer NOT NULL';
                 }else{
                     //Tipo Array Comum não implementado
                     $flagPulei = true;
@@ -82,7 +82,7 @@ senha = 123
                             if(!$flagPulei){
                                 $codigo .= ",\n";
                             }
-                            $codigo .= ' CONSTRAINT pk_'.strtolower($objeto->getNome()).'_'.$atributo->getNomeSnakeCase().' PRIMARY KEY ('.$atributo->getNomeSnakeCase().')';
+                            $codigo .= '    CONSTRAINT pk_'.strtolower($objeto->getNome()).'_'.$atributo->getNomeSnakeCase()."\n".'    PRIMARY KEY ('.$atributo->getNomeSnakeCase().')';
                             break;
                         }
                     }
@@ -186,13 +186,13 @@ REFERENCES '.strtolower($atributo->getTipo()).'('.$atributoPrimary->getNome().')
             foreach($atributosComuns as $atributo){
                 $i ++;
                 if($atributo->tipoListado()){
-                    $codigo .= $atributo->getNomeSnakeCase().' '.$atributo->getTipoSqlite().' ';
+                    $codigo .= '    '.$atributo->getNomeSnakeCase().' '.$atributo->getTipoSqlite().' ';
                 }
                 else if($atributo->isObjeto()){
-                    $codigo .= 'id_'.$atributo->getTipoSnakeCase().'_'.$atributo->getNomeSnakeCase() . ' INTEGER NOT NULL';
+                    $codigo .= '    id_'.$atributo->getTipoSnakeCase().'_'.$atributo->getNomeSnakeCase() . ' INTEGER NOT NULL';
                 }
                 if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                    $codigo .= ' PRIMARY KEY AUTOINCREMENT';
+                    $codigo .= '    PRIMARY KEY AUTOINCREMENT';
                 }
                 if ($i >= count($atributosComuns)) {
                     $codigo .= "\n";
