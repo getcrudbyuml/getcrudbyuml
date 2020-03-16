@@ -67,7 +67,7 @@ class SoftwareController {
         }
         echo '<div class="row justify-content-center">
                     <a href="?pagina=software&selecionar='.$this->selecionado->getId().'&escrever=1" class="btn btn-success">Escrever Software</a>
-                </div>';
+                </div><br>';
         if(isset($_GET['escrever'])){
             EscritorDeSoftware::main($this->selecionado);
             $zipador = new Zipador();
