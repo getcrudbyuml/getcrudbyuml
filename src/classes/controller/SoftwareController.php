@@ -9,13 +9,11 @@ class SoftwareController {
 	private $post;
 	private $view;
     private $dao;
+    private $selecionado;
 
     public static function main(){
         $controller = new SoftwareController();
-        if(isset($_GET['selecionar'])){
-            $controller->selecionar();
-            return;
-        }
+
         if(isset($_GET['deletar'])){
             $controller->deletar();
             return;
@@ -25,18 +23,25 @@ class SoftwareController {
             return;
         }
         echo '<div class="row">';
-        echo '<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">';
+        echo '<div class="col-xl-3 col-lg-3 col-md-3 col-sm-12">';
         $controller->cadastrar();
 
         $controller->listar();
         echo '</div>';
+        
+        if(isset($_GET['selecionar'])){
+            echo '<div class="col-xl-9 col-lg-9 col-md-9 col-sm-12">';
+            $controller->selecionar();
+            echo '</div>';
+            
+        }
         echo '</div>';
-
         
     }
 	public function __construct(){
 		$this->dao = new SoftwareDAO();
 		$this->view = new SoftwareView();
+		$this->selecionado = null;
 		foreach($_POST as $chave => $valor){
 			$this->post[$chave] = $valor;
 		}
@@ -50,23 +55,27 @@ class SoftwareController {
 	    if(!isset($_GET['selecionar'])){
 	        return;
 	    }
-        $selecionado = new Software();
-	    $selecionado->setId($_GET['selecionar']);
-	    $this->dao->pesquisaPorId($selecionado);
+	    
+        $this->selecionado = new Software();
+        $this->selecionado->setId($_GET['selecionar']);
+        $this->dao->pesquisaPorId($this->selecionado);
 	    $objetoDao = new ObjetoDAO($this->dao->getConexao());    
-        $objetoDao->pesquisaPorIdSoftware($selecionado);
+	    $objetoDao->pesquisaPorIdSoftware($this->selecionado);
         $atributoDao = new AtributoDAO($this->dao->getConexao());
-        foreach($selecionado->getObjetos() as $objeto){
+        foreach($this->selecionado->getObjetos() as $objeto){
             $atributoDao->pesquisaPorIdObjeto($objeto);
         }
+        echo '<div class="row justify-content-center">
+                    <a href="?pagina=software&selecionar='.$this->selecionado->getId().'&escrever=1" class="btn btn-success">Escrever Software</a>
+                </div>';
         if(isset($_GET['escrever'])){
-            EscritorDeSoftware::main($selecionado);
+            EscritorDeSoftware::main($this->selecionado);
             $zipador = new Zipador();
          
             echo '<div class="row justify-content-center">';
-            $zipador->zipaArquivo('sistemas/'.$selecionado->getNome(), 'sistemas/'.$selecionado->getNome().'.zip');
-            echo ' - <a href="sistemas/'.$selecionado->getNome().'"> Acessar Software</a>';
-            echo ' - <a href="sistemas/'.$selecionado->getNome().'.zip"> Baixar Software</a>';
+            $zipador->zipaArquivo('sistemas/'.$this->selecionado->getNome(), 'sistemas/'.$this->selecionado->getNome().'.zip');
+            echo ' - <a href="sistemas/'.$this->selecionado->getNome().'"> Acessar Software</a>';
+            echo ' - <a href="sistemas/'.$this->selecionado->getNome().'.zip"> Baixar Software</a>';
             echo '</div>';
             echo '<br><hr>';
             
@@ -79,45 +88,9 @@ class SoftwareController {
             
                         <div class="card-body">';
 
-            $sql = file_get_contents('sistemas/'.$selecionado->getNome().'/'.strtolower($selecionado->getNome()).'_banco_pg.sql');
-            $sql = str_replace(" ", "&nbsp;", $sql);
-            $sql = nl2br($sql);
             
-            
-            $keyWords = array(
-                "CREATE",
-                "TABLE",
-                "CONSTRAINT",
-                "ALTER",
-                "PRIMARY",
-                "KEY",
-                "NOT",
-                "NULL",
-                "FOREIGN", 
-                "ADD",
-                "MATCH", 
-                "REFERENCES"
-            );
-            //  MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION
-            $keyWords2 = array(
-                "<span class=\"text-danger font-weight-bold\">CREATE</span>",
-                "<span class=\"text-danger font-weight-bold\">TABLE</span>",
-                "<span class=\"text-danger font-weight-bold\">CONSTRAINT</span>",
-                "<span class=\"text-danger font-weight-bold\">ALTER</span>",
-                "<span class=\"text-danger font-weight-bold\">PRIMARY</span>",
-                "<span class=\"text-danger font-weight-bold\">KEY</span>",
-                "<span class=\"text-danger font-weight-bold\">NOT</span>",
-                "<span class=\"text-danger font-weight-bold\">NULL</span>",
-                "<span class=\"text-danger font-weight-bold\">FOREIGN</span>",
-                "<span class=\"text-danger font-weight-bold\">ADD</span>",
-                "<span class=\"text-danger font-weight-bold\">MATCH</span>",
-                "<span class=\"text-danger font-weight-bold\">REFERENCES</span>"
-            );
-            
-            
-            $sql = str_replace($keyWords, $keyWords2, $sql);
-            
-            
+            $sql = file_get_contents('sistemas/'.$this->selecionado->getNome().'/'.strtolower($this->selecionado->getNome()).'_banco_pg.sql');
+            $sql = $this->formatarPG($sql);
             echo $sql;
             
             echo '</div>';
@@ -133,39 +106,10 @@ class SoftwareController {
                         <div class="card-body">';
             
             
-            
-            $sql = file_get_contents('sistemas/'.$selecionado->getNome().'/'.strtolower($selecionado->getNome()).'_banco_sqlite.sql');
-            $sql = str_replace(" ", "&nbsp;", $sql);
-            $sql = nl2br($sql);
-            
-            
-            $keyWords = array(
-                "CREATE",
-                "TABLE",
-                "CONSTRAINT",
-                "ALTER",
-                "PRIMARY",
-                "KEY",
-                "NOT",
-                "NULL", 
-                "FOREIGN"
-            );
-            $keyWords2 = array(
-                "<span class=\"text-danger font-weight-bold\">CREATE</span>",
-                "<span class=\"text-danger font-weight-bold\">TABLE</span>",
-                "<span class=\"text-danger font-weight-bold\">CONSTRAINT</span>",
-                "<span class=\"text-danger font-weight-bold\">ALTER</span>",
-                "<span class=\"text-danger font-weight-bold\">PRIMARY</span>",
-                "<span class=\"text-danger font-weight-bold\">KEY</span>",
-                "<span class=\"text-danger font-weight-bold\">NOT</span>",
-                "<span class=\"text-danger font-weight-bold\">NULL</span>",
-                "<span class=\"text-danger font-weight-bold\">FOREIGN</span>"
-                
-            );
-            
-            $sql = str_replace($keyWords, $keyWords2, $sql);
-            
-            
+
+            $sql = file_get_contents('sistemas/'.$this->selecionado->getNome().'/'.strtolower($this->selecionado->getNome()).'_banco_sqlite.sql');
+            $sql = $this->formatarSQLITE($sql);
+                        
             echo $sql;
             echo '</div>';
             echo '</div>';
@@ -177,16 +121,152 @@ class SoftwareController {
 
         }
         $objetoController = new ObjetoController();
-        $objetoController->cadastrar($selecionado);
+        $objetoController->cadastrar($this->selecionado);
         
-        $this->view->mostrarSelecionado($selecionado);
-        echo '<div class="row justify-content-center">
-                    <a href="?pagina=software" class="btn btn-success">Voltar Para Início</a>
-                    <a href="?pagina=software&selecionar='.$selecionado->getId().'&escrever=1" class="btn btn-success">Escrever Software</a>
-                </div>';
+        $this->view->mostrarSelecionado($this->selecionado);
         
 
         
+    }
+    public function formatarPG($sql){
+        
+        
+        $sql = str_replace(" ", "&nbsp;", $sql);
+        $sql = nl2br($sql);
+        $sql = str_replace("ON&nbsp;UPDATE&nbsp;NO&nbsp;ACTION", "<span class=\"text-secondary font-weight-bold\">ON UPDATE NO ACTION</span>", $sql);
+        $sql = str_replace("ON&nbsp;DELETE&nbsp;NO&nbsp;ACTION", "<span class=\"text-secondary font-weight-bold\">ON DELETE NO ACTION</span>", $sql);
+        $sql = str_replace("MATCH&nbsp;SIMPLE", "<span class=\"text-secondary font-weight-bold\">MATCH&nbsp;SIMPLE</span>", $sql);
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        $keyWords = array(
+            "CREATE",
+            "TABLE",
+            "CONSTRAINT",
+            "ALTER",
+            "PRIMARY",
+            "KEY",
+            "NOT",
+            "NULL",
+            "FOREIGN",
+            "ADD",
+            "REFERENCES",
+            "CONSTRAINT"
+        );
+        $keyWords2 = array(
+            "<span class=\"text-danger font-weight-bold\">CREATE</span>",
+            "<span class=\"text-danger font-weight-bold\">TABLE</span>",
+            "<span class=\"text-danger font-weight-bold\">CONSTRAINT</span>",
+            "<span class=\"text-danger font-weight-bold\">ALTER</span>",
+            "<span class=\"text-danger font-weight-bold\">PRIMARY</span>",
+            "<span class=\"text-danger font-weight-bold\">KEY</span>",
+            "<span class=\"text-danger font-weight-bold\">NOT</span>",
+            "<span class=\"text-danger font-weight-bold\">NULL</span>",
+            "<span class=\"text-danger font-weight-bold\">FOREIGN</span>",
+            "<span class=\"text-secondary font-weight-bold\">ADD</span>",
+            "<span class=\"text-secondary font-weight-bold\">REFERENCES</span>",
+            "<span class=\"text-secondary font-weight-bold\">CONSTRAINT</span>"
+        );
+        
+        
+        $sql = str_replace($keyWords, $keyWords2, $sql);
+        $keyWords = array();
+        $keyWords2 = array();
+        foreach($this->selecionado->getObjetos() as $objeto){
+            $keyWords[] = '&nbsp;'.$objeto->getNomeSnakeCase().'&nbsp;';
+            $keyWords2[] = "&nbsp;<span class=\"text-info\">".$objeto->getNomeSnakeCase()."</span>&nbsp;";
+        }
+        
+        
+        $sql = str_replace($keyWords, $keyWords2, $sql);
+        
+        
+        $keyWords = array();
+        $keyWords2 = array();
+        $tipos = array("numeric", "&nbsp;integer&nbsp;", "&nbsp;serial&nbsp;", "character&nbsp;varying");
+        foreach($tipos as $tipo){
+            $keyWords[] = $tipo;
+            $keyWords2[] = "<span class=\"text-success\">".$tipo."</span>&nbsp;";
+        }
+        $sql = str_replace($keyWords, $keyWords2, $sql);
+        
+        return $sql;
+    }
+    public function formatarSQLITE($sql){
+        
+        
+        $sql = str_replace(" ", "&nbsp;", $sql);
+        $sql = nl2br($sql);
+        $sql = str_replace("ON&nbsp;UPDATE&nbsp;NO&nbsp;ACTION", "<span class=\"text-secondary font-weight-bold\">ON UPDATE NO ACTION</span>", $sql);
+        $sql = str_replace("ON&nbsp;DELETE&nbsp;NO&nbsp;ACTION", "<span class=\"text-secondary font-weight-bold\">ON DELETE NO ACTION</span>", $sql);
+        $sql = str_replace("MATCH&nbsp;SIMPLE", "<span class=\"text-secondary font-weight-bold\">MATCH&nbsp;SIMPLE</span>", $sql);
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        $keyWords = array(
+            "CREATE",
+            "TABLE",
+            "CONSTRAINT",
+            "ALTER",
+            "PRIMARY",
+            "KEY",
+            "NOT",
+            "NULL",
+            "FOREIGN",
+            "ADD",
+            "REFERENCES",
+            "CONSTRAINT"
+        );
+        $keyWords2 = array(
+            "<span class=\"text-danger font-weight-bold\">CREATE</span>",
+            "<span class=\"text-danger font-weight-bold\">TABLE</span>",
+            "<span class=\"text-danger font-weight-bold\">CONSTRAINT</span>",
+            "<span class=\"text-danger font-weight-bold\">ALTER</span>",
+            "<span class=\"text-danger font-weight-bold\">PRIMARY</span>",
+            "<span class=\"text-danger font-weight-bold\">KEY</span>",
+            "<span class=\"text-danger font-weight-bold\">NOT</span>",
+            "<span class=\"text-danger font-weight-bold\">NULL</span>",
+            "<span class=\"text-danger font-weight-bold\">FOREIGN</span>",
+            "<span class=\"text-secondary font-weight-bold\">ADD</span>",
+            "<span class=\"text-secondary font-weight-bold\">REFERENCES</span>",
+            "<span class=\"text-secondary font-weight-bold\">CONSTRAINT</span>"
+        );
+        
+        
+        $sql = str_replace($keyWords, $keyWords2, $sql);
+        $keyWords = array();
+        $keyWords2 = array();
+        foreach($this->selecionado->getObjetos() as $objeto){
+            $keyWords[] = '&nbsp;'.$objeto->getNomeSnakeCase().'&nbsp;';
+            $keyWords2[] = "&nbsp;<span class=\"text-info\">".$objeto->getNomeSnakeCase()."</span>&nbsp;";
+        }
+        
+        
+        $sql = str_replace($keyWords, $keyWords2, $sql);
+        
+        
+        $keyWords = array();
+        $keyWords2 = array();
+        $tipos = array("TEXT","NUMERIC", "AUTOINCREMENT", "&nbsp;INTEGER&nbsp;", "&nbsp;serial&nbsp;", "character&nbsp;varying");
+        foreach($tipos as $tipo){
+            $keyWords[] = $tipo;
+            $keyWords2[] = "<span class=\"text-success\">".$tipo."</span>&nbsp;";
+        }
+        $sql = str_replace($keyWords, $keyWords2, $sql);
+        
+        return $sql;
     }
 	public function cadastrar() {
 	    $this->view->mostraFormInserir();

@@ -53,26 +53,29 @@ senha = 123
         $codigo = '';
         foreach ($this->software->getObjetos() as $objeto) {
             $codigo .= '
-CREATE TABLE ' . $objeto->getNomeSnakeCase();
-            $codigo .= " (\n";
+CREATE TABLE '.$objeto->getNomeSnakeCase();
+            $codigo .= ' (';
             $i = 0;
             foreach ($objeto->getAtributos() as $atributo) {
                 $i ++;
                 $flagPulei = false;
                 if ($atributo->getIndice() == Atributo::INDICE_PRIMARY && $atributo->tipoListado()) 
                 {
-                    $codigo .= '    '.$atributo->getNomeSnakeCase().' '.$atributo->getTipoPostgres(). ' serial NOT NULL';
+                    $codigo .= '
+    '.$atributo->getNomeSnakeCase().' '.$atributo->getTipoPostgres().' serial NOT NULL';
                     
                 }else if($atributo->tipoListado())
                 {
-                    $codigo .= '    '.$atributo->getNomeSnakeCase() . ' '.$atributo->getTipoPostgres();
+                    $codigo .= '
+    '.$atributo->getNomeSnakeCase() . ' '.$atributo->getTipoPostgres();
                 }
                 else if($atributo->isArrayNN()){
                     $objetosNN[] = $objeto;
                     $flagPulei = true;
                 }else if($atributo->isObjeto())
                 {
-                    $codigo .= '    id_'.$atributo->getTipoSnakeCase().'_'.$atributo->getNomeSnakeCase() . ' integer NOT NULL';
+                    $codigo .= '
+    id_'.$atributo->getTipoSnakeCase().'_'.$atributo->getNomeSnakeCase() . ' integer NOT NULL';
                 }else{
                     //Tipo Array Comum não implementado
                     $flagPulei = true;
@@ -81,17 +84,19 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase();
                     foreach ($objeto->getAtributos() as $atributo) {
                         if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                             if(!$flagPulei){
-                                $codigo .= ",\n";
+                                $codigo .= ', ';
                             }
-                            $codigo .= '    CONSTRAINT pk_'.strtolower($objeto->getNome()).'_'.$atributo->getNomeSnakeCase()."\n".'    PRIMARY KEY ('.$atributo->getNomeSnakeCase().')';
+                            $codigo .= '
+    CONSTRAINT pk_'.strtolower($objeto->getNome()).'_'.$atributo->getNomeSnakeCase().'
+    PRIMARY KEY ('.$atributo->getNomeSnakeCase().')';
                             break;
                         }
                     }
-                    $codigo .= "\n";
+                    $codigo .= "";
                     continue;
                 }
                 if(!$flagPulei){
-                    $codigo .= ",\n";
+                    $codigo .= ", ";
                 }
                 
             }
@@ -110,13 +115,18 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase().'_'.strtolower(explode(" ", $atribu
     id serial NOT NULL,
     id_'.$objeto->getNomeSnakeCase().' integer NOT NULL,
     id_'.strtolower(explode(" ", $atributo->getTipoSnakeCase())[2]).' integer NOT NULL,
-    CONSTRAINT pk_'.$objeto->getNomeSnakeCase().'_'.explode(" ", $atributo->getTipoSnakeCase())[2].'_id PRIMARY KEY (id),
+    CONSTRAINT pk_'.$objeto->getNomeSnakeCase().'_'.explode(" ", $atributo->getTipoSnakeCase())[2].'_id 
+    PRIMARY KEY (id),
     CONSTRAINT fk_'.$objeto->getNomeSnakeCase().'_id FOREIGN KEY (id_'.$objeto->getNomeSnakeCase().') 
     REFERENCES '.strtolower($objeto->getNome()).' (id) 
-    MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION,
+    MATCH SIMPLE 
+    ON UPDATE NO ACTION 
+    ON DELETE NO ACTION,
     CONSTRAINT fk_'.strtolower(explode(" ", $atributo->getTipoSnakeCase())[2]).'_id 
     FOREIGN KEY (id'.strtolower(explode(" ", $atributo->getTipo())[2]).') REFERENCES '.strtolower(explode(" ", $atributo->getTipo())[2]).' (id) 
-    MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION
+    MATCH SIMPLE 
+    ON UPDATE NO ACTION 
+    ON DELETE NO ACTION
 );';
                     
                 }
@@ -148,10 +158,11 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase().'_'.strtolower(explode(" ", $atribu
                         }
                     }
                     $codigo .= '
+
 ALTER TABLE ' . strtolower($objeto->getNome()).'
     ADD CONSTRAINT
     fk_'.strtolower($objeto->getNome()).'_'.strtolower($atributo->getTipo()).'_'.$atributo->getNomeSnakeCase() . ' FOREIGN KEY (id_'.strtolower($atributo->getTipo()).'_'.$atributo->getNomeSnakeCase() . ')
-    REFERENCES '.strtolower($atributo->getTipo()).'('.$atributoPrimary->getNome().');
+    REFERENCES '.strtolower($atributo->getTipo()).' ('.$atributoPrimary->getNome().');
 ';
                 }
                 
