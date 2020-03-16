@@ -40,7 +40,7 @@ class ObjetoDAO extends DAO {
 		
 		$sql = "INSERT INTO objeto(nome, idsoftware)
 				VALUES(:nome, :idsoftware)";
-			$nome = $objeto->getNome();
+			$nome = ucfirst($objeto->getNome());
 			$idsoftware = $software->getId();
 			
 		try {

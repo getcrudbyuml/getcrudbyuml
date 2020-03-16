@@ -33,8 +33,11 @@ function __autoload($classe)
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-    <div class="navbar-nav"><a class="nav-item nav-link" href="?pagina=informacoestempo">InformacoesTempo</a><a class="nav-item nav-link" href="?pagina=temperaturaar">TemperaturaAr</a><a class="nav-item nav-link" href="?pagina=temperatura">Temperatura</a>
-        
+    
+    <div class="navbar-nav">
+    	<a class="nav-item nav-link" href="index.php">
+    		Início
+    	</a>
     </div>
   </div>
 </nav>

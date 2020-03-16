@@ -69,7 +69,7 @@ class ObjetoController {
 		}
 
 		$objeto = new Objeto ();		
-		$objeto->setNome ( $this->post ['nome'] );
+		$objeto->setNome ( ucfirst($this->post ['nome']) );
 		if($software == null){
 		    if(isset($this->post['idsoftware'])){
 		        $software = new Software();

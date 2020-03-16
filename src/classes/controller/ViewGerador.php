@@ -369,7 +369,16 @@ class ' . $nomeDoObjetoMa . 'View {
             
         }
         
-        $codigo .= '                    Tem Certeza que deseja deletar o \'.$'.$nomeDoObjeto.'->get'.ucfirst ($objeto->getAtributos()[1]->getNome()).'().\'
+        
+        
+        $codigo .= '                    Tem Certeza que deseja deletar o';
+        if(count($objeto->getAtributos()) > 1){
+            $codigo .= '\'.$'.$nomeDoObjeto.'->get'.ucfirst ($objeto->getAtributos()[1]->getNome()).'().\'';
+        }else{
+            $codigo .= '\'.$'.$nomeDoObjeto.'->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'';
+        }
+        
+        $codigo .= '
                                         <input type="submit" class="btn btn-primary btn-user btn-block" value="Deletar" name="deletar_' . $nomeDoObjeto . '">
                                         <hr>
                                             

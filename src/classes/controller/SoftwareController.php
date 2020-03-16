@@ -82,16 +82,15 @@ class SoftwareController {
             echo '<div class="row">';
             echo '<div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">';
     
-            
             echo '  <div class="col-md-12">
                       <div class="card mb-6 shadow-sm">
             
                         <div class="card-body">';
 
             
-            $sql = file_get_contents('sistemas/'.$this->selecionado->getNome().'/'.strtolower($this->selecionado->getNome()).'_banco_pg.sql');
-            $sql = $this->formatarPG($sql);
-            echo $sql;
+            $sqlPG = file_get_contents('sistemas/'.$this->selecionado->getNome().'/'.strtolower($this->selecionado->getNome()).'_banco_pg.sql');
+            $sqlPG = $this->formatarPG($sqlPG);
+            echo $sqlPG;
             
             echo '</div>';
             echo '</div>';            
