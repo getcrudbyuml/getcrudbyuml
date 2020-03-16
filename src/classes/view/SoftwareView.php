@@ -79,7 +79,7 @@ class SoftwareView {
             
             
         public function mostrarSelecionado(Software $software){
-            echo '<br><h3>Software: '.$software->getNome().'</h3><br>';
+            
             echo '<div class="row justify-content-center">';
             
             foreach($software->getObjetos() as $objeto){

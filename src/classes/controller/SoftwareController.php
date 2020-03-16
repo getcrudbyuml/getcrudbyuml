@@ -65,10 +65,15 @@ class SoftwareController {
         foreach($this->selecionado->getObjetos() as $objeto){
             $atributoDao->pesquisaPorIdObjeto($objeto);
         }
+        echo '<br><h3>Software: '.$this->selecionado->getNome().'</h3><hr>';
         echo '<div class="row justify-content-center">
                     <a href="?pagina=software&selecionar='.$this->selecionado->getId().'&escrever=1" class="btn btn-success">Escrever Software</a>
                 </div><br>';
         if(isset($_GET['escrever'])){
+            if(count($this->selecionado->getObjetos()) == 0){
+                echo "<p>Não existem Objetos Cadastrados, cadastre pelo menos um objeto.</p>";
+                return;
+            }
             EscritorDeSoftware::main($this->selecionado);
             $zipador = new Zipador();
          
@@ -82,27 +87,27 @@ class SoftwareController {
             echo '<div class="row">';
             echo '<div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">';
     
-            echo '  <div class="col-md-12">
+            echo '  
                       <div class="card mb-6 shadow-sm">
             
-                        <div class="card-body">';
+                        <div class="card-body text-break">';
 
             
             $sqlPG = file_get_contents('sistemas/'.$this->selecionado->getNome().'/'.strtolower($this->selecionado->getNome()).'_banco_pg.sql');
             $sqlPG = $this->formatarPG($sqlPG);
             echo $sqlPG;
             
-            echo '</div>';
+
             echo '</div>';            
             echo '</div>';
             echo '</div>';
             
             
             echo '<div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">';
-            echo '  <div class="col-md-12">
+            echo ' 
                       <div class="card mb-6 shadow-sm">
                 
-                        <div class="card-body">';
+                        <div class="card-body text-break">';
             
             
 
@@ -110,7 +115,7 @@ class SoftwareController {
             $sql = $this->formatarSQLITE($sql);
                         
             echo $sql;
-            echo '</div>';
+ 
             echo '</div>';
             echo '</div>';
             echo '</div>';
@@ -156,7 +161,9 @@ class SoftwareController {
             "FOREIGN",
             "ADD",
             "REFERENCES",
-            "CONSTRAINT"
+            "CONSTRAINT",
+            "COLUMN"
+            
         );
         $keyWords2 = array(
             "<span class=\"text-danger font-weight-bold\">CREATE</span>",
@@ -170,7 +177,8 @@ class SoftwareController {
             "<span class=\"text-danger font-weight-bold\">FOREIGN</span>",
             "<span class=\"text-secondary font-weight-bold\">ADD</span>",
             "<span class=\"text-secondary font-weight-bold\">REFERENCES</span>",
-            "<span class=\"text-secondary font-weight-bold\">CONSTRAINT</span>"
+            "<span class=\"text-secondary font-weight-bold\">CONSTRAINT</span>", 
+            "<span class=\"text-secondary font-weight-bold\">COLUMN</span>"
         );
         
         
@@ -188,7 +196,7 @@ class SoftwareController {
         
         $keyWords = array();
         $keyWords2 = array();
-        $tipos = array("numeric", "&nbsp;integer&nbsp;", "&nbsp;serial&nbsp;", "character&nbsp;varying");
+        $tipos = array("numeric", "&nbsp;integer", "&nbsp;serial&nbsp;", "character&nbsp;varying");
         foreach($tipos as $tipo){
             $keyWords[] = $tipo;
             $keyWords2[] = "<span class=\"text-success\">".$tipo."</span>&nbsp;";
@@ -224,7 +232,7 @@ class SoftwareController {
             "NOT",
             "NULL",
             "FOREIGN",
-            "ADD",
+            "ADD&nbsp;COLUMN",
             "REFERENCES",
             "CONSTRAINT"
         );
@@ -238,7 +246,7 @@ class SoftwareController {
             "<span class=\"text-danger font-weight-bold\">NOT</span>",
             "<span class=\"text-danger font-weight-bold\">NULL</span>",
             "<span class=\"text-danger font-weight-bold\">FOREIGN</span>",
-            "<span class=\"text-secondary font-weight-bold\">ADD</span>",
+            "<span class=\"text-secondary font-weight-bold\">ADD COLUMN</span>",
             "<span class=\"text-secondary font-weight-bold\">REFERENCES</span>",
             "<span class=\"text-secondary font-weight-bold\">CONSTRAINT</span>"
         );

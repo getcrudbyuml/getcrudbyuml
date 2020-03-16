@@ -37,17 +37,22 @@ class AtributoView {
                 						  <select class="form-control form-control-user" id="tipo" name="tipo" placeholder="tipo">
                                             <option value="'.Atributo::TIPO_STRING.'">String</option>
                                             <option value="'.Atributo::TIPO_INT.'">Inteiro</option>
-                                            <option value="'.Atributo::TIPO_FLOAT.'">Float</option>';
+                                            <option value="'.Atributo::TIPO_BOOLEAN.'">Boolean</option>
+                                            <option value="'.Atributo::TIPO_FLOAT.'">Float</option>
+                                            <option value="'.Atributo::TIPO_DATE.'">Data</option>
+                                            <option value="'.Atributo::TIPO_DATE_TIME.'">Data e Hora</option>
+';
 
 		 
 		foreach($listaTipos as $tipo){
 		    echo '<option value="'.$tipo->getNome().'">'.$tipo->getNome().'</option>';
 		}
-// 		foreach($listaTipos as $tipo){
-// 		    echo '<option value="Array 1:n '.$tipo->getNome().'">Array 1:n '.$tipo->getNome().'</option>';
-// 		}
 		foreach($listaTipos as $tipo){
-		    echo '<option value="Array n:n '.$tipo->getNome().'">Array n:n '.$tipo->getNome().'</option>';
+		    echo '<option value="'.Atributo::TIPO_ARRAY_NN.' '.$tipo->getNome().'">Array n:n '.$tipo->getNome().'</option>';
+		    
+		}
+		foreach($listaTipos as $tipo){
+		    echo '<option value="'.Atributo::TIPO_ARRAY_1N.' '.$tipo->getNome().'">Array 1:n '.$tipo->getNome().'</option>';
 		}
 
                                           echo '

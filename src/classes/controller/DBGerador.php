@@ -50,6 +50,7 @@ senha = 123
     public function geraBancoPG()
     {
         $objetosNN = array();
+        $objetos1N = array();
         $codigo = '';
         foreach ($this->software->getObjetos() as $objeto) {
             $codigo .= '
@@ -62,7 +63,7 @@ CREATE TABLE '.$objeto->getNomeSnakeCase();
                 if ($atributo->getIndice() == Atributo::INDICE_PRIMARY && $atributo->tipoListado()) 
                 {
                     $codigo .= '
-    '.$atributo->getNomeSnakeCase().' '.$atributo->getTipoPostgres().' serial NOT NULL';
+    '.$atributo->getNomeSnakeCase().' serial NOT NULL';
                     
                 }else if($atributo->tipoListado())
                 {
@@ -72,7 +73,12 @@ CREATE TABLE '.$objeto->getNomeSnakeCase();
                 else if($atributo->isArrayNN()){
                     $objetosNN[] = $objeto;
                     $flagPulei = true;
-                }else if($atributo->isObjeto())
+                }
+                else if($atributo->isArray1N()){
+                    $objetos1N[] = $objeto;
+                    $flagPulei = true;
+                }
+                else if($atributo->isObjeto())
                 {
                     $codigo .= '
     id_'.$atributo->getTipoSnakeCase().'_'.$atributo->getNomeSnakeCase() . ' integer NOT NULL';
@@ -108,7 +114,8 @@ CREATE TABLE '.$objeto->getNomeSnakeCase();
             
             //explode(' ', $string);
             foreach($objeto->getAtributos() as $atributo){
-                if(substr($atributo->getTipo(),0,6) == 'Array '){
+                if($atributo->isArrayNN())
+                {
                     $codigo .= '
 CREATE TABLE ' . $objeto->getNomeSnakeCase().'_'.strtolower(explode(" ", $atributo->getTipoSnakeCase())[2]);
                     $codigo .= '(
@@ -160,8 +167,7 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase().'_'.strtolower(explode(" ", $atribu
                     $codigo .= '
 
 ALTER TABLE ' . strtolower($objeto->getNome()).'
-    ADD CONSTRAINT
-    fk_'.strtolower($objeto->getNome()).'_'.strtolower($atributo->getTipo()).'_'.$atributo->getNomeSnakeCase() . ' FOREIGN KEY (id_'.strtolower($atributo->getTipo()).'_'.$atributo->getNomeSnakeCase() . ')
+    ADD CONSTRAINT fk_'.strtolower($objeto->getNome()).'_'.strtolower($atributo->getTipo()).'_'.$atributo->getNomeSnakeCase() . ' FOREIGN KEY (id_'.strtolower($atributo->getTipo()).'_'.$atributo->getNomeSnakeCase() . ')
     REFERENCES '.strtolower($atributo->getTipo()).' ('.$atributoPrimary->getNome().');
 ';
                 }
@@ -169,12 +175,46 @@ ALTER TABLE ' . strtolower($objeto->getNome()).'
             }
         }
 
+        foreach($objetos1N as $objeto){
+            $atributoPK = null;
+            foreach($objeto->getAtributos() as $atributo)
+            {
+                if($atributo->getIndice() == Atributo::INDICE_PRIMARY){
+                    $atributoPK = $atributo;
+                }
+                
+            }
+            foreach($objeto->getAtributos() as $atributo)
+            {
+                
+                if($atributo->isArray1N())
+                {
+                    if($atributoPK != null){
+                        
+                        $codigo .= '
+ALTER TABLE '.$atributo->getArrayTipoSnakeCase().' ADD COLUMN  '.$atributoPK->getNomeSnakeCase().'_'.$objeto->getNomeSnakeCase().'_'.$atributo->getNomeSnakeCase().'  integer ;';
+                        
+                        $codigo .= '
+
+ALTER TABLE '.$atributo->getArrayTipoSnakeCase().' 
+    ADD CONSTRAINT
+    fk_'.$atributoPK->getNomeSnakeCase().'_'.$objeto->getNomeSnakeCase().'_'.$atributo->getNomeSnakeCase().' FOREIGN KEY ('.$atributoPK->getNomeSnakeCase().'_'.$objeto->getNomeSnakeCase().'_'.$atributo->getNomeSnakeCase().')
+    REFERENCES '.$objeto->getNomeSnakeCase().' ('.$atributoPK->getNomeSnakeCase().');
+';
+                    }
+                }
+                
+            }
+            
+        }
+        
         return $codigo;
         
     }
     public function geraBancoSqlite()
     {
         $objetosNN = array();
+        $objetos1N = array();
         
         $bdNome = 'sistemas/' . $this->software->getNome() . '/' . strtolower($this->software->getNome()) . '.db';
         if(file_exists($bdNome)){
@@ -192,11 +232,15 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase();
             
             
             foreach ($objeto->getAtributos() as $atributo) {
-                if(substr($atributo->getTipo(),0,6) == 'Array '){
-                    if(explode(' ', $atributo->getTipo())[1]  == 'n:n'){
-                        $objetosNN[] = $objeto;
-                    }
+                if($atributo->isArrayNN()){
+                    
+                    $objetosNN[] = $objeto;
+                    
+                }else if($atributo->isArray1N()){
+                    $objetos1N[] = $objeto;
+                    
                 }else{
+                    
                     $atributosComuns[] = $atributo;
                 }
             }
@@ -234,6 +278,32 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase().'_'.strtolower(explode(" ", $atribu
     id_'.strtolower(explode(" ", $atributo->getTipo())[2]).' INTEGER
 );';
                     
+                }
+                
+            }
+            
+        }
+        foreach($objetos1N as $objeto){
+            $atributoPK = null;
+            foreach($objeto->getAtributos() as $atributo)
+            {
+                if($atributo->getIndice() == Atributo::INDICE_PRIMARY){
+                    $atributoPK = $atributo;
+                }
+                
+            }
+            foreach($objeto->getAtributos() as $atributo)
+            {
+                
+                if($atributo->isArray1N())
+                {
+                    if($atributoPK != null){
+                        
+                        $codigo .= '
+ALTER TABLE '.$atributo->getArrayTipoSnakeCase().' ADD COLUMN  '.$atributoPK->getNomeSnakeCase().'_'.$objeto->getNomeSnakeCase().'_'.$atributo->getNomeSnakeCase().'  INTEGER ;';
+                        
+                        
+                    }
                 }
                 
             }

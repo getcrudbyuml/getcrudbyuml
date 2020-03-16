@@ -60,7 +60,7 @@ class Atributo {
 		return $this->indice;
 	}
 	public function tipoListado(){
-	    if($this->tipo == self::TIPO_INT || $this->tipo == self::TIPO_STRING || $this->tipo == self::TIPO_FLOAT || $this->tipo == self::TIPO_DATA || $this->tipo == self::TIPO_BOOLEAN){
+	    if($this->tipo == self::TIPO_INT || $this->tipo == self::TIPO_STRING || $this->tipo == self::TIPO_FLOAT || $this->tipo == self::TIPO_DATE || $this->tipo == self::TIPO_DATE_TIME || $this->tipo == self::TIPO_BOOLEAN){
 	        return true;
 	    }
 	    return false;
@@ -80,6 +80,27 @@ class Atributo {
 	        
 	    }
 	    return false;
+	}
+	public function isArray1N(){
+	    if(substr(trim($this->getTipo()), 0, 6) == 'Array ')
+	    {
+	        if(explode(' ', $this->getTipo())[1]  == '1:n'){
+	            return true;
+	        }
+	        
+	    }
+	    return false;
+	}
+	public function getArrayTipoSnakeCase(){
+	    if($this->isArray()){
+	        $arr = explode(' ', $this->getTipo());
+	        if(isset($arr[2])){
+	            $nome	= preg_replace('/([a-z])([A-Z])/',"$1_$2",$arr[2]);
+	            $nome	= strtolower($nome);
+	            return $nome;
+	        }
+	    }
+	    return null;
 	}
 	public function isObjeto(){
 	    if($this->isArray()){
@@ -120,9 +141,12 @@ class Atributo {
 	            $tipo = 'TEXT';
 	        }else if($this->getTipo() == self::TIPO_FLOAT){
 	            $tipo = 'NUMERIC';
-	        }else if($this->getTipo() == self::TIPO_DATA){
+	        }else if($this->getTipo() == self::TIPO_DATE){
 	            $tipo = 'TEXT';
-	        }else if($this->getTipo() == self::TIPO_BOOLEAN){
+	        }else if($this->getTipo() == self::TIPO_DATE_TIME){
+	            $tipo = 'TEXT';
+	        }
+	        else if($this->getTipo() == self::TIPO_BOOLEAN){
 	            $tipo = 'INTEGER';
 	        }else{
 	            $tipo = 'INTEGER';
@@ -138,17 +162,25 @@ class Atributo {
 	        $tipo = 'integer';
 	    }else if($this->getTipo() == Atributo::TIPO_FLOAT){
 	        $tipo = 'numeric(8,2)';
-	    }else if($this->getTipo() == Atributo::TIPO_DATA){
+	    }else if($this->getTipo() == Atributo::TIPO_BOOLEAN){
+	        $tipo = 'BOOLEAN';
+	    }
+	    else if($this->getTipo() == Atributo::TIPO_DATE_TIME){
 	        $tipo = 'timestamp without time zone';
+	    }else if($this->getTipo() == Atributo::TIPO_DATE){
+	        $tipo = 'date';
 	    }
 	    return $tipo;
 	}
 	const INDICE_PRIMARY = "PRIMARY";
 	const TIPO_INT = "Int";
 	const TIPO_STRING = "string";
-	const TIPO_DATA = "data";
+	const TIPO_DATE = "date";
+	const TIPO_DATE_TIME = "date_time";
 	const TIPO_BOOLEAN = "boolean";
 	const TIPO_FLOAT = "float";
+	const TIPO_ARRAY_NN = "Array n:n";
+	const TIPO_ARRAY_1N = "Array 1:n";
 	
 	
 }
