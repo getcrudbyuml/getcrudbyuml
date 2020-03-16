@@ -68,7 +68,7 @@ CREATE TABLE '.$objeto->getNomeSnakeCase();
                 }else if($atributo->tipoListado())
                 {
                     $codigo .= '
-    '.$atributo->getNomeSnakeCase() . ' '.$atributo->getTipoPostgres();
+    '.$atributo->getNomeSnakeCase() . ' '.$atributo->getTipoPostgres().' ';
                 }
                 else if($atributo->isArrayNN()){
                     $objetosNN[] = $objeto;
@@ -166,7 +166,7 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase().'_'.strtolower(explode(" ", $atribu
                     }
                     $codigo .= '
 
-ALTER TABLE ' . strtolower($objeto->getNome()).'
+ALTER TABLE ' . $objeto->getNomeSnakeCase().' 
     ADD CONSTRAINT fk_'.strtolower($objeto->getNome()).'_'.strtolower($atributo->getTipo()).'_'.$atributo->getNomeSnakeCase() . ' FOREIGN KEY (id_'.strtolower($atributo->getTipo()).'_'.$atributo->getNomeSnakeCase() . ')
     REFERENCES '.strtolower($atributo->getTipo()).' ('.$atributoPrimary->getNome().');
 ';

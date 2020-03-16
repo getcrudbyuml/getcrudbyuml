@@ -85,41 +85,53 @@ class SoftwareController {
             echo '<br><hr>';
             
             echo '<div class="row">';
-            echo '<div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">';
-    
-            echo '  
-                      <div class="card mb-6 shadow-sm">
-            
-                        <div class="card-body text-break">';
+            echo '<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">';
+            echo '<div class="accordion" id="accordionExample">
+  <div class="card">
+    <div class="card-header" id="headingOne">
+      <h2 class="mb-0">
+        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          SQL de Criação para PostgreSQL
+        </button>
+      </h2>
+    </div>
 
-            
+    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+      <div class="card-body">';
             $sqlPG = file_get_contents('sistemas/'.$this->selecionado->getNome().'/'.strtolower($this->selecionado->getNome()).'_banco_pg.sql');
             $sqlPG = $this->formatarPG($sqlPG);
             echo $sqlPG;
-            
-
-            echo '</div>';            
-            echo '</div>';
-            echo '</div>';
-            
-            
-            echo '<div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">';
-            echo ' 
-                      <div class="card mb-6 shadow-sm">
-                
-                        <div class="card-body text-break">';
-            
-            
-
+            echo '
+        
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header" id="headingTwo">
+      <h2 class="mb-0">
+        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          SQL de Criação para SQLITE
+        </button>
+      </h2>
+    </div>
+    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+      <div class="card-body">';
             $sql = file_get_contents('sistemas/'.$this->selecionado->getNome().'/'.strtolower($this->selecionado->getNome()).'_banco_sqlite.sql');
             $sql = $this->formatarSQLITE($sql);
-                        
+            
             echo $sql;
- 
+            echo '
+        
+      </div>
+    </div>
+  </div>
+  
+</div>';
+            
             echo '</div>';
-            echo '</div>';
-            echo '</div>';
-            echo '</div>';
+            
+            
+            
             
             return;
 
