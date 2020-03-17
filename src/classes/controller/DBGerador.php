@@ -142,15 +142,10 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase().'_'.strtolower(explode(" ", $atribu
             
         }
         //Adicionar outras chaves estrangeiras.
-        
         foreach ($this->software->getObjetos() as $objeto) {
             foreach($objeto->getAtributos() as $atributo){
-                if($atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_FLOAT)
+                if($atributo->isObjeto())
                 {
-                    continue;
-                }else if(substr($atributo->getTipo(),0,6) == 'Array '){
-                    continue;
-                }else{
                     foreach($this->software->getObjetos() as $objeto2){
                         if($atributo->getTipo() == $objeto2->getNome()){
                             $objetoDoAtributo = $objeto2;
