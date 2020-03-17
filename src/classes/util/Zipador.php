@@ -38,6 +38,7 @@ class Zipador {
 		
 		foreach ( $filenames as $filename ) {
 			$zip->addFile ( $filename, $filename );
+			
 		}
 		
 		echo "Total de arquivos: <b>" . $zip->numFiles . "</b>\n";

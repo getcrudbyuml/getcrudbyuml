@@ -44,13 +44,12 @@ class ControllerGerador{
         $atributosNN = array();
         $atributosObjetos = array();
         foreach ($objeto->getAtributos() as $atributo) {
-            if(substr($atributo->getTipo(),0,6) == 'Array '){
-                $atributosNN[] = $atributo;
-            }else if($atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_FLOAT)
-            {
+            if($atributo->tipoListado()){
                 $atributosComuns[] = $atributo;
-            }///Depois faremos um else if pra objeto.
-            else {
+            }else if($atributo->isArrayNN()){
+                $atributosNN[] = $atributo;
+            }
+            else if($atributo->isObjeto()){
                 $atributosObjetos[] = $atributo;
                 
             }
