@@ -41,38 +41,38 @@ class ModelGerador{
     }
     private function geraModelPHP(Objeto $objeto, Software $software)
     {
-        $nomeDoObjetoMa = strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100);
         
         $codigo = '
 <?php
             
 /**
- * Classe feita para manipulação do objeto ' . $nomeDoObjetoMa . '
+ * Classe feita para manipulação do objeto ' . $objeto->getNome() . '
  * feita automaticamente com programa gerador de software inventado por
  * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
  */
-class ' . $nomeDoObjetoMa . ' {';
-        if ($objeto->getAtributos()) {
-            foreach ($objeto->getAtributos() as $atributo) {
-                $nome = $atributo->getNome();
-                $nome2 = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
-                
+class ' . ucfirst($objeto->getNome()) . ' {';
+        if (count($objeto->getAtributos()) == 0) {
+            $codigo .= '}';
+            return $codigo;
+        }
+            
+        foreach ($objeto->getAtributos() as $atributo) {
                 $codigo .= '
-	private $' . $nome . ';';
-            }
+	private $' . lcfirst($atributo->getNome()). ';';
+        }
             $codigo .= '
     public function __construct(){
 ';
             foreach ($objeto->getAtributos() as $atributo) {
-                if(substr(trim($atributo->getTipo()), 0, 6) == 'Array '){
+                if($atributo->tipoListado()){
+                    continue;
+                }else if($atributo->isArray()){
                     $atrb = explode(' ', $atributo->getTipo())[2];
                     $codigo .= '
         $this->'.$atributo->getNome().' = array();';
                     
-                }else if($atributo->getTipo() == Atributo::TIPO_FLOAT || $atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_STRING){
-                    continue;
                 }
-                else
+                else if($atributo->isObjeto())
                 {
                     $codigo .= '
         $this->'.strtolower($atributo->getNome()).' = new '.ucfirst($atributo->getTipo()).'();';
@@ -82,54 +82,47 @@ class ' . $nomeDoObjetoMa . ' {';
             $codigo .= '
     }';
             foreach ($objeto->getAtributos() as $atributo) {
-                
-                $nome = strtolower($atributo->getNome());
-                $nome2 = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
-                
-                if ($atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_FLOAT || $atributo->getTipo() == Atributo::TIPO_STRING)
+                if ($atributo->tipoListado())
                 {
                     
                     $codigo .= '
-	public function set' . $nome2 . '($' . $nome . ') {';
+	public function set' . ucfirst($atributo->getNome()). '($' . lcfirst($atributo->getNome()). ') {';
                     $codigo .= '
-		$this->' . $nome . ' = $' . $nome . ';
+		$this->' . lcfirst($atributo->getNome()). ' = $' . lcfirst($atributo->getNome()) . ';
 	}
 		    
-	public function get' . $nome2 . '() {
-		return $this->' . $nome . ';
+	public function get' . ucfirst($atributo->getNome()) . '() {
+		return $this->' . lcfirst($atributo->getNome()). ';
 	}';
                     
                 }
-                else {
-                    
-                    if(substr(trim($atributo->getTipo()), 0, 6) == 'Array '){
-                        $atrb = explode(' ', $atributo->getTipo())[2];
-                        $codigo .= '
+                else if($atributo->isArray()){
+                    $codigo .= '
                             
-    public function add'.ucfirst($atrb).'('.ucfirst($atrb).' $'.strtolower($atrb).'){
-        $this->'.$nome.'[] = $'.strtolower($atrb).';
+    public function add'.ucfirst($atributo->getTipoDeArray()).'('.ucfirst($atributo->getTipoDeArray()).' $'.lcfirst($atributo->getTipoDeArray()).'){
+        $this->'.lcfirst($atributo->getNome()).'[] = $'.lcfirst($atributo->getTipoDeArray()).';
             
     }
-	public function get' . $nome2 . '() {
-		return $this->' . $nome . ';
+	public function get' . ucfirst($atributo->getNome()) . '() {
+		return $this->' . lcfirst($atributo->getNome()). ';
 	}';
                         
+                }else if($atributo->isObjeto()){
+                    
+                    $codigo .= '
+	public function set' . ucfirst($atributo->getNome()). '(' . ucfirst($atributo->getTipo()) . ' $' . lcfirst($atributo->getTipo()) . ') {';
                         
-                    }else{
-                        $codigo .= '
-	public function set' . $nome2 . '(' . $atributo->getTipo() . ' $' . $nome . ') {';
-                        
-                        $codigo .= '
-		$this->' . $nome . ' = $' . $nome . ';
+                    $codigo .= '
+		$this->' . lcfirst($atributo->getNome()) . ' = $' . lcfirst($atributo->getTipo()). ';
 	}
 		    
-	public function get' . $nome2 . '() {
-		return $this->' . $nome . ';
+	public function get' . ucfirst($atributo->getNome()). '() {
+		return $this->' . lcfirst($atributo->getNome()). ';
 	}';
-                    }
                     
                     
                 }
+                
                 
             }
             $codigo .= '
@@ -138,7 +131,7 @@ class ' . $nomeDoObjetoMa . ' {';
             $i = count($objeto->getAtributos());
             foreach ($objeto->getAtributos() as $atributo) {
                 $i--;
-                $codigo .= '$this->'.$atributo->getNome();
+                $codigo .= '$this->'.lcfirst($atributo->getNome());
                 if($i != 0){
                     $codigo .= '.\' - \'.';
                 }
@@ -149,7 +142,7 @@ class ' . $nomeDoObjetoMa . ' {';
                 
 ';
             
-        }
+        
         
         $codigo .= '
 }

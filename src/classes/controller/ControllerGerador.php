@@ -37,8 +37,8 @@ class ControllerGerador{
     private function geraControllersPHP(Objeto $objeto, Software $software)
     {
         $codigo = '';
-        $nomeDoObjeto = strtolower($objeto->getNome());
-        $nomeDoObjetoMa = strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100);
+        $nomeDoObjeto = lcfirst($objeto->getNome());
+        $nomeDoObjetoMa = ucfirst($objeto->getNome());
         
         $atributosComuns = array();
         $atributosNN = array();

@@ -297,7 +297,7 @@ class DAO {
             $codigo .= '<?php
                 
 /**
- * Classe feita para manipulação do objeto ' . $nomeDoObjetoMA . '
+ * Classe feita para manipulação do objeto ' . ucfirst($objeto->getNome()) . '
  * feita automaticamente com programa gerador de software inventado por
  * @author Jefferson Uchôa Ponte
  *
@@ -306,10 +306,10 @@ class DAO {
 class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
     
     
-    public function atualizar('.$nomeDoObjetoMA.' $'.$nomeDoObjeto.')
+    public function atualizar('.ucfirst($objeto->getNome()).' $'.lcfirst($objeto->getNome()).')
     {
         
-        $id = $'.$nomeDoObjeto.'->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'();
+        $id = $'.lcfirst($objeto->getNome()).'->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'();
         $sql = "UPDATE '.$nomeDoObjeto.'
                 SET
                 ';
@@ -665,13 +665,18 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                     
                 }
                 
-                if($atributo->getTipo() == Atributo::TIPO_STRING){
+                if($atributo->getTipo() == Atributo::TIPO_STRING 
+                    || $atributo->getTipo() == Atributo::TIPO_DATE 
+                    || $atributo->getTipo() == Atributo::TIPO_DATE_TIME
+                    ){
                     $codigo .=  '
                 WHERE '.strtolower($objeto->getNome()).'.'.$id.' like \'%$'.$id.'%\'";';
                     
-                }else if($atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_FLOAT){
+                }else
+                {
                     $codigo .= '
                 WHERE '.strtolower($objeto->getNome()).'.'.$id.' = $'.$id.'";';
+                
                 }
                 
                 $codigo .= '
@@ -791,11 +796,11 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                     
                 }
                 
-                if($atributo->getTipo() == Atributo::TIPO_STRING){
+                if($atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_DATE || $atributo->getTipo() == Atributo::TIPO_DATE_TIME){
                     $codigo .=  '
                 WHERE '.strtolower($objeto->getNome()).'.'.$id.' like \'%$'.$id.'%\'";';
                     
-                }else if($atributo->getTipo() == Atributo::TIPO_INT || $atributo->getTipo() == Atributo::TIPO_FLOAT){
+                }else{
                     $codigo .= '
                 WHERE '.strtolower($objeto->getNome()).'.'.$id.' = $'.$id.'";';
                 }
