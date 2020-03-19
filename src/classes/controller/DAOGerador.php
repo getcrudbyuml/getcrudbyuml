@@ -514,14 +514,12 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                 
 		foreach ( $result as $linha ) {
                 
-			$' . $nomeDoObjeto . ' = new ' . $nomeDoObjetoMA . '();
+			$' . lcfirst($objeto->getNome()) . ' = new ' . ucfirst($objeto->getNome()) . '();
         ';
             
             foreach ($atributosComuns as $atributo) {
-                $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
-                
                 $codigo .= '
-			$' . lcfirst($objeto->getNomeSnakeCase()). '->set' . $atributo->getNomeSnakeCase() . '( $linha [\'' . $atributo->getNomeSnakeCase() . '\'] );';
+			$' . lcfirst($objeto->getNomeSnakeCase()). '->set' . ucfirst($atributo->getNome()) . '( $linha [\'' . $atributo->getNomeSnakeCase() . '\'] );';
             }
             foreach($atributosObjetos as $atributoObjeto){
                 
@@ -530,12 +528,12 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                         foreach($objeto2->getAtributos() as $atributo3){
                             if($atributo3->getIndice() == Atributo::INDICE_PRIMARY){
                                 $codigo .= '
-			$' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set'.ucfirst($atributo3->getNome()).'( $linha [\'' . strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome()) . '\'] );';
+			$' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set'.ucfirst($atributo3->getNome()).'( $linha [\'' . $atributo3->getNomeSnakeCase().'_'.$atributoObjeto->getTipoSnakeCase().'_'.$atributoObjeto->getNomeSnakeCase() . '\'] );';
                             }
-                            else
+                            else if($atributo3->tipoListado())
                             {
                                 $codigo .= '
-			$' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set'.ucfirst($atributo3->getNome()).'( $linha [\'' . strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome()) . '\'] );';
+			$' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set'.ucfirst($atributo3->getNome()).'( $linha [\'' . $atributo3->getNomeSnakeCase().'_'.$atributoObjeto->getTipoSnakeCase().'_'.$atributoObjeto->getNomeSnakeCase() . '\'] );';
                             }
                             
                         }
