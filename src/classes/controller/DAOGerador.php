@@ -307,9 +307,23 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
     
     
     public function atualizar('.ucfirst($objeto->getNome()).' $'.lcfirst($objeto->getNome()).')
-    {
+    {';
+            $atributoPrimary = null;
+            foreach($objeto->getAtributos() as $atributo){
+                if($atributo->isPrimary()){
+                    $atributoPrimary = $atributo;
+                    break;
+                }
+            }
+            if($atributoPrimary != null){
+                $codigo .= '
+        $id = $'.lcfirst($objeto->getNome()).'->get'.ucfirst ($atributoPrimary->getNome()).'();';
+                
+            
+            }
+            $codigo .= '
         
-        $id = $'.lcfirst($objeto->getNome()).'->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'();
+        
         $sql = "UPDATE '.$nomeDoObjeto.'
                 SET
                 ';
@@ -332,17 +346,21 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                 ';
                 }
             }
-            $codigo .= '
-                WHERE '.$nomeDoObjeto.'.id = :id;";';
+            if($atributoPrimary != null){
+                $codigo .= '
+                WHERE '.$nomeDoObjeto.'.id = :id;';
+            }
+            $codigo .= '";';
             
             
             foreach ($listaAtributo as $atributo) {
-                if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
+                if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) 
+                {
                     continue;
                 }
-                $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
+                
                 $codigo .= '
-			$' . $atributo->getNome() . ' = $' . $nomeDoObjeto . '->get' . $nomeDoAtributoMA . '();';
+			$' . lcfirst($atributo->getNome()) . ' = $' . $nomeDoObjeto . '->get' . ucfirst($atributo->getNome()) . '();';
             }
             $codigo .= '
                 
@@ -503,7 +521,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                 $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
                 
                 $codigo .= '
-			$' . $nomeDoObjeto . '->set' . $nomeDoAtributoMA . '( $linha [\'' . $atributo->getNome() . '\'] );';
+			$' . lcfirst($objeto->getNomeSnakeCase()). '->set' . $atributo->getNomeSnakeCase() . '( $linha [\'' . $atributo->getNomeSnakeCase() . '\'] );';
             }
             foreach($atributosObjetos as $atributoObjeto){
                 

@@ -102,6 +102,12 @@ class Atributo {
 	    }
 	    return null;
 	}
+	public function isPrimary(){
+	    if($this->indice == self::INDICE_PRIMARY){
+	        return true;
+	    }
+	    return false;
+	}
 	public function isObjeto(){
 	    if($this->isArray()){
 	        return false;
