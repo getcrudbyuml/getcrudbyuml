@@ -484,69 +484,11 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
 			    
 	public function retornaLista() {
 		$lista = array ();
-		$sql = "SELECT ';
-            $i = 0;
-            foreach($atributosComuns as $atributoComum){
-                
-                $i++;
-                $codigo .= '
-                '.strtolower($objeto->getNome().'.'.$atributoComum->getNome()).'';
-                
-                if($i != count($atributosComuns))
-                {
-                    $codigo .= ', ';
-                }
-            }
+		$sql = "';
             
-            foreach($atributosObjetos as $atributoObjeto){
-                
-                foreach($this->software->getObjetos() as $objeto2){
-                    if($objeto2->getNome() == $atributoObjeto->getTipo()){
-                        $i = 0;
-                        foreach($objeto2->getAtributos() as $atributo3){
-                            $i++;
-                            if(count($atributosComuns) != 0 && $i == 1){
-                                $codigo .= ',';
-                            }
-                            if($atributo3->getIndice() == Atributo::INDICE_PRIMARY){
-                                
-                                $codigo .= '
-                '.strtolower($objeto->getNome().'.'.$atributo3->getNome().'_'.$atributoObjeto->getTipo().'_'.$atributoObjeto->getNome());
-                            }else{
-                                $codigo .= '
-                '.strtolower($atributoObjeto->getTipo().'.'.$atributo3->getNome().' as '.$atributo3->getNome().'_'.$atributoObjeto->getTipo().'_'.$atributoObjeto->getNome());
-                            }
-                            if($i != count($objeto2->getAtributos()))
-                            {
-                                $codigo .= ', ';
-                            }
-                            
-                        }
-                        break;
-                    }
-                }
-                
-            }
-            $codigo .= '
-                FROM ' . $nomeDoObjeto;
-            foreach($atributosObjetos as $atributoObjeto){
-                
-                foreach($this->software->getObjetos() as $objeto2){
-                    if($objeto2->getNome() == $atributoObjeto->getTipo()){
-                        foreach($objeto2->getAtributos() as $atributo3){
-                            if($atributo3->getIndice() == Atributo::INDICE_PRIMARY){
-                                $codigo .= '
-                INNER JOIN '.strtolower($atributoObjeto->getTipo()).'
-                ON '.strtolower($atributoObjeto->getTipo()).'.'.$atributo3->getNome().' = '.$nomeDoObjeto.'.'.strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome());
-                                break;
-                            }
-                            
-                        }
-                        break;
-                    }
-                }
-                
-            }
+            $sqlGerador = new SQLGerador($this->software);
+            $codigo .= $sqlGerador->getSQLSelect($objeto);
+            
             
             $codigo .= '
                  LIMIT 1000";

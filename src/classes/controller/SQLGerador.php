@@ -14,8 +14,59 @@ class SQLGerador {
         $this->software = $software;
         $this->codigo = '';
     }
-    public function getFROM(){
+    public function getSQLSelect(Objeto $objeto){
+        $strSqlSelect = "        SELECT\n        ";
+        $campos = $this->campos($objeto);
+        $strSqlSelect .= implode(", \n        ", $campos);
+        $this->nivelRecursividade = 0;
+        $from = $this->getFROM($objeto);
+        array_unshift($from, $objeto->getNomeSnakeCase());
+        $strSqlSelect .= "\n        FROM ".implode("\n        INNER JOIN ", $from);
+        return $strSqlSelect;
+        
+    }
+    public function getFROM(Objeto $objeto){
+        
+        $this->nivelRecursividade++;
         $from = array();
+       
+        
+        $atributosObjetos = array();
+        foreach ($objeto->getAtributos() as $atributo) {
+            if ($atributo->isObjeto()) {
+                $atributosObjetos[] = $atributo;
+            }
+        }
+        
+        foreach($atributosObjetos as $atributoObjeto){
+            
+            foreach($this->software->getObjetos() as $objeto2){
+                if($objeto2->getNome() == $atributoObjeto->getTipo())
+                {
+                    foreach($objeto2->getAtributos() as $atributo3){
+                        if($atributo3->getIndice() == Atributo::INDICE_PRIMARY){
+                            $filtro = $atributoObjeto->getTipoSnakeCase().' ON '.
+                                $atributoObjeto->getTipoSnakeCase().'.'.
+                                $atributo3->getNome().' = '.
+                                $objeto->getNomeSnakeCase().'.'.$atributo3->getNome().
+                                '_'.strtolower($atributoObjeto->getTipo()).
+                                '_'.strtolower($atributoObjeto->getNome());
+                            
+                            $from[$filtro] = $filtro;
+                            break;
+                        }
+                        
+                    }
+                    if($this->nivelRecursividade < 10){
+                        $from = array_merge($from, $this->getFROM($objeto2));
+                    }
+                    
+                }
+            }
+            
+        }
+        return $from;
+        
     }
     public function campos(Objeto $objeto){
         $lista = $this->getCamposComuns($objeto);
@@ -76,8 +127,6 @@ class SQLGerador {
                                         }
                                         $campos = array_merge($campos,
                                             $this->getCamposObjetos($objetoTipoDoTipo));
-                                    }else{
-                                        echo "Nível de Recursividade Excedido";
                                     }
                                     
                                 }
