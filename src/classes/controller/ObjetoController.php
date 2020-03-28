@@ -51,7 +51,9 @@ class ObjetoController {
 	    echo '<div class="row">';
 	    echo '<div class="col-xl-8 col-lg-8 col-md-12 col-sm-12">';
 	    echo '<h3>Software: '.$software->getNome().' - Objeto: '.$this->selecionado->getNome().'</h3>';
-	    echo '<a href="?pagina=software&selecionar='.$software->getId().'&escrever=1" class="btn btn-success m-3">Escrever Software</a>';
+	    echo '<a href="?pagina=software&selecionar='.$software->getId().'&escrever=1" class="btn btn-success m-2">Escrever</a>';
+	    echo '<a href="?pagina=software&deletar='.$software->getId().'&escrever=1" class="btn btn-danger m-2">Deletar</a>';
+	    echo '<a href="?pagina=software&selecionar='.$software->getId().'" class="btn btn-success m-2">'.$software->getNome().'</a>';
 	    echo '</div>';
 	    echo '<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">';
 	    $atributoController->cadastrar($this->selecionado);
@@ -60,9 +62,6 @@ class ObjetoController {
 	    
 	    $this->view->mostrarSelecionado($this->selecionado);
 	    
-	    echo '<div class="row justify-content-center">
-                    <a href="?pagina=software&selecionar='.$software->getId().'" class="btn btn-success">Voltar Para '.$software->getNome().'</a>
-                </div>';
     }
 	public function cadastrar(Software $software = null) 
 	{

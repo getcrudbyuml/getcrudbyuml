@@ -12,7 +12,7 @@ class SoftwareView {
 <div class="col-md-12">
     <form class="user" method="post">
         <div class="form-group">
-          <input type="text" class="form-control form-control-user campmo-selecionado" id="nome" name="nome" placeholder="Novo Software">
+          <input type="text" class="form-control form-control-user campmo-selecionado" id="nome" name="nome" placeholder="Novo Software" required>
         </div>
         <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastrar" name="enviar_software">
         <hr>
@@ -121,12 +121,10 @@ class SoftwareView {
 	}
     
     public function confirmarDeletar(Software $software) {
-		echo '<div class="container">
+		echo '
     
-		<!-- Outer Row -->
-		<div class="row justify-content-center">
-    
-			<div class="col-xl-6 col-lg-12 col-md-9">
+		    <div class="d-flex justify-content-center">
+			<div class="col-xl-6 col-lg-6 col-md-12">
     
 				<div class="card o-hidden border-0 shadow-lg my-5">
 					<div class="card-body p-0">
@@ -151,10 +149,9 @@ class SoftwareView {
 				</div>
                                             
 			</div>
-                                            
-		</div>
-                                            
-	</div>';
+			</div>
+
+';
 	}        
             
 }

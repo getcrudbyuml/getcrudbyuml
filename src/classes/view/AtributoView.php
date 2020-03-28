@@ -21,7 +21,7 @@ class AtributoView {
                 						  <input type="text" class="form-control form-control-user campmo-selecionado" id="nome" name="nome" placeholder="nome">
                 						</div>
                                         <div class="form-group">
-                						  <select class="form-control form-control-user" id="tipo" name="tipo" placeholder="tipo">
+                						  <select class="form-control form-control-user" id="select-tipo-atributo" name="tipo" placeholder="tipo">
                                             <option value="'.Atributo::TIPO_STRING.'">String</option>
                                             <option value="'.Atributo::TIPO_INT.'">Inteiro</option>
                                             <option value="'.Atributo::TIPO_BOOLEAN.'">Boolean</option>
@@ -67,7 +67,7 @@ class AtributoView {
 		}
 		echo '
 
-                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastre-se" name="enviar_atributo">
+                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastrar Atributo" name="enviar_atributo">
                                             
 						              </form>
 
@@ -166,50 +166,28 @@ class AtributoView {
     }
 
 	public function mostraFormEditar(Atributo $atributo) {
-		echo '<div class="container">
-    
-		<!-- Outer Row -->
-		<div class="row justify-content-center">
-    
-			<div class="col-xl-6 col-lg-12 col-md-9">
-    
-				<div class="card o-hidden border-0 shadow-lg my-5">
-					<div class="card-body p-0">
-						<!-- Nested Row within Card Body -->
-						<div class="row">
-    
-							<div class="col-lg-12">
-								<div class="p-5">
-									<div class="text-center">
-										<h1 class="h4 text-gray-900 mb-4"> Editar Atributo</h1>
-									</div>
-						              <form class="user" method="post">
-                                        <div class="form-group">
-                						  <input type="text" class="form-control form-control-user" value="'.$atributo->getNome().'" id="nome" name="nome" placeholder="nome">
-                						</div>
-                                        <div class="form-group">
-                						  <input type="text" class="form-control form-control-user" value="'.$atributo->getTipo().'" id="tipo" name="tipo" placeholder="tipo">
-                						</div>
-                                        <div class="form-group">
-                						  <input type="text" class="form-control form-control-user" value="'.$atributo->getIndice().'" id="indice" name="indice" placeholder="indice">
-                						</div>
-                                        
-                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Alterar" name="editar_atributo">
-                                        <hr>
-                                            
-						              </form>
-                                            
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-                                            
-			</div>
-                                            
+		echo '
+
+<div class="card">
+  <div class="card-body">
+      <form class="user" method="post">
+        <div class="form-group">
+		  <input type="text" class="form-control form-control-user" value="'.$atributo->getNome().'" id="nome" name="nome" placeholder="nome">
 		</div>
-                                            
-	</div>';
+        <div class="form-group">
+		  <input type="text" class="form-control form-control-user" value="'.$atributo->getTipo().'" id="tipo" name="tipo" placeholder="tipo">
+		</div>
+        <div class="form-group">
+		  <input type="text" class="form-control form-control-user" value="'.$atributo->getIndice().'" id="indice" name="indice" placeholder="indice">
+		</div>
+        
+        <input type="submit" class="btn btn-primary btn-user btn-block" value="Editar Atributo" name="editar_atributo">
+
+  </form>
+</div>
+</div>                        
+								
+';
 	}
     
     public function confirmarDeletar(Atributo $atributo) {
