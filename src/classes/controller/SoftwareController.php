@@ -22,20 +22,11 @@ class SoftwareController {
             $controller->editar();
             return;
         }
-        echo '<div class="row">';
-        echo '<div class="col-xl-3 col-lg-3 col-md-3 col-sm-12">';
+
         $controller->cadastrar();
 
-        $controller->listar();
-        echo '</div>';
-        
-        if(isset($_GET['selecionar'])){
-            echo '<div class="col-xl-9 col-lg-9 col-md-9 col-sm-12">';
-            $controller->selecionar();
-            echo '</div>';
-            
-        }
-        echo '</div>';
+    
+
         
     }
 	public function __construct(){
@@ -53,6 +44,7 @@ class SoftwareController {
 	}			
     public function selecionar(){
 	    if(!isset($_GET['selecionar'])){
+	        echo 'Bem vindo ao Escritor de Software';
 	        return;
 	    }
 	    
@@ -65,10 +57,20 @@ class SoftwareController {
         foreach($this->selecionado->getObjetos() as $objeto){
             $atributoDao->pesquisaPorIdObjeto($objeto);
         }
-        echo '<br><h3>Software: '.$this->selecionado->getNome().'</h3><hr>';
-        echo '<div class="row justify-content-center">
-                    <a href="?pagina=software&selecionar='.$this->selecionado->getId().'&escrever=1" class="btn btn-success">Escrever Software</a>
-                </div><br>';
+        echo '<div class="row">';
+        echo '<div class="col-xl-8 col-lg-8 col-md-12 col-sm-12">';
+        echo '<h3>Software: '.$this->selecionado->getNome().'</h3>';
+        echo '<a href="?pagina=software&selecionar='.$this->selecionado->getId().'&escrever=1" class="btn btn-success m-3">Escrever Software</a>';
+        echo '</div>';
+        echo '<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">';
+        $objetoController = new ObjetoController();
+        $objetoController->cadastrar($this->selecionado);
+        echo '</div>';
+        
+        
+        echo '</div>';
+        echo '<hr>';
+        
         if(isset($_GET['escrever'])){
             if(count($this->selecionado->getObjetos()) == 0){
                 echo "<p>Não existem Objetos Cadastrados, cadastre pelo menos um objeto.</p>";
@@ -136,8 +138,7 @@ class SoftwareController {
             return;
 
         }
-        $objetoController = new ObjetoController();
-        $objetoController->cadastrar($this->selecionado);
+        
         
         $this->view->mostrarSelecionado($this->selecionado);
         

@@ -60,8 +60,11 @@ class ObjetoController {
                 $softwareDao = new SoftwareDAO($this->dao->getConexao());
                 $listaSoftware = $softwareDao->retornaLista();
             }
+            
+            
             $this->view->mostraFormInserir($listaSoftware);
-		    return;
+
+            return;
 		}
 		if (! ( isset ( $this->post ['nome'] ))) {
 			echo "Incompleto";

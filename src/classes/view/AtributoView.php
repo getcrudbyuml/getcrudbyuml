@@ -31,7 +31,7 @@ class AtributoView {
 									</div>
 						              <form class="user" method="post">
                                         <div class="form-group">
-                						  <input type="text" class="form-control form-control-user" id="nome" name="nome" placeholder="nome">
+                						  <input type="text" class="form-control form-control-user campmo-selecionado" id="nome" name="nome" placeholder="nome">
                 						</div>
                                         <div class="form-group">
                 						  <select class="form-control form-control-user" id="tipo" name="tipo" placeholder="tipo">

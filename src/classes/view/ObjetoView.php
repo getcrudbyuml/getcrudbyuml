@@ -13,21 +13,15 @@ class ObjetoView {
 
     
 
-    
-				<div class="card my-4">
-					<div class="card-body p-0">
-						<!-- Nested Row within Card Body -->
-						<div class="row">
-    
-							<div class="col-lg-12">
-								<div class="p-5">
-									<div class="text-center">
-										<h1 class="h4 text-gray-900 mb-4"> Adicionar Objeto</h1>
-									</div>
-
+<div class="card">
+  <div class="card-body">';
+		
+		echo '
+		    
+		    
 						              <form class="user" method="post">
                                         <div class="form-group">
-                						  <input type="text" class="form-control form-control-user" id="nome" name="nome" placeholder="nome">
+                						  <input type="text" class="form-control form-control-user campmo-selecionado" id="nome" name="nome" placeholder="Adicionar Classe">
                 						</div>';
 		
 		if(count($listaSoftware)){
@@ -43,21 +37,18 @@ class ObjetoView {
                 						</div>';
 		}
 		echo '
-                                        
+		    
                                         <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastrar" name="enviar_objeto">
-                                            
 						              </form>
-                                            
-								
-				            
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-                                                    
+		    
+		    
 	';
+		
+		echo '
+    
+  </div>
+</div>';
+
 	}
                                             
     public function exibirLista($lista){

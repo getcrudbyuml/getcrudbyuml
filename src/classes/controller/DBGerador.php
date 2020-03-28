@@ -121,19 +121,15 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase().'_'.strtolower(explode(" ", $atribu
                     $codigo .= '(
     id serial NOT NULL,
     id_'.$objeto->getNomeSnakeCase().' integer NOT NULL,
-    id_'.strtolower(explode(" ", $atributo->getTipoSnakeCase())[2]).' integer NOT NULL,
-    CONSTRAINT pk_'.$objeto->getNomeSnakeCase().'_'.explode(" ", $atributo->getTipoSnakeCase())[2].'_id 
+    id_'.$atributo->getArrayTipoSnakeCase().' integer NOT NULL,
+    CONSTRAINT pk_'.$objeto->getNomeSnakeCase().'_'.$atributo->getArrayTipoSnakeCase().'_id 
     PRIMARY KEY (id),
     CONSTRAINT fk_'.$objeto->getNomeSnakeCase().'_id FOREIGN KEY (id_'.$objeto->getNomeSnakeCase().') 
-    REFERENCES '.strtolower($objeto->getNome()).' (id) 
-    MATCH SIMPLE 
-    ON UPDATE NO ACTION 
-    ON DELETE NO ACTION,
-    CONSTRAINT fk_'.strtolower(explode(" ", $atributo->getTipoSnakeCase())[2]).'_id 
-    FOREIGN KEY (id'.strtolower(explode(" ", $atributo->getTipo())[2]).') REFERENCES '.strtolower(explode(" ", $atributo->getTipo())[2]).' (id) 
-    MATCH SIMPLE 
-    ON UPDATE NO ACTION 
-    ON DELETE NO ACTION
+    REFERENCES '.$objeto->getNomeSnakeCase().' (id) 
+    MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT fk_'.$atributo->getArrayTipoSnakeCase().'_id 
+    FOREIGN KEY (id_'.$atributo->getArrayTipoSnakeCase().') REFERENCES '.$atributo->getArrayTipoSnakeCase().' (id) 
+    MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION
 );';
                     
                 }

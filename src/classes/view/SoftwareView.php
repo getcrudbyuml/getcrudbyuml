@@ -10,22 +10,15 @@ class SoftwareView {
 		echo '
                     
 <div class="col-md-12">
-        <div class="card mb-6 shadow-sm">
-            <div class="card-header">
-                  Adicionar Software
-            </div>
-            <div class="card-body">
-                <form class="user" method="post">
-                                        <div class="form-group">
-                						  <input type="text" class="form-control form-control-user" id="nome" name="nome" placeholder="nome">
-                						</div>
-                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastrar" name="enviar_software">
-                                        <hr>
-                                            
-						              </form>
-            </div>
+    <form class="user" method="post">
+        <div class="form-group">
+          <input type="text" class="form-control form-control-user campmo-selecionado" id="nome" name="nome" placeholder="Novo Software">
         </div>
-    </div>
+        <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastrar" name="enviar_software">
+        <hr>
+            
+    </form>
+</div>
 
 			
     
@@ -40,40 +33,17 @@ class SoftwareView {
     public function exibirLista($lista){
         
         echo '
-                    <div class="col-md-12">
-                      <div class="card mb-6 shadow-sm">
-            
-                      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                          <h6 class="m-0 font-weight-bold text-primary">Lista de Softwares</h6>
-                          
-                        </div>
-                        <div class="card-body">
-<div class="list-group">';
+                    
+<div class="list-group list-group-flush">';
         
         foreach($lista as $elemento){
             echo '
-                
-  <a href="?pagina=software&selecionar='.$elemento->getId().'" class="list-group-item list-group-item-action">'.$elemento->getNome().'</a>';
-            
-            
-            
-        }
-        
-        
+  <a href="?pagina=software&selecionar='.$elemento->getId().'" class="list-group-item list-group-item-action bg-light">'.$elemento->getNome().'</a>';
+        }  
         echo '
-</div>                    		
-
-
+</div>
 ';
-                        
-        echo '
-				
-            
-                        </div>
-                      </div>
-                    </div>
-            
-';
+
 
     }
             
