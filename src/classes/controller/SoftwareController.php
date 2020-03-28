@@ -66,8 +66,6 @@ class SoftwareController {
         $objetoController = new ObjetoController();
         $objetoController->cadastrar($this->selecionado);
         echo '</div>';
-        
-        
         echo '</div>';
         echo '<hr>';
         

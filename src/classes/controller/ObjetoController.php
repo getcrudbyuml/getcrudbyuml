@@ -9,6 +9,7 @@ class ObjetoController {
 	private $post;
 	private $view;
     private $dao;
+    private $selecionado;
 
     public static function main(){
         $controller = new ObjetoController();
@@ -21,6 +22,7 @@ class ObjetoController {
         $controller->deletar();
     }
 	public function __construct(){
+	    $this->selecionado = new Objeto();
 		$this->dao = new ObjetoDAO();
 		$this->view = new ObjetoView();
 		foreach($_POST as $chave => $valor){
@@ -36,17 +38,28 @@ class ObjetoController {
 	    if(!isset($_GET['selecionar'])){
 	        return;
 	    }
-        $selecionado = new Objeto();
-	    $selecionado->setId($_GET['selecionar']);
-	    $this->dao->pesquisaPorId($selecionado);
+        
+	    $this->selecionado->setId($_GET['selecionar']);
+	    $this->dao->pesquisaPorId($this->selecionado);
 	    
 	    $atributoDao = new AtributoDAO($this->dao->getConexao());
-	    $atributoDao->pesquisaPorIdObjeto($selecionado);
+	    $atributoDao->pesquisaPorIdObjeto($this->selecionado);
 	    $atributoController = new AtributoController();
+	    $software = $this->dao->softwareDoObjeto($this->selecionado);
 	    
-	    $atributoController->cadastrar($selecionado);
-	    $this->view->mostrarSelecionado($selecionado);
-	    $software = $this->dao->softwareDoObjeto($selecionado);
+	    
+	    echo '<div class="row">';
+	    echo '<div class="col-xl-8 col-lg-8 col-md-12 col-sm-12">';
+	    echo '<h3>Software: '.$software->getNome().' - Objeto: '.$this->selecionado->getNome().'</h3>';
+	    echo '<a href="?pagina=software&selecionar='.$software->getId().'&escrever=1" class="btn btn-success m-3">Escrever Software</a>';
+	    echo '</div>';
+	    echo '<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">';
+	    $atributoController->cadastrar($this->selecionado);
+	    echo '</div>';
+	    echo '</div><hr>';
+	    
+	    $this->view->mostrarSelecionado($this->selecionado);
+	    
 	    echo '<div class="row justify-content-center">
                     <a href="?pagina=software&selecionar='.$software->getId().'" class="btn btn-success">Voltar Para '.$software->getNome().'</a>
                 </div>';

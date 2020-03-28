@@ -14,21 +14,8 @@ class AtributoView {
 	public function mostraFormInserir($listaObjetos, $listaTipos = array()) {
 		echo '
     
-		<!-- Outer Row -->
-		<div class="row justify-content-center">
-    
-			<div class="col-xl-6 col-lg-12 col-md-9">
-    
-				<div class="card o-hidden border-0 shadow-lg my-5">
-					<div class="card-body p-0">
-						<!-- Nested Row within Card Body -->
-						<div class="row">
-    
-							<div class="col-lg-12">
-								<div class="p-5">
-									<div class="text-center">
-										<h1 class="h4 text-gray-900 mb-4"> Adicionar Atributo</h1>
-									</div>
+		<div class="card">
+  <div class="card-body">
 						              <form class="user" method="post">
                                         <div class="form-group">
                 						  <input type="text" class="form-control form-control-user campmo-selecionado" id="nome" name="nome" placeholder="nome">
@@ -83,16 +70,10 @@ class AtributoView {
                                         <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastre-se" name="enviar_atributo">
                                             
 						              </form>
-                                            
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-                                            
-			</div>
-                                            
-		</div>';
+
+</div></div>
+
+';
 	}
                                             
     public function exibirLista($lista){

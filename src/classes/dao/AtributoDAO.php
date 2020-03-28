@@ -172,6 +172,28 @@ class AtributoDAO extends DAO {
 		}
 		return $objeto->getAtributos();
 	}
-		
+	public function softwareDoAtributo(Atributo $atributo){
+	    $software= new Software();
+	    $idAtributo = $atributo->getId();
+	    $sql = "SELECT
+                    software.id as id_software,
+                    software.nome as nome_software
+                 FROM 
+                software 
+                INNER JOIN 
+                objeto
+                ON objeto.idsoftware = software.id
+                INNER JOIN 
+                atributo 
+                ON atributo.idobjeto = objeto.id
+                WHERE atributo.id = $idAtributo";
+	    $result = $this->getConexao ()->query ( $sql );
+	    
+	    foreach ( $result as $linha ) {
+	        $software->setId( $linha ['id_software'] );
+	        $software->setNome( $linha ['nome_software'] );
+	    }
+	    return $software;
+	}
 				
 }
