@@ -41,7 +41,7 @@ class AtributoDAO extends DAO {
 	
 	public function inserir(Atributo $atributo, Objeto $objeto){
 		
-		$sql = "INSERT INTO atributo(nome, tipo, indice, idobjeto)
+		$sql = "INSERT INTO atributo(nome, tipo, indice, id_objeto_atributos)
 				VALUES(:nome, :tipo, :indice, :idobjeto)";
 			$nome = $atributo->getNome();
 			$tipo = $atributo->getTipo();
@@ -159,7 +159,7 @@ class AtributoDAO extends DAO {
 
     public function pesquisaPorIdObjeto(Objeto $objeto) {
 	    $idobjeto = $objeto->getId();
-	    $sql = "SELECT * FROM atributo WHERE idobjeto = $idobjeto";
+	    $sql = "SELECT * FROM atributo WHERE id_objeto_atributos = $idobjeto";
 	    $result = $this->getConexao ()->query ( $sql );
 	        
 	    foreach ( $result as $linha ) {
@@ -182,10 +182,10 @@ class AtributoDAO extends DAO {
                 software 
                 INNER JOIN 
                 objeto
-                ON objeto.idsoftware = software.id
+                ON objeto.id_software_objetos = software.id
                 INNER JOIN 
                 atributo 
-                ON atributo.idobjeto = objeto.id
+                ON atributo.id_objeto_atributos = objeto.id
                 WHERE atributo.id = $idAtributo";
 	    $result = $this->getConexao ()->query ( $sql );
 	    

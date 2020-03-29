@@ -17,7 +17,7 @@ class ObjetoDAO extends DAO {
         $sql = "UPDATE objeto 
                 SET
                 nome = :nome, 
-                idsoftware = :idsoftware
+                id_software_objetos = :idsoftware
                 WHERE objeto.id = :id;";
 			$nome = $objeto->getNome();
 			$idsoftware = $objeto->getIdsoftware();
@@ -38,7 +38,7 @@ class ObjetoDAO extends DAO {
 	
 	public function inserir(Objeto $objeto, Software $software){
 		
-		$sql = "INSERT INTO objeto(nome, idsoftware)
+		$sql = "INSERT INTO objeto(nome, id_software_objetos)
 				VALUES(:nome, :idsoftware)";
 			$nome = ucfirst($objeto->getNome());
 			$idsoftware = $software->getId();
@@ -115,7 +115,7 @@ class ObjetoDAO extends DAO {
 
     public function pesquisaPorIdSoftware(Software $software) {
 	    $idsoftware = $software->getId();
-	    $sql = "SELECT * FROM objeto WHERE idsoftware = $idsoftware ORDER BY id DESC";
+	    $sql = "SELECT * FROM objeto WHERE id_software_objetos = $idsoftware ORDER BY id DESC";
 	    $result = $this->getConexao ()->query ( $sql );
 	        
 	    foreach ( $result as $linha ) {
@@ -132,11 +132,11 @@ class ObjetoDAO extends DAO {
 	    $idObjeto = $objeto->getId();
 	    $sql = "SELECT 
                     objeto.id as id_objeto,
-                    objeto.idsoftware as idsoftware, 
+                    objeto.id_software_objetos as idsoftware, 
                     software.id as id_software, 
                     software.nome as nome_software 
                  FROM software INNER JOIN objeto 
-                ON idsoftware = id_software
+                ON software.id = objeto.id_software_objetos
                 WHERE id_objeto = $idObjeto";
 	    $result = $this->getConexao ()->query ( $sql );
 	    
