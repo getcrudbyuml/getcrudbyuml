@@ -109,53 +109,7 @@ class AtributoDAO extends DAO {
 		return $lista;
 	}
 
-    public function pesquisaPorNome(Atributo $atributo) {
-        $lista = array();
-	    $nome = $atributo->getNome();
-	    $sql = "SELECT * FROM atributo WHERE nome like '%$nome%'";
-	    $result = $this->getConexao ()->query ( $sql );
-	        
-	    foreach ( $result as $linha ) {
-	        $atributo->setId( $linha ['id'] );
-	        $atributo->setNome( $linha ['nome'] );
-	        $atributo->setTipo( $linha ['tipo'] );
-	        $atributo->setIndice( $linha ['indice'] );
-			$lista [] = $atributo;
-		}
-		return $lista;
-	}
-
-    public function pesquisaPorTipo(Atributo $atributo) {
-        $lista = array();
-	    $tipo = $atributo->getTipo();
-	    $sql = "SELECT * FROM atributo WHERE tipo like '%$tipo%'";
-	    $result = $this->getConexao ()->query ( $sql );
-	        
-	    foreach ( $result as $linha ) {
-	        $atributo->setId( $linha ['id'] );
-	        $atributo->setNome( $linha ['nome'] );
-	        $atributo->setTipo( $linha ['tipo'] );
-	        $atributo->setIndice( $linha ['indice'] );
-			$lista [] = $atributo;
-		}
-		return $lista;
-	}
-
-    public function pesquisaPorIndice(Atributo $atributo) {
-        $lista = array();
-	    $indice = $atributo->getIndice();
-	    $sql = "SELECT * FROM atributo WHERE indice like '%$indice%'";
-	    $result = $this->getConexao ()->query ( $sql );
-	        
-	    foreach ( $result as $linha ) {
-	        $atributo->setId( $linha ['id'] );
-	        $atributo->setNome( $linha ['nome'] );
-	        $atributo->setTipo( $linha ['tipo'] );
-	        $atributo->setIndice( $linha ['indice'] );
-			$lista [] = $atributo;
-		}
-		return $lista;
-	}
+    
 
     public function pesquisaPorIdObjeto(Objeto $objeto) {
 	    $idobjeto = $objeto->getId();
