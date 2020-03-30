@@ -65,6 +65,8 @@ class Sessao
     const NIVEL_NAO_VERIFICADO = 1;
 
     const NIVEL_VERIFICADO = 2;
+    
+    const NIVEL_COMPLETO = 3;
 
     const NIVEL_ADM = 4;
 }

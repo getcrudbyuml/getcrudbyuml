@@ -11,7 +11,7 @@ class DAO {
 	public function getSgdb(){
 		return $this->sgdb;
 	}
-	public function DAO(PDO $conexao = null) {
+	public function __construct(PDO $conexao = null) {
 		if ($conexao != null) {
 			$this->conexao = $conexao;
 		} else {

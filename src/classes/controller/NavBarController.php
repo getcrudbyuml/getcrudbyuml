@@ -10,7 +10,7 @@ class NavBarController{
 
 
       <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">';
-        if($sessao->getNivelAcesso() == Sessao::NIVEL_VERIFICADO){
+        if($sessao->getNivelAcesso() == Sessao::NIVEL_VERIFICADO || $sessao->getNivelAcesso() == Sessao::NIVEL_ADM){
             echo '
         <button class="btn btn-primary" id="menu-toggle">Menu</button>';
         }

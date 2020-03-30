@@ -47,7 +47,7 @@ class HomeController{
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Passo 2</h5>
-        <p class="card-text">Obtenha o código SQL de criação do banco de dados.</p>
+        <p class="card-text">Obtenha o código SQL de criação do banco de dados e tenha acesso a todos os recursos durante um mês.</p>
         <img src="./images/sql.png" alt="codigo SQL gerado automaticamente" class="img-fluid">
       </div>
     </div>
@@ -56,12 +56,30 @@ class HomeController{
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Passo 3</h5>
-        <p class="card-text">Faça uma doação se você quiser!</p>
-        <img class="img-fluid" src="./images/doar.png" alt="Botão Pague Seguro">
+        <p class="card-text">Faça uma doação se você quiser ou assine uma conta premium por R$ 9,90/mês para ter acesso a todas as funcionalidades por mais tempo.</p>
+        
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+        <input type="hidden" name="cmd" value="_s-xclick">
+        <input type="hidden" name="hosted_button_id" value="6DFNFPSADCQC8">
+        <input type="image" src="https://www.paypalobjects.com/pt_BR/BR/i/btn/btn_subscribeCC_LG.gif" border="0" name="submit" alt="PayPal - A maneira fácil e segura de enviar pagamentos online!">
+        <img alt="" border="0" src="https://www.paypalobjects.com/pt_BR/i/scr/pixel.gif" width="1" height="1">
+        </form>
+
+<br><br>
+
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+        <input type="hidden" name="cmd" value="_s-xclick" />
+        <input type="hidden" name="hosted_button_id" value="BXZLNT3CHZU7Q" />
+        <input type="image" src="https://www.paypalobjects.com/pt_BR/BR/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+        <img alt="" border="0" src="https://www.paypal.com/pt_BR/i/scr/pixel.gif" width="1" height="1" />
+        </form>
+
+
+<br>
+
       </div>
     </div>
   </div>
-
 
 </div>
 
@@ -81,7 +99,7 @@ class HomeController{
 <!-- Modal -->
 <div class="modal fade" id="comecar" tabindex="-1" role="dialog" aria-labelledby="labelComecar" aria-hidden="true">
   
-<form action=".">
+<form id="form-email" action=".">
     <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -98,10 +116,9 @@ class HomeController{
                 <input type="email" placeholder="Endereço de E-mail" class="form-control" id="email" required>                
               </div>
 
-            
+
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Sair</button>
         <input type="submit" class="btn btn-primary" value="Enviar">
       </div>
     </div>
