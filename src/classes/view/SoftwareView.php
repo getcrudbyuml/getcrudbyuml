@@ -15,17 +15,11 @@ class SoftwareView {
           <input type="text" class="form-control form-control-user campmo-selecionado" id="nome" name="nome" placeholder="Novo Software" required>
         </div>
         <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastrar" name="enviar_software">
-        <hr>
+        <br>
             
     </form>
 </div>
-
-			
-    
-
-                                            
-			
-                                            
+                                          
 
 ';
 	}
