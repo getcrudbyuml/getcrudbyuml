@@ -44,7 +44,9 @@ class SoftwareController {
 	}			
     public function selecionar(){
 	    if(!isset($_GET['selecionar'])){
-	        echo 'Bem vindo ao Escritor de Software';
+	        echo '<p>Bem vindo ao Escritor de Software</p>';
+	        echo '<p>Utilize o formulário na barra lateral a esquerda para 
+                    inserir um novo software.</p>';
 	        return;
 	    }
 	    
@@ -60,8 +62,8 @@ class SoftwareController {
         echo '<div class="row">';
         echo '<div class="col-xl-8 col-lg-8 col-md-12 col-sm-12">';
         echo '<h3>Software: '.$this->selecionado->getNome().'</h3>';
-        echo '<a href="?pagina=software&selecionar='.$this->selecionado->getId().'&escrever=1" class="btn btn-success m-2">Escrever</a>';
-        echo '<a href="?pagina=software&deletar='.$this->selecionado->getId().'&escrever=1" class="btn btn-danger m-2">Deletar</a>';
+        echo '<a href="?pagina=software&selecionar='.$this->selecionado->getId().'&escrever=1" class="btn btn-success m-2">Pegar Código</a>';
+        echo '<a href="?pagina=software&deletar='.$this->selecionado->getId().'" class="btn btn-danger m-2">Deletar Software</a>';
         echo '</div>';
         echo '<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">';
         $objetoController = new ObjetoController();
@@ -72,16 +74,15 @@ class SoftwareController {
         
         if(isset($_GET['escrever'])){
             if(count($this->selecionado->getObjetos()) == 0){
-                echo "<p>Não existem Objetos Cadastrados, cadastre pelo menos um objeto.</p>";
+                echo "<p>Não existem classes cadastradas, cadastre pelo menos uma classe, use o formulário acima.</p>";
                 return;
             }
             EscritorDeSoftware::main($this->selecionado);
-            $zipador = new Zipador();
-         
+
             echo '<div class="row justify-content-center">';
-            $zipador->zipaArquivo('sistemas/'.$this->selecionado->getNome(), 'sistemas/'.$this->selecionado->getNome().'.zip');
-            echo ' - <a href="sistemas/'.$this->selecionado->getNome().'"> Acessar Software</a>';
-            echo ' - <a href="sistemas/'.$this->selecionado->getNome().'.zip"> Baixar Software</a>';
+
+            echo ' <a href="sistemas/'.$this->selecionado->getNome().'/src"> Acessar Software</a>';
+            
             echo '</div>';
             echo '<br><hr>';
             
@@ -300,14 +301,15 @@ class SoftwareController {
 	
 		$software = new Software ();		
 		$software->setNome ( $this->post ['nome'] );	
-		
+		$strUrl = "";
 		if ($this->dao->inserir ( $software )) 
         {
+            $strUrl = '&selecionar=7'.$this->dao->getConexao()->lastInsertId();
 			echo "Sucesso";
 		} else {
 			echo "Fracasso";
 		}
-        echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=software">';
+        echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=software'.$strUrl.'">';
 	}
     public function editar(){
 	    if(!isset($_GET['editar'])){

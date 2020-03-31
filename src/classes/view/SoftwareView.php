@@ -45,7 +45,9 @@ class SoftwareView {
         public function mostrarSelecionado(Software $software){
             
             echo '<div class="row justify-content-center">';
-            
+            if(count($software->getObjetos()) == 0){
+                echo 'Começe inserindo alguma classe! Use o formulário acima. ';
+            }
             foreach($software->getObjetos() as $objeto){
                 echo '
                         <div class="col-lg-3">
