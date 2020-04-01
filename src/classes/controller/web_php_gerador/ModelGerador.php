@@ -37,7 +37,7 @@ class ModelGerador
     }
     private function criarArquivos(){
         
-        $caminho = $this->diretorio.$this->software->getNomeSimples().'/php/src/classes/model';
+        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/model/';
         if(!file_exists($caminho)) {
             mkdir($caminho, 0777, true);
         }
@@ -146,7 +146,7 @@ class ' . ucfirst($objeto->getNome()) . ' {';
 ?>';
         
         
-        $caminho = $this->diretorio.$this->software->getNomeSimples().'/php/src/classes/model/'.ucfirst($objeto->getNome()).'.php';
+        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/model/'.ucfirst($objeto->getNome()).'.php';
         $this->listaDeArquivos[$caminho] = $codigo;
         
     }

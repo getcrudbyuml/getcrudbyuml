@@ -79,11 +79,12 @@ class SoftwareController {
                 echo "<p>Não existem classes cadastradas, cadastre pelo menos uma classe, use o formulário acima.</p>";
                 return;
             }
-            EscritorDeSoftware::main($this->selecionado, './sistemas/'.$sessao->getLoginUsuario().'/');
+            $diretorio = './sistemas/'.$sessao->getLoginUsuario().'/'.$this->selecionado->getNomeSimples();
+            EscritorDeSoftware::main($this->selecionado, $diretorio);
 
             echo '<div class="row justify-content-center">';
 
-            echo ' <a href="sistemas/'.$this->selecionado->getNome().'/src"> Acessar Software</a>';
+            echo ' <a href="'.$diretorio.'/AppWebPhp/'.$this->selecionado->getNomeSimples().'/src'.'"> Acessar Software</a>';
             
             echo '</div>';
             echo '<br><hr>';
@@ -102,7 +103,8 @@ class SoftwareController {
 
     <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
       <div class="card-body">';
-            $sqlPG = file_get_contents('sistemas/'.$this->selecionado->getNome().'/'.strtolower($this->selecionado->getNome()).'_banco_pg.sql');
+            
+            $sqlPG = file_get_contents('sistemas/'.$sessao->getLoginUsuario().'/'.$this->selecionado->getNomeSimples().'/'.strtolower($this->selecionado->getNome()).'_banco_pg.sql');
             $sqlPG = $this->formatarPG($sqlPG);
             echo $sqlPG;
             echo '
@@ -120,7 +122,7 @@ class SoftwareController {
     </div>
     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
       <div class="card-body">';
-            $sql = file_get_contents('sistemas/'.$this->selecionado->getNome().'/'.strtolower($this->selecionado->getNome()).'_banco_sqlite.sql');
+            $sql = file_get_contents('sistemas/'.$sessao->getLoginUsuario().'/'.$this->selecionado->getNomeSimples().'/'.strtolower($this->selecionado->getNome()).'_banco_sqlite.sql');
             $sql = $this->formatarSQLITE($sql);
             
             echo $sql;

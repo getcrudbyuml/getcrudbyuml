@@ -31,7 +31,7 @@ class ViewGerador{
     }
     private function criarArquivos(){
         
-        $caminho = $this->diretorio.$this->software->getNomeSimples().'/php/src/classes/view';
+        $caminho = $this->diretorio.'/AppWebPHP/PainelPDTI/src/classes/view/';
         
         if(!file_exists($caminho)) {
             mkdir($caminho, 0777, true);
@@ -46,7 +46,6 @@ class ViewGerador{
             fclose($file);
         }
     }
-    
     
     private function geraViews(Objeto $objeto)
     {
@@ -625,7 +624,7 @@ class ' . $nomeDoObjetoMa . 'View {
 }';
 
         
-        $caminho = $this->diretorio.$this->software->getNomeSimples().'/php/src/classes/view/'.ucfirst($objeto->getNome()).'View.php';
+        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/view/'.ucfirst($objeto->getNome()).'View.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
    

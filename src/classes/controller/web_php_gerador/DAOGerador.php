@@ -33,7 +33,7 @@ class DAOGerador
     }
     private function criarArquivos(){
         
-        $caminho = $this->diretorio.$this->software->getNomeSimples().'/php/src/classes/dao';
+        $caminho = $this->diretorio.'/AppWebPHP/PainelPDTI/src/classes/dao';
         if(!file_exists($caminho)) {
             mkdir($caminho, 0777, true);
         }
@@ -116,7 +116,7 @@ class DAO {
 	    
 ?>
 		';
-        $caminho = $this->diretorio.$this->software->getNomeSimples().'/php/src/classes/dao/DAO.php';
+        $caminho = $this->diretorio.'/AppWebPHP/PainelPDTI/src/classes/dao/DAO.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
 
@@ -718,7 +718,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                 
 }';
 
-        $caminho = $this->diretorio.$this->software->getNomeSimples().'/php/src/classes/dao/'.ucfirst($objeto->getNome()).'DAO.php';
+        $caminho = $this->diretorio.'/AppWebPHP/PainelPDTI/src/classes/dao/'.ucfirst($objeto->getNome()).'DAO.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
 }

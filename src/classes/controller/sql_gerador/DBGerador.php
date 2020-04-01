@@ -29,11 +29,18 @@ class DBGerador
     public function gerarCodigo()
     {
         $this->geraINI();
+        $this->geraBancoPG();
+        $this->geraBancoSqlite();
         $this->criarArquivos();
     }
 
     private function criarArquivos()
     {
+        $path = $this->diretorio;
+        if(!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+        
         foreach ($this->listaDeArquivos as $path => $codigo) {
             if (file_exists($path)) {
                 unlink($path);
@@ -42,6 +49,14 @@ class DBGerador
             fwrite($file, stripslashes($codigo));
             fclose($file);
         }
+        
+        $bdNome = $this->diretorio . '/' . $this->software->getNomeSnakeCase() . '.db';
+        if (file_exists($bdNome)) {
+            unlink($bdNome);
+        }
+        $pdo = new PDO('sqlite:' . $bdNome);
+        $pdo->exec($codigo);
+        
     }
 
     public function geraINI()
@@ -57,7 +72,7 @@ bd_nome = ../../' . strtolower($this->software->getNome()) . '.db
 usuario = root
 senha = 123
 ';
-        $path = $this->diretorio . $this->software->getNomeSimples() . '/' . strtolower($this->software->getNome()) . '_bd.ini';
+        $path = $this->diretorio . '/' . $this->software->getNomeSnakeCase() . '_bd.ini';
         $this->listaDeArquivos[$path] = $codigo;
         return $codigo;
     }
@@ -191,7 +206,7 @@ ALTER TABLE ' . $atributo->getArrayTipoSnakeCase() . '
                 }
             }
         }
-        $path = $this->diretorio . $this->software->getNome() . '/' . strtolower($this->software->getNome()) . '_banco_pg.sql';
+        $path = $this->diretorio . '/' . $this->software->getNomeSnakeCase() . '_banco_pg.sql';
         $this->listaDeArquivos[$path] = $codigo;
         return $codigo;
     }
@@ -201,11 +216,7 @@ ALTER TABLE ' . $atributo->getArrayTipoSnakeCase() . '
         $objetosNN = array();
         $objetos1N = array();
 
-        $bdNome = 'sistemas/' . $this->software->getNome() . '/' . strtolower($this->software->getNome()) . '.db';
-        if (file_exists($bdNome)) {
-            unlink($bdNome);
-        }
-        $pdo = new PDO('sqlite:' . $bdNome);
+        
         $codigo = '';
         foreach ($this->software->getObjetos() as $objeto) {
             $codigo .= '
@@ -277,8 +288,11 @@ ALTER TABLE ' . $atributo->getArrayTipoSnakeCase() . ' ADD COLUMN  ' . $atributo
                 }
             }
         }
-        $pdo->exec($codigo);
+        
+        $path = $this->diretorio . '/' . $this->software->getNomeSnakeCase() . '_banco_sqlite.sql';
+        $this->listaDeArquivos[$path] = $codigo;
         return $codigo;
+        
     }
 }
 

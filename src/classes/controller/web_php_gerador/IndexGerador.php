@@ -38,7 +38,7 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php?api=$1 [QSA,L]
 ';
-        $caminho = $this->diretorio.$this->software->getNomeSimples().'/php/src/';
+        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/';
         $caminho = $caminho.'.htaccess';
         $this->listaDeArquivos[$caminho] = $codigo;
         
@@ -188,7 +188,7 @@ if(isset($_GET[\'pagina\'])){
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 	</body>
 </html>';
-        $caminho = $this->diretorio.$this->software->getNomeSimples().'/php/src/index.php';
+        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/index.php';
         $this->listaDeArquivos[$caminho] = $codigo;
         
     }
@@ -196,23 +196,13 @@ if(isset($_GET[\'pagina\'])){
     public function geraStyle()
     {
         $codigo = "/*Digite aqui seu arquivo css*/";
-        $caminho = $this->diretorio.'/'.$this->software->getNomeSimples().'/php/src/css/style.css';
+        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/css/style.css';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
-    public function criaDiretorios($strCaminho){
-        $lista = explode('/', $strCaminho);
-        foreach($lista as $chave => $elemento){
-            if (! file_exists(mkdir($lista[$chave]))) {
-                mkdir(mkdir($lista[$chave]), 0777, true);
-            }
-            if(isset($lista[$chave+1])){
-                $lista[$chave+1] = $elemento.'/'.$lista[$chave+1];
-            }
-        }
-    }
+    
     public function criarArquivos(){
         
-        $caminho = $this->diretorio.$this->software->getNomeSimples().'/php/src/';
+        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src';
         if(!file_exists($caminho.'/img')) {
             mkdir($caminho.'/img', 0777, true);
         }

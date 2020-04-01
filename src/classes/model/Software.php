@@ -25,6 +25,12 @@ class Software {
 	public function getNome() {
 		return $this->nome;
 	}
+	public function getNomeSnakeCase()
+	{
+	    $nome	= preg_replace('/([a-z])([A-Z])/',"$1_$2",$this->nome);
+	    $nome	= strtolower($nome);
+	    return $nome;
+	}
 	public function getNomeSimples() {
 	    $texto = preg_replace("/[^a-zA-Z0-9]/", "", $this->nome);
 	    return $texto;
