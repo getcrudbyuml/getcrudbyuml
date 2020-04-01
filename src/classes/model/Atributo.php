@@ -60,7 +60,10 @@ class Atributo {
 		return $this->indice;
 	}
 	public function tipoListado(){
-	    if($this->tipo == self::TIPO_INT || $this->tipo == self::TIPO_STRING || $this->tipo == self::TIPO_FLOAT || $this->tipo == self::TIPO_DATE || $this->tipo == self::TIPO_DATE_TIME || $this->tipo == self::TIPO_BOOLEAN){
+	    if(
+	        $this->tipo == self::TIPO_INT 
+	        || 
+	        $this->tipo == self::TIPO_STRING || $this->tipo == self::TIPO_FLOAT || $this->tipo == self::TIPO_DATE || $this->tipo == self::TIPO_DATE_TIME || $this->tipo == self::TIPO_BOOLEAN){
 	        return true;
 	    }
 	    return false;
@@ -122,6 +125,7 @@ class Atributo {
 	        return explode(' ', $this->getTipo())[2];
 	    }
 	}
+	
 	public function getTipoJava(){
 	    $tipo = $this->getTipo();
 	    if($this->tipoListado()){
@@ -175,6 +179,26 @@ class Atributo {
 	        $tipo = 'timestamp without time zone';
 	    }else if($this->getTipo() == Atributo::TIPO_DATE){
 	        $tipo = 'date';
+	    }
+	    return $tipo;
+	}
+	public function getTipoParametroPDO(){
+	    $tipo = 'PARAM_STR';
+	    if($this->getTipo() == Atributo::TIPO_STRING){
+	        $tipo = 'PARAM_STR';
+	    }else if($this->getTipo() == Atributo::TIPO_INT){
+	        $tipo = 'PARAM_INT';
+	    }else if($this->getTipo() == Atributo::TIPO_FLOAT){
+	        $tipo = 'PARAM_STR';
+	    }else if($this->getTipo() == Atributo::TIPO_BOOLEAN){
+	        $tipo = 'PARAM_BOOL';
+	    }
+	    else if($this->getTipo() == Atributo::TIPO_DATE_TIME){
+	        $tipo = 'PARAM_STR';
+	    }else if($this->getTipo() == Atributo::TIPO_DATE){
+	        $tipo = 'PARAM_STR';
+	    }else if($this->isObjeto()){
+	        $tipo = 'PARAM_INT';
 	    }
 	    return $tipo;
 	}

@@ -53,7 +53,7 @@ class DAOGerador
                 
                 
 class DAO {
-	const ARQUIVO_CONFIGURACAO = "../../' . strtolower($this->software->getNome()) . '_bd.ini";
+	const ARQUIVO_CONFIGURACAO = "../../../' . $this->software->getNomeSnakeCase() . '_bd.ini";
 	    
 	protected $conexao;
 	private $tipoDeConexao;
@@ -119,7 +119,163 @@ class DAO {
         $caminho = $this->diretorio.'/AppWebPHP/PainelPDTI/src/classes/dao/DAO.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
+    public function geraMetodoInserir(Objeto $objeto)
+    {
+        $codigo = '
+    public function inserir(' . ucfirst($objeto->getNome()) . ' $' . lcfirst($objeto->getNome()) . '){';
+        
+        $codigo .= '
+        $sql = "INSERT INTO ' . $objeto->getNomeSnakeCase() . '(';
+        $listaAtributos = array();
+        $listaAtributosVar = array();
+        foreach ($objeto->getAtributos() as $atributo)
+        {
+            if($atributo->isPrimary()){
+                continue;
+            }
+            if($atributo->tipoListado()){
+                $listaAtributos[] = $atributo->getNomeSnakeCase();
+                $listaAtributosVar[] = ':' .lcfirst($atributo->getNome());
+                
+            }else if($atributo->isObjeto()){
+                $listaAtributos[] = 'id_' . $atributo->getTipoSnakeCase() . '_' . $atributo->getNomeSnakeCase();
+                $listaAtributosVar[] = ':' .lcfirst($atributo->getNome());
+                
+            }else{
+                continue;
+            }
+        }
+        
+        $codigo .= implode(", ", $listaAtributos);
+        $codigo .= ') VALUES (';
+        $codigo .= implode(", ", $listaAtributosVar);
+        $codigo .= ');";';
+        
+        
+        foreach ($objeto->getAtributos() as $atributo) {
+            if($atributo->isPrimary()){
+                continue;
+            }
+            if($atributo->tipoListado()){
+                $codigo .= '
+		$' . lcfirst($atributo->getNome()) . ' = $' . lcfirst($objeto->getNOme()) . '->get' . ucfirst($atributo->getNome()) . '();';
+            }else if($atributo->isObjeto())
+            {
+                $codigo .= '
+		$' . lcfirst($atributo->getNome()). ' = $' . lcfirst($objeto->getNome()) . '->get' . ucfirst($atributo->getNome()) . '()->getId();';
+                
+            }
+            
+        }
+        $codigo .= '
+		try {
+			$db = $this->getConexao();
+			$stmt = $db->prepare($sql);';
+        foreach ($objeto->getAtributos() as $atributo)
+        {
+            if($atributo->isPrimary()){
+                continue;
+            }
+            if($atributo->tipoListado() || $atributo->isObjeto())
+            {
+                $codigo .= '
+			$stmt->bindParam("' . $atributo->getNome() . '", $' . $atributo->getNome() . ', PDO::'.$atributo->getTipoParametroPDO().');';
+                
+            }
+        }
+        
+        
+        $codigo .= '
+			return $stmt->execute();
+		} catch(PDOException $e) {
+			echo \'{"error":{"text":\'. $e->getMessage() .\'}}\';
+		}';
+        
+        
+        
+        
+        $codigo .= '
+            
+    }';
+        
+        return $codigo;
+        
+    }
 
+    public function geraMetodoInserirComPK(Objeto $objeto)
+    {
+        $codigo = '
+    public function inserirComPK(' . ucfirst($objeto->getNome()) . ' $' . lcfirst($objeto->getNome()) . '){';
+        
+        $codigo .= '
+        $sql = "INSERT INTO ' . $objeto->getNomeSnakeCase() . '(';
+        $listaAtributos = array();
+        $listaAtributosVar = array();
+        foreach ($objeto->getAtributos() as $atributo) 
+        {
+            if($atributo->tipoListado()){
+                $listaAtributos[] = $atributo->getNomeSnakeCase();
+                $listaAtributosVar[] = ':' .lcfirst($atributo->getNome());
+                
+            }else if($atributo->isObjeto()){
+                $listaAtributos[] = 'id_' . $atributo->getTipoSnakeCase() . '_' . $atributo->getNomeSnakeCase();
+                $listaAtributosVar[] = ':' .lcfirst($atributo->getNome());
+                
+            }else{
+                continue;
+            }
+        }
+
+        $codigo .= implode(", ", $listaAtributos);
+        $codigo .= ') VALUES (';        
+        $codigo .= implode(", ", $listaAtributosVar);
+        $codigo .= ');";';
+        
+        
+        foreach ($objeto->getAtributos() as $atributo) {
+            
+            if($atributo->tipoListado()){
+                $codigo .= '
+		$' . lcfirst($atributo->getNome()) . ' = $' . lcfirst($objeto->getNOme()) . '->get' . ucfirst($atributo->getNome()) . '();';
+            }else if($atributo->isObjeto())
+            {
+                $codigo .= '
+		$' . lcfirst($atributo->getNome()). ' = $' . lcfirst($objeto->getNome()) . '->get' . ucfirst($atributo->getNome()) . '()->getId();';
+                
+            }
+            
+        }
+        $codigo .= '
+		try {
+			$db = $this->getConexao();
+			$stmt = $db->prepare($sql);';
+        foreach ($objeto->getAtributos() as $atributo) 
+        {
+            if($atributo->tipoListado() || $atributo->isObjeto())
+            {
+                $codigo .= '
+			$stmt->bindParam("' . $atributo->getNome() . '", $' . $atributo->getNome() . ', PDO::'.$atributo->getTipoParametroPDO().');';
+            
+            }
+        }
+            
+
+        $codigo .= '
+			return $stmt->execute();
+		} catch(PDOException $e) {
+			echo \'{"error":{"text":\'. $e->getMessage() .\'}}\';
+		}';
+        
+
+        
+        
+        $codigo .= '
+
+    }';
+        
+        return $codigo;
+        
+    }
     private function geraDAOs(Objeto $objeto)
     {
         $codigo = '';
@@ -224,106 +380,12 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         }
                 
     }
-                
-	public function inserir(' . ucfirst($objeto->getNome()) . ' $' . lcfirst($objeto->getNome()) . '){
-	    
-		$sql = "INSERT INTO ' . $objeto->getNomeSnakeCase() . '(';
-        $i = 0;
-        $nAtributosCCSemPk = 0;
-        foreach ($atributosComuns as $atributo) {
-            $i ++;
-            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                continue;
-            }
-            $nAtributosCCSemPk ++;
-            $codigo .= $atributo->getNomeSnakeCase();
-            if ($i != count($atributosComuns)) {
-                $codigo .= ', ';
-            }
-        }
-        $i = 0;
-        foreach ($atributosObjetos as $atributo) {
-            $i ++;
-            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                continue;
-            }
-            if ($nAtributosCCSemPk != 0 && $i == 1) {
-                $codigo .= ', ';
-            }
-            $codigo .= 'id_' . $atributo->getTipoSnakeCase() . '_' . $atributo->getNomeSnakeCase();
-            if ($i != count($atributosObjetos)) {
-                $codigo .= ', ';
-            }
-        }
-        $codigo .= ')
-				VALUES(';
-        $i = 0;
-        foreach ($atributosComuns as $atributo) {
-            $i ++;
-            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                continue;
-            }
-            $codigo .= ':' . $atributo->getNome();
-            if ($i != count($atributosComuns)) {
-                $codigo .= ', ';
-            }
-        }
-        $i = 0;
-        foreach ($atributosObjetos as $atributo) {
-            $i ++;
-            if ($nAtributosCCSemPk != 0 && $i == 1) {
-                $codigo .= ', ';
-            }
-            $codigo .= ':' . $atributo->getNome();
-            if ($i != count($atributosObjetos)) {
-                $codigo .= ', ';
-            }
-        }
 
-        $codigo .= ')";';
-        foreach ($atributosComuns as $atributo) {
-            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                continue;
-            }
-            $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
-            $codigo .= '
-			$' . $atributo->getNome() . ' = $' . $nomeDoObjeto . '->get' . $nomeDoAtributoMA . '();';
-        }
-        foreach ($atributosObjetos as $atributo) {
-            $codigo .= '
-			$' . $atributo->getNome() . ' = $' . $nomeDoObjeto . '->get' . ucfirst($atributo->getNome()) . '()->getId();';
-        }
+';
+        $codigo .= $this->geraMetodoInserirComPK($objeto);
+        $codigo .= $this->geraMetodoInserir($objeto);
         $codigo .= '
-		try {
-			$db = $this->getConexao();
-			$stmt = $db->prepare($sql);';
-        foreach ($atributosComuns as $atributo) {
-            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                continue;
-            }
-            if ($atributo->getTipo() == Atributo::TIPO_INT) {
-
-                $codigo .= '
-			$stmt->bindParam("' . $atributo->getNome() . '", $' . $atributo->getNome() . ', PDO::PARAM_INT);';
-            } else if ($atributo->getTipo() == Atributo::TIPO_FLOAT) {
-                $codigo .= '
-			$stmt->bindParam("' . $atributo->getNome() . '", $' . $atributo->getNome() . ', PDO::PARAM_INT);';
-            } else if ($atributo->getTipo() == Atributo::TIPO_STRING) {
-                $codigo .= '
-			$stmt->bindParam("' . $atributo->getNome() . '", $' . $atributo->getNome() . ', PDO::PARAM_STR);';
-            }
-        }
-        foreach ($atributosObjetos as $atributo) {
-
-            $codigo .= '
-			$stmt->bindParam("' . $atributo->getNome() . '", $' . $atributo->getNome() . ', PDO::PARAM_INT);';
-        }
-        $codigo .= '
-			return $stmt->execute();
-		} catch(PDOException $e) {
-			echo \'{"error":{"text":\'. $e->getMessage() .\'}}\';
-		}
-	}
+    
 	public function excluir(' . $nomeDoObjetoMA . ' $' . $nomeDoObjeto . '){
 		$' . $objeto->getAtributos()[0]->getNome() . ' = $' . $nomeDoObjeto . '->get' . strtoupper(substr($objeto->getAtributos()[0]->getNome(), 0, 1)) . substr($objeto->getAtributos()[0]->getNome(), 1, 100) . '();
 		$sql = "DELETE FROM ' . $nomeDoObjeto . ' WHERE ' . $objeto->getAtributos()[0]->getNome() . ' = :' . $objeto->getAtributos()[0]->getNome() . '";
@@ -650,17 +712,18 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
     }
             
             
-	public function inserir' . ucfirst(explode(" ", $atributo->getTipo())[2]) . '(' . $nomeDoObjetoMA . ' $' . $nomeDoObjeto . ', ' . ucfirst(explode(" ", $atributo->getTipo())[2]) . ' $' . strtolower(explode(" ", $atributo->getTipo())[2]) . '){
-        $id' . strtolower($objeto->getNome()) . ' =  $' . $nomeDoObjeto . '->getId();
-        $id' . strtolower(explode(' ', $atributo->getTipo())[2]) . ' = $' . strtolower(explode(" ", $atributo->getTipo())[2]) . '->getId();
-		$sql = "INSERT INTO ' . strtolower($objeto->getNome()) . '_' . strtolower(explode(' ', $atributo->getTipo())[2]) . '(';
+	public function inserir' . ucfirst($atributo->getTipoDeArray()) . '(' . ucfirst($objeto->getNome()) . ' $' . lcfirst($objeto->getNome()). ', ' . ucfirst($atributo->getTipoDeArray()) . ' $' . lcfirst($atributo->getTipoDeArray()) . ')
+    {
+        $id' . ucfirst($objeto->getNome()) . ' =  $' .lcfirst( $objeto->getNome()). '->getId();
+        $id' . ucfirst($atributo->getTipoDeArray()) . ' = $' . lcfirst($atributo->getTipoDeArray()) . '->getId();
+		$sql = "INSERT INTO ' . $objeto->getNomeSnakeCase() . '_' . $atributo->getArrayTipoSnakeCase() . '(';
             $codigo .= '
-                    id' . strtolower($objeto->getNome()) . ',
-                    id' . strtolower(explode(' ', $atributo->getTipo())[2]) . ')
+                    id_' . $objeto->getNomeSnakeCase() . ',
+                    id_' . $atributo->getArrayTipoSnakeCase(). ')
 				VALUES(';
             $codigo .= '
-                :id' . strtolower($objeto->getNome()) . ',
-                :id' . strtolower(explode(' ', $atributo->getTipo())[2]);
+                :id' . ucfirst($objeto->getNome()) . ',
+                :id' . ucfirst($atributo->getTipoDeArray());
             $codigo .= ')";';
             $codigo .= '
 		try {
@@ -668,8 +731,8 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
 			$stmt = $db->prepare($sql);';
 
             $codigo .= '
-		    $stmt->bindParam("id' . strtolower($objeto->getNome()) . '", $id' . strtolower($objeto->getNome()) . ', PDO::PARAM_INT);
-            $stmt->bindParam("id' . strtolower(explode(' ', $atributo->getTipo())[2]) . '", $id' . strtolower(explode(' ', $atributo->getTipo())[2]) . ', PDO::PARAM_INT);
+		    $stmt->bindParam("id' . ucfirst($objeto->getNome()) . '", $id' . ucfirst($objeto->getNome()) . ', PDO::PARAM_INT);
+            $stmt->bindParam("id' . ucfirst($atributo->getTipoDeArray()) . '", $id' . ucfirst($atributo->getTipoDeArray()) . ', PDO::PARAM_INT);
                 
 ';
 

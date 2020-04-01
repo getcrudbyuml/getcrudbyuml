@@ -68,7 +68,7 @@ class DBGerador
 sgdb = sqlite
 host = localhost
 porta = 5432
-bd_nome = ../../' . strtolower($this->software->getNome()) . '.db
+bd_nome = ../../../' . $this->software->getNomeSnakeCase() . '.db
 usuario = root
 senha = 123
 ';

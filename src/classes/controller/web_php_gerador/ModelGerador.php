@@ -128,14 +128,19 @@ class ' . ucfirst($objeto->getNome()) . ' {';
         $codigo .= '
 	public function __toString(){
 	    return ';
-        $i = count($objeto->getAtributos());
+        
+        $pedacos = array();
         foreach ($objeto->getAtributos() as $atributo) {
-            $i --;
-            $codigo .= '$this->' . lcfirst($atributo->getNome());
-            if ($i != 0) {
-                $codigo .= '.\' - \'.';
+            
+            if($atributo->tipoListado() || $atributo->isObjeto()){
+                $pedacos[] = '$this->' . lcfirst($atributo->getNome());
+                
+            }else if($atributo->isArray()){
+                $pedacos[] = '\'Lista: \'.implode(", ", $this->' . lcfirst($atributo->getNome()).')';
+                
             }
         }
+        $codigo .= implode('.\' - \'.', $pedacos);
         $codigo .= ';
 	}
                 
