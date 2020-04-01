@@ -82,6 +82,10 @@ class ObjetoController {
 			echo "Incompleto";
 			return;
 		}
+		if($this->post['nome'] == ''){
+		    echo 'Incompleto';
+		    return;
+		}
 
 		$objeto = new Objeto ();		
 		$objeto->setNome ( ucfirst($this->post ['nome']) );

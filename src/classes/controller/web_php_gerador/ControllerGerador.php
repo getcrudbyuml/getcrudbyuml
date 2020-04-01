@@ -4,37 +4,42 @@
 class ControllerGerador{
     private $software;
     private $listaDeArquivos;
+    private $diretorio;
     
-    
-    public function getListaDeArquivos(){
-        return $this->listaDeArquivos;
+    public static function main(Software $software, $diretorio){
+        $gerador = new ControllerGerador($software, $diretorio);
+        $gerador->gerarCodigo();
     }
-    public function __construct(Software $software){
+    public function __construct(Software $software, $diretorio){
         $this->software = $software;
+        $this->diretorio = $diretorio;
     }
 
     public function gerarCodigo(){
-        $this->geraCodigoPHP();
-        $this->geraCodigoJava();
+        foreach ($this->software->getObjetos() as $objeto){
+            $this->geraControllers($objeto);
+        }
+        $this->criarArquivos();
         
     }
-    private function geraCodigoJava(){
+    private function criarArquivos(){
         
-        $path = 'sistemas/'.$this->software->getNome().'/java/'.$this->software->getNome().'/src/main/java';
-        foreach($this->software->getObjetos() as $objeto){
-            $codigo = $this->geraControllersJava($objeto, $this->software);
-            $caminho = $path.'/br/com/escritordesoftware/'.strtolower($this->software->getNome()).'/controller/' . ucfirst($objeto->getNome()) . 'Controller.java';
-            $this->listaDeArquivos[$caminho] = $codigo;
-        }}
-    private function geraCodigoPHP(){
-        $path = 'sistemas/'.$this->software->getNome().'/php/src';
-        foreach($this->software->getObjetos() as $objeto){
-            $codigo = $this->geraControllersPHP($objeto, $this->software);
-            $caminho = $path.'/classes/controller/' . strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100) . 'Controller.php';
-            $this->listaDeArquivos[$caminho] = $codigo;
+        $caminho = $this->diretorio.$this->software->getNomeSimples().'/php/src/classes/controller';
+        if(!file_exists($caminho)) {
+            mkdir($caminho, 0777, true);
+        }
+        
+        foreach ($this->listaDeArquivos as $path => $codigo) {
+            if (file_exists($path)) {
+                unlink($path);
+            }
+            $file = fopen($path, "w+");
+            fwrite($file, stripslashes($codigo));
+            fclose($file);
         }
     }
-    private function geraControllersPHP(Objeto $objeto, Software $software)
+   
+    private function geraControllers(Objeto $objeto)
     {
         $codigo = '';
         $nomeDoObjeto = lcfirst($objeto->getNome());
@@ -241,7 +246,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
         }
         $i = 0;
         foreach($atributosObjetos as $atributoObjeto){
-            foreach($software->getObjetos() as $objeto3){
+            foreach($this->software->getObjetos() as $objeto3){
                 if($atributoObjeto->getTipo() == $objeto3->getNome())
                 {
                     foreach($objeto3->getAtributos() as $atributo2){
@@ -277,7 +282,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
 		$' . $nomeDoObjeto . '->set' . $nomeDoAtributoMA . ' ( $this->post [\'' . $atributo->getNome() . '\'] );';
         }
         foreach($atributosObjetos as $atributoObjeto){
-            foreach($software->getObjetos() as $objeto3){
+            foreach($this->software->getObjetos() as $objeto3){
                 if($atributoObjeto->getTipo() == $objeto3->getNome())
                 {
                     foreach($objeto3->getAtributos() as $atributo2){
@@ -331,7 +336,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
         }
         $i = 0;
         foreach($atributosObjetos as $atributoObjeto){
-            foreach($software->getObjetos() as $objeto3){
+            foreach($this->software->getObjetos() as $objeto3){
                 if($atributoObjeto->getTipo() == $objeto3->getNome())
                 {
                     foreach($objeto3->getAtributos() as $atributo2){
@@ -602,7 +607,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
         }
         $i = 0;
         foreach($atributosObjetos as $atributoObjeto){
-            foreach($software->getObjetos() as $objeto3){
+            foreach($this->software->getObjetos() as $objeto3){
                 if($atributoObjeto->getTipo() == $objeto3->getNome())
                 {
                     foreach($objeto3->getAtributos() as $atributo2){
@@ -651,25 +656,8 @@ class ' . $nomeDoObjetoMa . 'Controller {
         $codigo .= '
 }
 ?>';
-        return $codigo;
-    }
-    private function geraControllersJava(Objeto $objeto, Software $software)
-    {
-        $codigo = '';
-        $codigo = '
-package br.com.escritordesoftware.'.strtolower($this->software->getNome()).'.controller;
-            
-/**
- * Classe de visao para ' . ucfirst($objeto->getNome()) . '
- * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
- *
- */
-public class ' . ucfirst($objeto->getNome()) . 'Controller {
-
-
-}';
-        
-        return $codigo;
+        $caminho = $this->diretorio.$this->software->getNomeSimples().'/php/src/classes/controller/'.ucfirst($objeto->getNome()).'Controller.php';
+        $this->listaDeArquivos[$caminho] = $codigo;
     }
     
 }

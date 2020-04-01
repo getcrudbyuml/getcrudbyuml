@@ -25,6 +25,10 @@ class Software {
 	public function getNome() {
 		return $this->nome;
 	}
+	public function getNomeSimples() {
+	    $texto = preg_replace("/[^a-zA-Z0-9]/", "", $this->nome);
+	    return $texto;
+	}
 	public function addObjeto(Objeto $objeto)
 	{
 	    $this->objetos[] = $objeto;

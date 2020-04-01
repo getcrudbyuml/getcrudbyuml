@@ -43,6 +43,8 @@ class SoftwareController {
 		$this->view->exibirLista($lista);
 	}			
     public function selecionar(){
+        $sessao = new Sessao();
+        
 	    if(!isset($_GET['selecionar'])){
 	        echo '<p>Bem vindo ao Escritor de Software</p>';
 	        echo '<p>Utilize o formulário na barra lateral a esquerda para 
@@ -77,7 +79,7 @@ class SoftwareController {
                 echo "<p>Não existem classes cadastradas, cadastre pelo menos uma classe, use o formulário acima.</p>";
                 return;
             }
-            EscritorDeSoftware::main($this->selecionado);
+            EscritorDeSoftware::main($this->selecionado, './sistemas/'.$sessao->getLoginUsuario().'/');
 
             echo '<div class="row justify-content-center">';
 

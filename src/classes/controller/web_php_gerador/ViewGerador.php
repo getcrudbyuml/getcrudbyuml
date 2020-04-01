@@ -6,40 +6,49 @@
 class ViewGerador{
     private $software;
     private $listaDeArquivos;
-    
-    
-    public function getListaDeArquivos(){
-        return $this->listaDeArquivos;
+    private $diretorio;
+    public static function main(Software $software, $diretorio){
+        $gerador = new ViewGerador($software, $diretorio);
+        $gerador->gerarCodigo();
+        
     }
-    public function __construct(Software $software){
+    
+    public function __construct(Software $software, $diretorio){
         $this->software = $software;
+        $this->diretorio = $diretorio;
     }
     /**
      * Selecione uma linguagem
      * @param int $linguagem
      */
     public function gerarCodigo(){
-        $this->geraCodigoPHP();
-        $this->geraCodigoJava();
+        foreach($this->software->getObjetos() as $objeto){
+            $this->geraViews($objeto);
+        }
+        
+        $this->criarArquivos();
         
     }
-    private function geraCodigoJava(){
+    private function criarArquivos(){
         
-        $path = 'sistemas/'.$this->software->getNome().'/java/'.$this->software->getNome().'/src/main/java';
-        foreach($this->software->getObjetos() as $objeto){
-            $codigo = $this->geraViewsJava($objeto, $this->software);
-            $caminho = $path.'/br/com/escritordesoftware/'.strtolower($this->software->getNome()).'/view/' . ucfirst($objeto->getNome()) . 'View.java';
-            $this->listaDeArquivos[$caminho] = $codigo;
-        }}
-    private function geraCodigoPHP(){
-        $path = 'sistemas/'.$this->software->getNome().'/php/src';
-        foreach($this->software->getObjetos() as $objeto){
-            $codigo = $this->geraViewsPHP($objeto, $this->software);
-            $caminho = $path.'/classes/view/' . strtoupper(substr($objeto->getNome(), 0, 1)) . substr($objeto->getNome(), 1, 100) . 'View.php';
-            $this->listaDeArquivos[$caminho] = $codigo;
+        $caminho = $this->diretorio.$this->software->getNomeSimples().'/php/src/classes/view';
+        
+        if(!file_exists($caminho)) {
+            mkdir($caminho, 0777, true);
+        }
+        
+        foreach ($this->listaDeArquivos as $path => $codigo) {
+            if (file_exists($path)) {
+                unlink($path);
+            }
+            $file = fopen($path, "w+");
+            fwrite($file, stripslashes($codigo));
+            fclose($file);
         }
     }
-    private function geraViewsPHP(Objeto $objeto, Software $software)
+    
+    
+    private function geraViews(Objeto $objeto)
     {
         $codigo = '';
         $nomeDoObjeto = strtolower($objeto->getNome());
@@ -427,7 +436,7 @@ class ' . $nomeDoObjetoMa . 'View {
 ';
         
         foreach($atributosNN as $atributoNN){
-            foreach($software->getObjetos() as $objeto3){
+            foreach($this->software->getObjetos() as $objeto3){
                 if($objeto3->getNome() == explode(' ', $atributoNN->getTipo())[2]){
                     $objetoNN = $objeto3;
                     break;
@@ -614,24 +623,12 @@ class ' . $nomeDoObjetoMa . 'View {
         
         $codigo .= '
 }';
-        return $codigo;
-    }
-    private function geraViewsJava(Objeto $objeto, Software $software)
-    {
-        $codigo = '';
-        $codigo = '
-package br.com.escritordesoftware.'.strtolower($this->software->getNome()).'.view;
-import javax.swing.JFrame;
-/**
- * Classe de visao para ' . ucfirst($objeto->getNome()) . '
- * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
- *
- */
-@SuppressWarnings("serial")
-public class ' . ucfirst($objeto->getNome()) . 'View extends JFrame {}';
+
         
-        return $codigo;
+        $caminho = $this->diretorio.$this->software->getNomeSimples().'/php/src/classes/view/'.ucfirst($objeto->getNome()).'View.php';
+        $this->listaDeArquivos[$caminho] = $codigo;
     }
+   
     
 }
 

@@ -12,7 +12,12 @@ function autoload($classe)
         include_once 'classes/util/' . $classe . '.php';
     } else if (file_exists('classes/view/' . $classe . '.php')) {
         include_once 'classes/view/' . $classe . '.php';
+    } else if (file_exists('classes/controller/web_php_gerador/' . $classe . '.php')) {
+        include_once 'classes/controller/web_php_gerador/' . $classe . '.php';
+    }else if (file_exists('classes/controller/sql_gerador/' . $classe . '.php')) {
+        include_once 'classes/controller/sql_gerador/' . $classe . '.php';
     }
+    
 }
 spl_autoload_register('autoload');
 
