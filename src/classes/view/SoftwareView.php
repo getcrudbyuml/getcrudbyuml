@@ -46,7 +46,10 @@ class SoftwareView {
             
             
             if(count($software->getObjetos()) == 0){
-                echo 'Começe inserindo alguma classe! Use o formulário acima. ';
+                echo '<div class="alert alert-info" role="alert">
+                        Começe inserindo alguma classe! Use o formulário acima!
+                        </div>';
+                
             }
             foreach($software->getObjetos() as $objeto){
                 echo '

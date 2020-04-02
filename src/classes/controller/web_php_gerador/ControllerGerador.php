@@ -24,7 +24,7 @@ class ControllerGerador{
     }
     private function criarArquivos(){
         
-        $caminho = $this->diretorio.'/AppWebPHP/PainelPDTI/src/classes/controller';
+        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/controller';
         if(!file_exists($caminho)) {
             mkdir($caminho, 0777, true);
         }
@@ -656,7 +656,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
         $codigo .= '
 }
 ?>';
-        $caminho = $this->diretorio.'/AppWebPHP/PainelPDTI/src/classes/controller/'.ucfirst($objeto->getNome()).'Controller.php';
+        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/controller/'.ucfirst($objeto->getNome()).'Controller.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
     

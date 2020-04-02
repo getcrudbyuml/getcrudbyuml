@@ -96,7 +96,7 @@ NavBarController::main($sessao);
 
 ?>
 
-			<div class="container-fluid">    
+			<div class="container-fluid m-3">    
 <?php
 
 MainController::main($sessao);

@@ -10,7 +10,7 @@ class SideBarController{
         }
         echo '<!-- Sidebar -->
     <div class="bg-light border-right" id="sidebar-wrapper">
-      <div class="sidebar-heading">writing.jefponte.com.br</div>';
+      <div class="sidebar-heading">jefponte.com.br</div>';
  
 
 $softwareController = new SoftwareController();

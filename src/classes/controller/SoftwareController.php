@@ -51,22 +51,187 @@ class SoftwareController
 
     public function escrever()
     {
+        foreach($this->selecionado->getObjetos() as $objeto){
+            if(count($objeto->getAtributos()) == 0){
+                echo '<div class="row justify-content-center">';
+                echo '
+           <div class="alert alert-info" role="alert">
+                Clique no nome de algum objeto para selecioná-lo e poder adicionar atributos. 
+            </div>
+            ';
+                
+                echo '</div>';
+                return;
+            }
+        }
         $sessao = new Sessao();
         if (!isset($_GET['escrever'])) {
             return;
         }
         if (count($this->selecionado->getObjetos()) == 0) {
-            echo "<p>Não existem classes cadastradas, cadastre pelo menos uma classe, use o formulário acima.</p>";
+            echo '<div class="row justify-content-center">';
+            echo '
+            <div class="alert alert-warning" role="alert">
+              <p>Não existem classes cadastradas, cadastre pelo menos uma classe, use o formulário acima.</p>
+            </div>
+            ';
+            
+            echo '</div>';
             return;
         }
+        foreach($this->selecionado->getObjetos() as $objeto){
+            if(count($objeto->getAtributos()) == 0){
+                echo '<div class="row justify-content-center">';
+                echo '
+            <div class="alert alert-warning" role="alert">
+              <p>Existe pelo menos um objeto sem atributos. Adicione atributos.</p>
+            </div>
+            ';
+                
+                echo '</div>';
+                return;
+            }
+        }
+        
         
         $diretorio = './sistemas/' . $sessao->getLoginUsuario() . '/' . $this->selecionado->getNomeSimples();
-        if($_GET['escrever'] = 2){
-            $diretorio = '../../webcriado';
-        }
+
         EscritorDeSoftware::main($this->selecionado, $diretorio);
+        
+        
+        
+        $zipador = new Zipador();
+        $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/'.$this->selecionado->getNome().'.zip');
+        
+        
+        
+        echo '<div class="row justify-content-center">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#getAppWeb">
+                  Pegar Aplicação Web
+                </button>
 
+                    
+            </div>';
+        
+        
+        
+        $texto = $this->getTextoResumo();
+        
+        
+        
+        echo '
+        <!-- Modal -->
+        <div class="modal fade" id="getAppWeb" tabindex="-1" role="dialog" aria-labelledby="labelGetAppWeb" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="labelGetAppWeb">Aplicação Web Completa</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+        <p>O link de Download Contém um arquivo .zip com '.$numeroDeArquivos.' arquivos.
+        Basicamente um CRUD simples usando MVC. Veja um resumo:</p>
+        '.$texto.'
+            
+            <p>Ainda deve conter erros em situações de relacionamentos Array 1:n
+            ou outros casos que não usem chave primária.</p>
+            
+            <p>Caso queira incentivar a correção desses erros ou a conclusão do desenvolvimento da versão
+            para Java ou android, faça uma doação. Um realzinho não vai fazer falta.</p>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Sair</button>
+            <a href="'.$diretorio.'/'.$this->selecionado->getNome().'.zip" class="btn btn-success"  > Download App</a>
+            <a href="'.$diretorio.'/AppWebPHP/'.$this->selecionado->getNomeSimples().'/src/" class="btn btn-success"  target="_blank">Testar Aplicação</a>
+            </div>
+            </div>
+            </div>
+            </div>
+            
+            ';
+                
+    }
+    public function getTextoResumo(){
+        $sessao = new Sessao();
+        
+        $diretorio = './sistemas/' . $sessao->getLoginUsuario() . '/' . $this->selecionado->getNomeSimples();
+        
+        $dir= dir($diretorio.'/AppWebPHP/'.$this->selecionado->getNomeSimples().'/src/classes/model');
+        $listaDeArquivos = array();
+        while($arquivo = $dir-> read()){
+            if($arquivo == '.' || $arquivo == '..'){
+                continue;
+            }
+            $listaDeArquivos[] = 'model/'.$arquivo;
+            break;
+        }
+        $dir-> close();
+        $dir= dir($diretorio.'/AppWebPHP/'.$this->selecionado->getNomeSimples().'/src/classes/view');
+        while($arquivo = $dir-> read()){
+            if($arquivo == '.' || $arquivo == '..'){
+                continue;
+            }
+            $listaDeArquivos[] = 'view/'.$arquivo;
+            break;
+        }
+        $dir-> close();
+        $dir= dir($diretorio.'/AppWebPHP/'.$this->selecionado->getNomeSimples().'/src/classes/controller');
+        while($arquivo = $dir-> read()){
+            if($arquivo == '.' || $arquivo == '..'){
+                continue;
+            }
+//             $listaDeArquivos[] = 'controller/'.$arquivo;
+            break;
+        }
+        $dir-> close();
+        $dir= dir($diretorio.'/AppWebPHP/'.$this->selecionado->getNomeSimples().'/src/classes/dao');
+        while($arquivo = $dir-> read()){
+            if($arquivo == '.' || $arquivo == '..'){
+                continue;
+            }
+            $listaDeArquivos[] = 'dao/'.$arquivo;
+            break;
+        }
+        $dir-> close();
+        $listaDeArquivos[] = '../index.php';
+        $teste = implode('<br>', $listaDeArquivos);
+        $texto = '';
+        $i = 0;
+        
+        $texto .= '
 
+<div class="accordion" id="accordionApp">';
+        foreach($listaDeArquivos as $arquivo){
+            $i++;
+            
+            $texto .= '
+  <div class="card">
+    <div class="card-header" id="heading'.$i.'">
+      <h2 class="mb-0">
+        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse'.$i.'" aria-expanded="false" aria-controls="collapse'.$i.'">
+          '.$arquivo.'
+        </button>
+      </h2>
+    </div>
+              
+    <div id="collapse'.$i.'" class="collapse" aria-labelledby="heading'.$i.'" data-parent="#accordionApp">
+      <div class="card-body">
+        '.$this->formataPHP(file_get_contents($diretorio.'/AppWebPHP/'.$this->selecionado->getNomeSimples().'/src/classes/'.$arquivo)).'
+      </div>
+    </div>
+  </div>';
+        }
+        
+        $texto .= '
+  
+</div>
+
+';
+        
+        return $texto.'<br><br>';
     }
 
     public function selecionar()
@@ -96,6 +261,12 @@ class SoftwareController
         echo '<h3>Software: ' . $this->selecionado->getNome() . '</h3>';
         echo '<a href="?pagina=software&selecionar=' . $this->selecionado->getId() . '&escrever=1" class="btn btn-success m-2">Pegar Código</a>';
         echo '<a href="?pagina=software&deletar=' . $this->selecionado->getId() . '" class="btn btn-danger m-2">Deletar Software</a>';
+        
+        
+        $this->modaisSQL();
+        
+        $this->escrever();
+        
         echo '</div>';
         
         echo '<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">';
@@ -106,9 +277,6 @@ class SoftwareController
         
         echo '<br><br><hr>';
         
-        
-        $this->escrever();
-        
 
         
         echo '<div class="row justify-content-center m-3 p-3">';
@@ -118,6 +286,85 @@ class SoftwareController
         echo '</div>';
     }
 
+    public function modaisSQL(){
+        if(!isset($_GET['escrever'])){
+            return;
+        }
+        
+        $sessao = new Sessao();
+        $pathSQLPG = 'sistemas/'.$sessao->getLoginUsuario().'/'.$this->selecionado->getNomeSimples().'/'.$this->selecionado->getNomeSnakeCase().'_banco_pg.sql';
+        $pathSQLITE = 'sistemas/'.$sessao->getLoginUsuario().'/'.$this->selecionado->getNomeSimples().'/'.$this->selecionado->getNomeSnakeCase().'_banco_sqlite.sql';
+        if(!file_exists($pathSQLITE) || !file_exists($pathSQLPG)){
+            return;
+        }
+        
+        echo '
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalSqlPG">
+              PostgreSql
+            </button>
+            ';
+        echo '
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalSqlLite">
+              SqlLite
+            </button>
+            ';
+        
+        
+        $sqlPG = file_get_contents($pathSQLPG);
+        $sqlPG = $this->formatarPG($sqlPG);
+        
+        $sqlSqlite= file_get_contents($pathSQLPG);
+        $sqlSqlite = $this->formatarSQLITE($sqlSqlite);
+        
+        echo '
+            
+<!-- Modal -->
+<div class="modal fade" id="modalSqlPG" tabindex="-1" role="dialog" aria-labelledby="labelPg" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="labelPg">SQL Postgres</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       '.$sqlPG.'
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        <a href="'.$pathSQLPG.'" class="btn btn-primary">DOWNLOAD</a>
+      </div>
+    </div>
+  </div>
+</div>
+           
+';
+        echo '
+            
+<!-- Modal -->
+<div class="modal fade" id="modalSqlLite" tabindex="-1" role="dialog" aria-labelledby="labelSql" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="labelSql">SQL SqlLite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       '.$sqlSqlite.'
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        <a href="'.$pathSQLITE.'" class="btn btn-primary">DOWNLOAD</a>
+      </div>
+    </div>
+  </div>
+</div>
+           
+';
+    }
     public function formatarPG($sql)
     {
         $sql = str_replace(" ", "&nbsp;", $sql);
@@ -184,6 +431,13 @@ class SoftwareController
         return $sql;
     }
 
+    public function formataPHP($cod){
+        $cod = htmlentities($cod);
+        $cod = str_replace(" ", "&nbsp;", $cod);
+        $cod = nl2br($cod);
+        
+        return $cod;
+    }
     public function formatarSQLITE($sql)
     {
         $sql = str_replace(" ", "&nbsp;", $sql);
@@ -266,7 +520,7 @@ class SoftwareController
         $software->setNome($this->post['nome']);
         $strUrl = "";
         if ($this->dao->inserir($software)) {
-            $strUrl = '&selecionar=7' . $this->dao->getConexao()->lastInsertId();
+            $strUrl = '&selecionar=' . $this->dao->getConexao()->lastInsertId();
             echo "Sucesso";
         } else {
             echo "Fracasso";

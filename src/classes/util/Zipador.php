@@ -41,8 +41,10 @@ class Zipador {
 			
 		}
 		
-		echo "Total de arquivos: <b>" . $zip->numFiles . "</b>\n";
+		$numeroDeArquivos = $zip->numFiles;
 		$zip->close ();
+		return $numeroDeArquivos;
+		
 	}
 	/**
 	 * O objetivo deste método é receber o nome de um dretorio e retornar um array com todos

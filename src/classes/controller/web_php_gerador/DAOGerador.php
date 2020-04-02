@@ -33,7 +33,7 @@ class DAOGerador
     }
     private function criarArquivos(){
         
-        $caminho = $this->diretorio.'/AppWebPHP/PainelPDTI/src/classes/dao';
+        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/dao';
         if(!file_exists($caminho)) {
             mkdir($caminho, 0777, true);
         }
@@ -116,7 +116,7 @@ class DAO {
 	    
 ?>
 		';
-        $caminho = $this->diretorio.'/AppWebPHP/PainelPDTI/src/classes/dao/DAO.php';
+        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/dao/DAO.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
     public function geraMetodoInserir(Objeto $objeto)
@@ -675,8 +675,8 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         $sql = "SELECT * FROM
                 ' . strtolower($objeto->getNome()) . '_' . strtolower(explode(' ', $atributo->getTipo())[2]) . '
                 INNER JOIN ' . strtolower(explode(' ', $atributo->getTipo())[2]) . '
-                ON  ' . strtolower($objeto->getNome()) . '_' . strtolower(explode(' ', $atributo->getTipo())[2]) . '.id' . strtolower(explode(' ', $atributo->getTipo())[2]) . ' = ' . strtolower(explode(' ', $atributo->getTipo())[2]) . '.id
-                 WHERE ' . strtolower($objeto->getNome()) . '_' . strtolower(explode(' ', $atributo->getTipo())[2]) . '.id' . strtolower($objeto->getNome()) . ' = $id";
+                ON  ' . strtolower($objeto->getNome()) . '_' . strtolower(explode(' ', $atributo->getTipo())[2]) . '.id_' . strtolower(explode(' ', $atributo->getTipo())[2]) . ' = ' . strtolower(explode(' ', $atributo->getTipo())[2]) . '.id
+                 WHERE ' . strtolower($objeto->getNome()) . '_' . strtolower(explode(' ', $atributo->getTipo())[2]) . '.id_' . $objeto->getNomeSnakeCase() . ' = $id";
         $result = $this->getConexao ()->query ( $sql );
                      
         foreach ($result as $linha) {
@@ -781,7 +781,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                 
 }';
 
-        $caminho = $this->diretorio.'/AppWebPHP/PainelPDTI/src/classes/dao/'.ucfirst($objeto->getNome()).'DAO.php';
+        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/dao/'.ucfirst($objeto->getNome()).'DAO.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
 }

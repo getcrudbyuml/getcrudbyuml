@@ -31,13 +31,14 @@ class ViewGerador{
     }
     private function criarArquivos(){
         
-        $caminho = $this->diretorio.'/AppWebPHP/PainelPDTI/src/classes/view/';
+        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/view/';
         
         if(!file_exists($caminho)) {
             mkdir($caminho, 0777, true);
         }
         
         foreach ($this->listaDeArquivos as $path => $codigo) {
+            
             if (file_exists($path)) {
                 unlink($path);
             }
