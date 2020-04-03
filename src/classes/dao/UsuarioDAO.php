@@ -209,5 +209,41 @@ class UsuarioDAO extends DAO {
 	        echo '{"error":{"text":'. $e->getMessage() .'}}';
 	    }
 	}
-				
+	public function verificarPosse(Usuario $usuario, Software $software)
+	{
+	    $idUsuario = $usuario->getId();
+	    $idSoftware = $software->getId();
+	    $sql = "SELECT * FROM
+                usuario_software
+                 WHERE
+                (usuario_software.id_usuario = $idUsuario
+                    AND
+                usuario_software.id_software = $idSoftware);";
+	    $result = $this->getConexao ()->query ( $sql );
+	    
+	    foreach ($result as $linha) {
+	        return true;
+	    }
+	    return false;
+	}
+	public function verificarPosseObjeto(Usuario $usuario, Objeto $objeto)
+	{
+	    $idUsuario = $usuario->getId();
+	    $idObjeto = $objeto->getId();
+	    $sql = "SELECT * FROM
+                objeto
+                INNER JOIN 
+                usuario_software
+                ON objeto.id_software_objetos = usuario_software.id_software
+                 WHERE
+                (usuario_software.id_usuario = $idUsuario
+                    AND
+                objeto.id = $idObjeto);";
+	    $result = $this->getConexao ()->query ( $sql );
+	    
+	    foreach ($result as $linha) {
+	        return true;
+	    }
+	    return false;
+	}
 }

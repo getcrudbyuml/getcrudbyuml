@@ -40,6 +40,19 @@ class ObjetoController {
 	    }
         
 	    $this->selecionado->setId($_GET['selecionar']);
+	    $sessao = new Sessao();
+	    $usuario = new Usuario();
+	    $usuario->setId($sessao->getIdUsuario());
+	    
+	    $usuarioDao = new UsuarioDAO($this->dao->getConexao());
+	    
+	    if(!$usuarioDao->verificarPosseObjeto($usuario, $this->selecionado)){
+	        echo 'Selecione um objeto que pertence a um software seu';
+	        return;
+	    }
+	    
+	    
+	    
 	    $this->dao->pesquisaPorId($this->selecionado);
 	    
 	    $atributoDao = new AtributoDAO($this->dao->getConexao());

@@ -245,10 +245,22 @@ class SoftwareController
                     inserir um novo software.</p>';
             return;
         }
+        
 
 
         $this->selecionado = new Software();
         $this->selecionado->setId($_GET['selecionar']);
+        $usuarioDao = new UsuarioDAO($this->dao->getConexao());
+        $sessao = new Sessao();
+        $usuario = new Usuario();
+        $usuario->setId($sessao->getIdUsuario());
+        if(!$usuarioDao->verificarPosse($usuario, $this->selecionado)){
+            echo '<p>Bem vindo ao Escritor de Software</p>';
+            echo '<p>Selecione um software que pertença a você ou 
+                    Utilize o formulário na barra lateral a esquerda 
+                    para inserir um novo software.</p>';
+            return;
+        }
         $this->dao->pesquisaPorId($this->selecionado);
         $objetoDao = new ObjetoDAO($this->dao->getConexao());
         $objetoDao->pesquisaPorIdSoftware($this->selecionado);
@@ -264,10 +276,11 @@ class SoftwareController
         echo '<a href="?pagina=software&deletar=' . $this->selecionado->getId() . '" class="btn btn-danger m-2">Deletar Software</a>';
         
         
-        $this->modaisSQL();
+        
         
         $this->escrever();
         
+        $this->modaisSQL();
 
         
         echo '</div>';
