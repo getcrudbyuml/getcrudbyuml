@@ -15,18 +15,14 @@ class AtributoController {
         if(isset($_GET['selecionar'])){
             $controller->selecionar();
             return;
-        }
-        if(isset($_GET['deletar'])){
+        }else if(isset($_GET['deletar'])){
             $controller->deletar();
             return;
-        }
-        if(isset($_GET['editar'])){
+        }else if(isset($_GET['editar'])){
             $controller->editar();
             return;
         }
         
-        $controller->cadastrar();
-        $controller->listar();
 
     }
 	public function __construct(){
@@ -36,17 +32,24 @@ class AtributoController {
 			$this->post[$chave] = $valor;
 		}
 	}
-	public function listar() {
-		$atributoDao = new AtributoDAO ();
-		$lista = $atributoDao->retornaLista ();
-		$this->view->exibirLista($lista);
-	}			
+			
     public function selecionar(){
 	    if(!isset($_GET['selecionar'])){
 	        return;
 	    }
+	    $usuarioDao = new UsuarioDAO($this->dao->getConexao());
+	    
+	    $sessao = new Sessao();
+	    $usuario = new Usuario();
+	    $usuario->setId($sessao->getIdUsuario());
+	    
         $selecionado = new Atributo();
 	    $selecionado->setId($_GET['selecionar']);
+	    if(!$usuarioDao->verificarPosseAtributo($usuario, $selecionado)){
+	        echo "Armaria, nam! Vc quer mesmo bugar o sistema! Continue que uma hora vc consegue. Nunca mencionei que o sistema era isento de falhas. ";
+	        return;
+	    }
+	    
 	    $this->dao->pesquisaPorId($selecionado);
 	    $software = $this->dao->softwareDoAtributo($selecionado);
 	    echo '<div class="row">';
@@ -73,18 +76,15 @@ class AtributoController {
                                 
                 </div>';
     }
-	public function cadastrar(Objeto $objeto = null) {		
+	public function cadastrar(Objeto $objeto) {	
+	    
         if(!isset($this->post['enviar_atributo'])){
+            
             $objetoDao = new ObjetoDAO($this->dao->getConexao());
             $listaObjetos = array();
             $listaTipos = array();
-            if($objeto == null)
-            {
-                $listaObjetos = $objetoDao->retornaLista();
-            }else{
-                $software = $objetoDao->softwareDoObjeto($objeto);
-                $listaTipos = $objetoDao->pesquisaPorIdSoftware($software);
-            }
+            $software = $objetoDao->softwareDoObjeto($objeto);
+            $listaTipos = $objetoDao->pesquisaPorIdSoftware($software);
             $this->view->mostraFormInserir($listaObjetos, $listaTipos); 
             
 		    return;
@@ -121,8 +121,21 @@ class AtributoController {
 	    if(!isset($_GET['editar'])){
 	        return;
 	    }
-        $selecionado = new Atributo();
+	    $usuarioDao = new UsuarioDAO($this->dao->getConexao());
+	    
+	    $sessao = new Sessao();
+	    $usuario = new Usuario();
+	    $usuario->setId($sessao->getIdUsuario());
+	    
+	    $selecionado = new Atributo();
 	    $selecionado->setId($_GET['editar']);
+	    
+	    if(!$usuarioDao->verificarPosseAtributo($usuario, $selecionado)){
+	        echo "Armaria, nam! Vc quer mesmo bugar o sistema! Continue que uma hora vc consegue. Nunca mencionei que o sistema era isento de falhas. ";
+	        return;
+	    }
+	    
+        
 	    $this->dao->pesquisaPorId($selecionado);
 	    
         if(!isset($_POST['editar_atributo'])){

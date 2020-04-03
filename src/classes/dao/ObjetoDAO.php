@@ -13,21 +13,21 @@ class ObjetoDAO extends DAO {
     public function atualizar(Objeto $objeto)
     {
 
+        $nome = $objeto->getNome();
+        
         $id = $objeto->getId();
         $sql = "UPDATE objeto 
                 SET
-                nome = :nome, 
-                id_software_objetos = :idsoftware
+                nome = :nome
                 WHERE objeto.id = :id;";
-			$nome = $objeto->getNome();
-			$idsoftware = $objeto->getIdsoftware();
+			
 
         try {
             
             $stmt = $this->getConexao()->prepare($sql);
 			$stmt->bindParam("id", $id, PDO::PARAM_STR);
 			$stmt->bindParam("nome", $nome, PDO::PARAM_STR);
-			$stmt->bindParam("idsoftware", $idsoftware, PDO::PARAM_STR);
+			
            
             return $stmt->execute();
         } catch (PDOException $e) {
@@ -85,6 +85,8 @@ class ObjetoDAO extends DAO {
 		return $lista;
 	}
 
+	
+	
     public function pesquisaPorId(Objeto $objeto) {
         $lista = array();
 	    $id = $objeto->getId();
@@ -98,6 +100,7 @@ class ObjetoDAO extends DAO {
 		}
 		return $lista;
 	}
+	
 
     public function pesquisaPorNome(Objeto $objeto) {
         $lista = array();

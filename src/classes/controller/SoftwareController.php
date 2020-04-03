@@ -594,12 +594,27 @@ class SoftwareController
         if (! isset($_GET['editar'])) {
             return;
         }
-        $selecionado = new Software();
-        $selecionado->setId($_GET['editar']);
-        $this->dao->pesquisaPorId($selecionado);
+        
+        $this->selecionado = new Software();
+        $this->selecionado->setId($_GET['editar']);
+        
+        $usuarioDao = new UsuarioDAO($this->dao->getConexao());
+        $sessao = new Sessao();
+        $usuario = new Usuario();
+        $usuario->setId($sessao->getIdUsuario());
+        if(!$usuarioDao->verificarPosse($usuario, $this->selecionado)){
+            echo '<p>Bem vindo ao Escritor de Software</p>';
+            echo '<p>Selecione um software que pertença a você ou
+                    Utilize o formulário na barra lateral a esquerda
+                    para inserir um novo software.</p>';
+            return;
+        }
+        
+        
+        $this->dao->pesquisaPorId($this->selecionado);
 
         if (! isset($_POST['editar_software'])) {
-            $this->view->mostraFormEditar($selecionado);
+            $this->view->mostraFormEditar($this->selecionado);
             return;
         }
 
@@ -608,9 +623,9 @@ class SoftwareController
             return;
         }
 
-        $selecionado->setNome($this->post['nome']);
+        $this->selecionado->setNome($this->post['nome']);
 
-        if ($this->dao->atualizar($selecionado)) {
+        if ($this->dao->atualizar($this->selecionado)) {
 
             echo "Sucesso";
         } else {
@@ -624,14 +639,28 @@ class SoftwareController
         if (! isset($_GET['deletar'])) {
             return;
         }
-        $selecionado = new Software();
-        $selecionado->setId($_GET['deletar']);
-        $this->dao->pesquisaPorId($selecionado);
-        if (! isset($_POST['deletar_software'])) {
-            $this->view->confirmarDeletar($selecionado);
+        $this->selecionado = new Software();
+        $this->selecionado->setId($_GET['deletar']);
+        
+        $usuarioDao = new UsuarioDAO($this->dao->getConexao());
+        $sessao = new Sessao();
+        $usuario = new Usuario();
+        $usuario->setId($sessao->getIdUsuario());
+        if(!$usuarioDao->verificarPosse($usuario, $this->selecionado)){
+            echo '<p>Bem vindo ao Escritor de Software</p>';
+            echo '<p>Selecione um software que pertença a você ou
+                    Utilize o formulário na barra lateral a esquerda
+                    para inserir um novo software.</p>';
             return;
         }
-        if ($this->dao->excluir($selecionado)) {
+        
+        
+        $this->dao->pesquisaPorId($this->selecionado);
+        if (! isset($_POST['deletar_software'])) {
+            $this->view->confirmarDeletar($this->selecionado);
+            return;
+        }
+        if ($this->dao->excluir($this->selecionado)) {
             echo "excluido com sucesso";
         } else {
             echo "Errou";

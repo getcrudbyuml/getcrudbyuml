@@ -16,10 +16,12 @@ class ObjetoController {
         if(isset($_GET['selecionar'])){
             $controller->selecionar();
             return;
+        }else  if(isset($_GET['editar'])){
+            $controller->editar();
+        }else if($_GET['deletar']){
+            $controller->deletar();
         }
-        $controller->cadastrar();
-        $controller->editar();
-        $controller->deletar();
+
     }
 	public function __construct(){
 	    $this->selecionado = new Objeto();
@@ -29,11 +31,7 @@ class ObjetoController {
 			$this->post[$chave] = $valor;
 		}
 	}
-	public function listar() {
-		$objetoDao = new ObjetoDAO ();
-		$lista = $objetoDao->retornaLista ();
-		$this->view->exibirLista($lista);
-	}			
+			
     public function selecionar(){
 	    if(!isset($_GET['selecionar'])){
 	        return;
@@ -123,50 +121,72 @@ class ObjetoController {
 	    if(!isset($_GET['editar'])){
 	        return;
 	    }
-        $selecionado = new Objeto();
-	    $selecionado->setId($_GET['editar']);
-	    $this->dao->pesquisaPorId($selecionado);
+	    
+	    $this->selecionado->setId($_GET['editar']);
+	    $sessao = new Sessao();
+	    $usuario = new Usuario();
+	    $usuario->setId($sessao->getIdUsuario());
+	    
+	    $usuarioDao = new UsuarioDAO($this->dao->getConexao());
+	    
+	    if(!$usuarioDao->verificarPosseObjeto($usuario, $this->selecionado)){
+	        echo 'Selecione um objeto que pertence a um software seu';
+	        return;
+	    }
+	    
+	    $this->dao->pesquisaPorId($this->selecionado);
 	    
         if(!isset($_POST['editar_objeto'])){
-            $this->view->mostraFormEditar($selecionado);
+            $this->view->mostraFormEditar($this->selecionado);
             return;
         }
 
-		if (! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['idsoftware'] ))) {
+		if (!isset ( $this->post ['nome'] )) {
 			echo "Incompleto";
 			return;
 		}
 		
-		$selecionado->setNome ( $this->post ['nome'] );		
-		$selecionado->setIdsoftware ( $this->post ['idsoftware'] );	
-		
-		if ($this->dao->atualizar ($selecionado )) 
+		$this->selecionado->setNome ( $this->post ['nome'] );		
+			
+		$software = $this->dao->softwareDoObjeto($this->selecionado);
+		if ($this->dao->atualizar ($this->selecionado )) 
         {
 
 			echo "Sucesso";
 		} else {
 			echo "Fracasso";
 		}
-        echo '<META HTTP-EQUIV="REFRESH" CONTENT="3; URL=index.php?pagina=objeto">';
+        echo '<META HTTP-EQUIV="REFRESH" CONTENT="3; URL=index.php?pagina=software&selecionar='.$software->getId().'">';
 
     }
     public function deletar(){
 	    if(!isset($_GET['deletar'])){
 	        return;
 	    }
-        $selecionado = new Objeto();
-	    $selecionado->setId($_GET['deletar']);
-	    $this->dao->pesquisaPorId($selecionado);
+	    $this->selecionado->setId($_GET['deletar']);
+	    $sessao = new Sessao();
+	    $usuario = new Usuario();
+	    $usuario->setId($sessao->getIdUsuario());
+	    
+	    $usuarioDao = new UsuarioDAO($this->dao->getConexao());
+	    
+	    if(!$usuarioDao->verificarPosseObjeto($usuario, $this->selecionado)){
+	        echo 'Selecione um objeto que pertence a um software seu';
+	        return;
+	    }
+	    
+	    $this->dao->pesquisaPorId($this->selecionado);
         if(!isset($_POST['deletar_objeto'])){
-            $this->view->confirmarDeletar($selecionado);
+            $this->view->confirmarDeletar($this->selecionado);
             return;
         }
-        if($this->dao->excluir($selecionado)){
+        $software = $this->dao->softwareDoObjeto($this->selecionado);
+        if($this->dao->excluir($this->selecionado)){
             echo "excluido com sucesso";
         }else{
             echo "Errou";
         }
-    	echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=objeto">';    
+    	echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=software&selecionar='.$software->getId().'">';    
     }
 	public function listarJSON() 
     {

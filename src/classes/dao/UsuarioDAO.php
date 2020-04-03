@@ -246,4 +246,26 @@ class UsuarioDAO extends DAO {
 	    }
 	    return false;
 	}
+	public function verificarPosseAtributo(Usuario $usuario, Atributo $atributo)
+	{
+	    $idUsuario = $usuario->getId();
+	    $idAtributo = $atributo->getId();
+	    $sql = "SELECT * FROM
+                atributo
+                INNER JOIN objeto
+                ON atributo.id_objeto_atributos = objeto.id
+                INNER JOIN
+                usuario_software
+                ON objeto.id_software_objetos = usuario_software.id_software
+                 WHERE
+                (usuario_software.id_usuario = $idUsuario
+                    AND
+                atributo.id = $idAtributo);";
+	    $result = $this->getConexao ()->query ( $sql );
+	    
+	    foreach ($result as $linha) {
+	        return true;
+	    }
+	    return false;
+	}
 }

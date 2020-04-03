@@ -165,9 +165,7 @@ class ObjetoView {
                                         <div class="form-group">
                 						  <input type="text" class="form-control form-control-user" value="'.$objeto->getNome().'" id="nome" name="nome" placeholder="nome">
                 						</div>
-                                        <div class="form-group">
-                						  <input type="text" class="form-control form-control-user" value="'.$objeto->getIdsoftware().'" id="idsoftware" name="idsoftware" placeholder="idsoftware">
-                						</div>
+                                        
                                         <input type="submit" class="btn btn-primary btn-user btn-block" value="Alterar" name="editar_objeto">
                                         <hr>
                                             
