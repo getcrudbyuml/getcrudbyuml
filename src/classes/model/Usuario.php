@@ -12,6 +12,12 @@ class Usuario {
 	private $login;
 	private $senha;
 	private $nivel;
+	private $softwares;
+	
+	public function __construct(){
+	    
+	    $this->softwares = array();
+	}
 	public function setId($id) {
 		$this->id = $id;
 	}
@@ -47,6 +53,13 @@ class Usuario {
 	}
 	public function getNivel() {
 		return $this->nivel;
+	}
+	public function addSoftware(Software $software){
+	    $this->softwares[] = $software;
+	    
+	}
+	public function getSoftwares() {
+	    return $this->softwares;
 	}
 }
 ?>

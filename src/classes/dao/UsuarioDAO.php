@@ -166,5 +166,48 @@ class UsuarioDAO extends DAO {
 	    }
 	}
 	
+	public function buscarSoftwares(Usuario $usuario)
+	{
+	    $id = $usuario->getId();
+	    $sql = "SELECT * FROM
+                usuario_software
+                INNER JOIN software
+                ON  usuario_software.id_software = software.id
+                 WHERE usuario_software.id_usuario = $id ORDER BY software.id DESC";
+	    $result = $this->getConexao ()->query ( $sql );
+	    
+	    foreach ($result as $linha) {
+	        $software = new Software();
+	        $software->setId( $linha ['id'] );
+	        $software->setNome( $linha ['nome'] );
+	        $usuario->addSoftware($software);
+	        
+	    }
+	    return $usuario;
+	}
+	public function inserirSoftware(Usuario $usuario, Software $software)
+	{
+	    $idUsuario =  $usuario->getId();
+	    $idSoftware = $software->getId();
+	    $sql = "INSERT INTO usuario_software(
+                    id_usuario,
+                    id_software)
+				VALUES(
+                :idUsuario,
+                :idSoftware)";
+
+	    
+	    try {
+	        $db = $this->getConexao();
+	        $stmt = $db->prepare($sql);
+	        $stmt->bindParam("idUsuario", $idUsuario, PDO::PARAM_INT);
+	        $stmt->bindParam("idSoftware", $idSoftware, PDO::PARAM_INT);
+	        
+	        
+	        return $stmt->execute();
+	    } catch(PDOException $e) {
+	        echo '{"error":{"text":'. $e->getMessage() .'}}';
+	    }
+	}
 				
 }

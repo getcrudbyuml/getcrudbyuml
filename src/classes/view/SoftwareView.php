@@ -25,7 +25,20 @@ class SoftwareView {
 	}
                                             
     public function exibirLista($lista){
-        
+        if(count($lista) == 0){
+            echo '
+
+
+  
+
+    <div class="alert alert-info list-group p-3" role="alert">
+    Utilize o formulário acima para incluir softwares
+    </div>
+
+
+
+';
+        }   
         echo '
                     
 <div class="list-group list-group-flush">';

@@ -48,7 +48,12 @@ class SoftwareController
         $lista = $softwareDao->retornaLista();
         $this->view->exibirLista($lista);
     }
-
+    public function listarPorUsuario(Usuario $usuario)
+    {
+        $usuarioDao = new UsuarioDAO($this->dao->getConexao());
+        $usuarioDao->buscarSoftwares($usuario);
+        $this->view->exibirLista($usuario->getSoftwares());
+    }
     public function escrever()
     {
         foreach($this->selecionado->getObjetos() as $objeto){
@@ -105,14 +110,10 @@ class SoftwareController
         
         
         
-        echo '<div class="row justify-content-center">
-                <!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#getAppWeb">
+        echo '
+                <button type="button" class="btn btn-primary m-2" data-toggle="modal" data-target="#getAppWeb">
                   Pegar Aplicação Web
-                </button>
-
-                    
-            </div>';
+                </button>';
         
         
         
@@ -123,7 +124,7 @@ class SoftwareController
         echo '
         <!-- Modal -->
         <div class="modal fade" id="getAppWeb" tabindex="-1" role="dialog" aria-labelledby="labelGetAppWeb" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
         <div class="modal-header">
         <h5 class="modal-title" id="labelGetAppWeb">Aplicação Web Completa</h5>
@@ -136,7 +137,7 @@ class SoftwareController
         Basicamente um CRUD simples usando MVC. Veja um resumo:</p>
         '.$texto.'
             
-            <p>Ainda deve conter erros em situações de relacionamentos Array 1:n
+            <p>Ainda podem conter erros em situações de relacionamentos Array 1:n
             ou outros casos que não usem chave primária.</p>
             
             <p>Caso queira incentivar a correção desses erros ou a conclusão do desenvolvimento da versão
@@ -144,8 +145,8 @@ class SoftwareController
             </div>
             <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Sair</button>
-            <a href="'.$diretorio.'/'.$this->selecionado->getNome().'.zip" class="btn btn-success"  > Download App</a>
-            <a href="'.$diretorio.'/AppWebPHP/'.$this->selecionado->getNomeSimples().'/src/" class="btn btn-success"  target="_blank">Testar Aplicação</a>
+            <a href="'.$diretorio.'/'.$this->selecionado->getNome().'.zip" class="btn btn-success"  > Download</a>
+            <a href="'.$diretorio.'/AppWebPHP/'.$this->selecionado->getNomeSimples().'/src/" class="btn btn-success"  target="_blank">Testar</a>
             </div>
             </div>
             </div>
@@ -197,7 +198,7 @@ class SoftwareController
         }
         $dir-> close();
         $listaDeArquivos[] = '../index.php';
-        $teste = implode('<br>', $listaDeArquivos);
+        
         $texto = '';
         $i = 0;
         
@@ -267,6 +268,8 @@ class SoftwareController
         
         $this->escrever();
         
+
+        
         echo '</div>';
         
         echo '<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">';
@@ -286,6 +289,37 @@ class SoftwareController
         echo '</div>';
     }
 
+    public function modalSelect(){
+        echo '
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalSqlManipulacao">
+  SQL - Manipulação
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="modalSqlManipulacao" tabindex="-1" role="dialog" aria-labelledby="labelSqlManipulacao" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="labelSqlManipulacao">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+';
+    }
     public function modaisSQL(){
         if(!isset($_GET['escrever'])){
             return;
@@ -299,13 +333,13 @@ class SoftwareController
         }
         
         echo '
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalSqlPG">
-              PostgreSql
+            <button type="button" class="btn btn-primary m-2" data-toggle="modal" data-target="#modalSqlPG">
+              Create Postgres
             </button>
             ';
         echo '
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalSqlLite">
-              SqlLite
+            <button type="button" class="btn btn-primary m-2" data-toggle="modal" data-target="#modalSqlLite">
+              Create SqlLite
             </button>
             ';
         
@@ -313,14 +347,14 @@ class SoftwareController
         $sqlPG = file_get_contents($pathSQLPG);
         $sqlPG = $this->formatarPG($sqlPG);
         
-        $sqlSqlite= file_get_contents($pathSQLPG);
+        $sqlSqlite= file_get_contents($pathSQLITE);
         $sqlSqlite = $this->formatarSQLITE($sqlSqlite);
         
         echo '
             
 <!-- Modal -->
 <div class="modal fade" id="modalSqlPG" tabindex="-1" role="dialog" aria-labelledby="labelPg" aria-hidden="true">
-  <div class="modal-dialog modal-xl" role="document">
+  <div class="modal-dialog  modal-dialog-scrollable modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="labelPg">SQL Postgres</h5>
@@ -344,7 +378,7 @@ class SoftwareController
             
 <!-- Modal -->
 <div class="modal fade" id="modalSqlLite" tabindex="-1" role="dialog" aria-labelledby="labelSql" aria-hidden="true">
-  <div class="modal-dialog modal-xl" role="document">
+  <div class="modal-dialog modal-xl  modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="labelSql">SQL SqlLite</h5>
@@ -519,12 +553,26 @@ class SoftwareController
         $software = new Software();
         $software->setNome($this->post['nome']);
         $strUrl = "";
-        if ($this->dao->inserir($software)) {
-            $strUrl = '&selecionar=' . $this->dao->getConexao()->lastInsertId();
-            echo "Sucesso";
-        } else {
-            echo "Fracasso";
+
+        
+        if(!$this->dao->inserir($software)){
+            echo "Erro ao tentar inserir.";
+            return;
         }
+        
+        $id = $this->dao->getConexao()->lastInsertId();
+        $software->setId($id);
+        $usuario = new Usuario();
+        $sessao = new Sessao();
+        $usuario->setId($sessao->getIdUsuario());
+        $usuarioDao = new UsuarioDAO();
+        
+        
+        if(!$usuarioDao->inserirSoftware($usuario, $software)){
+            echo "Erro ao tentar inserir.";
+            return;
+        }
+        $strUrl = '&selecionar=' . $software->getId();
         echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=software' . $strUrl . '">';
     }
 

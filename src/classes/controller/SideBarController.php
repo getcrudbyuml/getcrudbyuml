@@ -13,10 +13,12 @@ class SideBarController{
       <div class="sidebar-heading">jefponte.com.br</div>';
  
 
-$softwareController = new SoftwareController();
-$softwareController->cadastrar();
-$softwareController->listar();
-
+        $usuario = new Usuario();
+        $usuario->setId($sessao->getIdUsuario());
+        $softwareController = new SoftwareController();
+        $softwareController->cadastrar();
+        $softwareController->listarPorUsuario($usuario);
+        
 
 echo '
 
