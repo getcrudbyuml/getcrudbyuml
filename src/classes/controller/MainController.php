@@ -18,10 +18,7 @@ class MainController{
                     
                     break;
             }            
-        }
-        
-        
-        if (isset($_GET['pagina'])) {
+        }else if (isset($_GET['pagina'])) {
             
             switch ($_GET['pagina']) {
                 case 'software':
@@ -40,10 +37,7 @@ class MainController{
                 case 'usuario':
                     UsuarioController::main();
                     break;
-                case 'login':
-                    $controller = new UsuarioController();
-                    $controller->login();
-                    break;
+                
                     
                     
             }

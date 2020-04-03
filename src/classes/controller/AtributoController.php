@@ -173,12 +173,13 @@ class AtributoController {
             $this->view->confirmarDeletar($selecionado);
             return;
         }
+        $software = $this->dao->softwareDoAtributo($selecionado);
         if($this->dao->excluir($selecionado)){
             echo "excluido com sucesso";
         }else{
             echo "Errou";
         }
-    	echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=atributo">';    
+    	echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=software&selecionar='.$software->getId().'">';    
     }
 	public function listarJSON() 
     {
