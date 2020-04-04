@@ -10,7 +10,7 @@ class SideBarController{
         }
         echo '<!-- Sidebar -->
     <div class="bg-light border-right" id="sidebar-wrapper">
-      <div class="sidebar-heading">jefponte.com.br</div>';
+      <div class="sidebar-heading">getcrudbyuml.com</div>';
  
 
         $usuario = new Usuario();

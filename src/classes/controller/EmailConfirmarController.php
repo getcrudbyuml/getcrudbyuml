@@ -10,6 +10,7 @@ class EmailConfirmarController{
         if($sessao->getNivelAcesso() == Sessao::NIVEL_VERIFICADO){
             echo "Seu e-mail foi confirmado! Complete o seu cadastro! ";
             echo $sessao->getLoginUsuario();
+            $this->completarCadastro();
             return;
         }
         
@@ -39,12 +40,25 @@ class EmailConfirmarController{
         $sessao->criaSessao(Sessao::NIVEL_DESLOGADO, Sessao::NIVEL_VERIFICADO, $emailConfirmar->getEmail());
         echo "Seu e-mail foi confirmado! Complete o seu cadastro!";
         echo $emailConfirmar->getEmail();
-        
+        $this->completarCadastro();
         
     }
     
     
-    
+    public function completarCadastro(){
+        $sessao = new Sessao();
+        if($sessao->getNivelAcesso() != Sessao::NIVEL_VERIFICADO){
+            return;
+        }
+        $usuarioController = new UsuarioController();
+        $usuarioController->cadastrar(Sessao::NIVEL_COMPLETO);
+        
+//         $usuarioView = new UsuarioView();
+//         $usuario = new Usuario();
+//         $usuario->setEmail($sessao->getLoginUsuario());
+//         $usuarioView->mostraFormInserir();
+        
+    }
     
     
 }

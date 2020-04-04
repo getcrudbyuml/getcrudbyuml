@@ -103,6 +103,11 @@ class UsuarioController {
 	}
 	public function cadastrar($nivelDeAcesso) {
 
+	    $sessao = new Sessao();
+	    if($sessao->getNivelAcesso() != Sessao::NIVEL_VERIFICADO){
+	        return;
+	    }
+	    
         if(!isset($this->post['enviar_usuario'])){
             $this->view->mostraFormInserir();
 		    return;
@@ -111,19 +116,33 @@ class UsuarioController {
 			echo "Incompleto";
 			return;
 		}
-		if($this->post['senha'] != $this->post['senha_confirmada']){
-		    echo "A confirmação da senha não está igual. ";
+		if (!isset ( $this->post ['login'] )) {
+		    echo "Incompleto";
+		    return;
+		}
+		if ($this->post ['login'] == "" || strlen($this->post ['login']) < 3) 
+		{
+		    echo "Digite um login válido";
+		    return;
+		}
+		if($this->post['senha'] != $this->post['senha_confirmada'])
+		{
+		    echo "A confirmação da senha não está batendo. ";
 		    return;
 		}
 	
 		$usuario = new Usuario ();		
 		$usuario->setNome ( $this->post ['nome'] );		
-		$usuario->setEmail ( $this->post ['email'] );		
-		$usuario->setLogin ( $this->post ['email'] );		
+		$usuario->setEmail ( $sessao->getLoginUsuario());		
+		$usuario->setLogin ( $this->post['login']);		
 		$usuario->setSenha ( md5 (  $this->post ['senha'] ));		
 		$usuario->setNivel ( $nivelDeAcesso );	
 		
 		if ($this->dao->inserir ( $usuario )) {
+		    $id = $this->dao->getConexao()->lastInsertId();
+		    $usuario->setId($id);
+		    
+		    $sessao->criaSessao($id, Sessao::NIVEL_COMPLETO, $usuario->getLogin());
 			echo "Sucesso";
 		} else {
 			echo "Fracasso";

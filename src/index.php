@@ -24,6 +24,10 @@ spl_autoload_register('autoload');
 $sessao = new Sessao();
 
 $ipVisitante = $_SERVER["REMOTE_ADDR"];
+if($ipVisitante != "187.18.198.34"){
+    echo "Em manutencao";
+    return;
+}
 $auditoria = new Auditoria();
 $auditoria->setInfoSessao($sessao->__toString());
 $auditoria->setIpVisitante($ipVisitante);
@@ -45,12 +49,32 @@ if (isset($_GET["sair"])) {
     
 }
 if (isset($_GET['enviar_email'])) {
-    if (isset($_SESSION['email_ja_foi'])) {
-        echo "Nós já enviamos seu e-mail, aguarde um pouco que vai chegar";
+//     if (isset($_SESSION['email_ja_foi'])) {
+//         echo "Nós já enviamos seu e-mail, aguarde um pouco que vai chegar";
+//         return;
+//     }
+
+    if($_GET['enviar_email'] == 'undefined'){
+        echo "Dê F5 e tente novamente.";
         return;
     }
+    
+    if($_GET['enviar_email'] == '' || strlen($_GET['enviar_email']) < 4){
 
+        echo "Dê F5 e tente novamente";
+        return;
+    }
+    $usuariodao = new UsuarioDAO($auditoriaDao->getConexao());
+    $usuario = new Usuario();
+    $usuario->setEmail($_GET['enviar_email']);
+    if($usuariodao->pesquisaPorEmail($usuario)){
+        echo "Este email já está sendo utilizado por um usuário. Dê F5 e tente novamente.";
+        return;
+    }
+    
     $dao = new EmailConfirmarDAO($auditoriaDao->getConexao());
+    
+    
     $emailConfirmar = new EmailConfirmar();
     $emailConfirmar->setEmail($_GET['enviar_email']);
 

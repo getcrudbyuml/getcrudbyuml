@@ -9,24 +9,28 @@ class UsuarioView {
     public function mostraFormInserir(){
         echo '
 
-<!-- Modal -->
-<div class="modal fade" id="modal-add-usuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-<form class="user" method="post">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Adicionar Usuário</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
+<div class="container">
+
+	<!-- Outer Row -->
+	<div class="row justify-content-center">
+
+		<div class="col-xl-6 col-lg-12 col-md-9">
+
+			<div class="card o-hidden border-0 shadow-lg my-5">
+				<div class="card-body p-0">
+					<!-- Nested Row within Card Body -->
+					<div class="row">
+
+						<div class="col-lg-12">
+							<div class="p-5">
+    
+          <form class="user" method="post">
         
             <div class="form-group">
               <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome Completo">
             </div>
             <div class="form-group">
-              <input type="email" class="form-control" id="email" name="email" placeholder="Endereço de E-mail">
+              <input type="text" class="form-control" id="login" name="login" placeholder="Login">
             </div>
             <div class="form-group row">
               <div class="col-sm-6 mb-3 mb-sm-0">
@@ -36,18 +40,22 @@ class UsuarioView {
                 <input type="password" class="form-control" id="exampleRepeatPassword" name="senha_confirmada" placeholder="Repita sua Senha">
               </div>
             </div>
-            
-      </div>
-      <div class="modal-footer">
-        <input type="submit" class="btn btn-primary" value="Cadastrar" name="enviar_usuario">
-    
 
-      </div>
-    </div>
-  </div>
+        <input type="submit" class="btn btn-primary" value="Cadastrar" name="enviar_usuario">
 </form>
+
+
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-  
+
+
 
 ';
         

@@ -86,7 +86,23 @@ class UsuarioDAO extends DAO {
             return $usuario;
 	    }
 	    return null;
-	}			
+	}		
+	public function pesquisaPorEmail(Usuario $usuario) {
+	    $email = $usuario->getEmail();
+	    $sql = "SELECT * FROM usuario WHERE email like '$email'";
+	    $result = $this->getConexao ()->query ( $sql );
+	    
+	    foreach ( $result as $linha ) {
+	        $usuario->setId( $linha ['id'] );
+	        $usuario->setNome( $linha ['nome'] );
+	        $usuario->setEmail( $linha ['email'] );
+	        $usuario->setLogin( $linha ['login'] );
+	        $usuario->setSenha( $linha ['senha'] );
+	        $usuario->setNivel( $linha ['nivel'] );
+	        return $usuario;
+	    }
+	    return null;
+	}		
 	public function autentica(Usuario $usuario){
 	    $login = $usuario->getLogin();
 	    $senha = $usuario->getSenha() ;

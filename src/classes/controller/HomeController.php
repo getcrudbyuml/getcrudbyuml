@@ -53,7 +53,7 @@ class HomeController{
             <div class="card">
               <div class="card-body">
                     <h5 class="card-title">Passo 3</h5>
-                    <p class="card-text">Faça uma doação se você quiser e apoie o nosso projeto. Qualquer R$ 1 real já serve!</p>
+                    <p class="card-text">Faça uma doação e ajude a nossa empresa que está quase em falência. Qualquer R$ 1 real já serve!</p>
                     <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
                     <input type="hidden" name="cmd" value="_s-xclick" />
                     <input type="hidden" name="hosted_button_id" value="BXZLNT3CHZU7Q" />
@@ -114,7 +114,7 @@ class HomeController{
             
 <!-- Footer-->
 <footer class="py-5">
-    <div class="container"><div class="small text-center text-muted">Copyright © 2020 - jefponte@gmail.com</div></div>
+    <div class="container"><div class="small text-center text-muted">Copyright © 2020 - contato@getcrudbyuml.com</div></div>
 </footer> 
 ';
         

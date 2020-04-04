@@ -164,7 +164,7 @@ class EmailConfirmarDAO extends DAO {
                 email_confirmar.codigo
                 FROM email_confirmar
                 WHERE email_confirmar.codigo like '$codigo'";
-	    echo $sql;
+	    
 	    $result = $this->getConexao ()->query ( $sql );
                     
 	    foreach ( $result as $linha ) {
