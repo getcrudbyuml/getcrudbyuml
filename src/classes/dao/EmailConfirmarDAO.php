@@ -72,7 +72,7 @@ class EmailConfirmarDAO extends DAO {
 	}
 	public function excluir(EmailConfirmar $emailConfirmar){
 		$id = $emailConfirmar->getId();
-		$sql = "DELETE FROM emailConfirmar WHERE id = :id";
+		$sql = "DELETE FROM email_confirmar WHERE id = :id";
 		    
 		try {
 			$db = $this->getConexao();
@@ -157,26 +157,23 @@ class EmailConfirmarDAO extends DAO {
     }
                     
     public function pesquisaPorCodigo(EmailConfirmar $emailConfirmar) {
-        $lista = array();
 	    $codigo = $emailConfirmar->getCodigo();
 	    $sql = "SELECT 
-                emailconfirmar.id, 
-                emailconfirmar.email, 
-                emailconfirmar.codigo, 
-                emailconfirmar.confirmado
-                FROM emailConfirmar
-                WHERE emailconfirmar.codigo like '%$codigo%'";
+                email_confirmar.id, 
+                email_confirmar.email, 
+                email_confirmar.codigo
+                FROM email_confirmar
+                WHERE email_confirmar.codigo like '$codigo'";
+	    echo $sql;
 	    $result = $this->getConexao ()->query ( $sql );
                     
 	    foreach ( $result as $linha ) {
-            $emailConfirmar = new EmailConfirmar();
 	        $emailConfirmar->setId( $linha ['id'] );
 	        $emailConfirmar->setEmail( $linha ['email'] );
 	        $emailConfirmar->setCodigo( $linha ['codigo'] );
-	        $emailConfirmar->setConfirmado( $linha ['confirmado'] );
-			$lista [] = $emailConfirmar;
+			return true;
 		}
-		return $lista;
+		return false;
     }
                     
     public function pesquisaPorConfirmado(EmailConfirmar $emailConfirmar) {

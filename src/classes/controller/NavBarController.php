@@ -10,7 +10,7 @@ class NavBarController{
 
 
       <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">';
-        if($sessao->getNivelAcesso() == Sessao::NIVEL_VERIFICADO || $sessao->getNivelAcesso() == Sessao::NIVEL_ADM){
+        if($sessao->getNivelAcesso() == Sessao::NIVEL_COMPLETO || $sessao->getNivelAcesso() == Sessao::NIVEL_ADM){
             echo '
         <button class="btn btn-primary" id="menu-toggle">Menu</button>';
         }
@@ -27,14 +27,15 @@ class NavBarController{
               <a class="nav-link" href="./">Início</a>
             </li>';
         
-        if($sessao->getNivelAcesso() == Sessao::NIVEL_DESLOGADO){
+        if($sessao->getNivelAcesso() == Sessao::NIVEL_DESLOGADO || $sessao->getNivelAcesso() == Sessao::NIVEL_VERIFICADO)
+        {
             echo '
     
               <li class="nav-item"> 
                 <a class="nav-link" href="?pagina=login">Login</a>
              </li>  ';
             
-        }else if($sessao->getNivelAcesso() == Sessao::NIVEL_VERIFICADO || $sessao->getNivelAcesso() == Sessao::NIVEL_ADM){
+        }else if($sessao->getNivelAcesso() == Sessao::NIVEL_COMPLETO || $sessao->getNivelAcesso() == Sessao::NIVEL_ADM){
             echo '
                 
                 

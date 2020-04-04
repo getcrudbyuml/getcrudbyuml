@@ -27,6 +27,7 @@ $ipVisitante = $_SERVER["REMOTE_ADDR"];
 $auditoria = new Auditoria();
 $auditoria->setInfoSessao($sessao->__toString());
 $auditoria->setIpVisitante($ipVisitante);
+$auditoria->setData(date('Y-m-d G:I:s'));
 $strGet = '';
 if(isset($_GET)){
     foreach($_GET as $chave => $valor){
@@ -40,7 +41,8 @@ $auditoriaDao->inserir($auditoria);
 
 if (isset($_GET["sair"])) {
     $sessao->mataSessao();
-    header("Location:./");
+    echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php">';
+    
 }
 if (isset($_GET['enviar_email'])) {
     if (isset($_SESSION['email_ja_foi'])) {
@@ -66,10 +68,10 @@ if (isset($_GET['enviar_email'])) {
     
     $to = $_GET['enviar_email'];
     $subject = "GetCrudByID - Confirmação E-mail";
-    $message = "<p>Confirme seu e-mail clicando no link: <a href=\"https://getcrudbyuml.com.br/?pagina=verificar&codigo=" . md5($id) . "\">Verificar E-mail</a>.</p>";
+    $message = "<p>Confirme seu e-mail clicando no link: <a href=\"https://getcrudbyuml.com/?pagina=verificar&codigo=" . md5($id) . "\">Verificar E-mail</a>.</p>";
     $headers = 'MIME-Version: 1.0' . "\r\n";
     $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
-    $headers .= 'From: getCrudById <contato@getcrudbyid.com.br>';
+    $headers .= 'From: getCrudById <contato@getcrudbyuml.com>';
 
     if (mail($to, $subject, $message, $headers)) {
         echo "<p>E-mail Enviado. Verifique sua caixa de e-mail.</p>";

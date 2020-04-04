@@ -15,10 +15,18 @@ class MainController{
                     $controller->login();
                     break;
                 case 'verificar':
-                    
+                    $controller = new EmailConfirmarController();
+                    $controller->verificar();
                     break;
             }            
-        }else if (isset($_GET['pagina'])) {
+        }else if($sessao->getNivelAcesso() == Sessao::NIVEL_VERIFICADO)
+        {
+            $controller = new EmailConfirmarController();
+            $controller->verificar();
+            return;
+            
+        }else if(isset($_GET['pagina'])) 
+        {
             
             switch ($_GET['pagina']) {
                 case 'software':

@@ -5,7 +5,7 @@ class SideBarController{
     
 
     public static function main(Sessao $sessao){
-        if($sessao->getNivelAcesso() == Sessao::NIVEL_DESLOGADO){
+        if($sessao->getNivelAcesso() == Sessao::NIVEL_DESLOGADO || $sessao->getNivelAcesso() == Sessao::NIVEL_VERIFICADO){
             return;
         }
         echo '<!-- Sidebar -->

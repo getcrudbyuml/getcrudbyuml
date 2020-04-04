@@ -83,6 +83,7 @@ class HomeController{
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="labelComecar">Entre com seu e-mail para obter acesso ao sistema!</h5>
+
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -94,6 +95,7 @@ class HomeController{
               <div class="form-group" id="local-do-email">
                 <input type="email" placeholder="Endereço de E-mail" class="form-control" id="email" required>                
               </div>
+              <a href="?pagina=login">Já tenho conta.</a>
 
 
       </div>
