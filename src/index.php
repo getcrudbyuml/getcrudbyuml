@@ -22,6 +22,22 @@ function autoload($classe)
 spl_autoload_register('autoload');
 
 $sessao = new Sessao();
+
+$ipVisitante = $_SERVER["REMOTE_ADDR"];
+$auditoria = new Auditoria();
+$auditoria->setInfoSessao($sessao->__toString());
+$auditoria->setIpVisitante($ipVisitante);
+$strGet = '';
+if(isset($_GET)){
+    foreach($_GET as $chave => $valor){
+        $strGet .= '\''.$chave.'\' : \''.$valor.'\', ';
+    }
+}
+$auditoria->setPagina($strGet);
+$auditoriaDao = new AuditoriaDAO();
+$auditoriaDao->inserir($auditoria);
+
+
 if (isset($_GET["sair"])) {
     $sessao->mataSessao();
     header("Location:./");
@@ -32,10 +48,10 @@ if (isset($_GET['enviar_email'])) {
         return;
     }
 
-    $dao = new EmailConfirmarDAO();
+    $dao = new EmailConfirmarDAO($auditoriaDao->getConexao());
     $emailConfirmar = new EmailConfirmar();
     $emailConfirmar->setEmail($_GET['enviar_email']);
-    $emailConfirmar->setConfirmado(FALSE);
+
     if(!$dao->inserir($emailConfirmar)){
         echo "Falha ao tentar Inserir Email na Base de Dados";
         return;
@@ -49,11 +65,11 @@ if (isset($_GET['enviar_email'])) {
     }
     
     $to = $_GET['enviar_email'];
-    $subject = "Verificando o correio do PHP";
-    $message = "<p>Confirme seu e-mail clicando no link: <a href=\"https://jefponte.com.br/pagina=verificar&codigo=" . md5($id) . "\"></a>.</p>";
+    $subject = "GetCrudByID - Confirmação E-mail";
+    $message = "<p>Confirme seu e-mail clicando no link: <a href=\"https://getcrudbyuml.com.br/?pagina=verificar&codigo=" . md5($id) . "\">Verificar E-mail</a>.</p>";
     $headers = 'MIME-Version: 1.0' . "\r\n";
     $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
-    $headers .= 'From: jefponte.com.br <naoresponda@jefponte.com.br>';
+    $headers .= 'From: getCrudById <contato@getcrudbyid.com.br>';
 
     if (mail($to, $subject, $message, $headers)) {
         echo "<p>E-mail Enviado. Verifique sua caixa de e-mail.</p>";
@@ -77,7 +93,7 @@ if (isset($_GET['enviar_email'])) {
 <link rel="stylesheet" type="text/css" href="css/style.css" />
 <link href="css/simple-sidebar.css" rel="stylesheet">
 <link href="css/selectize.bootstrap3.css" rel="stylesheet">
-<title>EscritorDeSoftware</title>
+<title>getCrudByUml</title>
 </head>
 <body>
 	<div class="d-flex" id="wrapper">

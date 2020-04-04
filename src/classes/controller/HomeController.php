@@ -12,13 +12,13 @@ class HomeController{
     <div class="container h-100">
         <div class="row h-100 align-items-center justify-content-center text-center">
             <div class="col-lg-10 align-self-end">
-                <h1 class="text-uppercase font-weight-bold m-3">GetDB UML Modeler</h1>
+                <h1 class="font-weight-bold m-3">getCrudByUML</h1>
                 <hr class="divider my-4" />
             </div>
             <div class="col-lg-8 align-self-baseline">
                 <p class="text-white-75 mb-5">
-                Ferramenta para criação de banco de dados a partir de uma modelagem de classes UML. 
-                Faça um teste grátis!
+                Ferramenta de geração automática de software CRUD a partir de modelagem uml. 
+                Faça um teste, é de graça!
                 </p>
                 <a class="btn btn-primary btn-xl js-scroll-trigger" href="#como-fazer">Como Funciona</a>
             </div>
@@ -44,7 +44,7 @@ class HomeController{
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title">Passo 2</h5>
-                <p class="card-text">Obtenha uns códigos SQL de criação do banco de dados.</p>
+                <p class="card-text">Obtenha os códigos necessários para ter um CRUD em funcionamento.</p>
                 <img src="./images/sql.png" alt="codigo SQL gerado automaticamente" class="img-fluid">
               </div>
             </div>
@@ -57,7 +57,7 @@ class HomeController{
                     <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
                     <input type="hidden" name="cmd" value="_s-xclick" />
                     <input type="hidden" name="hosted_button_id" value="BXZLNT3CHZU7Q" />
-                    <input type="image" src="https://www.paypalobjects.com/pt_BR/BR/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                    <input type="image" src="https://www.paypalobjects.com/pt_BR/BR/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Faça doações com o botão do PayPal" />
                     <img alt="" border="0" src="https://www.paypal.com/pt_BR/i/scr/pixel.gif" width="1" height="1" />
                     </form>
                     
@@ -66,6 +66,7 @@ class HomeController{
             </div>
         </div>
     </div>
+
 
     <button type="button" class="btn btn-outline-secondary m-3" data-toggle="modal" data-target="#comecar">
       Quero Começar
@@ -111,7 +112,7 @@ class HomeController{
             
 <!-- Footer-->
 <footer class="py-5">
-    <div class="container"><div class="small text-center text-muted">Copyright © 2020 - jefponte</div></div>
+    <div class="container"><div class="small text-center text-muted">Copyright © 2020 - jefponte@gmail.com</div></div>
 </footer> 
 ';
         

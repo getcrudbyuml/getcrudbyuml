@@ -20,15 +20,18 @@ class Software {
 		return $this->id;
 	}
 	public function setNome($nome) {
+	    $nome = str_replace(" ", "", $nome);
 		$this->nome = $nome;
 	}
 	public function getNome() {
-		return $this->nome;
+	    $nome = preg_replace("/[^a-zA-Z0-9]/", "", $this->nome);
+		return $nome;
 	}
 	public function getNomeSnakeCase()
 	{
 	    $nome	= preg_replace('/([a-z])([A-Z])/',"$1_$2",$this->nome);
 	    $nome	= strtolower($nome);
+	    $nome = preg_replace("/[^a-zA-Z0-9_]/", "", $nome);
 	    return $nome;
 	}
 	public function getNomeSimples() {

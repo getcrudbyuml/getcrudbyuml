@@ -18,12 +18,12 @@ class EmailConfirmarDAO extends DAO {
         $sql = "UPDATE emailConfirmar
                 SET
                 email = :email,
-                codigo = :codigo,
-                confirmado = :confirmado
+                codigo = :codigo
+            
                 WHERE emailConfirmar.id = :id;";
 			$email = $emailConfirmar->getEmail();
 			$codigo = $emailConfirmar->getCodigo();
-			$confirmado = $emailConfirmar->getConfirmado();
+			
                 
         try {
                 
@@ -31,7 +31,7 @@ class EmailConfirmarDAO extends DAO {
 			$stmt->bindParam("id", $id, PDO::PARAM_STR);
 			$stmt->bindParam("email", $email, PDO::PARAM_STR);
 			$stmt->bindParam("codigo", $codigo, PDO::PARAM_STR);
-			$stmt->bindParam("confirmado", $confirmado, PDO::PARAM_STR);
+			
                 
             return $stmt->execute();
         } catch (PDOException $e) {
@@ -42,9 +42,9 @@ class EmailConfirmarDAO extends DAO {
                 
 	public function inserir(EmailConfirmar $emailConfirmar){
 	    
-		$sql = "INSERT INTO email_confirmar(email, confirmado)
-				VALUES(:email, 'f')";
-			$email = $emailConfirmar->getEmail();
+		$sql = "INSERT INTO email_confirmar(email)
+				VALUES(:email)";
+		$email = $emailConfirmar->getEmail();
 			
 		try {
 			$db = $this->getConexao();

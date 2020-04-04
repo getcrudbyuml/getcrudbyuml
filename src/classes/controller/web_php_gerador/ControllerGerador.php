@@ -270,7 +270,9 @@ class ' . $nomeDoObjetoMa . 'Controller {
         $codigo .= ')) {
 			echo "Incompleto";
 			return;
-		}
+		}';
+        
+        $codigo .= '
             
 		$' . $nomeDoObjeto . ' = new ' . $nomeDoObjetoMa . ' ();';
         foreach ($atributosComuns as $atributo) {

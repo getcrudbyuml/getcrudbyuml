@@ -20,7 +20,9 @@ class Objeto {
 		return $this->id;
 	}
 	public function setNome($nome) {
-		$this->nome = $nome;
+	    $nome = preg_replace("/[^a-zA-Z0-9]/", "", $nome);
+	    $nome = str_replace(" ", "", $nome);
+		$this->nome = ucfirst($nome);
 	}
 	public function getNomeSnakeCase()
 	{

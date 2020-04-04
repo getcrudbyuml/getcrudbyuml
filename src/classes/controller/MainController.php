@@ -34,11 +34,7 @@ class MainController{
                 case 'atributo':
                     AtributoController::main();
                     break;
-                case 'usuario':
-                    UsuarioController::main();
-                    break;
                 
-                    
                     
             }
         }

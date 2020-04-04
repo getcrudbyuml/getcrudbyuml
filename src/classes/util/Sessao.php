@@ -59,6 +59,16 @@ class Sessao
             return self::NIVEL_DESLOGADO;
         }
     }
+    public function __toString(){
+        $strResposta = "";
+        if($this->getNivelAcesso() == Self::NIVEL_DESLOGADO){
+            $strResposta = 'Usuário Deslogado.';
+        }else{
+            $strResposta = 'Login: '.$this->getLoginUsuario();
+            
+        }
+        return $strResposta;
+    }
 
     const NIVEL_DESLOGADO = 0;
 
