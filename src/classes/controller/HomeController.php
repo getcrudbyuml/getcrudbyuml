@@ -31,7 +31,7 @@ class HomeController{
 
     <h1 class="display-4 font-weight-normal m-3 p-3">Como funciona!</h1>
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-3">
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title">Passo 1</h5>
@@ -40,7 +40,7 @@ class HomeController{
               </div>
             </div>
         </div>
-        <div class="col-sm-4">
+        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-3">
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title">Passo 2</h5>
@@ -49,7 +49,7 @@ class HomeController{
               </div>
             </div>
         </div>
-        <div class="col-sm-4">
+        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 mb-3">
             <div class="card">
               <div class="card-body">
                     <h5 class="card-title">Passo 3</h5>
