@@ -12,7 +12,7 @@ class HomeController{
     <div class="container h-100">
         <div class="row h-100 align-items-center justify-content-center text-center">
             <div class="col-lg-10 align-self-end">
-                <h1 class="font-weight-bold m-3">getCrudByUML</h1>
+                <h1 class="font-weight-bold m-2">getCrud ByUML</h1>
                 <hr class="divider my-4" />
             </div>
             <div class="col-lg-8 align-self-baseline">
@@ -53,15 +53,10 @@ class HomeController{
             <div class="card">
               <div class="card-body">
                     <h5 class="card-title">Passo 3</h5>
-                    <p class="card-text">Faça uma doação e ajude a nossa empresa que está quase em falência. Qualquer R$ 1 real já serve!</p>
-                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-                    <input type="hidden" name="cmd" value="_s-xclick" />
-                    <input type="hidden" name="hosted_button_id" value="BXZLNT3CHZU7Q" />
-                    <input type="image" src="https://www.paypalobjects.com/pt_BR/BR/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Faça doações com o botão do PayPal" />
-                    <img alt="" border="0" src="https://www.paypal.com/pt_BR/i/scr/pixel.gif" width="1" height="1" />
-                    </form>
-                    
-                    <img class="img-fluid" src="./images/gato.jpg" alt="gato de botas">
+                    <p class="card-text">Clique em um anúncio e ajude nosso site a continuar funcionando!</p>
+                    <!-- LOMADEE - BEGIN -->
+                    <script src="//ad.lomadee.com/banners/script.js?sourceId=36481616&dimension=8&height=250&width=250&method=0" type="text/javascript" language="javascript"></script>
+                    <!-- LOMADEE - END -->
                 </div>
             </div>
         </div>

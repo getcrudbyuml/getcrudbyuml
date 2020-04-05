@@ -24,10 +24,6 @@ spl_autoload_register('autoload');
 $sessao = new Sessao();
 
 $ipVisitante = $_SERVER["REMOTE_ADDR"];
-if($ipVisitante != "187.18.198.34"){
-    echo "Em manutencao";
-    return;
-}
 $auditoria = new Auditoria();
 $auditoria->setInfoSessao($sessao->__toString());
 $auditoria->setIpVisitante($ipVisitante);
@@ -111,6 +107,7 @@ if (isset($_GET['enviar_email'])) {
 <!doctype html>
 <html lang="pt-br">
 <head>
+<meta name="lomadee-verification" content="22619239" />
 <meta charset="utf-8">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -160,5 +157,6 @@ MainController::main($sessao);
 		crossorigin="anonymous"></script>
 	<script src="js/selectize.js"></script>
 	<script src="js/escritor.js"></script>
+
 </body>
 </html>

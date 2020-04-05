@@ -18,6 +18,9 @@ class MainController{
                     $controller = new EmailConfirmarController();
                     $controller->verificar();
                     break;
+                default:
+                    HomeController::main();
+                    break;
             }            
         }else if($sessao->getNivelAcesso() == Sessao::NIVEL_VERIFICADO)
         {
@@ -42,7 +45,15 @@ class MainController{
                 case 'atributo':
                     AtributoController::main();
                     break;
-                
+                case 'mudar_senha':
+                    $controller = new UsuarioController();
+                    $usuario = new Usuario();
+                    $usuario->setId($sessao->getIdUsuario());
+                    $controller->editarSenha($usuario);
+                    break;
+                default:
+                    HomeController::main();
+                    break;
                     
             }
         }

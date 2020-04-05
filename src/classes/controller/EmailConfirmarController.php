@@ -53,11 +53,6 @@ class EmailConfirmarController{
         $usuarioController = new UsuarioController();
         $usuarioController->cadastrar(Sessao::NIVEL_COMPLETO);
         
-//         $usuarioView = new UsuarioView();
-//         $usuario = new Usuario();
-//         $usuario->setEmail($sessao->getLoginUsuario());
-//         $usuarioView->mostraFormInserir();
-        
     }
     
     

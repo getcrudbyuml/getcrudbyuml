@@ -45,8 +45,7 @@ class NavBarController{
               </a>
                 
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Meus Dados</a>
-                <a class="dropdown-item" href="#">Mudar Senha</a>
+                <a class="dropdown-item" href="?pagina=mudar_senha">Mudar Senha</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="?sair=1">Sair</a>
               </div>

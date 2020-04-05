@@ -75,25 +75,33 @@ class UsuarioController {
 	}
 	public function editarSenha(Usuario $usuario)
 	{
+	    
+	    
 	    if(!isset($this->post['atualizar_senha'])){
 	        $this->view->editarSenha();
 	        return;
 	    }
-	    
 	    if (! ( isset ( $this->post ['senha'] ) && isset ( $this->post ['senha_confirmada'] ))) {
-	        echo "Incompleto";
-	        return;
-	    }
-	    if($this->post['senha'] != $this->post['senha_confirmada']){
-	        echo "As senhas digitadas não são iguais. ";
+	        $this->view->editarSenha('Preencha com a mesma senha.');
 	        return;
 	    }
 	    
+	    if($this->post['senha'] != $this->post['senha_confirmada']){
+	        
+	        $this->view->editarSenha('As senhas digitadas não correspondem.');
+	        return;
+	    }
+	    if (strlen($this->post ['senha']) == 0) {
+	        $this->view->editarSenha('Digite uma senha.');
+	        return;
+	    }
+	    if (strlen($this->post ['senha']) < 4) {
+	        $this->view->editarSenha('Digite uma senha com mais caracteres.');
+	        return;
+	    }
 	    
 	    $usuario->setSenha( $this->post ['senha'] );
-	    
-	   
-	    
+
 	    if ($this->dao->atualizarSenha($usuario)) {
 	        echo "Sucesso";
 	    } else {
@@ -112,29 +120,40 @@ class UsuarioController {
             $this->view->mostraFormInserir();
 		    return;
 		}
-		if (! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['email'] ) && isset ( $this->post ['senha'] ))) {
-			echo "Incompleto";
+		if (! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['senha'] ))) 
+		{
+			$this->view->mostraFormInserir("Digite todos os campos para continuar.");
 			return;
 		}
 		if (!isset ( $this->post ['login'] )) {
-		    echo "Incompleto";
+		    $this->view->mostraFormInserir("Digite todos os campos para continuar.");
 		    return;
 		}
 		if ($this->post ['login'] == "" || strlen($this->post ['login']) < 3) 
 		{
-		    echo "Digite um login válido";
+		    $this->view->mostraFormInserir("Digite um login válido");
 		    return;
 		}
 		if($this->post['senha'] != $this->post['senha_confirmada'])
 		{
-		    echo "A confirmação da senha não está batendo. ";
+		    $this->view->mostraFormInserir("A confirmação da senha não está batendo.");
 		    return;
 		}
+		
 	
 		$usuario = new Usuario ();		
+		$usuario->setLogin ( $this->post['login']);
+		
+		if($this->dao->pesquisaPorLogin($usuario)){
+		    
+		    $this->view->mostraFormInserir("Este Login já pertence a outro usuário, tente outro.");
+		    return;
+		}
+		
+		
 		$usuario->setNome ( $this->post ['nome'] );		
-		$usuario->setEmail ( $sessao->getLoginUsuario());		
-		$usuario->setLogin ( $this->post['login']);		
+		$usuario->setEmail ( $sessao->getLoginUsuario());
+		
 		$usuario->setSenha ( md5 (  $this->post ['senha'] ));		
 		$usuario->setNivel ( $nivelDeAcesso );	
 		
@@ -145,7 +164,8 @@ class UsuarioController {
 		    $sessao->criaSessao($id, Sessao::NIVEL_COMPLETO, $usuario->getLogin());
 			echo "Sucesso";
 		} else {
-			echo "Fracasso";
+		    $this->view->mostraFormInserir("Falha na gravação dos dados. Tente novamente.");
+			
 		}
         echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=usuario">';
 	}

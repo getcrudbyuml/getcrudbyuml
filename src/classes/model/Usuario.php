@@ -37,6 +37,8 @@ class Usuario {
 		return $this->email;
 	}
 	public function setLogin($login) {
+	    $login = trim($login);
+	    $login = str_replace(" ", '', $login);
 		$this->login = $login;
 	}
 	public function getLogin() {
