@@ -104,9 +104,9 @@ class SoftwareController
         EscritorDeSoftware::main($this->selecionado, $diretorio);
         
         
-        
-        $zipador = new Zipador();
-        $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/'.$this->selecionado->getNome().'.zip');
+        $numeroDeArquivos = 0;
+//         $zipador = new Zipador();
+//         $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/'.$this->selecionado->getNome().'.zip');
         
         
         

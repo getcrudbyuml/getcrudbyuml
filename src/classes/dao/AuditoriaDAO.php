@@ -110,7 +110,8 @@ class AuditoriaDAO extends DAO {
         auditoria.info_sessao, 
         auditoria.data
         FROM auditoria
-                 LIMIT 1000";
+        ORDER BY id DESC
+                 LIMIT 300";
 		$result = $this->getConexao ()->query ( $sql );
                 
 		foreach ( $result as $linha ) {

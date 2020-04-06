@@ -16,6 +16,8 @@ function autoload($classe)
         include_once 'classes/controller/web_php_gerador/' . $classe . '.php';
     }else if (file_exists('classes/controller/sql_gerador/' . $classe . '.php')) {
         include_once 'classes/controller/sql_gerador/' . $classe . '.php';
+    }else if(file_exists('classes/controller/desktop_java_gerador/' . $classe . '.php')){
+        include_once 'classes/controller/desktop_java_gerador/' . $classe . '.php';
     }
     
 }
@@ -24,6 +26,7 @@ spl_autoload_register('autoload');
 $sessao = new Sessao();
 
 $ipVisitante = $_SERVER["REMOTE_ADDR"];
+
 $auditoria = new Auditoria();
 $auditoria->setInfoSessao($sessao->__toString());
 $auditoria->setIpVisitante($ipVisitante);
@@ -36,7 +39,9 @@ if(isset($_GET)){
 }
 $auditoria->setPagina($strGet);
 $auditoriaDao = new AuditoriaDAO();
-$auditoriaDao->inserir($auditoria);
+if($auditoria->getIpVisitante() != '187.18.198.34'){
+    $auditoriaDao->inserir($auditoria);
+}
 
 
 if (isset($_GET["sair"])) {

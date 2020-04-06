@@ -80,18 +80,9 @@ class AuditoriaView {
 						<th>pagina</th>
 						<th>ipVisitante</th>
 						<th>infoSessao</th>
-                        <th>Ações</th>
 					</tr>
 				</thead>
-				<tfoot>
-					<tr>
-                        <th>id</th>
-                        <th>pagina</th>
-                        <th>ipVisitante</th>
-                        <th>infoSessao</th>
-                        <th>Ações</th>
-					</tr>
-				</tfoot>
+				
 				<tbody>';
             
             foreach($lista as $elemento){
@@ -100,11 +91,6 @@ class AuditoriaView {
                 echo '<td>'.$elemento->getPagina().'</td>';
                 echo '<td>'.$elemento->getIpVisitante().'</td>';
                 echo '<td>'.$elemento->getInfoSessao().'</td>';
-                echo '<td>
-                        <a href="?pagina=auditoria&selecionar='.$elemento->getId().'" class="btn btn-info">Selecionar</a>
-                        <a href="?pagina=auditoria&editar='.$elemento->getId().'" class="btn btn-success">Editar</a>
-                        <a href="?pagina=auditoria&deletar='.$elemento->getId().'" class="btn btn-danger">Deletar</a>
-                      </td>';
                 echo '</tr>';
             }
             

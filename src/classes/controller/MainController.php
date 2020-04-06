@@ -39,6 +39,10 @@ class MainController{
                     $controller->editar();
                     
                     break;
+                case 'auditoria':
+                    $controller = new AuditoriaController();
+                    $controller->listar();
+                    break;
                 case 'objeto':
                     ObjetoController::main();
                     break;
