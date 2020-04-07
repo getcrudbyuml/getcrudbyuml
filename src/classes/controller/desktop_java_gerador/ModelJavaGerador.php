@@ -106,13 +106,13 @@ public class ' . ucfirst ($objeto->getNome()) . ' {';
             {
                 
                     $codigo .= '
-	public void set' . ucfirst ($atributo->getNome()) .'(' .$atributo->getTipoJava().' '. strtolower($atributo->getNome()) . ') {';
+	public void set' . ucfirst ($atributo->getNome()) .'(' .$atributo->getTipoJava().' '. lcfirst($atributo->getNome()) . ') {';
                     $codigo .= '
-		this.' . strtolower($atributo->getNome()) . ' = ' . strtolower($atributo->getNome()) . ';
+		this.' . lcfirst($atributo->getNome()) . ' = ' . lcfirst($atributo->getNome()) . ';
 	}
 		    
 	public '.$atributo->getTipoJava().' get' . ucfirst ($atributo->getNome()) . '() {
-		return this.' . strtolower($atributo->getNome()) . ';
+		return this.' . lcfirst($atributo->getNome()) . ';
 	}';
                     
             }
@@ -121,26 +121,26 @@ public class ' . ucfirst ($objeto->getNome()) . ' {';
                     
                     $codigo .= '
                             
-    public void add'.ucfirst($atributo->getTipoDeArray()).'('.ucfirst($atributo->getTipoDeArray()).' '.strtolower($atributo->getTipoDeArray()).'){
-        this.'.strtolower($atributo->getNome()).'.add('.strtolower($atributo->getTipoDeArray()).');
+    public void add'.ucfirst($atributo->getTipoDeArray()).'('.ucfirst($atributo->getTipoDeArray()).' '.lcfirst($atributo->getTipoDeArray()).'){
+        this.'.lcfirst($atributo->getNome()).'.add('.lcfirst($atributo->getTipoDeArray()).');
             
     }
 	public ArrayList<'.$atributo->getTipoDeArray().'> get' . ucfirst($atributo->getNome()) . '() {
-		return this.' . strtolower($atributo->getNome()) . ';
+		return this.' . lcfirst($atributo->getNome()) . ';
 	}';
                         
                         
                     
                 }else{
                         $codigo .= '
-	public void set'. ucfirst ($atributo->getNome()) .'(' . $atributo->getTipo() . ' ' . strtolower($atributo->getNome()) . ') {';
+	public void set'. ucfirst ($atributo->getNome()) .'(' . $atributo->getTipo() . ' ' . lcfirst($atributo->getNome()) . ') {';
                         
                         $codigo .= '
-		this.' . strtolower($atributo->getNome()) . ' = ' . strtolower($atributo->getNome()) . ';
+		this.' . lcfirst($atributo->getNome()) . ' = ' . lcfirst($atributo->getNome()) . ';
 	}
 		    
 	public '.$atributo->getTipo().' get' . ucfirst($atributo->getNome()) . '() {
-		return this.' . strtolower($atributo->getNome()) . ';
+		return this.' . lcfirst($atributo->getNome()) . ';
 	}';
                     
                 }

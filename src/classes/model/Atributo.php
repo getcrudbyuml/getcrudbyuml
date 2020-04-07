@@ -127,7 +127,7 @@ class Atributo {
 	}
 	
 	public function getTipoJava(){
-	    $tipo = $this->getTipo();
+	    $tipo = "String";
 	    if($this->tipoListado()){
 	        if($this->getTipo() == self::TIPO_INT){
 	            $tipo = 'int';

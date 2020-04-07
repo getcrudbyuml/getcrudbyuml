@@ -42,10 +42,12 @@ class EscritorDeSoftware
         ControllerGerador::main($this->software, $this->diretorio);
         IndexGerador::main($this->software, $this->diretorio);
         $sessao = new Sessao();
-        if($sessao->getLoginUsuario() == 'jefponte'){
+        if($sessao->getNivelAcesso() == Sessao::NIVEL_ADM){
             POMGerador::main($this->software, $this->diretorio);
             MainJavaGerador::main($this->software, $this->diretorio);
             ModelJavaGerador::main($this->software, $this->diretorio);
+            DAOJavaGerador::main($this->software, $this->diretorio);
+            ViewJavaGerador::main($this->software, $this->diretorio);
         }
     }
 }
