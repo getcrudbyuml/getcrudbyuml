@@ -17,9 +17,13 @@ class HomeController{
             </div>
             <div class="col-lg-8 align-self-baseline">
                 <p class="text-white-75 mb-5">
-                Ferramenta de geração automática de software CRUD a partir de modelagem uml. 
-                Faça um teste, é de graça!
+                GetCrudByUml is a unified visual tool for database architects, developers, and DBAs. You make the UML Class Diagram and get the application with data base acces. 
                 </p>
+                <p class="text-white-75 mb-5">
+                GetCrudByUml é uma ferramenta visual unificada para arquitetos de banco de dados, desenvolvedores e DBAs. Você cria o diagrama de classes UML e obtém o aplicativo com acesso à base de dados.
+                </p>
+
+
                 <a class="btn btn-primary btn-xl js-scroll-trigger" href="#como-fazer">Como Funciona</a>
             </div>
         </div>

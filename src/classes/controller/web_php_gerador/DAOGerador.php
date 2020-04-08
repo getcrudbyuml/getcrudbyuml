@@ -447,14 +447,14 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
 
         foreach ($atributosComuns as $atributo) {
 
-            $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
+            
             $id = $atributo->getNome();
 
             $codigo .= '
                     
-    public function pesquisaPor' . $nomeDoAtributoMA . '(' . $nomeDoObjetoMA . ' $' . $nomeDoObjeto . ') {
+    public function pesquisaPor' . ucfirst($atributo->getNome()) . '(' . $nomeDoObjetoMA . ' $' . $nomeDoObjeto . ') {
         $lista = array();
-	    $' . $id . ' = $' . $nomeDoObjeto . '->get' . $nomeDoAtributoMA . '();';
+	    $' . $id . ' = $' . $nomeDoObjeto . '->get' . ucfirst($atributo->getNome()) . '();';
             $codigo .= '
 	    $sql = "SELECT ';
             $i = 0;
@@ -462,7 +462,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
 
                 $i ++;
                 $codigo .= '
-                ' . strtolower($objeto->getNome() . '.' . $atributoComum->getNome()) . '';
+                ' . $objeto->getNomeSnakeCase() . '.' . $atributoComum->getNomeSnakeCase() . '';
 
                 if ($i != count($atributosComuns)) {
                     $codigo .= ', ';
@@ -482,10 +482,10 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                             if ($atributo3->getIndice() == Atributo::INDICE_PRIMARY) {
 
                                 $codigo .= '
-                ' . strtolower($objeto->getNome() . '.' . $atributo3->getNome() . '_' . $atributoObjeto->getTipo() . '_' . $atributoObjeto->getNome());
+                ' . $objeto->getNomeSnakeCase() . '.' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase() . '_' . $atributoObjeto->getNomeSnakeCase();
                             } else {
                                 $codigo .= '
-                ' . strtolower($atributoObjeto->getTipo() . '.' . $atributo3->getNome() . ' as ' . $atributo3->getNome() . '_' . $atributoObjeto->getTipo() . '_' . $atributoObjeto->getNome());
+                ' . $atributoObjeto->getTipoSnakeCase() . '.' . $atributo3->getNomeSnakeCase() . ' as ' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase() . '_' . $atributoObjeto->getNomeSnakeCase();
                             }
                             if ($i != count($objeto2->getAtributos())) {
                                 $codigo .= ', ';
@@ -496,7 +496,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                 }
             }
             $codigo .= '
-                FROM ' . $nomeDoObjeto;
+                FROM ' . $objeto->getNomeSnakeCase();
             foreach ($atributosObjetos as $atributoObjeto) {
 
                 foreach ($this->software->getObjetos() as $objeto2) {
@@ -505,7 +505,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                             if ($atributo3->getIndice() == Atributo::INDICE_PRIMARY) {
                                 $codigo .= '
                 INNER JOIN ' . strtolower($atributoObjeto->getTipo()) . '
-                ON ' . strtolower($atributoObjeto->getTipo()) . '.' . $atributo3->getNome() . ' = ' . $nomeDoObjeto . '.' . strtolower($atributo3->getNome()) . '_' . strtolower($atributoObjeto->getTipo()) . '_' . strtolower($atributoObjeto->getNome());
+                ON ' . $atributoObjeto->getTipoSnakeCase() . '.' . $atributo3->getNomeSnakeCase() . ' = ' . $objeto->getNomeSnakeCase() . '.' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase(). '_' . $atributoObjeto->getNomeSnakeCase();
                                 break;
                             }
                         }
@@ -516,10 +516,10 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
 
             if ($atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_DATE || $atributo->getTipo() == Atributo::TIPO_DATE_TIME) {
                 $codigo .= '
-                WHERE ' . strtolower($objeto->getNome()) . '.' . $id . ' like \'%$' . $id . '%\'";';
+                WHERE ' . $objeto->getNomeSnakeCase() . '.' . $id . ' like \'%$' . $id . '%\'";';
             } else {
                 $codigo .= '
-                WHERE ' . strtolower($objeto->getNome()) . '.' . $id . ' = $' . $id . '";';
+                WHERE ' . $objeto->getNomeSnakeCase() . '.' . $id . ' = $' . $id . '";';
             }
 
             $codigo .= '
