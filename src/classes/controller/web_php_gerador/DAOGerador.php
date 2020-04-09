@@ -409,6 +409,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         $sqlGerador = new SQLGerador($this->software);
         $codigo .= $sqlGerador->getSQLSelect($objeto);
 
+
         $codigo .= '
                  LIMIT 1000";
 		$result = $this->getConexao ()->query ( $sql );
@@ -420,7 +421,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
 
         foreach ($atributosComuns as $atributo) {
             $codigo .= '
-			$' . lcfirst($objeto->getNomeSnakeCase()) . '->set' . ucfirst($atributo->getNome()) . '( $linha [\'' . $atributo->getNomeSnakeCase() . '\'] );';
+			$' . lcfirst($objeto->getNome()) . '->set' . ucfirst($atributo->getNome()) . '( $linha [\'' . $atributo->getNomeSnakeCase() . '\'] );';
         }
         foreach ($atributosObjetos as $atributoObjeto) {
 
@@ -540,10 +541,10 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                         foreach ($objeto2->getAtributos() as $atributo3) {
                             if ($atributo3->getIndice() == Atributo::INDICE_PRIMARY) {
                                 $codigo .= '
-			$' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set' . ucfirst($atributo3->getNome()) . '( $linha [\'' . strtolower($atributo3->getNome()) . '_' . strtolower($atributoObjeto->getTipo()) . '_' . strtolower($atributoObjeto->getNome()) . '\'] );';
+			$' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set' . ucfirst($atributo3->getNome()) . '( $linha [\'' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase() . '_' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
                             } else {
                                 $codigo .= '
-			$' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set' . ucfirst($atributo3->getNome()) . '( $linha [\'' . strtolower($atributo3->getNome()) . '_' . strtolower($atributoObjeto->getTipo()) . '_' . strtolower($atributoObjeto->getNome()) . '\'] );';
+			$' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set' . ucfirst($atributo3->getNome()) . '( $linha [\'' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase(). '_' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
                             }
                         }
                         break;

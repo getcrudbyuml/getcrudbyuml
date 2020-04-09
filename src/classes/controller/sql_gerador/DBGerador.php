@@ -54,6 +54,7 @@ class DBGerador
         if (file_exists($bdNome)) {
             unlink($bdNome);
         }
+        
         $pdo = new PDO('sqlite:' . $bdNome);
         $pdo->exec($codigo);
         
@@ -288,6 +289,7 @@ ALTER TABLE ' . $atributo->getArrayTipoSnakeCase() . ' ADD COLUMN  ' . $atributo
                 }
             }
         }
+        
         
         $path = $this->diretorio . '/' . $this->software->getNomeSnakeCase() . '_banco_sqlite.sql';
         $this->listaDeArquivos[$path] = $codigo;

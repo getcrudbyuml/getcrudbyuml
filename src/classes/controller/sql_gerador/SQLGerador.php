@@ -20,6 +20,7 @@ class SQLGerador {
         $strSqlSelect .= implode(", \n        ", $campos);
         $this->nivelRecursividade = 0;
         $from = $this->getFROM($objeto);
+        
         array_unshift($from, $objeto->getNomeSnakeCase());
         $strSqlSelect .= "\n        FROM ".implode("\n        INNER JOIN ", $from);
         return $strSqlSelect;
@@ -49,8 +50,8 @@ class SQLGerador {
                                 $atributoObjeto->getTipoSnakeCase().'.'.
                                 $atributo3->getNome().' = '.
                                 $objeto->getNomeSnakeCase().'.'.$atributo3->getNome().
-                                '_'.strtolower($atributoObjeto->getTipo()).
-                                '_'.strtolower($atributoObjeto->getNome());
+                                '_'.$atributoObjeto->getTipoSnakeCase().
+                                '_'.$atributoObjeto->getNomeSnakeCase();
                             
                             $from[$filtro] = $filtro;
                             break;
@@ -59,6 +60,7 @@ class SQLGerador {
                     }
                     if($this->nivelRecursividade < 10){
                         $from = array_merge($from, $this->getFROM($objeto2));
+
                     }
                     
                 }
@@ -85,6 +87,7 @@ class SQLGerador {
         }
         foreach ($atributosComuns as $atributoComum) {
             $campos[$atributoComum->getNomeSnakeCase()] = $objeto->getNomeSnakeCase() . '.' . $atributoComum->getNomeSnakeCase() . '';
+            
         }
         return $campos;
     }
@@ -124,6 +127,7 @@ class SQLGerador {
                                         
                                         foreach($camposComuns as $campoComum){
                                             $campos[explode(".",$campoComum)[1].'_'.$objetoTipoDoTipo->getNomeSnakeCase().'_'.$atributo3->getNomeSnakeCase()] = $campoComum.' as '.explode(".",$campoComum)[1].'_'.$objetoTipoDoTipo->getNomeSnakeCase().'_'.$atributo3->getNomeSnakeCase();
+
                                         }
                                         $campos = array_merge($campos,
                                             $this->getCamposObjetos($objetoTipoDoTipo));
