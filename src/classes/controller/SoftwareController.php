@@ -107,8 +107,8 @@ class SoftwareController
         
         $numeroDeArquivos = 0;
         
-//         $zipador = new Zipador();
-//         $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/'.$this->selecionado->getNomeSimples().'.zip');
+        $zipador = new Zipador();
+        $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/../'.$this->selecionado->getNomeSimples().'.zip');
         
         
         
@@ -147,7 +147,7 @@ class SoftwareController
             </div>
             <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Sair</button>
-            <a href="'.$diretorio.'/'.$this->selecionado->getNome().'.zip" class="btn btn-success"  > Download</a>
+            <a href="'.$diretorio.'/../'.$this->selecionado->getNome().'.zip" class="btn btn-success"  > Download</a>
             <a href="'.$diretorio.'/AppWebPHP/'.$this->selecionado->getNomeSimples().'/src/" class="btn btn-success"  target="_blank">Testar</a>
             </div>
             </div>

@@ -174,8 +174,8 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase() . '_' . strtolower(explode(" ", $at
                     $codigo .= '
 
 ALTER TABLE ' . $objeto->getNomeSnakeCase() . ' 
-    ADD CONSTRAINT fk_' . strtolower($objeto->getNome()) . '_' . strtolower($atributo->getTipo()) . '_' . $atributo->getNomeSnakeCase() . ' FOREIGN KEY (id_' . strtolower($atributo->getTipo()) . '_' . $atributo->getNomeSnakeCase() . ')
-    REFERENCES ' . strtolower($atributo->getTipo()) . ' (' . $atributoPrimary->getNome() . ');
+    ADD CONSTRAINT fk_' . strtolower($objeto->getNome()) . '_' . $atributo->getTipoSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ' FOREIGN KEY (id_' . $atributo->getTipoSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ')
+    REFERENCES ' . $atributo->getTipoSnakeCase() . ' (' . $atributoPrimary->getNomeSnakeCase() . ');
 ';
                 }
             }

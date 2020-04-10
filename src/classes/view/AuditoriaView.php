@@ -77,9 +77,10 @@ class AuditoriaView {
 				<thead>
 					<tr>
 						<th>id</th>
-						<th>pagina</th>
-						<th>ipVisitante</th>
-						<th>infoSessao</th>
+						<th>GET</th>
+						<th>IP</th>
+						<th>Sessão</th>
+                        <th>Data/Hora</th>
 					</tr>
 				</thead>
 				
@@ -91,6 +92,8 @@ class AuditoriaView {
                 echo '<td>'.$elemento->getPagina().'</td>';
                 echo '<td>'.$elemento->getIpVisitante().'</td>';
                 echo '<td>'.$elemento->getInfoSessao().'</td>';
+                
+                echo '<td>'.date("d/m/Y G:i:s", strtotime($elemento->getData())).'</td>';
                 echo '</tr>';
             }
             
