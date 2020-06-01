@@ -39,9 +39,9 @@ if(isset($_GET)){
 }
 $auditoria->setPagina($strGet);
 $auditoriaDao = new AuditoriaDAO();
-// if($auditoria->getIpVisitante() != '187.18.198.34' && $auditoria->getIpVisitante() != '200.129.19.117'){
-//     $auditoriaDao->inserir($auditoria);
-// }
+
+$auditoriaDao->inserir($auditoria);
+
 
 
 if (isset($_GET["sair"])) {
