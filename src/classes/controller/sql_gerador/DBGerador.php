@@ -105,7 +105,7 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase();
                     $flagPulei = true;
                 } else if ($atributo->isObjeto()) {
                     $codigo .= '
-    id_' . $atributo->getTipoSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ' integer NOT NULL';
+    id' . '_' . $atributo->getNomeSnakeCase() . ' integer NOT NULL';
                 } else {
                     // Tipo Array Comum não implementado
                     $flagPulei = true;
@@ -174,7 +174,7 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase() . '_' . strtolower(explode(" ", $at
                     $codigo .= '
 
 ALTER TABLE ' . $objeto->getNomeSnakeCase() . ' 
-    ADD CONSTRAINT fk_' . $objeto->getNomeSnakeCase() . '_' . $atributo->getTipoSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ' FOREIGN KEY (id_' . $atributo->getTipoSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ')
+    ADD CONSTRAINT fk_' . $objeto->getNomeSnakeCase() . '_' . $atributo->getTipoSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ' FOREIGN KEY ('.$atributoPrimary->getNomeSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ')
     REFERENCES ' . $atributo->getTipoSnakeCase() . ' (' . $atributoPrimary->getNomeSnakeCase() . ');
 ';
                 }
