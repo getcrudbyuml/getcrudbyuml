@@ -323,7 +323,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         $codigo .= '
         
         
-        $sql = "UPDATE ' . $nomeDoObjeto . '
+        $sql = "UPDATE ' . $objeto->getNomeSnakeCase() . '
                 SET
                 ';
         $listaAtributo = array();
@@ -339,7 +339,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         $i = 0;
         foreach ($listaAtributo as $atributo) {
             $i ++;
-            $codigo .= $atributo->getNome() . ' = :' . $atributo->getNome();
+            $codigo .= $atributo->getNomeSnakeCase() . ' = :' . $atributo->getNome();
             if ($i != count($listaAtributo)) {
                 $codigo .= ',
                 ';
@@ -347,7 +347,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         }
         if ($atributoPrimary != null) {
             $codigo .= '
-                WHERE ' . $nomeDoObjeto . '.id = :id;';
+                WHERE ' . $objeto->getNomeSnakeCase() . '.id = :id;';
         }
         $codigo .= '";';
 
@@ -457,63 +457,17 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         $lista = array();
 	    $' . $id . ' = $' . $nomeDoObjeto . '->get' . ucfirst($atributo->getNome()) . '();';
             $codigo .= '
-	    $sql = "SELECT ';
-            $i = 0;
-            foreach ($atributosComuns as $atributoComum) {
 
-                $i ++;
-                $codigo .= '
-                ' . $objeto->getNomeSnakeCase() . '.' . $atributoComum->getNomeSnakeCase() . '';
+        $sql = "';
 
-                if ($i != count($atributosComuns)) {
-                    $codigo .= ', ';
-                }
-            }
+        $sqlGerador = new SQLGerador($this->software);
+        $codigo .= $sqlGerador->getSQLSelect($objeto);
 
-            foreach ($atributosObjetos as $atributoObjeto) {
 
-                foreach ($this->software->getObjetos() as $objeto2) {
-                    if ($objeto2->getNome() == $atributoObjeto->getTipo()) {
-                        $i = 0;
-                        foreach ($objeto2->getAtributos() as $atributo3) {
-                            $i ++;
-                            if (count($atributosComuns) != 0 && $i == 1) {
-                                $codigo .= ',';
-                            }
-                            if ($atributo3->getIndice() == Atributo::INDICE_PRIMARY) {
-
-                                $codigo .= '
-                ' . $objeto->getNomeSnakeCase() . '.' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase() . '_' . $atributoObjeto->getNomeSnakeCase();
-                            } else {
-                                $codigo .= '
-                ' . $atributoObjeto->getTipoSnakeCase() . '.' . $atributo3->getNomeSnakeCase() . ' as ' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase() . '_' . $atributoObjeto->getNomeSnakeCase();
-                            }
-                            if ($i != count($objeto2->getAtributos())) {
-                                $codigo .= ', ';
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
-            $codigo .= '
-                FROM ' . $objeto->getNomeSnakeCase();
-            foreach ($atributosObjetos as $atributoObjeto) {
-
-                foreach ($this->software->getObjetos() as $objeto2) {
-                    if ($objeto2->getNome() == $atributoObjeto->getTipo()) {
-                        foreach ($objeto2->getAtributos() as $atributo3) {
-                            if ($atributo3->getIndice() == Atributo::INDICE_PRIMARY) {
-                                $codigo .= '
-                INNER JOIN ' . strtolower($atributoObjeto->getTipo()) . '
-                ON ' . $atributoObjeto->getTipoSnakeCase() . '.' . $atributo3->getNomeSnakeCase() . ' = ' . $objeto->getNomeSnakeCase() . '.' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase(). '_' . $atributoObjeto->getNomeSnakeCase();
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
+        $codigo .= '";
+';
+            
+            
 
             if ($atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_DATE || $atributo->getTipo() == Atributo::TIPO_DATE_TIME) {
                 $codigo .= '

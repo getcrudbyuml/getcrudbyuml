@@ -111,7 +111,7 @@ if(isset($_REQUEST[\'api\'])){
         
         foreach ($this->software->getObjetos() as $objeto) {
             
-            $codigo .= '<a class="nav-item nav-link" href="?pagina=' . strtolower($objeto->getNome()) . '">' . $objeto->getNome() . '</a>';
+            $codigo .= '<a class="nav-item nav-link" href="?pagina=' . $objeto->getNomeSnakeCase() . '">' . $objeto->getNomeTextual() . '</a>';
         }
         
         $codigo .= '
@@ -142,7 +142,7 @@ if(isset($_GET[\'pagina\'])){
         
         foreach ($this->software->getObjetos() as $objeto) {
             $codigo .= '
-						case \'' . strtolower($objeto->getNome()) . '\':
+						case \'' .$objeto->getNomeSnakeCase() . '\':
 						    ' . ucfirst ($objeto->getNome()). 'Controller::main();
 							break;';
         }

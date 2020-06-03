@@ -52,7 +52,6 @@ class ViewGerador{
     {
         $codigo = '';
         $nomeDoObjeto = strtolower($objeto->getNome());
-        $nomeDoObjetoMa = ucfirst($objeto->getNome());
         
         
         $atributosComuns = array();
@@ -75,11 +74,11 @@ class ViewGerador{
         $codigo = '<?php
             
 /**
- * Classe de visao para ' . $nomeDoObjetoMa . '
+ * Classe de visao para ' . $objeto->getNome() . '
  * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
  *
  */
-class ' . $nomeDoObjetoMa . 'View {
+class ' . $objeto->getNome() . 'View {
 	public function mostraFormInserir(';
         $i = count($atributosObjetos);
         foreach($atributosObjetos as $atributoObjeto){
@@ -92,23 +91,29 @@ class ' . $nomeDoObjetoMa . 'View {
         }
         $codigo .= ') {
 		echo \'
-            
-            
-            
-				<div class="card o-hidden border-0 shadow-lg my-5">
-					<div class="card-body p-0">
-						<!-- Nested Row within Card Body -->
-						<div class="row">
-            
-							<div class="col-lg-12">
-								<div class="p-5">
-									<div class="text-center">
-										<h1 class="h4 text-gray-900 mb-4"> Adicionar ' . $nomeDoObjetoMa . '</h1>
-									</div>
-						              <form class="user" method="post">';
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  Adicionar
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Adicionar '.$objeto->getNomeTextual().'</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
         
-        
-        
+
+
+          <form id="form_enviar_'.$objeto->getNomeSnakeCase().'" class="user" method="post">
+            <input type="hidden" name="enviar_' . $objeto->getNomeSnakeCase() . '" value="1">                
+
+';
         foreach ($atributosComuns as $atributo) {
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
@@ -117,16 +122,16 @@ class ' . $nomeDoObjetoMa . 'View {
             $codigo .= '
 
                                         <div class="form-group">
-                                            <label for="' . $atributo->getNome(). '">' . $atributo->getNome(). '</label>
-                                            <input type="text" class="form-control"  name="' . $atributo->getNome(). '" id="' . $atributo->getNome(). '" placeholder="' . $atributo->getNome(). '">
+                                            <label for="' . $atributo->getNome(). '">' . $atributo->getNomeTextual(). '</label>
+                                            <input type="text" class="form-control"  name="' . $atributo->getNome(). '" id="' . $atributo->getNome(). '" placeholder="' . $atributo->getNomeTextual(). '">
                                         </div>';
         }
         foreach($atributosObjetos as $atributo){
             $codigo .= '
                                         <div class="form-group">
-                                          <label for="' . $atributo->getNome(). '">' . $atributo->getNome(). '</label>
+                                          <label for="' . $atributo->getNome(). '">' . $atributo->getNomeTextual(). '</label>
                 						  <select class="form-control" id="' . $atributo->getNome() . '" name="' . $atributo->getNome(). '">
-                                            <option>Selecione o '.$atributo->getNome().'</option>\';
+                                            <option value="">Selecione o '.$atributo->getNomeTextual().'</option>\';
                                                 
         foreach( $lista'.ucfirst($atributo->getTipo()).' as $elemento){
             echo \'<option>\'.$elemento.\'</option>\';
@@ -139,18 +144,21 @@ class ' . $nomeDoObjetoMa . 'View {
         }
         
         $codigo .= '
-                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastrar" name="enviar_' . $nomeDoObjeto . '">
-                                        <hr>
-                                            
+
 						              </form>
-                                            
-								</div>
-							</div>
-						</div>
-					</div>
-                                            
-                                            
-			</div>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        <button form="form_enviar_'.$objeto->getNomeSnakeCase().'" type="submit" class="btn btn-primary">Cadastrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+            
+            
+			
 \';
 	}
                                             
@@ -160,10 +168,10 @@ class ' . $nomeDoObjetoMa . 'View {
                                             
                                             
                                             
-	<div class="card o-hidden border-0 shadow-lg my-5">
-              <div class="card mb-4">
+
+          <div class="card mb-4">
                 <div class="card-header">
-                  Lista
+                  Lista '.$objeto->getNomeTextual().'
                 </div>
                 <div class="card-body">
                                             
@@ -180,7 +188,7 @@ class ' . $nomeDoObjetoMa . 'View {
                 break;
             }
             $codigo .= '
-						<th>'.$atributo->getNome().'</th>';
+						<th>'.$atributo->getNomeTextual().'</th>';
             
         }
         $i = 0;
@@ -190,7 +198,7 @@ class ' . $nomeDoObjetoMa . 'View {
                 break;
             }
             $codigo .= '
-						<th>'.$atributo->getNome().'</th>';
+						<th>'.$atributo->getNomeTextual().'</th>';
             
         }
         $codigo .= '
@@ -207,7 +215,7 @@ class ' . $nomeDoObjetoMa . 'View {
                 break;
             }
             $codigo .= '
-                        <th>'.$atributo->getNome().'</th>';
+                        <th>'.$atributo->getNomeTextual().'</th>';
         }
         $i = 0;
         foreach($atributosObjetos as $atributo){
@@ -216,7 +224,7 @@ class ' . $nomeDoObjetoMa . 'View {
                 break;
             }
             $codigo .= '
-						<th>'.$atributo->getNome().'</th>';
+						<th>'.$atributo->getNomeTextual().'</th>';
             
         }
         $codigo .= '
@@ -271,7 +279,6 @@ class ' . $nomeDoObjetoMa . 'View {
             
             
             
-      </div>
   </div>
 </div>
             
@@ -279,13 +286,13 @@ class ' . $nomeDoObjetoMa . 'View {
     }
             
             
-        public function mostrarSelecionado('.$nomeDoObjetoMa.' $'.$nomeDoObjeto.'){
+        public function mostrarSelecionado('.$objeto->getNome().' $'.$nomeDoObjeto.'){
         echo \'
             
 	<div class="card o-hidden border-0 shadow-lg my-5">
         <div class="card mb-4">
             <div class="card-header">
-                  '.$nomeDoObjetoMa.' selecionado
+                  '.$objeto->getNome().' selecionado
             </div>
             <div class="card-body">';
         
@@ -309,7 +316,7 @@ class ' . $nomeDoObjetoMa . 'View {
 \';
     }
             
-	public function mostraFormEditar('.$nomeDoObjetoMa.' $'.$nomeDoObjeto.') {
+	public function mostraFormEditar('.$objeto->getNome().' $'.$nomeDoObjeto.') {
 		echo \'
 	    
 	    
@@ -322,7 +329,7 @@ class ' . $nomeDoObjetoMa . 'View {
 							<div class="col-lg-12">
 								<div class="p-5">
 									<div class="text-center">
-										<h1 class="h4 text-gray-900 mb-4"> Adicionar ' . $nomeDoObjetoMa . '</h1>
+										<h1 class="h4 text-gray-900 mb-4"> Adicionar ' . $objeto->getNome() . '</h1>
 									</div>
 						              <form class="user" method="post">';
         
@@ -354,7 +361,7 @@ class ' . $nomeDoObjetoMa . 'View {
 	</div>\';
 	}
                                             
-    public function confirmarDeletar('.$nomeDoObjetoMa.' $'.$nomeDoObjeto.') {
+    public function confirmarDeletar('.$objeto->getNome().' $'.$nomeDoObjeto.') {
 		echo \'
         
         
@@ -367,7 +374,7 @@ class ' . $nomeDoObjetoMa . 'View {
 							<div class="col-lg-12">
 								<div class="p-5">
 									<div class="text-center">
-										<h1 class="h4 text-gray-900 mb-4"> Deletar ' . $nomeDoObjetoMa . '</h1>
+										<h1 class="h4 text-gray-900 mb-4"> Deletar ' . $objeto->getNome() . '</h1>
 									</div>
 						              <form class="user" method="post">';
         

@@ -50,7 +50,6 @@ class SQLGerador {
                                 $atributoObjeto->getTipoSnakeCase().'.'.
                                 $atributo3->getNome().' = '.
                                 $objeto->getNomeSnakeCase().'.'.$atributo3->getNome().
-                                '_'.$atributoObjeto->getTipoSnakeCase().
                                 '_'.$atributoObjeto->getNomeSnakeCase();
                             
                             $from[$filtro] = $filtro;

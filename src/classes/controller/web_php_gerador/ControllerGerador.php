@@ -83,17 +83,14 @@ class ' . $nomeDoObjetoMa . 'Controller {
         }
         echo \'
 		<div class="row justify-content-center">\';
-        echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
+        echo \'<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">\';
+        $controller->cadastrar();
         $controller->listar();
-        echo \'</div>\';
-        echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
         if(isset($_GET[\'editar\'])){
             $controller->editar();
         }else if(isset($_GET[\'deletar\'])){
             $controller->deletar();
-	    }else{
-            $controller->cadastrar();
-        }
+	    }
         echo \'</div>\';
         echo \'</div>\';
             
@@ -307,7 +304,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
 		} else {
 			echo "Fracasso";
 		}
-        echo \'<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=' . $nomeDoObjeto . '">\';
+        echo \'<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=' . $objeto->getNomeSnakeCase() . '">\';
 	}
     public function editar(){
 	    if(!isset($_GET[\'editar\'])){
@@ -558,7 +555,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
             if($atributo->tipoListado()){
                 $codigo .= '
         if (isset($jsonBody[\''.$atributo->getNomeSnakeCase().'\'])) {
-            $pesquisado->set'.ucfirst($atributo->getNome()).'superficie($jsonBody[\''.$atributo->getNomeSnakeCase().'\']);
+            $pesquisado->set'.ucfirst($atributo->getNome()).'($jsonBody[\''.$atributo->getNomeSnakeCase().'\']);
         }
                     
 ';

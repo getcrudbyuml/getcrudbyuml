@@ -242,7 +242,7 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase();
                 if ($atributo->tipoListado()) {
                     $codigo .= '    ' . $atributo->getNomeSnakeCase() . ' ' . $atributo->getTipoSqlite() . ' ';
                 } else if ($atributo->isObjeto()) {
-                    $codigo .= '    id_' . $atributo->getTipoSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ' INTEGER NOT NULL';
+                    $codigo .= '    id_' . $atributo->getNomeSnakeCase() . ' INTEGER NOT NULL';
                 }
                 if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                     $codigo .= '    PRIMARY KEY AUTOINCREMENT';

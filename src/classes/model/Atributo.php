@@ -31,6 +31,11 @@ class Atributo {
 	    $nome	= strtolower($nome);
 	    return $nome;
 	}
+	public function getNomeTextual()
+	{
+	    $nome	= preg_replace('/([a-z])([A-Z])/',"$1 $2",$this->nome);
+	    return $nome;
+	}
 	/**
 	 * Raw: user login count
 	 * Kebab Case: user-login-count
