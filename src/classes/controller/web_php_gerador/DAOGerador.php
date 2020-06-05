@@ -449,13 +449,12 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         foreach ($atributosComuns as $atributo) {
 
             
-            $id = $atributo->getNome();
 
             $codigo .= '
                     
     public function pesquisaPor' . ucfirst($atributo->getNome()) . '(' . $nomeDoObjetoMA . ' $' . $nomeDoObjeto . ') {
         $lista = array();
-	    $' . $id . ' = $' . $nomeDoObjeto . '->get' . ucfirst($atributo->getNome()) . '();';
+	    $' . $atributo->getNome() . ' = $' . $nomeDoObjeto . '->get' . ucfirst($atributo->getNome()) . '();';
             $codigo .= '
 
         $sql = "';
@@ -464,50 +463,58 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         $codigo .= $sqlGerador->getSQLSelect($objeto);
 
 
-        $codigo .= '";
-';
-            
             
 
             if ($atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_DATE || $atributo->getTipo() == Atributo::TIPO_DATE_TIME) {
                 $codigo .= '
-                WHERE ' . $objeto->getNomeSnakeCase() . '.' . $id . ' like \'%$' . $id . '%\'";';
+                WHERE ' . $objeto->getNomeSnakeCase() . '.' . $atributo->getNome() . ' like :' . $atributo->getNome() . '";';
             } else {
                 $codigo .= '
-                WHERE ' . $objeto->getNomeSnakeCase() . '.' . $id . ' = $' . $id . '";';
+                WHERE ' . $objeto->getNomeSnakeCase() . '.' . $atributo->getNome() . ' = :' . $atributo->getNome() . '";';
             }
 
             $codigo .= '
-	    $result = $this->getConexao ()->query ( $sql );
-                    
-	    foreach ( $result as $linha ) {
-            $' . $nomeDoObjeto . ' = new ' . ucfirst($nomeDoObjeto) . '();';
-            foreach ($atributosComuns as $atributo2) {
 
-                $nomeDoAtributoMA = strtoupper(substr($atributo2->getNome(), 0, 1)) . substr($atributo2->getNome(), 1, 100);
-                $codigo .= '
-	        $' . $nomeDoObjeto . '->set' . $nomeDoAtributoMA . '( $linha [\'' . $atributo2->getNome() . '\'] );';
-            }
-            foreach ($atributosObjetos as $atributoObjeto) {
-
-                foreach ($this->software->getObjetos() as $objeto2) {
-                    if ($objeto2->getNome() == $atributoObjeto->getTipo()) {
-                        foreach ($objeto2->getAtributos() as $atributo3) {
-                            if ($atributo3->getIndice() == Atributo::INDICE_PRIMARY) {
-                                $codigo .= '
-			$' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set' . ucfirst($atributo3->getNome()) . '( $linha [\'' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase() . '_' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
-                            } else {
-                                $codigo .= '
-			$' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set' . ucfirst($atributo3->getNome()) . '( $linha [\'' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase(). '_' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
+        try {
+           
+            $stmt = $this->conexao->prepare($sql);
+            $stmt->bindParam(":'.$atributo->getNome().'", $'.$atributo->getNome().', PDO::'.$atributo->getTipoParametroPDO().');
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            foreach ( $result as $linha ) {
+                $' . $nomeDoObjeto . ' = new ' . ucfirst($nomeDoObjeto) . '();';
+                foreach ($atributosComuns as $atributo2) {
+    
+                    $nomeDoAtributoMA = strtoupper(substr($atributo2->getNome(), 0, 1)) . substr($atributo2->getNome(), 1, 100);
+                    $codigo .= '
+    	        $' . $nomeDoObjeto . '->set' . $nomeDoAtributoMA . '( $linha [\'' . $atributo2->getNomeSnakeCase() . '\'] );';
+                }
+                foreach ($atributosObjetos as $atributoObjeto) {
+    
+                    foreach ($this->software->getObjetos() as $objeto2) {
+                        if ($objeto2->getNome() == $atributoObjeto->getTipo()) {
+                            foreach ($objeto2->getAtributos() as $atributo3) {
+                                if ($atributo3->getIndice() == Atributo::INDICE_PRIMARY) {
+                                    $codigo .= '
+    			$' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set' . ucfirst($atributo3->getNome()) . '( $linha [\'' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase() . '_' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
+                                } else {
+                                    $codigo .= '
+    			$' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set' . ucfirst($atributo3->getNome()) . '( $linha [\'' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase(). '_' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
+                                }
                             }
+                            break;
                         }
-                        break;
                     }
                 }
+                $codigo .= '
+    			$lista [] = $' . $nomeDoObjeto . ';
+
             }
-            $codigo .= '
-			$lista [] = $' . $nomeDoObjeto . ';
-		}
+            
+        } catch(PDOException $e) {
+            echo $e->getMessage();
+            
+        }
 		return $lista;
     }';
         }
