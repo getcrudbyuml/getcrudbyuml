@@ -369,7 +369,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                 continue;
             }
             $codigo .= '
-			$stmt->bindParam("' . $atributo->getNome() . '", $' . $atributo->getNome() . ', PDO::PARAM_STR);';
+			$stmt->bindParam("' . $atributo->getNome() . '", $' . $atributo->getNome() . ', PDO::'.$atributo->getTipoParametroPDO().');';
         }
 
         $codigo .= '
