@@ -47,43 +47,26 @@ class ViewGerador{
             fclose($file);
         }
     }
-    
-    private function geraViews(Objeto $objeto)
-    {
+    private function formInserir(Objeto $objeto) : string{
         $codigo = '';
-        $nomeDoObjeto = strtolower($objeto->getNome());
         
         
         $atributosComuns = array();
-        $atributosNN = array();
         $atributosObjetos = array();
         foreach ($objeto->getAtributos() as $atributo) {
             if($atributo->tipoListado()){
                 $atributosComuns[] = $atributo;
-            }
-            else if($atributo->isArrayNN()){
-                
-                $atributosNN[] = $atributo;
-                
             }else if($atributo->isObjeto())
             {
                 $atributosObjetos[] = $atributo;
             }
         }
-        
-        $codigo = '<?php
-            
-/**
- * Classe de visao para ' . $objeto->getNome() . '
- * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
- *
- */
-class ' . $objeto->getNome() . 'View {
-	public function mostraFormInserir(';
+        $codigo = '
+public function mostraFormInserir(';
         $i = count($atributosObjetos);
         foreach($atributosObjetos as $atributoObjeto){
             $i--;
-            $codigo .= '$lista'.ucfirst($atributoObjeto->getTipo());
+            $codigo .= '$lista'.ucfirst($atributoObjeto->getTipo()).ucfirst($atributoObjeto->getNome());
             if($i != 0){
                 $codigo .= ', ';
             }
@@ -161,6 +144,48 @@ class ' . $objeto->getNome() . 'View {
 			
 \';
 	}
+
+
+
+';
+        return $codigo;
+    }
+    
+    private function geraViews(Objeto $objeto)
+    {
+        $codigo = '';
+        $nomeDoObjeto = strtolower($objeto->getNome());
+        
+        
+        $atributosComuns = array();
+        $atributosNN = array();
+        $atributosObjetos = array();
+        foreach ($objeto->getAtributos() as $atributo) {
+            if($atributo->tipoListado()){
+                $atributosComuns[] = $atributo;
+            }
+            else if($atributo->isArrayNN()){
+                
+                $atributosNN[] = $atributo;
+                
+            }else if($atributo->isObjeto())
+            {
+                $atributosObjetos[] = $atributo;
+            }
+        }
+        
+        $codigo = '<?php
+            
+/**
+ * Classe de visao para ' . $objeto->getNome() . '
+ * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
+ *
+ */
+class ' . $objeto->getNome() . 'View {';
+        $codigo .= '';
+        $codigo .= $this->formInserir($objeto);
+        $codigo .= '
+	
                                             
                                             
     public function exibirLista($lista){

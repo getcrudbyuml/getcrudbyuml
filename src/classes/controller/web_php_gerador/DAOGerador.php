@@ -119,7 +119,7 @@ class DAO {
         $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/dao/DAO.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
-    private function geraAtualizar(Objeto $objeto){
+    private function atualizar(Objeto $objeto){
         $codigo = '';
         $nomeDoObjeto = lcfirst($objeto->getNome());
         $atributosComuns = array();
@@ -209,7 +209,7 @@ class DAO {
 ';
         return $codigo;
     }
-    private function geraInserir(Objeto $objeto)
+    private function inserir(Objeto $objeto)
     {
         $codigo = '
     public function inserir(' . ucfirst($objeto->getNome()) . ' $' . lcfirst($objeto->getNome()) . '){';
@@ -292,7 +292,7 @@ class DAO {
         
     }
 
-    private function geraInserirComPK(Objeto $objeto)
+    private function inserirComPK(Objeto $objeto)
     {
         $codigo = '
     public function inserirComPK(' . ucfirst($objeto->getNome()) . ' $' . lcfirst($objeto->getNome()) . '){';
@@ -366,7 +366,7 @@ class DAO {
         return $codigo;
         
     }
-    private function geraExcluir(Objeto $objeto) : string {
+    private function excluir(Objeto $objeto) : string {
         $codigo = '
 
 	public function excluir(' . $objeto->getNome() . ' $' . lcfirst($objeto->getNome()). '){
@@ -388,7 +388,7 @@ class DAO {
         return $codigo;
         
     }
-    private function geraRetornaLista($objeto) : string {
+    private function retornaLista($objeto) : string {
         $codigo = '';
         $nomeDoObjeto = lcfirst($objeto->getNome());
         
@@ -412,16 +412,17 @@ class DAO {
         
         $codigo .= '
                  LIMIT 1000";
-		$result = $this->getConexao ()->query ( $sql );
-            
-		foreach ( $result as $linha ) {
-            
-			$' . lcfirst($objeto->getNome()) . ' = new ' . ucfirst($objeto->getNome()) . '();
-        ';
-        
+
+        try {
+		    
+		    $stmt = $this->conexao->query($sql);
+		    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		    foreach ( $result as $linha ) 
+            {
+		        $' . lcfirst($objeto->getNome()) . ' = new ' . ucfirst($objeto->getNome()) . '();';
         foreach ($atributosComuns as $atributo) {
             $codigo .= '
-			$' . lcfirst($objeto->getNome()) . '->set' . ucfirst($atributo->getNome()) . '( $linha [\'' . $atributo->getNomeSnakeCase() . '\'] );';
+                $' . lcfirst($objeto->getNome()) . '->set' . ucfirst($atributo->getNome()) . '( $linha [\'' . $atributo->getNomeSnakeCase() . '\'] );';
         }
         foreach ($atributosObjetos as $atributoObjeto) {
             
@@ -430,10 +431,10 @@ class DAO {
                     foreach ($objeto2->getAtributos() as $atributo3) {
                         if ($atributo3->getIndice() == Atributo::INDICE_PRIMARY) {
                             $codigo .= '
-			$' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set' . ucfirst($atributo3->getNome()) . '( $linha [\'' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase() . '_' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
+                $' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set' . ucfirst($atributo3->getNome()) . '( $linha [\'' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase() . '_' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
                         } else if ($atributo3->tipoListado()) {
                             $codigo .= '
-			$' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set' . ucfirst($atributo3->getNome()) . '( $linha [\'' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase() . '_' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
+                $' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set' . ucfirst($atributo3->getNome()) . '( $linha [\'' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase() . '_' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
                         }
                     }
                     break;
@@ -441,13 +442,22 @@ class DAO {
             }
         }
         $codigo .= '
-			$lista [] = $' . $nomeDoObjeto . ';
-		}
-		return $lista;
-	}';
+                $lista [] = $' . $nomeDoObjeto . ';';
+        $codigo .= '
+
+	
+		    }
+		} catch(PDOException $e) {
+		    echo $e->getMessage();
+ 		}
+        return $lista;	
+    }
+        ';
+        
+        
         return $codigo;
     }
-    private function geraPesquisarPor($objeto) : string {
+    private function pesaquisarPor($objeto) : string {
         
         $codigo = '';
         $nomeDoObjeto = lcfirst($objeto->getNome());
@@ -471,7 +481,7 @@ class DAO {
                 
     public function pesquisaPor' . ucfirst($atributo->getNome()) . '(' . $nomeDoObjetoMA . ' $' . $nomeDoObjeto . ') {
         $lista = array();
-	    $' . $atributo->getNome() . ' = $' . $nomeDoObjeto . '->get' . ucfirst($atributo->getNome()) . '();';
+	    $' . $atributo->getNome() . ' = $' . lcfirst($objeto->getNome()). '->get' . ucfirst($atributo->getNome()) . '();';
             $codigo .= '
                 
         $sql = "';
@@ -479,15 +489,12 @@ class DAO {
             $sqlGerador = new SQLGerador($this->software);
             $codigo .= $sqlGerador->getSQLSelect($objeto);
             
-            
-            
-            
             if ($atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_DATE || $atributo->getTipo() == Atributo::TIPO_DATE_TIME) {
                 $codigo .= '
-                WHERE ' . $objeto->getNomeSnakeCase() . '.' . $atributo->getNome() . ' like :' . $atributo->getNome() . '";';
+            WHERE ' . $objeto->getNomeSnakeCase() . '.' . $atributo->getNomeSnakeCase() . ' like :' . $atributo->getNome() . '";';
             } else {
                 $codigo .= '
-                WHERE ' . $objeto->getNomeSnakeCase() . '.' . $atributo->getNome() . ' = :' . $atributo->getNome() . '";';
+            WHERE ' . $objeto->getNomeSnakeCase() . '.' . $atributo->getNomeSnakeCase() . ' = :' . $atributo->getNome() . '";';
             }
             
             $codigo .= '
@@ -502,9 +509,8 @@ class DAO {
                 $' . $nomeDoObjeto . ' = new ' . ucfirst($nomeDoObjeto) . '();';
             foreach ($atributosComuns as $atributo2) {
                 
-                $nomeDoAtributoMA = strtoupper(substr($atributo2->getNome(), 0, 1)) . substr($atributo2->getNome(), 1, 100);
                 $codigo .= '
-    	        $' . $nomeDoObjeto . '->set' . $nomeDoAtributoMA . '( $linha [\'' . $atributo2->getNomeSnakeCase() . '\'] );';
+    	        $' . $nomeDoObjeto . '->set' . ucfirst($atributo2->getNome()) . '( $linha [\'' . $atributo2->getNomeSnakeCase() . '\'] );';
             }
             foreach ($atributosObjetos as $atributoObjeto) {
                 
@@ -513,10 +519,10 @@ class DAO {
                         foreach ($objeto2->getAtributos() as $atributo3) {
                             if ($atributo3->getIndice() == Atributo::INDICE_PRIMARY) {
                                 $codigo .= '
-    			$' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set' . ucfirst($atributo3->getNome()) . '( $linha [\'' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase() . '_' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
+    			$' . lcfirst($objeto->getNome()) . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set' . ucfirst($atributo3->getNome()) . '( $linha [\'' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase() . '_' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
                             } else {
                                 $codigo .= '
-    			$' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set' . ucfirst($atributo3->getNome()) . '( $linha [\'' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase(). '_' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
+    			$' . lcfirst($objeto->getNome()). '->get' . ucfirst($atributoObjeto->getNome()) . '()->set' . ucfirst($atributo3->getNome()) . '( $linha [\'' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase(). '_' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
                             }
                         }
                         break;
@@ -524,7 +530,7 @@ class DAO {
                 }
             }
             $codigo .= '
-    			$lista [] = $' . $nomeDoObjeto . ';
+    			$lista [] = $' . lcfirst($objeto->getNome()) . ';
     			    
             }
     			    
@@ -537,7 +543,7 @@ class DAO {
         }
         return $codigo;
     }
-    private function geraPreencherPor($objeto) : string {
+    private function preencherPor($objeto) : string {
         $nomeDoObjeto = lcfirst($objeto->getNome());
         $nomeDoObjetoMA = ucfirst($objeto->getNome());
         
@@ -825,18 +831,17 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
     
 
 ';
-        $codigo .= $this->geraAtualizar($objeto);
-        $codigo .= $this->geraInserir($objeto);
-        $codigo .= $this->geraInserirComPK($objeto);
-        $codigo .= $this->geraExcluir($objeto);
-        $codigo .= $this->geraRetornaLista($objeto);
-        $codigo .= $this->geraPesquisarPor($objeto);
-        $codigo .= $this->geraPreencherPor($objeto);
+        $codigo .= $this->atualizar($objeto);
+        $codigo .= $this->inserir($objeto);
+        $codigo .= $this->inserirComPK($objeto);
+        $codigo .= $this->excluir($objeto);
+        $codigo .= $this->retornaLista($objeto);
+        $codigo .= $this->pesaquisarPor($objeto);
+        $codigo .= $this->preencherPor($objeto);
         $codigo .= $this->buscarAtributoNN($objeto);
         $codigo .= $this->inserirAtributoNN($objeto);
         $codigo .= $this->removerAtributoNN($objeto);
         $codigo .= '
-                
 }';
 
         $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/dao/'.ucfirst($objeto->getNome()).'DAO.php';

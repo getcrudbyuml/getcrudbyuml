@@ -6,7 +6,7 @@ class SQLGerador {
     private $listaDeArquivos;
     private $codigo;
     private $nivelRecursividade = 0;
-    
+    public const RECURSIVIDADE_MAXIMA = 0;
     public function getListaDeArquivos(){
         return $this->listaDeArquivos;
     }
@@ -57,7 +57,7 @@ class SQLGerador {
                         }
                         
                     }
-                    if($this->nivelRecursividade < 10){
+                    if($this->nivelRecursividade < self::RECURSIVIDADE_MAXIMA){
                         $from = array_merge($from, $this->getFROM($objeto2));
 
                     }
@@ -120,7 +120,7 @@ class SQLGerador {
                             foreach($this->software->getObjetos() as $objetoTipoDoTipo){
                                 
                                 if($atributo3->getTipo() == $objetoTipoDoTipo->getNome()){
-                                    if($this->nivelRecursividade < 10){
+                                    if($this->nivelRecursividade < self::RECURSIVIDADE_MAXIMA){
                                         
                                         $camposComuns = $this->getCamposComuns($objetoTipoDoTipo);
                                         
