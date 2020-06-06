@@ -15,14 +15,14 @@ class SQLGerador {
         $this->codigo = '';
     }
     public function getSQLSelect(Objeto $objeto){
-        $strSqlSelect = "        SELECT\n        ";
+        $strSqlSelect = "\n		SELECT\n        ";
         $campos = $this->campos($objeto);
         $strSqlSelect .= implode(", \n        ", $campos);
         $this->nivelRecursividade = 0;
         $from = $this->getFROM($objeto);
         
         array_unshift($from, $objeto->getNomeSnakeCase());
-        $strSqlSelect .= "\n        FROM ".implode("\n        INNER JOIN ", $from);
+        $strSqlSelect .= "\n		FROM ".implode("\n		INNER JOIN ", $from);
         return $strSqlSelect;
         
     }

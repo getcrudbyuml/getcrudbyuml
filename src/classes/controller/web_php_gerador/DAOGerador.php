@@ -414,8 +414,12 @@ class DAO {
                  LIMIT 1000";
 
         try {
-		    
-		    $stmt = $this->conexao->query($sql);
+            $stmt = $this->conexao->prepare($sql);
+		    if(!$stmt){   
+                echo "Mensagem de erro retornada: ".$this->conexao->errorInfo()[2];
+		        return $lista;
+		    }
+
 		    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		    foreach ( $result as $linha ) 
             {
