@@ -66,7 +66,7 @@ public function mostraFormInserir(';
         $i = count($atributosObjetos);
         foreach($atributosObjetos as $atributoObjeto){
             $i--;
-            $codigo .= '$lista'.ucfirst($atributoObjeto->getTipo()).ucfirst($atributoObjeto->getNome());
+            $codigo .= '$lista'.ucfirst($atributoObjeto->getNome());
             if($i != 0){
                 $codigo .= ', ';
             }
@@ -116,8 +116,8 @@ public function mostraFormInserir(';
                 						  <select class="form-control" id="' . $atributo->getNome() . '" name="' . $atributo->getNome(). '">
                                             <option value="">Selecione o '.$atributo->getNomeTextual().'</option>\';
                                                 
-        foreach( $lista'.ucfirst($atributo->getTipo()).' as $elemento){
-            echo \'<option>\'.$elemento.\'</option>\';
+        foreach( $lista'.ucfirst($atributoObjeto->getNome()).' as $elemento){
+            echo \'<option value="\'.$elemento->getId().\'">\'.$elemento.\'</option>\';
         }
             
         echo \'
