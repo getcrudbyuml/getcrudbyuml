@@ -228,7 +228,7 @@ class DAO {
                 $listaAtributosVar[] = ':' .lcfirst($atributo->getNome());
                 
             }else if($atributo->isObjeto()){
-                $listaAtributos[] = 'id_' . $atributo->getTipoSnakeCase() . '_' . $atributo->getNomeSnakeCase();
+                $listaAtributos[] = 'id_' . $atributo->getNomeSnakeCase();
                 $listaAtributosVar[] = ':' .lcfirst($atributo->getNome());
                 
             }else{
