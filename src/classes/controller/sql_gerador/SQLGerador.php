@@ -46,8 +46,8 @@ class SQLGerador {
                 {
                     foreach($objeto2->getAtributos() as $atributo3){
                         if($atributo3->getIndice() == Atributo::INDICE_PRIMARY){
-                            $filtro = $atributoObjeto->getTipoSnakeCase().' ON '.
-                                $atributoObjeto->getTipoSnakeCase().'.'.
+                            $filtro = $atributoObjeto->getTipoSnakeCase().' as '.$atributoObjeto->getNomeSnakeCase().' ON '.
+                                $atributoObjeto->getNomeSnakeCase().'.'.
                                 $atributo3->getNome().' = '.
                                 $objeto->getNomeSnakeCase().'.'.$atributo3->getNome().
                                 '_'.$atributoObjeto->getNomeSnakeCase();
@@ -113,7 +113,7 @@ class SQLGerador {
                     foreach($objetoTipo->getAtributos() as $atributo3){
                         
                         if($atributo3->tipoListado()){
-                            $campos[$atributo3->getNomeSnakeCase().'_'.$atributoObjeto->getTipoSnakeCase().'_'.$atributoObjeto->getNomeSnakeCase()] = $atributoObjeto->getTipoSnakeCase().'.'.$atributo3->getNomeSnakeCase().' as '.$atributo3->getNomeSnakeCase().'_'.$atributoObjeto->getTipoSnakeCase().'_'.$atributoObjeto->getNomeSnakeCase();
+                            $campos[$atributo3->getNomeSnakeCase().'_'.$atributoObjeto->getTipoSnakeCase().'_'.$atributoObjeto->getNomeSnakeCase()] = $atributoObjeto->getNomeSnakeCase().'.'.$atributo3->getNomeSnakeCase().' as '.$atributo3->getNomeSnakeCase().'_'.$atributoObjeto->getTipoSnakeCase().'_'.$atributoObjeto->getNomeSnakeCase();
                         }else if($atributo3->isObjeto()){
                             
                             

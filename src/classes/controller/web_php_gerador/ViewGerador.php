@@ -47,7 +47,7 @@ class ViewGerador{
             fclose($file);
         }
     }
-    private function formInserir(Objeto $objeto) : string{
+    private function formInserir(Objeto $objeto) : string {
         $codigo = '';
         
         
@@ -150,43 +150,24 @@ public function mostraFormInserir(';
 ';
         return $codigo;
     }
-    
-    private function geraViews(Objeto $objeto)
-    {
+    private function exibirLista(Objeto $objeto){
         $codigo = '';
         $nomeDoObjeto = strtolower($objeto->getNome());
         
         
         $atributosComuns = array();
-        $atributosNN = array();
         $atributosObjetos = array();
         foreach ($objeto->getAtributos() as $atributo) {
             if($atributo->tipoListado()){
                 $atributosComuns[] = $atributo;
             }
-            else if($atributo->isArrayNN()){
-                
-                $atributosNN[] = $atributo;
-                
-            }else if($atributo->isObjeto())
+            else if($atributo->isObjeto())
             {
                 $atributosObjetos[] = $atributo;
             }
         }
         
-        $codigo = '<?php
-            
-/**
- * Classe de visao para ' . $objeto->getNome() . '
- * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
- *
- */
-class ' . $objeto->getNome() . 'View {';
-        $codigo .= '';
-        $codigo .= $this->formInserir($objeto);
-        $codigo .= '
-	
-                                            
+        $codigo .= '                                            
                                             
     public function exibirLista($lista){
            echo \'
@@ -309,10 +290,31 @@ class ' . $objeto->getNome() . 'View {';
             
 \';
     }
-            
+            ';
+        return $codigo;
+    }
+    private function mostrarSelecionado(Objeto $objeto) : string {
+        $codigo = '';
+        $nomeDoObjeto = strtolower($objeto->getNome());
+        
+        
+        $atributosComuns = array();
+        $atributosObjetos = array();
+        foreach ($objeto->getAtributos() as $atributo) {
+            if($atributo->tipoListado()){
+                $atributosComuns[] = $atributo;
+            }
+            else if($atributo->isObjeto())
+            {
+                $atributosObjetos[] = $atributo;
+            }
+        }
+        $codigo = '
+
+
             
         public function mostrarSelecionado('.$objeto->getNome().' $'.$nomeDoObjeto.'){
-        echo \'
+            echo \'
             
 	<div class="card o-hidden border-0 shadow-lg my-5">
         <div class="card mb-4">
@@ -340,6 +342,24 @@ class ' . $objeto->getNome() . 'View {';
             
 \';
     }
+';
+        return $codigo;
+    }
+    private function formEditar(Objeto $objeto) : string {
+        $codigo = '';
+        $nomeDoObjeto = strtolower($objeto->getNome());
+        
+        
+        $atributosComuns = array();
+
+        foreach ($objeto->getAtributos() as $atributo) {
+            if($atributo->tipoListado()){
+                $atributosComuns[] = $atributo;
+            }
+        }
+        
+        $codigo = '
+
             
 	public function mostraFormEditar('.$objeto->getNome().' $'.$nomeDoObjeto.') {
 		echo \'
@@ -385,6 +405,25 @@ class ' . $objeto->getNome() . 'View {';
                                             
 	</div>\';
 	}
+
+';
+        return $codigo;
+    }
+    private function confirmarDeletar(Objeto $objeto) : string {
+        $codigo = '';
+        $nomeDoObjeto = strtolower($objeto->getNome());
+        
+        
+        $atributosComuns = array();
+
+        foreach ($objeto->getAtributos() as $atributo) {
+            if($atributo->tipoListado()){
+                $atributosComuns[] = $atributo;
+            }
+        }
+        
+        $codigo  = '
+
                                             
     public function confirmarDeletar('.$objeto->getNome().' $'.$nomeDoObjeto.') {
 		echo \'
@@ -404,7 +443,6 @@ class ' . $objeto->getNome() . 'View {';
 						              <form class="user" method="post">';
         
         foreach ($atributosComuns as $atributo) {
-            $variavel = $atributo->getNome();
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
@@ -436,36 +474,38 @@ class ' . $objeto->getNome() . 'View {';
                                             
 	</div>\';
 	}
-                                            
-    public function mensagem($mensagem) {
-		echo \'
-                                            
-                                            
-                                            
-				<div class="card o-hidden border-0 shadow-lg my-5">
-					<div class="card-body p-0">
-						<!-- Nested Row within Card Body -->
-						<div class="row">
-                                            
-							<div class="col-lg-12">
-								<div class="p-5">
-									<div class="text-center">
-										<h1 class="h4 text-gray-900 mb-4">\'.$mensagem.\'</h1>
-									</div>
-                                            
-                                            
-								</div>
-							</div>
-						</div>
-					</div>
-                                            
-                                            
-	</div>\';
-	}
-                                            
-                                            
-                                            
+                      
+
 ';
+        return $codigo;
+    }
+    private function geraViews(Objeto $objeto)
+    {
+        $codigo = '';
+        
+        
+        $atributosNN = array();
+        foreach ($objeto->getAtributos() as $atributo) {
+            if($atributo->isArrayNN()){
+                
+                $atributosNN[] = $atributo;
+                
+            }
+        }
+        
+        $codigo = '<?php
+            
+/**
+ * Classe de visao para ' . $objeto->getNome() . '
+ * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
+ *
+ */
+class ' . $objeto->getNome() . 'View {';
+        $codigo .= '';
+        $codigo .= $this->formInserir($objeto);
+        $codigo .= $this->exibirLista($objeto);
+        $codigo .= $this->mostrarSelecionado($objeto);
+        $codigo .= $this->formEditar($objeto);
         
         foreach($atributosNN as $atributoNN){
             foreach($this->software->getObjetos() as $objeto3){
