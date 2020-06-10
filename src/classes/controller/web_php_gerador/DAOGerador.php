@@ -614,7 +614,7 @@ class DAO {
                 }
             }
             $codigo .= '
-                FROM ' . $nomeDoObjeto;
+                FROM ' . $objeto->getNomeSnakeCase();
             foreach ($atributosObjetos as $atributoObjeto) {
                 
                 foreach ($this->software->getObjetos() as $objeto2) {

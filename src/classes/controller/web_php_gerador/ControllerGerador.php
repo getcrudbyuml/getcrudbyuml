@@ -300,9 +300,21 @@ class ' . $nomeDoObjetoMa . 'Controller {
             
 		if ($this->dao->inserir ( $' . $nomeDoObjeto . ' ))
         {
-			echo "Sucesso";
+			echo \'
+
+<div class="alert alert-success" role="alert">
+  Sucesso ao inserir '.$objeto->getNomeTextual().'
+</div>
+
+\';
 		} else {
-			echo "Fracasso";
+			echo \'
+
+<div class="alert alert-danger" role="alert">
+  Falha ao tentar Inserir '.$objeto->getNomeTextual().'
+</div>
+
+\';
 		}
         echo \'<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=' . $objeto->getNomeSnakeCase() . '">\';
 	}

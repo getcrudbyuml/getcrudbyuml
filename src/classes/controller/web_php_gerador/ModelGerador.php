@@ -84,7 +84,7 @@ class ' . ucfirst($objeto->getNome()) . ' {';
         $this->' . $atributo->getNome() . ' = array();';
             } else if ($atributo->isObjeto()) {
                 $codigo .= '
-        $this->' . strtolower($atributo->getNome()) . ' = new ' . ucfirst($atributo->getTipo()) . '();';
+        $this->' . lcfirst($atributo->getNome()) . ' = new ' . ucfirst($atributo->getTipo()) . '();';
             }
         }
         $codigo .= '

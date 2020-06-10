@@ -75,7 +75,7 @@ public function mostraFormInserir(';
         $codigo .= ') {
 		echo \'
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+<button type="button" class="btn btn-primary m-3" data-toggle="modal" data-target="#exampleModal">
   Adicionar
 </button>
 
@@ -516,13 +516,11 @@ class ' . $objeto->getNome() . 'View {';
             }
             foreach ($objetoNN->getAtributos() as $atributo2) {
                 if(substr($atributo2->getTipo(),0,6) == 'Array '){
-                    //                     if(explode(' ', $atributo2->getTipo())[1]  == 'n:n'){
-                    //                         $atributosNN2[] = $atributo2;
-                    //                     }
+                    
                 }else if($atributo2->getTipo() == Atributo::TIPO_INT || $atributo2->getTipo() == Atributo::TIPO_STRING || $atributo2->getTipo() == Atributo::TIPO_FLOAT)
                 {
                     $atributosComuns2[] = $atributo2;
-                }///Depois faremos um else if pra objeto.
+                }
             }
             
             $codigo .= '
