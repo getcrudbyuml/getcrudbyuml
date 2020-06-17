@@ -117,7 +117,7 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase();
                                 $codigo .= ', ';
                             }
                             $codigo .= '
-    CONSTRAINT pk_' . strtolower($objeto->getNome()) . '_' . $atributo->getNomeSnakeCase() . '
+    CONSTRAINT pk_' . $objeto->getNomeSnakeCase() . '_' . $atributo->getNomeSnakeCase() . '
     PRIMARY KEY (' . $atributo->getNomeSnakeCase() . ')';
                             break;
                         }
@@ -174,7 +174,7 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase() . '_' . strtolower(explode(" ", $at
                     $codigo .= '
 
 ALTER TABLE ' . $objeto->getNomeSnakeCase() . ' 
-    ADD CONSTRAINT fk_' . $objeto->getNomeSnakeCase() . '_' . $atributo->getTipoSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ' FOREIGN KEY ('.$atributoPrimary->getNomeSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ')
+    ADD CONSTRAINT fk_' . $objeto->getNomeSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ' FOREIGN KEY ('.$atributoPrimary->getNomeSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ')
     REFERENCES ' . $atributo->getTipoSnakeCase() . ' (' . $atributoPrimary->getNomeSnakeCase() . ');
 ';
                 }
@@ -200,7 +200,7 @@ ALTER TABLE ' . $atributo->getArrayTipoSnakeCase() . ' ADD COLUMN  ' . $atributo
 
 ALTER TABLE ' . $atributo->getArrayTipoSnakeCase() . ' 
     ADD CONSTRAINT
-    fk_' . $atributoPK->getNomeSnakeCase() . '_' . $objeto->getNomeSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ' FOREIGN KEY (' . $atributoPK->getNomeSnakeCase() . '_' . $objeto->getNomeSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ')
+    fk'. '_' . $objeto->getNomeSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ' FOREIGN KEY (' . $atributoPK->getNomeSnakeCase() . '_' . $objeto->getNomeSnakeCase() . ')
     REFERENCES ' . $objeto->getNomeSnakeCase() . ' (' . $atributoPK->getNomeSnakeCase() . ');
 ';
                     }
