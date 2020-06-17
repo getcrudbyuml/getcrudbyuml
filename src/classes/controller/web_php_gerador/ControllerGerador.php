@@ -84,13 +84,16 @@ class ' . $nomeDoObjetoMa . 'Controller {
         echo \'
 		<div class="row justify-content-center">\';
         echo \'<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">\';
-        $controller->cadastrar();
-        $controller->listar();
+        
         if(isset($_GET[\'editar\'])){
             $controller->editar();
         }else if(isset($_GET[\'deletar\'])){
             $controller->deletar();
-	    }
+	    }else{
+            $controller->cadastrar();
+        }
+        $controller->listar();
+        
         echo \'</div>\';
         echo \'</div>\';
             

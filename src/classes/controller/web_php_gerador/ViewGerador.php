@@ -152,8 +152,6 @@ public function mostraFormInserir(';
     }
     private function exibirLista(Objeto $objeto){
         $codigo = '';
-        $nomeDoObjeto = strtolower($objeto->getNome());
-        
         
         $atributosComuns = array();
         $atributosObjetos = array();
@@ -265,9 +263,9 @@ public function mostraFormInserir(';
         }
         $codigo .= '
                 echo \'<td>
-                        <a href="?pagina='.$nomeDoObjeto.'&selecionar=\'.$elemento->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'" class="btn btn-info">Selecionar</a>
-                        <a href="?pagina='.$nomeDoObjeto.'&editar=\'.$elemento->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'" class="btn btn-success">Editar</a>
-                        <a href="?pagina='.$nomeDoObjeto.'&deletar=\'.$elemento->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'" class="btn btn-danger">Deletar</a>
+                        <a href="?pagina='.$objeto->getNomeSnakeCase().'&selecionar=\'.$elemento->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'" class="btn btn-info text-white">Selecionar</a>
+                        <a href="?pagina='.$objeto->getNomeSnakeCase().'&editar=\'.$elemento->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'" class="btn btn-success text-white">Editar</a>
+                        <a href="?pagina='.$objeto->getNomeSnakeCase().'&deletar=\'.$elemento->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'" class="btn btn-danger text-white">Deletar</a>
                       </td>\';';
         
         $codigo .= '
@@ -319,18 +317,18 @@ public function mostraFormInserir(';
 	<div class="card o-hidden border-0 shadow-lg my-5">
         <div class="card mb-4">
             <div class="card-header">
-                  '.$objeto->getNome().' selecionado
+                  '.$objeto->getNomeTextual().' selecionado
             </div>
             <div class="card-body">';
         
         foreach($atributosComuns as $atributo){
             $codigo .= '
-                '.ucfirst($atributo->getNome()).': \'.$'.$nomeDoObjeto.'->get'.ucfirst ($atributo->getNome()).'().\'<br>';
+                '.ucfirst($atributo->getNomeTextual()).': \'.$'.$nomeDoObjeto.'->get'.ucfirst ($atributo->getNome()).'().\'<br>';
         }
         
         foreach($atributosObjetos as $atributo){
             $codigo .= '
-                '.ucfirst($atributo->getNome()).': \'.$'.$nomeDoObjeto.'->get'.ucfirst ($atributo->getNome()).'().\'<br>';
+                '.ucfirst($atributo->getNomeTextual()).': \'.$'.$nomeDoObjeto.'->get'.ucfirst ($atributo->getNome()).'().\'<br>';
         }
         
         $codigo .= '
@@ -506,6 +504,7 @@ class ' . $objeto->getNome() . 'View {';
         $codigo .= $this->exibirLista($objeto);
         $codigo .= $this->mostrarSelecionado($objeto);
         $codigo .= $this->formEditar($objeto);
+        $codigo .= $this->confirmarDeletar($objeto);
         
         foreach($atributosNN as $atributoNN){
             foreach($this->software->getObjetos() as $objeto3){
