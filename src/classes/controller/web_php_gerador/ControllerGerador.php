@@ -175,7 +175,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
     			$this->view->mensagem("Erro ao Inserir!");
                 echo \'</div>\';
     		}
-            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina='.$nomeDoObjeto.'&selecionar=\'.$selecionado->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
+            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina='.$objeto->getNomeSnakeCase().'&selecionar=\'.$selecionado->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
             return;
         }else  if(isset($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
             
@@ -190,7 +190,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
     			$this->view->mensagem("Erro ao tentar Remover!");
                 echo \'</div>\';
     		}
-            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina='.$nomeDoObjeto.'&selecionar=\'.$selecionado->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
+            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina='.$objeto->getNomeSnakeCase().'&selecionar=\'.$selecionado->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
             return;
         }
                 
@@ -394,7 +394,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
 		} else {
 			echo "Fracasso";
 		}
-        echo \'<META HTTP-EQUIV="REFRESH" CONTENT="3; URL=index.php?pagina=' . $nomeDoObjeto . '">\';
+        echo \'<META HTTP-EQUIV="REFRESH" CONTENT="3; URL=index.php?pagina=' . $objeto->getNomeSnakeCase() . '">\';
             
     }
     public function deletar(){
@@ -413,7 +413,7 @@ class ' . $nomeDoObjetoMa . 'Controller {
         }else{
             echo "Errou";
         }
-    	echo \'<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=' . $nomeDoObjeto . '">\';
+    	echo \'<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=' . $objeto->getNomeSnakeCase() . '">\';
     }
 	public function restGET()
     {
