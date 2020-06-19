@@ -61,6 +61,9 @@ class ModelGerador
  * feita automaticamente com programa gerador de software inventado por
  * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
  */
+
+
+
 class ' . ucfirst($objeto->getNome()) . ' {';
         if (count($objeto->getAtributos()) == 0) {
             $codigo .= '}';

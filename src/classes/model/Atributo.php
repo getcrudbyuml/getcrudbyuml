@@ -187,6 +187,23 @@ class Atributo {
 	    }
 	    return $tipo;
 	}
+	public function getTipoFormHTML(){
+	    $tipo = 'text';
+	    
+	    if($this->getTipo() == Atributo::TIPO_INT){
+	        $tipo = 'number';
+	    }else if($this->getTipo() == Atributo::TIPO_FLOAT){
+	        $tipo = 'number';
+	    }else if($this->getTipo() == Atributo::TIPO_BOOLEAN){
+	        $tipo = 'text';
+	    }
+	    else if($this->getTipo() == Atributo::TIPO_DATE_TIME){
+	        $tipo = 'datetime-local';
+	    }else if($this->getTipo() == Atributo::TIPO_DATE){
+	        $tipo = 'date';
+	    }
+	    return $tipo;
+	}
 	public function getTipoParametroPDO(){
 	    $tipo = 'PARAM_STR';
 	    if($this->getTipo() == Atributo::TIPO_STRING){

@@ -62,7 +62,7 @@ class ViewGerador{
             }
         }
         $codigo = '
-public function mostraFormInserir(';
+    public function mostraFormInserir(';
         $i = count($atributosObjetos);
         foreach($atributosObjetos as $atributoObjeto){
             $i--;
@@ -105,15 +105,15 @@ public function mostraFormInserir(';
             $codigo .= '
 
                                         <div class="form-group">
-                                            <label for="' . $atributo->getNome(). '">' . $atributo->getNomeTextual(). '</label>
-                                            <input type="text" class="form-control"  name="' . $atributo->getNome(). '" id="' . $atributo->getNome(). '" placeholder="' . $atributo->getNomeTextual(). '">
+                                            <label for="' . $atributo->getNomeSnakeCase(). '">' . $atributo->getNomeTextual(). '</label>
+                                            <input type="'.$atributo->getTipoFormHTML().'" class="form-control"  name="' . $atributo->getNomeSnakeCase(). '" id="' . $atributo->getNomeSnakeCase(). '" placeholder="' . $atributo->getNomeTextual(). '">
                                         </div>';
         }
         foreach($atributosObjetos as $atributo){
             $codigo .= '
                                         <div class="form-group">
-                                          <label for="' . $atributo->getNome(). '">' . $atributo->getNomeTextual(). '</label>
-                						  <select class="form-control" id="' . $atributo->getNome() . '" name="' . $atributo->getNome(). '">
+                                          <label for="' . $atributo->getNomeSnakeCase(). '">' . $atributo->getNomeTextual(). '</label>
+                						  <select class="form-control" id="' . $atributo->getNomeSnakeCase() . '" name="' . $atributo->getNomeSnakeCase(). '">
                                             <option value="">Selecione o '.$atributo->getNomeTextual().'</option>\';
                                                 
         foreach( $lista'.ucfirst($atributoObjeto->getNome()).' as $elemento){
@@ -435,7 +435,7 @@ public function mostraFormInserir(';
 							<div class="col-lg-12">
 								<div class="p-5">
 									<div class="text-center">
-										<h1 class="h4 text-gray-900 mb-4"> Deletar ' . $objeto->getNome() . '</h1>
+										<h1 class="h4 text-gray-900 mb-4"> Deletar ' . $objeto->getNomeTextual() . '</h1>
 									</div>
 						              <form class="user" method="post">';
         
@@ -448,14 +448,8 @@ public function mostraFormInserir(';
         
         
         
-        $codigo .= '                    Tem Certeza que deseja deletar o';
-        if(count($objeto->getAtributos()) > 1){
-            $codigo .= '\'.$'.lcfirst($objeto->getNome()).'->get'.ucfirst ($objeto->getAtributos()[1]->getNome()).'().\'';
-        }else{
-            $codigo .= '\'.$'.lcfirst($objeto->getNome()).'->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'';
-        }
-        
-        $codigo .= '
+        $codigo .= '                    Tem Certeza que deseja deletar este objeto?
+
                                         <input type="submit" class="btn btn-primary btn-user btn-block" value="Deletar" name="deletar_' . $objeto->getNomeSnakeCase() . '">
                                         <hr>
                                             

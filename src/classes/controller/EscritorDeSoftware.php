@@ -41,6 +41,10 @@ class EscritorDeSoftware
         ViewGerador::main($this->software, $this->diretorio);
         ControllerGerador::main($this->software, $this->diretorio);
         IndexGerador::main($this->software, $this->diretorio);
+        ControllerCustomGerador::main($this->software, $this->diretorio);
+        DAOCustomGerador::main($this->software, $this->diretorio);
+        ViewCustomGerador::main($this->software, $this->diretorio);
+        
         $sessao = new Sessao();
         if($sessao->getNivelAcesso() == Sessao::NIVEL_ADM){
             POMGerador::main($this->software, $this->diretorio);
@@ -48,6 +52,7 @@ class EscritorDeSoftware
             ModelJavaGerador::main($this->software, $this->diretorio);
             DAOJavaGerador::main($this->software, $this->diretorio);
             ViewJavaGerador::main($this->software, $this->diretorio);
+            
         }
     }
 }

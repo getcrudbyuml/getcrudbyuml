@@ -786,6 +786,9 @@ class DAO {
  *
  *
  */
+
+
+
 class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
     
 
