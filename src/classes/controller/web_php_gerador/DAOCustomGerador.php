@@ -47,8 +47,7 @@ class DAOCustomGerador
             fclose($file);
         }
     }
-    
-    
+
     private function geraDAOs(Objeto $objeto)
     {
         $codigo = '';

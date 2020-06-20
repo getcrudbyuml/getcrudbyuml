@@ -51,7 +51,8 @@ RewriteRule ^(.*)$ index.php?api=$1 [QSA,L]
         }
         $codigo = '<?php
             
-            
+define("DB_INI", "../../../' . $this->software->getNomeSnakeCase() . '_bd.ini");
+             
 function autoload($classe) {
             
     if (file_exists ( \'classes/dao/\' . $classe . \'.php\' )){

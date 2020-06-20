@@ -53,49 +53,45 @@ class DAOGerador
                 
                 
 class DAO {
-	const ARQUIVO_CONFIGURACAO = "../../../' . $this->software->getNomeSnakeCase() . '_bd.ini";
-	    
+ 
+    protected $arquivoIni;
 	protected $conexao;
-	private $tipoDeConexao;
 	private $sgdb;
 	    
 	public function getSgdb(){
 		return $this->sgdb;
 	}
-	public function __construct(PDO $conexao = null) {
-		if ($conexao != null) {
+	public function __construct(PDO $conexao = null, $arquivoIni = DB_INI) {
+	    $this->arquivoIni = $arquivoIni;
+		if ($conexao  != null) {
 			$this->conexao = $conexao;
 		} else {
-	    
 			$this->fazerConexao ();
 		}
 	}
-	public function getEntidadeUsuarios(){
-		return $this->entidadeUsuarios;
-	}
-	    
 	    
 	public function fazerConexao() {
-		$config = parse_ini_file ( self::ARQUIVO_CONFIGURACAO );
-		$bd = array();
-		$bd [\'sgdb\'] = $config [\'sgdb\'];
-		$bd [\'bd_nome\'] = $config [\'bd_nome\'];
-		$bd [\'host\'] = $config [\'host\'];
-		$bd [\'porta\'] = $config [\'porta\'];
-		$bd [\'usuario\'] = $config [\'usuario\'];
-		$bd [\'senha\'] = $config [\'senha\'];
+	    $config = parse_ini_file ( $this->arquivoIni );
+
+		$sgdb = $config [\'sgdb\'];
+		$bdNome = $config [\'bd_nome\'];
+		$host = $config [\'host\'];
+		$porta = $config [\'porta\'];
+		$usuario = $config [\'usuario\'];
+		$senha = $config [\'senha\'];
+	    $this->sgdb = $sgdb;
+
+		if ($sgdb == "postgres") {
+			$this->conexao = new PDO ( \'pgsql:host=\' . $host. \' dbname=\' . $bdNome . \' user=\' . $usuario . \' password=\' . $senha );
+		} else if ($sgdb == "mssql") {
+			$this->conexao = new PDO ( \'dblib:host=\' . $host . \';dbname=\' . $bdNome, $usuario, $senha);
 	    
-		if ($bd [\'sgdb\'] == "postgres") {
-			$this->conexao = new PDO ( \'pgsql:host=\' . $bd [\'host\'] . \' dbname=\' . $bd [\'bd_nome\'] . \' user=\' . $bd [\'usuario\'] . \' password=\' . $bd [\'senha\'] );
-		} else if ($bd [\'sgdb\'] == "mssql") {
-			$this->conexao = new PDO ( \'dblib:host=\' . $bd [\'host\'] . \';dbname=\' . $bd [\'bd_nome\'], $bd [\'usuario\'], $bd [\'senha\'] );
-	    
-		}else if($bd[\'sgdb\'] == "mysql"){
-			$this->conexao = new PDO( \'mysql:host=\' . $bd [\'host\'] . \';dbname=\' .  $bd [\'bd_nome\'], $bd [\'usuario\'], $bd [\'senha\']);
-		}else if($bd[\'sgdb\']== "sqlite"){
-			$this->conexao = new PDO(\'sqlite:\'.$bd [\'bd_nome\']);
+		}else if($sgdb == "mysql"){
+			$this->conexao = new PDO( \'mysql:host=\' . $host . \';dbname=\' .  $bdNome, $usuario, $senha);
+		}else if($sgdb == "sqlite"){
+			$this->conexao = new PDO(\'sqlite:\'.$bdNome);
 		}
-		$this->sgdb = $bd[\'sgdb\'];
+		
 	}
 	public function setConexao($conexao) {
 		$this->conexao = $conexao;
@@ -105,12 +101,6 @@ class DAO {
 	}
 	public function fechaConexao() {
 		$this->conexao = null;
-	}
-	public function getTipoDeConexao() {
-		return $this->tipoDeConexao;
-	}
-	public function setTipoDeConexao($tipo) {
-		$this->tipoDeConexao = $tipo;
 	}
 }
 	    
