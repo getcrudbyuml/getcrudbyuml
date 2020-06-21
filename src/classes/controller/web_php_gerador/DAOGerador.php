@@ -82,10 +82,10 @@ class DAO {
 	    $this->sgdb = $sgdb;
 
 		if ($sgdb == "postgres") {
-			$this->conexao = new PDO ( \'pgsql:host=\' . $host. \' dbname=\' . $bdNome . \' user=\' . $usuario . \' password=\' . $senha );
+			$this->conexao = new PDO ( \'pgsql:host=\' . $host. \' port=\'.$porta.\' dbname=\' . $bdNome . \' user=\' . $usuario . \' password=\' . $senha );
+
 		} else if ($sgdb == "mssql") {
 			$this->conexao = new PDO ( \'dblib:host=\' . $host . \';dbname=\' . $bdNome, $usuario, $senha);
-	    
 		}else if($sgdb == "mysql"){
 			$this->conexao = new PDO( \'mysql:host=\' . $host . \';dbname=\' .  $bdNome, $usuario, $senha);
 		}else if($sgdb == "sqlite"){
