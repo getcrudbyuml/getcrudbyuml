@@ -84,53 +84,29 @@ senha = 123
         $objetos1N = array();
         $codigo = '';
         foreach ($this->software->getObjetos() as $objeto) {
-            $codigo .= '
-CREATE TABLE ' . $objeto->getNomeSnakeCase();
-            $codigo .= ' (';
-            $i = 0;
-            foreach ($objeto->getAtributos() as $atributo) {
-                $i ++;
-                $flagPulei = false;
+            
+            $campos = array();
+            foreach ($objeto->getAtributos() as $atributo) 
+            {
                 if ($atributo->getIndice() == Atributo::INDICE_PRIMARY && $atributo->tipoListado()) {
-                    $codigo .= '
-    ' . $atributo->getNomeSnakeCase() . ' serial NOT NULL';
+                    $campos[] = $atributo->getNomeSnakeCase() . ' serial NOT NULL';
                 } else if ($atributo->tipoListado()) {
-                    $codigo .= '
-    ' . $atributo->getNomeSnakeCase() . ' ' . $atributo->getTipoPostgres() . ' ';
-                } else if ($atributo->isArrayNN()) {
+                    $campos[] = $atributo->getNomeSnakeCase() . ' ' . $atributo->getTipoPostgres();
+                } else if ($atributo->isArrayNN()) 
+                {
                     $objetosNN[] = $objeto;
-                    $flagPulei = true;
                 } else if ($atributo->isArray1N()) {
                     $objetos1N[] = $objeto;
-                    $flagPulei = true;
                 } else if ($atributo->isObjeto()) {
-                    $codigo .= '
-    id' . '_' . $atributo->getNomeSnakeCase() . ' integer NOT NULL';
-                } else {
-                    // Tipo Array Comum não implementado
-                    $flagPulei = true;
-                }
-                if ($i == count($objeto->getAtributos())) {
-                    foreach ($objeto->getAtributos() as $atributo) {
-                        if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                            if (! $flagPulei) {
-                                $codigo .= ', ';
-                            }
-                            $codigo .= '
-    CONSTRAINT pk_' . $objeto->getNomeSnakeCase() . '_' . $atributo->getNomeSnakeCase() . '
-    PRIMARY KEY (' . $atributo->getNomeSnakeCase() . ')';
-                            break;
-                        }
-                    }
-                    $codigo .= "";
-                    continue;
-                }
-                if (! $flagPulei) {
-                    $codigo .= ", ";
+                    $campos[] = 'id' . '_' . $atributo->getNomeSnakeCase() . ' integer NOT NULL';
                 }
             }
-
-            $codigo .= ");\n";
+            $campos[] = 'CONSTRAINT pk_' . $objeto->getNomeSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ' PRIMARY KEY (' . $atributo->getNomeSnakeCase() . ')';
+            $codigo .= '
+CREATE TABLE ' . $objeto->getNomeSnakeCase();
+            $codigo .= " (\n        ";
+            $codigo .= implode(", \n        ", $campos);
+            $codigo .= "\n);\n";
         }
         foreach ($objetosNN as $objeto) {
 
@@ -194,13 +170,15 @@ ALTER TABLE ' . $objeto->getNomeSnakeCase() . '
                     if ($atributoPK != null) {
 
                         $codigo .= '
-ALTER TABLE ' . $atributo->getArrayTipoSnakeCase() . ' ADD COLUMN  ' . $atributoPK->getNomeSnakeCase() . '_' . $objeto->getNomeSnakeCase() . '_' . $atributo->getNomeSnakeCase() . '  integer ;';
+ALTER TABLE ' . $atributo->getArrayTipoSnakeCase() .
+                        ' ADD COLUMN  ' . $atributoPK->getNomeSnakeCase() . '_' . $objeto->getNomeSnakeCase() . '  integer ;';
 
                         $codigo .= '
 
 ALTER TABLE ' . $atributo->getArrayTipoSnakeCase() . ' 
     ADD CONSTRAINT
-    fk'. '_' . $objeto->getNomeSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ' FOREIGN KEY (' . $atributoPK->getNomeSnakeCase() . '_' . $objeto->getNomeSnakeCase() . ')
+    fk'. '_' . $objeto->getNomeSnakeCase() . '_' . $atributo->getNomeSnakeCase() . 
+    ' FOREIGN KEY (' . $atributoPK->getNomeSnakeCase() . '_' . $objeto->getNomeSnakeCase() . ')
     REFERENCES ' . $objeto->getNomeSnakeCase() . ' (' . $atributoPK->getNomeSnakeCase() . ');
 ';
                     }
@@ -211,12 +189,14 @@ ALTER TABLE ' . $atributo->getArrayTipoSnakeCase() . '
         $this->listaDeArquivos[$path] = $codigo;
         return $codigo;
     }
+    
 
+    
     public function geraBancoSqlite()
     {
         $objetosNN = array();
         $objetos1N = array();
-
+        
         
         $codigo = '';
         foreach ($this->software->getObjetos() as $objeto) {
@@ -225,15 +205,15 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase();
             $codigo .= " (\n";
             $i = 0;
             $atributosComuns = array();
-
+            
             foreach ($objeto->getAtributos() as $atributo) {
                 if ($atributo->isArrayNN()) {
-
+                    
                     $objetosNN[] = $objeto;
                 } else if ($atributo->isArray1N()) {
                     $objetos1N[] = $objeto;
                 } else {
-
+                    
                     $atributosComuns[] = $atributo;
                 }
             }
@@ -255,9 +235,9 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase();
             }
             $codigo .= ");\n";
         }
-
+        
         foreach ($objetosNN as $objeto) {
-
+            
             // explode(' ', $string);
             foreach ($objeto->getAtributos() as $atributo) {
                 if (substr($atributo->getTipo(), 0, 6) == 'Array ') {
@@ -279,12 +259,12 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase() . '_' . strtolower(explode(" ", $at
                 }
             }
             foreach ($objeto->getAtributos() as $atributo) {
-
+                
                 if ($atributo->isArray1N()) {
                     if ($atributoPK != null) {
-
+                        
                         $codigo .= '
-ALTER TABLE ' . $atributo->getArrayTipoSnakeCase() . ' ADD COLUMN  ' . $atributoPK->getNomeSnakeCase() . '_' . $objeto->getNomeSnakeCase() . '_' . $atributo->getNomeSnakeCase() . '  INTEGER ;';
+ALTER TABLE ' . $atributo->getArrayTipoSnakeCase() . ' ADD COLUMN  ' . $atributoPK->getNomeSnakeCase() . '_' . $objeto->getNomeSnakeCase() . '  INTEGER ;';
                     }
                 }
             }
