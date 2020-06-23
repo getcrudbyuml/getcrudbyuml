@@ -106,7 +106,7 @@ class ViewGerador{
 
                                         <div class="form-group">
                                             <label for="' . $atributo->getNomeSnakeCase(). '">' . $atributo->getNomeTextual(). '</label>
-                                            <input type="'.$atributo->getTipoFormHTML().'" class="form-control"  name="' . $atributo->getNomeSnakeCase(). '" id="' . $atributo->getNomeSnakeCase(). '" placeholder="' . $atributo->getNomeTextual(). '">
+                                            '.$atributo->getFormHtml().'
                                         </div>';
         }
         foreach($atributosObjetos as $atributo){
@@ -345,7 +345,6 @@ class ViewGerador{
     }
     private function formEditar(Objeto $objeto) : string {
         $codigo = '';
-        $nomeDoObjeto = strtolower($objeto->getNome());
         
         
         $atributosComuns = array();
@@ -359,7 +358,7 @@ class ViewGerador{
         $codigo = '
 
             
-	public function mostraFormEditar('.$objeto->getNome().' $'.lcfirst($objeto->getNome()).') {
+	public function mostraFormEditar('.$objeto->getNome().' $selecionado) {
 		echo \'
 	    
 	    
@@ -383,7 +382,8 @@ class ViewGerador{
             }
             $codigo .= '
                                         <div class="form-group">
-                						  <input type="text" class="form-control" value="\'. $'.lcfirst($objeto->getNome()).'->get'.ucfirst ($atributo->getNome()).'().\'" id="' . $atributo->getNomeSnakeCase() . '" name="' . $atributo->getNomeSnakeCase() . '" placeholder="' . $atributo->getNomeTextual() . '">
+                                            <label for="'.$atributo->getNomeSnakeCase().'">'.$atributo->getNomeTextual().'</label>
+                                            '.$atributo->getFormHTMLEditar().'
                 						</div>';
         }
         

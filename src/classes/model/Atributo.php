@@ -33,7 +33,7 @@ class Atributo {
 	}
 	public function getNomeTextual()
 	{
-	    $nome	= preg_replace('/([a-z])([A-Z])/',"$1 $2",$this->nome);
+	    $nome	= ucfirst(preg_replace('/([a-z])([A-Z])/',"$1 $2",$this->nome));
 	    return $nome;
 	}
 	/**
@@ -203,6 +203,34 @@ class Atributo {
 	        $tipo = 'date';
 	    }
 	    return $tipo;
+	}
+	public function getFormHTML(){
+	    
+	    $form = '<input type="'.$this->getTipoFormHTML().'" class="form-control"  name="' . $this->getNomeSnakeCase(). '" id="' . $this->getNomeSnakeCase(). '" placeholder="' . $this->getNomeTextual(). '">';
+	    if($this->getTipo() == Atributo::TIPO_BOOLEAN){
+	        $form = '
+                    <select class="form-control" id="' . $this->getNomeSnakeCase(). '" name="' . $this->getNomeSnakeCase(). '">
+                        <option value="">Selecione Um Valor</option>
+                          <option value="1">Sim</option>
+                          <option value="0">Não</option>
+                    </select>';
+	    }
+	    
+	    return $form;
+	}
+	public function getFormHTMLEditar(){
+	    
+	    $form = '<input type="'.$this->getTipoFormHTML().'" class="form-control" value="\'.$selecionado->get'.ucfirst($this->getNome()).'().\'"  name="' . $this->getNomeSnakeCase(). '" id="' . $this->getNomeSnakeCase(). '" placeholder="' . $this->getNomeTextual(). '">';
+	    if($this->getTipo() == Atributo::TIPO_BOOLEAN){
+	        $form = '
+                    <select class="form-control" id="' . $this->getNomeSnakeCase(). '" name="' . $this->getNomeSnakeCase(). '" required>
+                        <option value="">Selecione Um Valor</option>
+                          <option value="1">Sim</option>
+                          <option value="0">Não</option>
+                    </select>';
+	    }
+	    
+	    return $form;
 	}
 	public function getTipoParametroPDO(){
 	    $tipo = 'PARAM_STR';
