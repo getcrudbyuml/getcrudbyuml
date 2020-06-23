@@ -255,6 +255,90 @@ class ControllerGerador{
 ';
         return $codigo;
     }
+    private function editar(Objeto $objeto) : string {
+        $atributosComuns = array();
+        $atributosObjetos = array();
+        foreach ($objeto->getAtributos() as $atributo) {
+            if($atributo->tipoListado()){
+                $atributosComuns[] = $atributo;
+            }else if($atributo->isObjeto()){
+                $atributosObjetos[] = $atributo;
+                
+            }
+        }
+        
+        
+        $codigo = '';
+        $codigo .= '
+            
+    public function editar(){
+	    if(!isset($_GET[\'editar\'])){
+	        return;
+	    }
+        $selecionado = new '.ucfirst($objeto->getNome()).'();
+	    $selecionado->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'editar\']);
+	    $this->dao->preenchePor'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selecionado);
+	        
+        if(!isset($_POST[\'editar_' . $objeto->getNomeSnakeCase() . '\'])){
+            $this->view->mostraFormEditar($selecionado);
+            return;
+        }
+            
+		if (! ( ';
+        $campos = array();
+        foreach ($atributosComuns as $atributo) {    
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
+                continue;
+            }else{
+                $campos[] = 'isset ( $_POST [\'' . $atributo->getNomeSnakeCase() . '\'] )';
+            }
+        }
+        
+        foreach($atributosObjetos as $atributoObjeto){
+            foreach($this->software->getObjetos() as $objeto3){
+                if($atributoObjeto->getTipo() == $objeto3->getNome())
+                {
+                    foreach($objeto3->getAtributos() as $atributo2){
+                        if($atributo2->getIndice() == Atributo::INDICE_PRIMARY){
+
+                            $campos[] = ' isset($_POST [\'' . $atributoObjeto->getNomeSnakeCase() . '\'])';
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        $codigo .= implode(" && ", $campos);
+        $codigo .= ')) {
+			echo "Incompleto";
+			return;
+		}
+';
+        foreach ($atributosComuns as $atributo) 
+        {
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
+                continue;
+            }
+            $codigo .= '
+		$selecionado->set' . ucfirst($atributo->getNome()). ' ( $_POST [\'' . $atributo->getNomeSnakeCase() . '\'] );';
+        }
+        
+        $codigo .= '
+            
+		if ($this->dao->atualizar ($selecionado ))
+        {
+            
+			echo "Sucesso";
+		} else {
+			echo "Fracasso";
+		}
+        echo \'<META HTTP-EQUIV="REFRESH" CONTENT="3; URL=index.php?pagina=' . $objeto->getNomeSnakeCase() . '">\';
+            
+    }
+        ';
+        return $codigo;
+    }
     private function geraControllers(Objeto $objeto)
     {
         $codigo = '';
@@ -295,6 +379,7 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         $codigo .= $this->deletar($objeto);
         $codigo .= $this->listar();
         $codigo .= $this->cadastrar($objeto);
+        $codigo .= $this->editar($objeto);
         
         $codigo .= '
     
@@ -418,86 +503,7 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         $codigo .= '
             
     }';
-        
         $codigo .= '
-
-    public function editar(){
-	    if(!isset($_GET[\'editar\'])){
-	        return;
-	    }
-        $selecionado = new '.$nomeDoObjetoMa.'();
-	    $selecionado->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'editar\']);
-	    $this->dao->pesquisaPor'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selecionado);
-	        
-        if(!isset($_POST[\'editar_' . $nomeDoObjeto . '\'])){
-            $this->view->mostraFormEditar($selecionado);
-            return;
-        }
-            
-		if (! ( ';
-        $i = 0;
-        $numDeComunsSemPK = 0;
-        foreach ($atributosComuns as $atributo) {
-            $i ++;
-            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                continue;
-            }
-            $numDeComunsSemPK++;
-            $codigo .= 'isset ( $_POST [\'' . $atributo->getNome() . '\'] )';
-            if ($i != count($atributosComuns)) {
-                $codigo .= ' && ';
-            }
-        }
-        $i = 0;
-        foreach($atributosObjetos as $atributoObjeto){
-            foreach($this->software->getObjetos() as $objeto3){
-                if($atributoObjeto->getTipo() == $objeto3->getNome())
-                {
-                    foreach($objeto3->getAtributos() as $atributo2){
-                        if($atributo2->getIndice() == Atributo::INDICE_PRIMARY){
-                            
-                            if($numDeComunsSemPK > 0 && $i == 0){
-                                $codigo .= ' && ';
-                            }else if($i > 0){
-                                $codigo .= ' && ';
-                            }
-                            $i++;
-                            $codigo .= ' isset($_POST [\'' . $atributoObjeto->getNomeSnakeCase() . '\'])';
-                            break;
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-        
-        $codigo .= ')) {
-			echo "Incompleto";
-			return;
-		}
-';
-        foreach ($atributosComuns as $atributo) {
-            $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
-            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                continue;
-            }
-            $codigo .= '
-		$selecionado->set' . $nomeDoAtributoMA . ' ( $_POST [\'' . $atributo->getNome() . '\'] );';
-        }
-        
-        $codigo .= '
-            
-		if ($this->dao->atualizar ($selecionado ))
-        {
-            
-			echo "Sucesso";
-		} else {
-			echo "Fracasso";
-		}
-        echo \'<META HTTP-EQUIV="REFRESH" CONTENT="3; URL=index.php?pagina=' . $objeto->getNomeSnakeCase() . '">\';
-            
-    }
-
 	public function restGET()
     {
 

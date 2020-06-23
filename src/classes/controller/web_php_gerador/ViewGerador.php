@@ -359,37 +359,36 @@ class ViewGerador{
         $codigo = '
 
             
-	public function mostraFormEditar('.$objeto->getNome().' $'.$nomeDoObjeto.') {
+	public function mostraFormEditar('.$objeto->getNome().' $'.lcfirst($objeto->getNome()).') {
 		echo \'
 	    
 	    
 	    
 				<div class="card o-hidden border-0 shadow-lg my-5">
 					<div class="card-body p-0">
-						<!-- Nested Row within Card Body -->
 						<div class="row">
 	    
 							<div class="col-lg-12">
 								<div class="p-5">
 									<div class="text-center">
-										<h1 class="h4 text-gray-900 mb-4"> Adicionar ' . $objeto->getNome() . '</h1>
+										<h1 class="h4 text-gray-900 mb-4"> Adicionar ' . $objeto->getNomeTextual() . '</h1>
 									</div>
 						              <form class="user" method="post">';
         
         
         foreach ($atributosComuns as $atributo) {
-            $variavel = $atributo->getNome();
+            
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
             $codigo .= '
                                         <div class="form-group">
-                						  <input type="text" class="form-control" value="\'.$'.$nomeDoObjeto.'->get'.ucfirst ($atributo->getNome()).'().\'" id="' . $variavel . '" name="' . $variavel . '" placeholder="' . $variavel . '">
+                						  <input type="text" class="form-control" value="\'. $'.lcfirst($objeto->getNome()).'->get'.ucfirst ($atributo->getNome()).'().\'" id="' . $atributo->getNomeSnakeCase() . '" name="' . $atributo->getNomeSnakeCase() . '" placeholder="' . $atributo->getNomeTextual() . '">
                 						</div>';
         }
         
         $codigo .= '
-                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Alterar" name="editar_' . $nomeDoObjeto . '">
+                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Alterar" name="editar_' . $objeto->getNomeSnakeCase() . '">
                                         <hr>
                                             
 						              </form>
