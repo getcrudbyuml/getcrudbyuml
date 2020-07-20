@@ -72,24 +72,20 @@ class ControllerGerador{
 	public function cadastrar() {
             
         if(!isset($_POST[\'enviar_' . $objeto->getNomeSnakeCase() . '\'])){';
+        $listaParametros = array();
         foreach($atributosObjetos as $atributoObjeto){
             $codigo .= '
             $'.strtolower($atributoObjeto->getTipo()).'Dao = new '.ucfirst ($atributoObjeto->getTipo()).'DAO($this->dao->getConexao());
             $lista'.ucfirst ($atributoObjeto->getTipo()).' = $'.strtolower($atributoObjeto->getTipo()).'Dao->retornaLista();
 ';
+            $listaParametros[] = '$lista'.ucfirst ($atributoObjeto->getTipo());
             
             
         }
         $codigo .= '
             $this->view->mostraFormInserir(';
-        $i = count($atributosObjetos);
-        foreach($atributosObjetos as $atributoObjeto){
-            $i--;
-            $codigo .= '$lista'.ucfirst ($atributoObjeto->getTipo());
-            if($i != 0){
-                $codigo .= ', ';
-            }
-        }
+        
+        $codigo .= implode(', ', $listaParametros);
         $codigo .= ');';
         $codigo .= '
 		    return;
@@ -279,8 +275,24 @@ class ControllerGerador{
 	    $selecionado->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'editar\']);
 	    $this->dao->preenchePor'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selecionado);
 	        
-        if(!isset($_POST[\'editar_' . $objeto->getNomeSnakeCase() . '\'])){
-            $this->view->mostraFormEditar($selecionado);
+        if(!isset($_POST[\'editar_' . $objeto->getNomeSnakeCase() . '\'])){';
+        $listaParametros = array();
+        foreach($atributosObjetos as $atributoObjeto){
+            $codigo .= '
+            $'.strtolower($atributoObjeto->getTipo()).'Dao = new '.ucfirst ($atributoObjeto->getTipo()).'DAO($this->dao->getConexao());
+            $lista'.ucfirst ($atributoObjeto->getTipo()).' = $'.strtolower($atributoObjeto->getTipo()).'Dao->retornaLista();
+';
+            $listaParametros[] = '$lista'.ucfirst ($atributoObjeto->getTipo());
+            
+            
+        }
+        $listaParametros[] = '$selecionado';
+        $codigo .= '
+            $this->view->mostraFormEditar(';
+        
+        $codigo .= implode(', ', $listaParametros);
+        
+        $codigo .= ');
             return;
         }
             

@@ -75,16 +75,16 @@ class ViewGerador{
         $codigo .= ') {
 		echo \'
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary m-3" data-toggle="modal" data-target="#exampleModal">
+<button type="button" class="btn btn-primary m-3" data-toggle="modal" data-target="#modalAdd'.$objeto->getNome().'">
   Adicionar
 </button>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalAdd'.$objeto->getNome().'" tabindex="-1" role="dialog" aria-labelledby="labelAdd'.$objeto->getNome().'" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Adicionar '.$objeto->getNomeTextual().'</h5>
+        <h5 class="modal-title" id="labelAdd'.$objeto->getNome().'">Adicionar '.$objeto->getNomeTextual().'</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -116,7 +116,7 @@ class ViewGerador{
                 						  <select class="form-control" id="' . $atributo->getNomeSnakeCase() . '" name="' . $atributo->getNomeSnakeCase(). '">
                                             <option value="">Selecione o '.$atributo->getNomeTextual().'</option>\';
                                                 
-        foreach( $lista'.ucfirst($atributoObjeto->getNome()).' as $elemento){
+        foreach( $lista'.ucfirst($atributo->getNome()).' as $elemento){
             echo \'<option value="\'.$elemento->getId().\'">\'.$elemento.\'</option>\';
         }
             
@@ -348,17 +348,25 @@ class ViewGerador{
         
         
         $atributosComuns = array();
-
+        $atributosObjetos = array();
+        $listaParametros = array();
         foreach ($objeto->getAtributos() as $atributo) {
             if($atributo->tipoListado()){
                 $atributosComuns[] = $atributo;
+            }else if($atributo->isObjeto())
+            {
+                $atributosObjetos[] = $atributo;
+                $listaParametros[] = '$lista'.ucfirst($atributo->getNome());
             }
         }
+        $listaParametros[] = $objeto->getNome().' $selecionado';
         
-        $codigo = '
+        $codigo .= '
 
             
-	public function mostraFormEditar('.$objeto->getNome().' $selecionado) {
+	public function mostraFormEditar(';
+       $codigo .= implode(', ', $listaParametros);
+	   $codigo .= ') {
 		echo \'
 	    
 	    
@@ -385,6 +393,22 @@ class ViewGerador{
                                             <label for="'.$atributo->getNomeSnakeCase().'">'.$atributo->getNomeTextual().'</label>
                                             '.$atributo->getFormHTMLEditar().'
                 						</div>';
+        }
+        foreach($atributosObjetos as $atributo){
+            $codigo .= '
+                                        <div class="form-group">
+                                          <label for="' . $atributo->getNomeSnakeCase(). '">' . $atributo->getNomeTextual(). '</label>
+                						  <select class="form-control" id="' . $atributo->getNomeSnakeCase() . '" name="' . $atributo->getNomeSnakeCase(). '">
+                                            <option value="">Selecione o '.$atributo->getNomeTextual().'</option>\';
+                                                
+        foreach( $lista'.ucfirst($atributo->getNome()).' as $elemento){
+            echo \'<option value="\'.$elemento->getId().\'">\'.$elemento.\'</option>\';
+        }
+            
+        echo \'
+                                          </select>
+                						</div>';
+            
         }
         
         $codigo .= '

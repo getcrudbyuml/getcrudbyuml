@@ -130,7 +130,15 @@ class Atributo {
 	        return explode(' ', $this->getTipo())[2];
 	    }
 	}
-	
+	public function getTipoDeArraySnakeCase(){
+	    $strTipo = '';
+	    if(substr(trim($this->getTipo()), 0, 6) == 'Array '){
+	        $strTipo = explode(' ', $this->getTipo())[2];
+	    }
+	    $strTipo = preg_replace('/([a-z])([A-Z])/',"$1_$2",$strTipo);
+	    $strTipo = strtolower($strTipo);
+	    return $strTipo;
+	}
 	public function getTipoJava(){
 	    $tipo = "String";
 	    if($this->tipoListado()){
@@ -184,6 +192,24 @@ class Atributo {
 	        $tipo = 'timestamp without time zone';
 	    }else if($this->getTipo() == Atributo::TIPO_DATE){
 	        $tipo = 'date';
+	    }
+	    return $tipo;
+	}
+	public function getTipoMysql(){
+	    $tipo = 'INT';
+	    if($this->getTipo() == Atributo::TIPO_STRING){
+	        $tipo = 'VARCHAR(150)';
+	    }else if($this->getTipo() == Atributo::TIPO_INT){
+	        $tipo = 'INT';
+	    }else if($this->getTipo() == Atributo::TIPO_FLOAT){
+	        $tipo = 'REAL';
+	    }else if($this->getTipo() == Atributo::TIPO_BOOLEAN){
+	        $tipo = ' TINYINT NULL';
+	    }
+	    else if($this->getTipo() == Atributo::TIPO_DATE_TIME){
+	        $tipo = ' DATETIME';
+	    }else if($this->getTipo() == Atributo::TIPO_DATE){
+	        $tipo = ' DATE ';
 	    }
 	    return $tipo;
 	}
