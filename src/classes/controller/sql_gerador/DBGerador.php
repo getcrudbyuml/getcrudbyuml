@@ -30,8 +30,8 @@ class DBGerador
     {
         $this->geraINI();
         $this->geraBancoPG();
-        $this->geraBancoSqlite();
         $this->geraBancoMysql();
+        $this->geraBancoSqlite();
         $this->criarArquivos();
     }
 
