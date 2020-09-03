@@ -500,34 +500,35 @@ class DAO {
             $stmt->bindParam(":'.$atributo->getNome().'", $'.$atributo->getNome().', PDO::'.$atributo->getTipoParametroPDO().');
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            foreach ( $result as $linha ) {
-                $' . $nomeDoObjeto . ' = new ' . ucfirst($nomeDoObjeto) . '();';
-            foreach ($atributosComuns as $atributo2) {
-                
-                $codigo .= '
-    	        $' . $nomeDoObjeto . '->set' . ucfirst($atributo2->getNome()) . '( $linha [\'' . $atributo2->getNomeSnakeCase() . '\'] );';
-            }
-            foreach ($atributosObjetos as $atributoObjeto) {
-                
-                foreach ($this->software->getObjetos() as $objeto2) {
-                    if ($objeto2->getNome() == $atributoObjeto->getTipo()) {
-                        foreach ($objeto2->getAtributos() as $atributo3) {
-                            if ($atributo3->getIndice() == Atributo::INDICE_PRIMARY) {
-                                $codigo .= '
-    			$' . lcfirst($objeto->getNome()) . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set' . ucfirst($atributo3->getNome()) . '( $linha [\'' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase() . '_' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
-                            } else {
-                                $codigo .= '
-    			$' . lcfirst($objeto->getNome()). '->get' . ucfirst($atributoObjeto->getNome()) . '()->set' . ucfirst($atributo3->getNome()) . '( $linha [\'' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase(). '_' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
-                            }
+            foreach ( $result as $linha ){
+		        $' . lcfirst($objeto->getNome()) . ' = new ' . ucfirst($objeto->getNome()) . '();';
+        foreach ($atributosComuns as $atributo) {
+            $codigo .= '
+                $' . lcfirst($objeto->getNome()) . '->set' . ucfirst($atributo->getNome()) . '( $linha [\'' . $atributo->getNomeSnakeCase() . '\'] );';
+        }
+        foreach ($atributosObjetos as $atributoObjeto) {
+            
+            foreach ($this->software->getObjetos() as $objeto2) {
+                if ($objeto2->getNome() == $atributoObjeto->getTipo()) {
+                    foreach ($objeto2->getAtributos() as $atributo3) {
+                        if ($atributo3->getIndice() == Atributo::INDICE_PRIMARY) {
+                            $codigo .= '
+                $' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set' . ucfirst($atributo3->getNome()) . '( $linha [\'' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase() . '_' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
+                        } else if ($atributo3->tipoListado()) {
+                            $codigo .= '
+                $' . $nomeDoObjeto . '->get' . ucfirst($atributoObjeto->getNome()) . '()->set' . ucfirst($atributo3->getNome()) . '( $linha [\'' . $atributo3->getNomeSnakeCase() . '_' . $atributoObjeto->getTipoSnakeCase() . '_' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
                         }
-                        break;
                     }
+                    break;
                 }
             }
-            $codigo .= '
-    			$lista [] = $' . lcfirst($objeto->getNome()) . ';
-    			    
-            }
+        }
+        $codigo .= '
+                $lista [] = $' . $nomeDoObjeto . ';';
+        $codigo .= '
+
+	
+		    }
     			    
         } catch(PDOException $e) {
             echo $e->getMessage();
