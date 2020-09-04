@@ -534,12 +534,12 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
             return;
         }
 
-        if(isset($url[1])){
-            $parametro = $url[1];
+        if(isset($url[2])){
+            $parametro = $url[2];
             $id = intval($parametro);
             $pesquisado = new '.ucfirst($objeto->getNome()).'();
             $pesquisado->setId($id);
-            $pesquisado = $this->dao->pesquisaPorId($pesquisado);
+            $pesquisado = $this->dao->preenchePorId($pesquisado);
             if ($pesquisado == null) {
                 echo "{}";
                 return;
