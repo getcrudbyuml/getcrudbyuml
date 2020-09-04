@@ -58,6 +58,7 @@ class JSAjaxGerador
 $(document).ready(function(e) {
 	$("#form_enviar_'.$objeto->getNomeSnakeCase().'").on(\'submit\', function(e) {
 		e.preventDefault();
+        $(\'#modalAdd'.$objeto->getNome().'\').modal(\'hide\');
 
 		var dados = jQuery( this ).serialize();
 		jQuery.ajax({
@@ -71,16 +72,16 @@ $(document).ready(function(e) {
             	if(data.split(":")[1] == \'sucesso\'){
             		
             		$("#botao-modal-resposta").click(function(){
-            			window.location.href=\'' .$objeto->getNomeSnakeCase() . '\';
+            			window.location.href=\'?pagina=' .$objeto->getNomeSnakeCase() . '\';
             		});
-            		$("#textoModalResposta").text("Contrato enviado com sucesso! ");                	
+            		$("#textoModalResposta").text("' .$objeto->getNomeTextual() . ' enviado com sucesso! ");                	
             		$("#modalResposta").modal("show");
             		
             	}
             	else
             	{
-            		console.log(data);
-                	$("#textoModalResposta").text("Falha ao inserir contrato, fale com o Fabiano. ");                	
+            		
+                	$("#textoModalResposta").text("Falha ao inserir ' .$objeto->getNomeTextual() . ', fale com o Fabiano. ");                	
             		$("#modalResposta").modal("show");
             	}
 

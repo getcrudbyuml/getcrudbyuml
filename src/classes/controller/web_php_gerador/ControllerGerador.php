@@ -50,6 +50,120 @@ class ControllerGerador{
 ';
         return $codigo;
     }
+    private function cadastrarAjax(Objeto $objeto){
+        $codigo = '';
+        $nomeDoObjeto = lcfirst($objeto->getNome());
+        $nomeDoObjetoMa = ucfirst($objeto->getNome());
+        
+        $atributosComuns = array();
+        $atributosObjetos = array();
+        foreach ($objeto->getAtributos() as $atributo) {
+            if($atributo->tipoListado()){
+                $atributosComuns[] = $atributo;
+            }
+            else if($atributo->isObjeto()){
+                $atributosObjetos[] = $atributo;
+                
+            }
+        }
+        
+        $codigo .= '
+            
+	public function cadastrarAjax() {
+            
+        if(!isset($_POST[\'enviar_' . $objeto->getNomeSnakeCase() . '\'])){';
+            $codigo .= '
+            return;    
+        }
+        
+		    
+		
+		if (! ( ';
+        $i = 0;
+        $numDeComunsSemPK = 0;
+        foreach ($atributosComuns as $atributo) {
+            $i ++;
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
+                continue;
+            }
+            $numDeComunsSemPK++;
+            $codigo .= 'isset ( $_POST [\'' . $atributo->getNomeSnakeCase() . '\'] )';
+            if ($i != count($atributosComuns)) {
+                $codigo .= ' && ';
+            }
+        }
+        $i = 0;
+        foreach($atributosObjetos as $atributoObjeto){
+            foreach($this->software->getObjetos() as $objeto3){
+                if($atributoObjeto->getTipo() == $objeto3->getNome())
+                {
+                    foreach($objeto3->getAtributos() as $atributo2){
+                        if($atributo2->getIndice() == Atributo::INDICE_PRIMARY){
+                            
+                            if($numDeComunsSemPK > 0 && $i == 0){
+                                $codigo .= ' && ';
+                            }else if($i > 0){
+                                $codigo .= ' && ';
+                            }
+                            $i++;
+                            $codigo .= ' isset($_POST [\'' . $atributoObjeto->getNomeSnakeCase() . '\'])';
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        
+        $codigo .= ')) {
+			echo \':incompleto\';
+			return;
+		}';
+        
+        $codigo .= '
+            
+		$' . $nomeDoObjeto . ' = new ' . $nomeDoObjetoMa . ' ();';
+        foreach ($atributosComuns as $atributo) {
+            
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
+                continue;
+            }
+            $codigo .= '
+		$' . $nomeDoObjeto . '->set' . ucfirst($atributo->getNome()) . ' ( $_POST [\'' . $atributo->getNomeSnakeCase() . '\'] );';
+        }
+        foreach($atributosObjetos as $atributoObjeto){
+            foreach($this->software->getObjetos() as $objeto3){
+                if($atributoObjeto->getTipo() == $objeto3->getNome())
+                {
+                    foreach($objeto3->getAtributos() as $atributo2){
+                        if($atributo2->getIndice() == Atributo::INDICE_PRIMARY){
+                            $codigo .= '
+		$' . $nomeDoObjeto . '->get' .ucfirst($atributoObjeto->getNome()) . '()->set'.ucfirst ($atributo2->getNome()).' ( $_POST [\'' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        
+        $codigo .= '
+            
+		if ($this->dao->inserir ( $' . $nomeDoObjeto . ' ))
+        {
+			$id = $this->dao->getConexao()->lastInsertId();
+            echo \':sucesso:\'.$id;
+            
+		} else {
+			 echo \':falha\';
+		}
+	}
+            
+            
+';
+        
+        return $codigo;
+    }
     private function cadastrar(Objeto $objeto){
         $codigo = '';
         $nomeDoObjeto = lcfirst($objeto->getNome());
@@ -391,6 +505,7 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         $codigo .= $this->deletar($objeto);
         $codigo .= $this->listar();
         $codigo .= $this->cadastrar($objeto);
+        $codigo .= $this->cadastrarAjax($objeto);
         $codigo .= $this->editar($objeto);
         
         $codigo .= '
@@ -418,6 +533,12 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         
         echo \'</div>\';
         echo \'</div>\';
+            
+    }
+    public function mainAjax(){
+
+        $this->cadastrarAjax();
+        
             
     }
     public static function mainREST()
