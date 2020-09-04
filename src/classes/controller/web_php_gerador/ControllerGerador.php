@@ -480,13 +480,13 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
             $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).' = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'();
             $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'->setId($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']);
             if($this->dao->inserir'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selecionado, $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).')){
-                echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
-    			$this->view->mensagem("Sucesso ao Inserir!");
-                echo \'</div>\';
+                echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                    Sucesso ao Inserir!
+                    </div>\';
     		} else {
-                echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
-    			$this->view->mensagem("Erro ao Inserir!");
-                echo \'</div>\';
+                echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                    Erro ao Inserir!
+                    </div>\';
     		}
             echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina='.$objeto->getNomeSnakeCase().'&selecionar=\'.$selecionado->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
             return;
@@ -495,13 +495,13 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
             $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).' = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'();
             $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'->setId($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']);
             if($this->dao->remover'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selecionado, $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).')){
-                echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
-    			$this->view->mensagem("Sucesso ao Remover!");
-                echo \'</div>\';
+                echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                    Sucesso ao Remover!
+                    </div>\';
     		} else {
-                echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
-    			$this->view->mensagem("Erro ao tentar Remover!");
-                echo \'</div>\';
+                echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                        Erro ao tentar Remover!
+                    </div>\';
     		}
             echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina='.$objeto->getNomeSnakeCase().'&selecionar=\'.$selecionado->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
             return;

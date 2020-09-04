@@ -44,7 +44,7 @@ class EscritorDeSoftware
         ControllerCustomGerador::main($this->software, $this->diretorio);
         DAOCustomGerador::main($this->software, $this->diretorio);
         ViewCustomGerador::main($this->software, $this->diretorio);
-        
+        JSAjaxGerador::main($this->software, $this->diretorio);
         $sessao = new Sessao();
         if($sessao->getNivelAcesso() == Sessao::NIVEL_ADM){
             POMGerador::main($this->software, $this->diretorio);
