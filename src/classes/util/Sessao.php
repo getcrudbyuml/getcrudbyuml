@@ -71,7 +71,9 @@ class Sessao
     }
 
     const NIVEL_DESLOGADO = 0;
-
+    
+    const NIVEL_COMUM = 3;
+    
     const NIVEL_NAO_VERIFICADO = 1;
 
     const NIVEL_VERIFICADO = 2;

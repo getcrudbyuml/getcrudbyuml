@@ -114,10 +114,8 @@ if (isset($_GET['enviar_email'])) {
 <head>
 <meta name="lomadee-verification" content="22619239" />
 <meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link rel="stylesheet"
-	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="css/style.css" />
 <link href="css/simple-sidebar.css" rel="stylesheet">
 <link href="css/selectize.bootstrap3.css" rel="stylesheet">

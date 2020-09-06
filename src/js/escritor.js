@@ -10,16 +10,3 @@ $('#select-tipo-atributo').selectize({
     sortField: 'text'
 });
 
-$("#form-email" ).submit(function( event ) {
-  event.preventDefault();
-  var valor = $('#email').val();
-  console.log(valor);
-  $.ajax({
-      url: 'index.php?enviar_email='+valor,
-      success: function (response) {
-          $('#local-do-email').html(response);
-
-      }
-  });
-  
-});
