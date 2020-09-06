@@ -17,17 +17,11 @@ class UsuarioView {
 ';
         }
         echo '
-
-<div class="container">
-
 	<!-- Outer Row -->
 	<div class="row justify-content-center">
 
-		<div class="col-xl-6 col-lg-12 col-md-9">
 
-			<div class="card o-hidden border-0 shadow-lg my-5">
-				<div class="card-body p-0">
-					<!-- Nested Row within Card Body -->
+			
 					<div class="row">
 
 						<div class="col-lg-12">
@@ -42,6 +36,9 @@ class UsuarioView {
             <div class="form-group">
               <input type="text" class="form-control" id="login" name="login" placeholder="Login" required>
             </div>
+            <div class="form-group">
+              <input type="mail" class="form-control" id="email" name="email" placeholder="Email" required>
+            </div>
             <div class="form-group row">
               <div class="col-sm-6 mb-3 mb-sm-0">
                 <input type="password" class="form-control" id="exampleInputPassword" name="senha" placeholder="Senha" required>
@@ -50,20 +47,14 @@ class UsuarioView {
                 <input type="password" class="form-control" id="exampleRepeatPassword" name="senha_confirmada" placeholder="Repita sua Senha" required>
               </div>
             </div>
-
-        <input type="submit" class="btn btn-primary" value="Cadastrar" name="enviar_usuario">
-</form>
+        </form>
 
 
 
-							</div>
-						</div>
 					</div>
 				</div>
 			</div>
-		</div>
 	</div>
-</div>
 
 
 

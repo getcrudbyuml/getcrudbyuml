@@ -93,7 +93,7 @@ class HomeController{
     <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="labelComecar">Entre com seu e-mail para obter acesso ao sistema!</h5>
+        <h5 class="modal-title" id="labelComecar">Crie uma conta para começar a utilizar o sistema.</h5>
 
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -101,12 +101,19 @@ class HomeController{
       </div>
       <div class="modal-body">
         
-                
-            
-              <div class="form-group" id="local-do-email">
-                <input type="email" placeholder="Endereço de E-mail" class="form-control" id="email" required>                
-              </div>
-              <a href="?pagina=login">Já tenho conta.</a>
+               ';
+        
+        $sessao = new Sessao();
+        if($sessao->getNivelAcesso() != Sessao::NIVEL_DESLOGADO){
+            echo 'Você está logado. ';
+        }else{
+            $usuarioView = new UsuarioView();
+            $usuarioView->mostraFormInserir();
+            echo '
+              <a href="?pagina=login">Já tenho conta.</a>';
+        }
+        
+        echo '
 
 
       </div>
