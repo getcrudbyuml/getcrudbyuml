@@ -11,7 +11,7 @@ class MainController{
         }
         switch ($_GET['pagina']) {
             case 'login':
-                $controller = new UsuarioController();
+                $controller = new UsuarioCustomController();
                 $controller->login();
                 break;
             default:

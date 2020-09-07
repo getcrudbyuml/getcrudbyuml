@@ -8,10 +8,9 @@
 class UsuarioView {
     public function mostraFormInserir() {
 		echo '
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary m-3" data-toggle="modal" data-target="#modalAddUsuario">
-  Adicionar
-</button>
+
+   
+
 
 <!-- Modal -->
 <div class="modal fade" id="modalAddUsuario" tabindex="-1" role="dialog" aria-labelledby="labelAddUsuario" aria-hidden="true">
@@ -62,8 +61,10 @@ class UsuarioView {
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-        <button form="form_enviar_usuario" type="submit" class="btn btn-primary">Cadastrar</button>
+            
+              <a class="btn btn-primary" href="?pagina=login">Já tenho conta.</a>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button form="form_enviar_usuario" type="submit" class="btn btn-primary">Enviar</button>
       </div>
     </div>
   </div>

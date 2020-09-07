@@ -19,6 +19,16 @@ function autoload($classe)
         include_once 'classes/controller/sql_gerador/' . $classe . '.php';
     }else if(file_exists('classes/controller/desktop_java_gerador/' . $classe . '.php')){
         include_once 'classes/controller/desktop_java_gerador/' . $classe . '.php';
+    }else if (file_exists ( 'classes/custom/controller/' . $classe . '.php' )){
+        include_once 'classes/custom/controller/' . $classe . '.php';
+        return;
+    }
+    else if (file_exists ( 'classes/custom/view/' . $classe . '.php' )){
+        include_once 'classes/custom/view/' . $classe . '.php';
+        return;
+    }else if(file_exists ( 'classes/custom/dao/' . $classe . '.php' )){
+        include_once 'classes/custom/dao/' . $classe . '.php';
+        return;
     }
     
 }

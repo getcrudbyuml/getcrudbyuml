@@ -78,57 +78,20 @@ class HomeController{
         </div>
     </div>
 
-
-    <button type="button" class="btn btn-outline-secondary m-3" data-toggle="modal" data-target="#comecar">
-      Quero Começar
-    </button>
-
-</section>
-            
-
-
-<div class="modal fade" id="comecar" tabindex="-1" role="dialog" aria-labelledby="labelComecar" aria-hidden="true">
-  
-<form id="form-email" action=".">
-    <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="labelComecar">Crie uma conta para começar a utilizar o sistema.</h5>
-
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        
-               ';
-        
+    ';
         $sessao = new Sessao();
         if($sessao->getNivelAcesso() != Sessao::NIVEL_DESLOGADO){
             echo 'Você está logado. ';
         }else{
-            $usuarioView = new UsuarioView();
+            $usuarioView = new UsuarioCustomView();
             $usuarioView->mostraFormInserir();
-            echo '
-              <a href="?pagina=login">Já tenho conta.</a>';
+
         }
         
-        echo '
+        
+    echo '
 
-
-      </div>
-      <div class="modal-footer">
-        <input type="submit" class="btn btn-primary" value="Enviar">
-      </div>
-    </div>
-  </div>
-</form>
-
-</div>
-
-                
-
-
+</section>
             
 <!-- Footer-->
 <footer class="py-5">
