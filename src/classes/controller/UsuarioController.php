@@ -1,225 +1,465 @@
-<?php	
-
+<?php
+            
 /**
  * Classe feita para manipulação do objeto Usuario
  * feita automaticamente com programa gerador de software inventado por
  * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
  */
+
+
+
 class UsuarioController {
-	private $post;
-	private $view;
-	private $dao;
-	public static function main($nivelDeAcesso)
-	{
-	    switch ($nivelDeAcesso){
-	        case Sessao::NIVEL_ADM:
-	            self::mainAdm();
-	            break;
-	        default:
-	            echo "Pagina Inacessível";
-	            break;
-	    }
 
-	}
-	public static function mainAdm(){
-	    $controller = new UsuarioController();
-	    if (isset($_GET['selecionar'])){
-	        echo '<div class="row justify-content-center">';
-	        $controller->selecionar();
-	        echo '</div>';
-	        return;
-	    }
-	    echo '
-		<div class="row justify-content-center">';
-	    echo '<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">';
-	    
-	    $controller->adminApp();
-	    echo '</div>';
-	    echo '<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">';
-        $controller->cadastrar(Sessao::NIVEL_ATENDENTE);
-	    echo '</div>';
-	    echo '</div>';
-	}
-	public function __construct(){		
-		$this->view = new UsuarioView();
+	protected  $view;
+    protected $dao;
+
+	public function __construct(){
 		$this->dao = new UsuarioDAO();
-		foreach($_POST as $chave => $valor){
-			$this->post[$chave] = $valor;
-		}
+		$this->view = new UsuarioView();
 	}
-	
-	
-	public function editarPerfil(Usuario $usuario){
-	    if(!isset($this->post['editar_usuario'])){
-	        $this->view->formEditar($usuario);
-	        return;
-	    }
-	    
-	    if (! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['email'] ))) {
-	        echo "Incompleto";
-	        return;
-	    }
-	    
-	    
-	    
-	    $usuario->setNome ( $this->post ['nome'] );
-	    $usuario->setEmail ( $this->post ['email'] );
 
-	    
-	    if ($this->dao->atualizar( $usuario )) {
-	        echo "Sucesso";
-	    } else {
-	        echo "Fracasso";
+
+    public function deletar(){
+	    if(!isset($_GET['deletar'])){
+	        return;
 	    }
-	    echo '<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina=editar_perfil">';
+        $selecionado = new Usuario();
+	    $selecionado->setId($_GET['deletar']);
+        if(!isset($_POST['deletar_usuario'])){
+            $this->view->confirmarDeletar($selecionado);
+            return;
+        }
+        if($this->dao->excluir($selecionado)){
+            echo '<div class="alert alert-success" role="alert">
+                        Usuario excluído com sucesso!
+                    </div>';
+        }else{
+            echo '
+                    <div class="alert alert-danger" role="alert">
+                        Falha ao tentar excluir   Usuario 
+                    </div>
+
+                ';
+        }
+    	echo '<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina=usuario">';
+    }
+
+
+
+	public function listar() 
+    {
+		$lista = $this->dao->retornaLista ();
+		$this->view->exibirLista($lista);
 	}
-	public function editarSenha(Usuario $usuario)
-	{
-	    
-	    
-	    if(!isset($this->post['atualizar_senha'])){
-	        $this->view->editarSenha();
-	        return;
-	    }
-	    if (! ( isset ( $this->post ['senha'] ) && isset ( $this->post ['senha_confirmada'] ))) {
-	        $this->view->editarSenha('Preencha com a mesma senha.');
-	        return;
-	    }
-	    
-	    if($this->post['senha'] != $this->post['senha_confirmada']){
-	        
-	        $this->view->editarSenha('As senhas digitadas não correspondem.');
-	        return;
-	    }
-	    if (strlen($this->post ['senha']) == 0) {
-	        $this->view->editarSenha('Digite uma senha.');
-	        return;
-	    }
-	    if (strlen($this->post ['senha']) < 4) {
-	        $this->view->editarSenha('Digite uma senha com mais caracteres.');
-	        return;
-	    }
-	    
-	    $usuario->setSenha( $this->post ['senha'] );
 
-	    if ($this->dao->atualizarSenha($usuario)) {
-	        echo "Sucesso";
-	    } else {
-	        echo "Fracasso";
-	    }
-	    echo '<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina=editar_senha">';
-	}
-	public function cadastrar($nivelDeAcesso) {
 
-	    $sessao = new Sessao();
-	    if($sessao->getNivelAcesso() != Sessao::NIVEL_VERIFICADO){
-	        return;
-	    }
-	    
-        if(!isset($this->post['enviar_usuario'])){
+	public function cadastrar() {
+            
+        if(!isset($_POST['enviar_usuario'])){
             $this->view->mostraFormInserir();
 		    return;
 		}
-		if (! ( isset ( $this->post ['nome'] ) && isset ( $this->post ['senha'] ))) 
-		{
-			$this->view->mostraFormInserir("Digite todos os campos para continuar.");
+		if (! ( isset ( $_POST ['nome'] ) && isset ( $_POST ['email'] ) && isset ( $_POST ['login'] ) && isset ( $_POST ['senha'] ) && isset ( $_POST ['nivel'] ))) {
+			echo '
+                <div class="alert alert-danger" role="alert">
+                    Falha ao cadastrar. Algum campo deve estar faltando. 
+                </div>
+
+                ';
 			return;
 		}
-		if (!isset ( $this->post ['login'] )) {
-		    $this->view->mostraFormInserir("Digite todos os campos para continuar.");
-		    return;
+            
+		$usuario = new Usuario ();
+		$usuario->setNome ( $_POST ['nome'] );
+		$usuario->setEmail ( $_POST ['email'] );
+		$usuario->setLogin ( $_POST ['login'] );
+		$usuario->setSenha ( $_POST ['senha'] );
+		$usuario->setNivel ( $_POST ['nivel'] );
+            
+		if ($this->dao->inserir ( $usuario ))
+        {
+			echo '
+
+<div class="alert alert-success" role="alert">
+  Sucesso ao inserir Usuario
+</div>
+
+';
+		} else {
+			echo '
+
+<div class="alert alert-danger" role="alert">
+  Falha ao tentar Inserir Usuario
+</div>
+
+';
 		}
-		if ($this->post ['login'] == "" || strlen($this->post ['login']) < 3) 
-		{
-		    $this->view->mostraFormInserir("Digite um login válido");
-		    return;
-		}
-		if($this->post['senha'] != $this->post['senha_confirmada'])
-		{
-		    $this->view->mostraFormInserir("A confirmação da senha não está batendo.");
-		    return;
-		}
-		
-	
-		$usuario = new Usuario ();		
-		$usuario->setLogin ( $this->post['login']);
-		
-		if($this->dao->pesquisaPorLogin($usuario)){
+        echo '<META HTTP-EQUIV="REFRESH" CONTENT="3; URL=index.php?pagina=usuario">';
+	}
+
+
+
+            
+	public function cadastrarAjax() {
+            
+        if(!isset($_POST['enviar_usuario'])){
+            return;    
+        }
+        
 		    
-		    $this->view->mostraFormInserir("Este Login já pertence a outro usuário, tente outro.");
-		    return;
+		
+		if (! ( isset ( $_POST ['nome'] ) && isset ( $_POST ['email'] ) && isset ( $_POST ['login'] ) && isset ( $_POST ['senha'] ) && isset ( $_POST ['nivel'] ))) {
+			echo ':incompleto';
+			return;
 		}
-		
-		
-		$usuario->setNome ( $this->post ['nome'] );		
-		$usuario->setEmail ( $sessao->getLoginUsuario());
-		
-		$usuario->setSenha ( md5 (  $this->post ['senha'] ));		
-		$usuario->setNivel ( $nivelDeAcesso );	
-		
-		if ($this->dao->inserir ( $usuario )) {
-		    $id = $this->dao->getConexao()->lastInsertId();
-		    $usuario->setId($id);
-		    
-		    $sessao->criaSessao($id, Sessao::NIVEL_COMPLETO, $usuario->getLogin());
+            
+		$usuario = new Usuario ();
+		$usuario->setNome ( $_POST ['nome'] );
+		$usuario->setEmail ( $_POST ['email'] );
+		$usuario->setLogin ( $_POST ['login'] );
+		$usuario->setSenha ( $_POST ['senha'] );
+		$usuario->setNivel ( $_POST ['nivel'] );
+            
+		if ($this->dao->inserir ( $usuario ))
+        {
+			$id = $this->dao->getConexao()->lastInsertId();
+            echo ':sucesso:'.$id;
+            
+		} else {
+			 echo ':falha';
+		}
+	}
+            
+            
+
+            
+    public function editar(){
+	    if(!isset($_GET['editar'])){
+	        return;
+	    }
+        $selecionado = new Usuario();
+	    $selecionado->setId($_GET['editar']);
+	    $this->dao->preenchePorId($selecionado);
+	        
+        if(!isset($_POST['editar_usuario'])){
+            $this->view->mostraFormEditar($selecionado);
+            return;
+        }
+            
+		if (! ( isset ( $_POST ['nome'] ) && isset ( $_POST ['email'] ) && isset ( $_POST ['login'] ) && isset ( $_POST ['senha'] ) && isset ( $_POST ['nivel'] ))) {
+			echo "Incompleto";
+			return;
+		}
+
+		$selecionado->setNome ( $_POST ['nome'] );
+		$selecionado->setEmail ( $_POST ['email'] );
+		$selecionado->setLogin ( $_POST ['login'] );
+		$selecionado->setSenha ( $_POST ['senha'] );
+		$selecionado->setNivel ( $_POST ['nivel'] );
+            
+		if ($this->dao->atualizar ($selecionado ))
+        {
+            
 			echo "Sucesso";
 		} else {
-		    $this->view->mostraFormInserir("Falha na gravação dos dados. Tente novamente.");
-			
+			echo "Fracasso";
 		}
-        echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=usuario">';
-	}
-	public function login(){
-	    $this->view->formLogin();
-	    if(!isset($this->post['form_login'])){
-	       return; 
-	    }
-	    if (! (isset($this->post['login']) && isset ( $this->post ['senha'] ))) {
-	        echo "Incompleto";
-	        return;
-	    }
-	    $usuarioDAO = new UsuarioDAO();
-	    $usuario = new Usuario();
-	    $usuario->setLogin($this->post['login']);
-	    
-	    $usuario->setSenha(md5($this->post['senha']));
-	    if($usuarioDAO->autentica($usuario)){
-	        
-	        $sessao2 = new Sessao();
-	        $sessao2->criaSessao($usuario->getId(), $usuario->getNivel(), $usuario->getLogin());
-	        echo '<meta http-equiv="refresh" content=0;url="./index.php">';
-	        return;
-	    }
-	    echo 'Errou usuario ou senha';
-	}
-				
-	public function adminApp(){
-	    $this->view->modalConfirmarNivel();
-	    $this->editarNivel();
-	    $this->listar();
-	}
-	public function listar() {
-	    $usuarioDao = new UsuarioDAO ();
-	    $lista = $usuarioDao->retornaLista ();
-	    $this->view->exibirLista($lista);
-	}
-	public function editarNivel(){
-	    
-	    if(!isset($_POST['editar_nivel'])){
-	        return;
-	    }
-	    
-	    $usuario = new Usuario();
-	    $usuario->setId($_POST['id-usuario']);
-	    $usuario->setNivel($_POST['nivel']);
-	    
-	    if($this->dao->atualizarNivelPorId($usuario)){
-	        $this->view->exibirMensagem("Nível de Acesso Alterado Com Sucesso!");
+        echo '<META HTTP-EQUIV="REFRESH" CONTENT="3; URL=index.php?pagina=usuario">';
+            
+    }
+        
+    
+    public function main(){
+        
+        if (isset($_GET['selecionar'])){
+            echo '<div class="row justify-content-center">';
+                $this->selecionar();
+            echo '</div>';
+            return;
+        }
+        echo '
+		<div class="row justify-content-center">';
+        echo '<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">';
+        
+        if(isset($_GET['editar'])){
+            $this->editar();
+        }else if(isset($_GET['deletar'])){
+            $this->deletar();
 	    }else{
-	        $this->view->exibirMensagem("Falha ao tentar Inserir Usuário!");
+            $this->cadastrar();
+        }
+        $this->listar();
+        
+        echo '</div>';
+        echo '</div>';
+            
+    }
+    public function mainAjax(){
+
+        $this->cadastrarAjax();
+        
+            
+    }
+    public static function mainREST()
+    {
+        if(!isset($_SERVER['PHP_AUTH_USER'])){
+            header("WWW-Authenticate: Basic realm=\"Private Area\" ");
+            header("HTTP/1.0 401 Unauthorized");
+            echo '{"erro":[{"status":"error","message":"Authentication failed"}]}';
+            return;
+        }
+        if($_SERVER['PHP_AUTH_USER'] == 'usuario' && ($_SERVER['PHP_AUTH_PW'] == 'senha@12')){
+            header('Content-type: application/json');
+            $controller = new UsuarioController();
+            $controller->restGET();
+            //$controller->restPOST();
+            //$controller->restPUT();
+            $controller->resDELETE();
+        }else{
+            header("WWW-Authenticate: Basic realm=\"Private Area\" ");
+            header("HTTP/1.0 401 Unauthorized");
+            echo '{"erro":[{"status":"error","message":"Authentication failed"}]}';
+        }
+
+    }
+
+    public function selecionar(){
+	    if(!isset($_GET['selecionar'])){
+	        return;
 	    }
-	    echo '<meta http-equiv="refresh" content=1;url="?pagina=usuario">';
+        $selecionado = new Usuario();
+	    $selecionado->setId($_GET['selecionar']);
+	        
+        $this->dao->preenchePorId($selecionado);
+
+        echo '<div class="col-xl-7 col-lg-7 col-md-12 col-sm-12">';
+	    $this->view->mostrarSelecionado($selecionado);
+        echo '</div>';
+            
+
+            
+    }
+	public function restGET()
+    {
+
+        if ($_SERVER['REQUEST_METHOD'] != 'GET') {
+            return;
+        }
+
+        if(!isset($_REQUEST['api'])){
+            return;
+        }
+        $url = explode("/", $_REQUEST['api']);
+        if (count($url) == 0 || $url[0] == "") {
+            return;
+        }
+        if ($url[1] != 'usuario') {
+            return;
+        }
+
+        if(isset($url[2])){
+            $parametro = $url[2];
+            $id = intval($parametro);
+            $pesquisado = new Usuario();
+            $pesquisado->setId($id);
+            $pesquisado = $this->dao->preenchePorId($pesquisado);
+            if ($pesquisado == null) {
+                echo "{}";
+                return;
+            }
+
+            $pesquisado = array(
+					'id' => $pesquisado->getId (), 
+					'nome' => $pesquisado->getNome (), 
+					'email' => $pesquisado->getEmail (), 
+					'login' => $pesquisado->getLogin (), 
+					'senha' => $pesquisado->getSenha (), 
+					'nivel' => $pesquisado->getNivel ()
+            
+            
+			);
+            echo json_encode($pesquisado);
+            return;
+        }        
+        $lista = $this->dao->retornaLista();
+        $listagem = array();
+        foreach ( $lista as $linha ) {
+			$listagem ['lista'] [] = array (
+					'id' => $linha->getId (), 
+					'nome' => $linha->getNome (), 
+					'email' => $linha->getEmail (), 
+					'login' => $linha->getLogin (), 
+					'senha' => $linha->getSenha (), 
+					'nivel' => $linha->getNivel ()
+            
+            
+			);
+		}
+		echo json_encode ( $listagem );
+    
+		
+		
+		
+		
 	}
+
+    public function resDELETE()
+    {
+        if ($_SERVER['REQUEST_METHOD'] != 'DELETE') {
+            return;
+        }
+        $path = explode('/', $_GET['api']);
+        $parametro = "";
+        if (count($path) < 2) {
+            return;
+        }
+        $parametro = $path[1];
+        if ($parametro == "") {
+            return;
+        }
+    
+        $id = intval($parametro);
+        $pesquisado = new Usuario();
+        $pesquisado->setId($id);
+        $pesquisado = $this->dao->pesquisaPorId($pesquisado);
+        if ($pesquisado == null) {
+            echo "{}";
+            return;
+        }
+
+        if($this->dao->excluir($pesquisado))
+        {
+            echo "{}";
+            return;
+        }
+        
+        echo "Erro.";
+        
+    }
+    public function restPUT()
+    {
+        if ($_SERVER['REQUEST_METHOD'] != 'PUT') {
+            return;
+        }
+
+        if (! array_key_exists('api', $_GET)) {
+            return;
+        }
+        $path = explode('/', $_GET['api']);
+        if (count($path) == 0 || $path[0] == "") {
+            echo 'Error. Path missing.';
+            return;
+        }
+        
+        $param1 = "";
+        if (count($path) > 1) {
+            $parametro = $path[1];
+        }
+
+        if ($path[0] != 'info') {
+            return;
+        }
+
+        if ($param1 == "") {
+            echo 'error';
+            return;
+        }
+
+        $id = intval($parametro);
+        $pesquisado = new Usuario();
+        $pesquisado->setId($id);
+        $pesquisado = $this->dao->pesquisaPorId($pesquisado);
+
+        if ($pesquisado == null) {
+            return;
+        }
+
+        $body = file_get_contents('php://input');
+        $jsonBody = json_decode($body, true);
+        
+        
+        if (isset($jsonBody['id'])) {
+            $pesquisado->setId($jsonBody['id']);
+        }
+                    
+
+        if (isset($jsonBody['nome'])) {
+            $pesquisado->setNome($jsonBody['nome']);
+        }
+                    
+
+        if (isset($jsonBody['email'])) {
+            $pesquisado->setEmail($jsonBody['email']);
+        }
+                    
+
+        if (isset($jsonBody['login'])) {
+            $pesquisado->setLogin($jsonBody['login']);
+        }
+                    
+
+        if (isset($jsonBody['senha'])) {
+            $pesquisado->setSenha($jsonBody['senha']);
+        }
+                    
+
+        if (isset($jsonBody['nivel'])) {
+            $pesquisado->setNivel($jsonBody['nivel']);
+        }
+                    
+
+        if ($this->dao->atualizar($pesquisado)) {
+            echo "Sucesso";
+        } else {
+            echo "Erro";
+        }
+    }
+
+    public function restPOST()
+    {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            return;
+        }
+        if (! array_key_exists('path', $_GET)) {
+            echo 'Error. Path missing.';
+            return;
+        }
+
+        $path = explode('/', $_GET['path']);
+
+        if (count($path) == 0 || $path[0] == "") {
+            echo 'Error. Path missing.';
+            return;
+        }
+
+        $body = file_get_contents('php://input');
+        $jsonBody = json_decode($body, true);
+
+        if (! ( isset ( $jsonBody ['nome'] ) && isset ( $jsonBody ['email'] ) && isset ( $jsonBody ['login'] ) && isset ( $jsonBody ['senha'] ) && isset ( $jsonBody ['nivel'] ))) {
+			echo "Incompleto";
+			return;
+		}
+
+        $adicionado = new Usuario();
+        $adicionado->setId($jsonBody['id']);
+
+        $adicionado->setNome($jsonBody['nome']);
+
+        $adicionado->setEmail($jsonBody['email']);
+
+        $adicionado->setLogin($jsonBody['login']);
+
+        $adicionado->setSenha($jsonBody['senha']);
+
+        $adicionado->setNivel($jsonBody['nivel']);
+
+        if ($this->dao->inserir($adicionado)) {
+            echo "Sucesso";
+        } else {
+            echo "Fracasso";
+        }
+    }            
+            
 		
 }
 ?>

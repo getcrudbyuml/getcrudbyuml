@@ -2,7 +2,9 @@
 
 $(document).ready(function(e) {
 	$("#form_enviar_usuario").on('submit', function(e) {
+		
 		e.preventDefault();
+		console.log("Submeteu");
         $('#modalAddUsuario').modal('hide');
 
 		var dados = jQuery( this ).serialize();
