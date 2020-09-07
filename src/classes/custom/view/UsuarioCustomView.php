@@ -10,8 +10,8 @@ class UsuarioCustomView extends UsuarioView {
     public function mostraFormInserir() {
         echo '
 <button type="button" class="btn btn-outline-secondary m-3" data-toggle="modal" data-target="#modalAddUsuario">
-      Quero Começar
-    </button> 
+  Quero Começar
+</button>
             
 <!-- Modal -->
 <div class="modal fade" id="modalAddUsuario" tabindex="-1" role="dialog" aria-labelledby="labelAddUsuario" aria-hidden="true">
@@ -64,6 +64,52 @@ class UsuarioCustomView extends UsuarioView {
             
 ';
     }
-
+    public function formLogin(){
+        echo '
+            
+<div class="container">
+            
+	<!-- Outer Row -->
+	<div class="row justify-content-center">
+            
+		<div class="col-xl-6 col-lg-12 col-md-9">
+            
+			<div class="card o-hidden border-0 shadow-lg my-5">
+				<div class="card-body p-0">
+					<!-- Nested Row within Card Body -->
+					<div class="row">
+            
+						<div class="col-lg-12">
+							<div class="p-5">
+            
+                                <form id="login-form" class="form" action="" method="post">
+                                    <h3 class="text-center text-info">Login</h3>
+                                    <div class="form-group">
+                                        <label for="username" class="text-info">Login ou E-mail:</label><br>
+                                        <input type="text" name="login" id="username" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password" class="text-info">Senha:</label><br>
+                                        <input type="password" name="senha" id="password" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" name="form_login" class="btn btn-info btn-md" value="Entrar">
+                                    </div>
+            
+                                </form>
+            
+            
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+            
+            
+';
+    }
 
 }
