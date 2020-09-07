@@ -45,7 +45,7 @@ class MainController{
                 AtributoController::main();
                 break;
             case 'mudar_senha':
-                $controller = new UsuarioController();
+                $controller = new UsuarioCustomController();
                 $usuario = new Usuario();
                 $sessao = new Sessao();
                 $usuario->setId($sessao->getIdUsuario());

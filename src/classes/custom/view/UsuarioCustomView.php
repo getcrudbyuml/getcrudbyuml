@@ -40,10 +40,10 @@ class UsuarioCustomView extends UsuarioView {
             </div>
             <div class="form-group row">
               <div class="col-sm-6 mb-3 mb-sm-0">
-                <input type="password" class="form-control" id="exampleInputPassword" name="senha" placeholder="Senha" required>
+                <input type="password" autocomplete=​"new-password" class="form-control" id="exampleInputPassword" name="senha" placeholder="Senha" required>
               </div>
               <div class="col-sm-6">
-                <input type="password" class="form-control" id="exampleRepeatPassword" name="senha_confirmada" placeholder="Repita sua Senha" required>
+                <input type="password" autocomplete=​"new-password" class="form-control" id="exampleRepeatPassword" name="senha_confirmada" placeholder="Repita sua Senha" required>
               </div>
             </div>
         </form>
@@ -112,4 +112,57 @@ class UsuarioCustomView extends UsuarioView {
 ';
     }
 
+    
+    public function editarSenha($mensagem = ''){
+        if($mensagem != ''){
+            $mensagem = '
+<div class="alert alert-danger" role="alert">
+  '.$mensagem.'
+</div>
+';
+        }
+        echo '<div class="container">
+            
+		<!-- Outer Row -->
+		<div class="row justify-content-center">
+            
+			<div class="col-xl-6 col-lg-12 col-md-9">
+            
+				<div class="card o-hidden border-0 shadow-lg my-5">
+					<div class="card-body p-0">
+						<!-- Nested Row within Card Body -->
+						<div class="row">
+            
+							<div class="col-lg-12">
+            
+								<div class="p-5">
+                                    '.$mensagem.'
+									<div class="text-center">
+										<h1 class="h4 text-gray-900 mb-4">Digite sua nova senha duas vezes</h1>
+									</div>
+						              <form class="user" method="post">
+						                <div class="form-group row">
+						                  <div class="col-sm-6 mb-3 mb-sm-0">
+						                    <input type="password"  autocomplete=​"new-password"  class="form-control" id="exampleInputPassword" name="senha" placeholder="Senha">
+						                  </div>
+						                  <div class="col-sm-6">
+						                    <input type="password"  autocomplete=​"new-password"  class="form-control" id="exampleRepeatPassword" name="senha_confirmada" placeholder="Repita sua Senha">
+						                  </div>
+						                </div>
+						                <input type="submit" class="btn btn-primary btn-user btn-block" value="Alterar" name="atualizar_senha">
+                                        
+						              </form>
+                                        
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+                                        
+			</div>
+                                        
+		</div>
+                                        
+	</div>';
+    }
 }
