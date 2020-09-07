@@ -61,22 +61,19 @@ if (isset($_GET["sair"])) {
     echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php">';
     
 }
-if (isset($_GET['cadastrar_usuario'])) {
-
+if (isset($_GET['ajax'])) {
     
-    $to = $_GET['enviar_email'];
-    $subject = "GetCrudByID - Seu usuário foi cadastrado com sucesso!";
-    $message = "<p>Bem vindo ao getcrudbyuml! Seu usuário foi cadastrado com sucesso! Aproveite!</p>";
-    $headers = 'MIME-Version: 1.0' . "\r\n";
-    $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
-    $headers .= 'From: getCrudById <contato@getcrudbyuml.com>';
-
-    if (mail($to, $subject, $message, $headers)) {
-        echo "<p>E-mail Enviado. Verifique sua caixa de e-mail.</p>";
-        
-    } else {
-        echo "<p>E-mail não foi enviado.</p>";
+    switch ($_GET['ajax']){
+        case 'usuario':
+            $controller = new UsuarioCustomController();
+            $controller->mainAjax();
+            break;
+        default:
+            echo '<p>Página solicitada não encontrada.</p>';
+            break;
     }
+    
+
 
     return;
 }

@@ -56,21 +56,22 @@ class HomeController{
         <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 mb-3">
             <div class="card">
               <div class="card-body">
-                    <h5 class="card-title">Passo 3</h5>
+                    <h5 class="card-title">Passo 3</h5>';
 
-                     <p class="card-text">Faça uma doação!</p>
-                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-                    <input type="hidden" name="cmd" value="_s-xclick" />
-                    <input type="hidden" name="hosted_button_id" value="NFR6NM3C2LW9L" />
-                    <input type="image" src="https://www.paypalobjects.com/pt_BR/BR/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Faça doações com o botão do PayPal" />
-                    <img alt="" border="0" src="https://www.paypal.com/pt_BR/i/scr/pixel.gif" width="1" height="1" />
-                    </form><br><br>
+//                      <p class="card-text">Faça uma doação!</p>
+//                     <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+//                     <input type="hidden" name="cmd" value="_s-xclick" />
+//                     <input type="hidden" name="hosted_button_id" value="NFR6NM3C2LW9L" />
+//                     <input type="image" src="https://www.paypalobjects.com/pt_BR/BR/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Faça doações com o botão do PayPal" />
+//                     <img alt="" border="0" src="https://www.paypal.com/pt_BR/i/scr/pixel.gif" width="1" height="1" />
+//                     </form><br><br>
 
-                    <p class="card-text">Ou clique em um anúncio e ajude nosso site a continuar funcionando!</p>
-                    <!-- LOMADEE - BEGIN -->
-                    <script src="//ad.lomadee.com/banners/script.js?sourceId=36481616&dimension=8&height=250&width=250&method=0" type="text/javascript" language="javascript"></script>
-                    <!-- LOMADEE - END -->
+//                     <p class="card-text">Ou clique em um anúncio e ajude nosso site a continuar funcionando!</p>
+//                     <!-- LOMADEE - BEGIN -->
+//                     <script src="//ad.lomadee.com/banners/script.js?sourceId=36481616&dimension=8&height=250&width=250&method=0" type="text/javascript" language="javascript"></script>
+//                     <!-- LOMADEE - END -->
 
+        echo '
 
 
                 </div>

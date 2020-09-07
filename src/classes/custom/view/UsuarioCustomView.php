@@ -12,11 +12,13 @@ class UsuarioCustomView extends UsuarioView {
 <button type="button" class="btn btn-outline-secondary m-3" data-toggle="modal" data-target="#modalAddUsuario">
   Quero Começar
 </button>
-            
+     
 <!-- Modal -->
 <div class="modal fade" id="modalAddUsuario" tabindex="-1" role="dialog" aria-labelledby="labelAddUsuario" aria-hidden="true">
+
   <div class="modal-dialog">
     <div class="modal-content">
+        <form class="user" method="post" id="form_enviar_usuario">
       <div class="modal-header">
         <h5 class="modal-title" id="labelAddUsuario">Adicionar Usuario</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -27,7 +29,7 @@ class UsuarioCustomView extends UsuarioView {
             
             
             
-           <form class="user" method="post">
+
         
             <div class="form-group">
               <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome Completo" required>
@@ -46,7 +48,7 @@ class UsuarioCustomView extends UsuarioView {
                 <input type="password" autocomplete=​"new-password" class="form-control" id="exampleRepeatPassword" name="senha_confirmada" placeholder="Repita sua Senha" required>
               </div>
             </div>
-        </form>
+                <input type="hidden" name="form_enviar_usuario" value="1">
 
              
             
@@ -54,12 +56,13 @@ class UsuarioCustomView extends UsuarioView {
       <div class="modal-footer">
         <a class="btn btn-primary" href="?pagina=login">Já tenho conta.</a>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-        <button form="form_enviar_usuario" type="submit" class="btn btn-primary">Cadastrar</button>
+        <input type="submit" name="form_enviar_usuario1" class="btn btn-primary" value="Cadastrar">
       </div>
     </div>
+    </form>     
   </div>
 </div>
-            
+
             
             
 ';

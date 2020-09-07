@@ -2,7 +2,6 @@
 
 $(document).ready(function(e) {
 	$("#form_enviar_usuario").on('submit', function(e) {
-		
 		e.preventDefault();
 		console.log("Submeteu");
         $('#modalAddUsuario').modal('hide');
@@ -16,6 +15,8 @@ $(document).ready(function(e) {
             {
             
 
+				console.log('Teste: '+data);
+				
             	if(data.split(":")[1] == 'sucesso'){
             		
             		$("#botao-modal-resposta").click(function(){

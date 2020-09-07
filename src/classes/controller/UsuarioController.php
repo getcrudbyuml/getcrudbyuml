@@ -100,36 +100,6 @@ class UsuarioController {
 
 
             
-	public function cadastrarAjax() {
-            
-        if(!isset($_POST['enviar_usuario'])){
-            return;    
-        }
-        
-		    
-		
-		if (! ( isset ( $_POST ['nome'] ) && isset ( $_POST ['email'] ) && isset ( $_POST ['login'] ) && isset ( $_POST ['senha'] ) && isset ( $_POST ['nivel'] ))) {
-			echo ':incompleto';
-			return;
-		}
-            
-		$usuario = new Usuario ();
-		$usuario->setNome ( $_POST ['nome'] );
-		$usuario->setEmail ( $_POST ['email'] );
-		$usuario->setLogin ( $_POST ['login'] );
-		$usuario->setSenha ( $_POST ['senha'] );
-		$usuario->setNivel ( $_POST ['nivel'] );
-            
-		if ($this->dao->inserir ( $usuario ))
-        {
-			$id = $this->dao->getConexao()->lastInsertId();
-            echo ':sucesso:'.$id;
-            
-		} else {
-			 echo ':falha';
-		}
-	}
-            
             
 
             
@@ -195,11 +165,43 @@ class UsuarioController {
             
     }
     public function mainAjax(){
-
         $this->cadastrarAjax();
         
             
     }
+    
+    
+    public function cadastrarAjax() {
+        
+        if(!isset($_POST['enviar_usuario'])){
+            return;
+        }
+        
+        
+        
+        if (! ( isset ( $_POST ['nome'] ) && isset ( $_POST ['email'] ) && isset ( $_POST ['login'] ) && isset ( $_POST ['senha'] ) && isset ( $_POST ['nivel'] ))) {
+            echo ':incompleto';
+            return;
+        }
+        
+        $usuario = new Usuario ();
+        $usuario->setNome ( $_POST ['nome'] );
+        $usuario->setEmail ( $_POST ['email'] );
+        $usuario->setLogin ( $_POST ['login'] );
+        $usuario->setSenha ( $_POST ['senha'] );
+        $usuario->setNivel ( $_POST ['nivel'] );
+        
+        if ($this->dao->inserir ( $usuario ))
+        {
+            $id = $this->dao->getConexao()->lastInsertId();
+            echo ':sucesso:'.$id;
+            
+        } else {
+            echo ':falha';
+        }
+    }
+    
+    
     public static function mainREST()
     {
         if(!isset($_SERVER['PHP_AUTH_USER'])){
