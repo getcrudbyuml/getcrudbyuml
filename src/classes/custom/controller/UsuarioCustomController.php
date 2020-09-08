@@ -106,6 +106,12 @@ class UsuarioCustomController  extends UsuarioController {
 	    $usuario->setSenha ( $_POST ['senha'] );
 	    $usuario->setNivel ( Sessao::NIVEL_COMUM );
 	    
+	        
+	    
+	    
+	    $this->dao->pesquisaPorEmail($usuario);
+	    
+	    
 	    if ($this->dao->inserir ( $usuario ))
 	    {
 	        $id = $this->dao->getConexao()->lastInsertId();
