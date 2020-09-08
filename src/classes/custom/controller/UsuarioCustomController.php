@@ -82,43 +82,50 @@ class UsuarioCustomController  extends UsuarioController {
 	
 	
 	public function cadastrarAjax() {
-	    print_r($_POST);
 	    if(!isset($_POST['form_enviar_usuario'])){
-	        echo "Parou aqui";
 	        return;
 	    }
 	    
 	    
-	    if (! ( isset ( $_POST ['nome'] ) && isset ( $_POST ['email'] ) && isset ( $_POST ['login'] ) && isset ( $_POST ['senha'] ) && isset ( $_POST ['nivel'] ))) {
+	    if (! ( isset ( $_POST ['nome'] ) && isset ( $_POST ['email'] ) && isset ( $_POST ['login'] ) && isset ( $_POST ['senha'] ))) {
 	        echo "Entrou";
 	        echo ':incompleto';
 	        return;
 	    }
-	    echo "Saiu";
+	    
+	    if($_POST['senha'] != $_POST['senha_confirmada']){
+	        echo ':falha_senhas';
+	        return;
+	    }
+	    
+	    
 	    $usuario = new Usuario ();
 	    $usuario->setNome ( $_POST ['nome'] );
 	    $usuario->setEmail ( $_POST ['email'] );
 	    $usuario->setLogin ( $_POST ['login'] );
 	    $usuario->setSenha ( $_POST ['senha'] );
-	    $usuario->setNivel ( $_POST ['nivel'] );
+	    $usuario->setNivel ( Sessao::NIVEL_COMUM );
 	    
 	    if ($this->dao->inserir ( $usuario ))
 	    {
 	        $id = $this->dao->getConexao()->lastInsertId();
-	        $to = $usuario->getEmail();
-	        
-	        $subject = "GetCrudByID - Seu usuário foi cadastrado com sucesso!";
-	        $message = "<p>Bem vindo ao getcrudbyuml! Seu usuário foi cadastrado com sucesso! Aproveite!</p>";
-	        $headers = 'MIME-Version: 1.0' . "\r\n";
-	        $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
-	        $headers .= 'From: getCrudById <contato@getcrudbyuml.com>';
-	        
-	        mail($to, $subject, $message, $headers);
 	        echo ':sucesso:'.$id;
 	        
 	    } else {
 	        echo ':falha';
+	        return;
 	    }
+	    
+	    $to = $usuario->getEmail();
+	    $subject = "GetCrudByID - Seu usuário foi cadastrado com sucesso!";
+	    $message = "<p>Bem vindo ao getcrudbyuml! Seu usuário foi cadastrado com sucesso! Aproveite!</p>";
+	    $headers = 'MIME-Version: 1.0' . "\r\n";
+	    $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+	    $headers .= 'From: getCrudById <contato@getcrudbyuml.com>';
+	    
+	    mail($to, $subject, $message, $headers);
+	    $sessao = new Sessao();
+	    $sessao->criaSessao($id, Sessao::NIVEL_COMUM, $usuario->getLogin());
 	}
 }
 ?>

@@ -4,7 +4,7 @@ $(document).ready(function(e) {
 	$("#form_enviar_usuario").on('submit', function(e) {
 		e.preventDefault();
 		console.log("Submeteu");
-        $('#modalAddUsuario').modal('hide');
+
 
 		var dados = jQuery( this ).serialize();
 		jQuery.ajax({
@@ -19,18 +19,20 @@ $(document).ready(function(e) {
 				
             	if(data.split(":")[1] == 'sucesso'){
             		
-            		$("#botao-modal-resposta").click(function(){
-            			window.location.href='?pagina=software';
-            		});
-            		$('#local-do-email').text("Usuario enviado com sucesso! ");                	
-            		$("#modalResposta").modal("show");
+
+            		$('#local-do-email').text("Usuario enviado com sucesso! ");
+					window.location.href='.';                	
+            		            		
             		
-            	}
+            	}else if(data.split(":")[1] == 'falha_senhas'){
+					$('#local-do-email').text("As senhas não estão batendo. ");                	
+            		
+				}
             	else
             	{
             		
                 	$('#local-do-email').text("Falha ao inserir Usuario, fale com o Fabiano. ");                	
-            		$("#modalResposta").modal("show");
+            		
             	}
 
             }

@@ -29,7 +29,7 @@ class UsuarioCustomView extends UsuarioView {
             
             
             
-
+            <span id="local-do-email"></span>
         
             <div class="form-group">
               <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome Completo" required>
