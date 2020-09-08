@@ -109,8 +109,14 @@ class UsuarioCustomController  extends UsuarioController {
 	        
 	    
 	    
-	    $this->dao->pesquisaPorEmail($usuario);
-	    
+	    if(count($this->dao->pesquisaPorEmail($usuario)) > 0){
+	        echo ':falha_email';
+	        return;
+	    }
+	    if(count($this->dao->pesquisaPorLogin($usuario)) > 0){
+	        echo ':falha_login';
+	        return;
+	    }
 	    
 	    if ($this->dao->inserir ( $usuario ))
 	    {

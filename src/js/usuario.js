@@ -27,6 +27,12 @@ $(document).ready(function(e) {
             	}else if(data.split(":")[1] == 'falha_senhas'){
 					$('#local-do-email').text("As senhas não estão batendo. ");                	
             		
+				}else if(data.split(":")[1] == 'falha_email'){
+					$('#local-do-email').text("O e-mail já está cadastrado.");                	
+            		
+				}else if(data.split(":")[1] == 'falha_login'){
+					$('#local-do-email').text("Este login já está sendo utilizado. ");                	
+            		
 				}
             	else
             	{
