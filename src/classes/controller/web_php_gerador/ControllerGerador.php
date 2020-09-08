@@ -335,18 +335,24 @@ class ControllerGerador{
             $this->view->confirmarDeletar($selecionado);
             return;
         }
-        if($this->dao->excluir($selecionado)){
-            echo \'<div class="alert alert-success" role="alert">
-                        '.$objeto->getNomeTextual().' excluído com sucesso!
-                    </div>\';
-        }else{
-            echo \'
-                    <div class="alert alert-danger" role="alert">
-                        Falha ao tentar excluir   '.$objeto->getNomeTextual().' 
-                    </div>
+        if($this->dao->excluir($selecionado))
+        {
+			echo \'
 
-                \';
-        }
+<div class="alert alert-success" role="alert">
+  Sucesso ao excluir '.$objeto->getNomeTextual().'
+</div>
+
+\';
+		} else {
+			echo \'
+
+<div class="alert alert-danger" role="alert">
+  Falha ao tentar excluir '.$objeto->getNomeTextual().'
+</div>
+
+\';
+		}
     	echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina=' . $objeto->getNomeSnakeCase() . '">\';
     }
 
@@ -454,10 +460,21 @@ class ControllerGerador{
             
 		if ($this->dao->atualizar ($selecionado ))
         {
-            
-			echo "Sucesso";
+			echo \'
+
+<div class="alert alert-success" role="alert">
+  Sucesso 
+</div>
+
+\';
 		} else {
-			echo "Fracasso";
+			echo \'
+
+<div class="alert alert-danger" role="alert">
+  Falha 
+</div>
+
+\';
 		}
         echo \'<META HTTP-EQUIV="REFRESH" CONTENT="3; URL=index.php?pagina=' . $objeto->getNomeSnakeCase() . '">\';
             
@@ -600,30 +617,48 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         }else if(isset($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
             $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).' = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'();
             $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'->setId($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']);
-            if($this->dao->inserir'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selecionado, $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).')){
-                echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                    Sucesso ao Inserir!
-                    </div>\';
-    		} else {
-                echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                    Erro ao Inserir!
-                    </div>\';
-    		}
+            if($this->dao->inserir'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selecionado, $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'))
+            {
+			echo \'
+
+<div class="alert alert-success" role="alert">
+  Sucesso 
+</div>
+
+\';
+		} else {
+			echo \'
+
+<div class="alert alert-danger" role="alert">
+  Falha 
+</div>
+
+\';
+		    }
             echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina='.$objeto->getNomeSnakeCase().'&selecionar=\'.$selecionado->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
             return;
         }else  if(isset($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
             
             $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).' = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'();
             $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'->setId($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']);
-            if($this->dao->remover'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selecionado, $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).')){
-                echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                    Sucesso ao Remover!
-                    </div>\';
-    		} else {
-                echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                        Erro ao tentar Remover!
-                    </div>\';
-    		}
+            if($this->dao->remover'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selecionado, $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'))
+            {
+		      echo \'
+
+<div class="alert alert-success" role="alert">
+  Sucesso 
+</div>
+
+\';
+		} else {
+			echo \'
+
+<div class="alert alert-danger" role="alert">
+  Falha 
+</div>
+
+\';
+		      }
             echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina='.$objeto->getNomeSnakeCase().'&selecionar=\'.$selecionado->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
             return;
         }
@@ -800,11 +835,24 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         }
   
         $codigo .= '
-        if ($this->dao->atualizar($pesquisado)) {
-            echo "Sucesso";
-        } else {
-            echo "Erro";
-        }
+        if ($this->dao->atualizar($pesquisado)) 
+                {
+			echo \'
+
+<div class="alert alert-success" role="alert">
+  Sucesso 
+</div>
+
+\';
+		} else {
+			echo \'
+
+<div class="alert alert-danger" role="alert">
+  Falha 
+</div>
+
+\';
+		}
     }
 
     public function restPOST()
@@ -880,11 +928,24 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         }
   
         $codigo .= '
-        if ($this->dao->inserir($adicionado)) {
-            echo "Sucesso";
-        } else {
-            echo "Fracasso";
-        }
+        if ($this->dao->inserir($adicionado)) 
+                {
+			echo \'
+
+<div class="alert alert-success" role="alert">
+  Sucesso 
+</div>
+
+\';
+		} else {
+			echo \'
+
+<div class="alert alert-danger" role="alert">
+  Falha 
+</div>
+
+\';
+		}
     }            
             
 		';

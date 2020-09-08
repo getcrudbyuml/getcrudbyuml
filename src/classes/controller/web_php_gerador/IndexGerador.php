@@ -128,6 +128,8 @@ if(isset($_GET[\'ajax\'])){
             echo \'<p>Página solicitada não encontrada.</p>\';
             break;
     }
+
+    exit(0);
 }
                      
        

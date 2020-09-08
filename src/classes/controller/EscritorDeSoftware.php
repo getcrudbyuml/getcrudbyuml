@@ -46,12 +46,13 @@ class EscritorDeSoftware
         ViewCustomGerador::main($this->software, $this->diretorio);
         JSAjaxGerador::main($this->software, $this->diretorio);
         $sessao = new Sessao();
-        if($sessao->getNivelAcesso() == Sessao::NIVEL_ADM){
-            POMGerador::main($this->software, $this->diretorio);
-            MainJavaGerador::main($this->software, $this->diretorio);
-            ModelJavaGerador::main($this->software, $this->diretorio);
-            DAOJavaGerador::main($this->software, $this->diretorio);
-            ViewJavaGerador::main($this->software, $this->diretorio);
+        if($sessao->getNivelAcesso() == Sessao::NIVEL_ADM)
+        {
+//             POMGerador::main($this->software, $this->diretorio);
+//             MainJavaGerador::main($this->software, $this->diretorio);
+//             ModelJavaGerador::main($this->software, $this->diretorio);
+//             DAOJavaGerador::main($this->software, $this->diretorio);
+//             ViewJavaGerador::main($this->software, $this->diretorio);
             
         }
     }

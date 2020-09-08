@@ -103,7 +103,7 @@ class UsuarioCustomController  extends UsuarioController {
 	    $usuario->setNome ( $_POST ['nome'] );
 	    $usuario->setEmail ( $_POST ['email'] );
 	    $usuario->setLogin ( $_POST ['login'] );
-	    $usuario->setSenha ( $_POST ['senha'] );
+	    $usuario->setSenha ( md5($_POST ['senha'] ));
 	    $usuario->setNivel ( Sessao::NIVEL_COMUM );
 	    
 	        

@@ -118,7 +118,7 @@ class ObjetoDAO extends DAO {
 
     public function pesquisaPorIdSoftware(Software $software) {
 	    $idsoftware = $software->getId();
-	    $sql = "SELECT * FROM objeto WHERE id_software_objetos = $idsoftware ORDER BY id DESC";
+	    $sql = "SELECT * FROM objeto WHERE objeto.id_software_objetos = $idsoftware ORDER BY id DESC";
 	    $result = $this->getConexao ()->query ( $sql );
 	        
 	    foreach ( $result as $linha ) {
@@ -140,7 +140,7 @@ class ObjetoDAO extends DAO {
                     software.nome as nome_software 
                  FROM software INNER JOIN objeto 
                 ON software.id = objeto.id_software_objetos
-                WHERE id_objeto = $idObjeto";
+                WHERE objeto.id = $idObjeto";
 	    $result = $this->getConexao ()->query ( $sql );
 	    
 	    foreach ( $result as $linha ) {
