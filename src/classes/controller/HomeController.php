@@ -16,13 +16,14 @@ class HomeController{
                 <hr class="divider my-4" />
             </div>
             <div class="col-lg-8 align-self-baseline">
-                <p class="text-white-75 mb-5">
-                GetCrudByUml is a unified visual tool for database architects, developers, and DBAs. You make the UML Class Diagram and get the application with data base acces. 
-                </p>
+                
                 <p class="text-white-75 mb-5">
                 GetCrudByUml é uma ferramenta visual unificada para arquitetos de banco de dados, desenvolvedores e DBAs. Você cria o diagrama de classes UML e obtém o aplicativo com acesso à base de dados.
                 </p>
-
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe src="https://www.youtube.com/embed/9tNzOuJbvuU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div><br><br>
+                
 
                 <a class="btn btn-primary btn-xl js-scroll-trigger" href="#como-fazer">Como Funciona</a>
             </div>
