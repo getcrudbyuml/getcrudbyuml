@@ -48,11 +48,12 @@ if(isset($_GET)){
         $strGet .= '\''.$chave.'\' : \''.$valor.'\', ';
     }
 }
-
-$auditoria->setPagina($strGet);
-$auditoriaDao = new AuditoriaDAO();
-
-$auditoriaDao->inserir($auditoria);
+if($sessao != Sessao::NIVEL_DESLOGADO){
+    $auditoria->setPagina($strGet);
+    $auditoriaDao = new AuditoriaDAO();
+    $auditoriaDao->inserir($auditoria);
+    
+}
 
 
 

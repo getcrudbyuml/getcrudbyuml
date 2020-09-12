@@ -35,7 +35,7 @@ class UsuarioCustomView extends UsuarioView {
               <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome Completo" required>
             </div>
             <div class="form-group">
-              <input type="text" class="form-control" id="login" name="login" placeholder="Login" required>
+              <input type="text" class="form-control" id="login" name="login" placeholder="Login" pattern="[a-zA-Z0-9]+" required>
             </div>
             <div class="form-group">
               <input type="mail" class="form-control" id="email" name="email" placeholder="Email" required>
