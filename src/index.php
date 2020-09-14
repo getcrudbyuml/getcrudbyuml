@@ -48,7 +48,7 @@ if(isset($_GET)){
         $strGet .= '\''.$chave.'\' : \''.$valor.'\', ';
     }
 }
-if($sessao != Sessao::NIVEL_DESLOGADO){
+if($sessao->getNivelAcesso() != Sessao::NIVEL_DESLOGADO){
     $auditoria->setPagina($strGet);
     $auditoriaDao = new AuditoriaDAO();
     $auditoriaDao->inserir($auditoria);

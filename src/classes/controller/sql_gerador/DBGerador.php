@@ -152,7 +152,7 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase() . '_' . strtolower(explode(" ", $at
                     $codigo .= '
 
 ALTER TABLE ' . $objeto->getNomeSnakeCase() . ' 
-    ADD CONSTRAINT fk_' . $objeto->getNomeSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ' FOREIGN KEY ('.$atributoPrimary->getNomeSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ')
+    ADD CONSTRAINT fk_' . $objeto->getNomeSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ' FOREIGN KEY (id_' . $atributo->getTipoSnakeCase() . ')
     REFERENCES ' . $atributo->getTipoSnakeCase() . ' (' . $atributoPrimary->getNomeSnakeCase() . ');
 ';
                 }

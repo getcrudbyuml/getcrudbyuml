@@ -13,13 +13,11 @@ class AtributoController {
     public static function main(){
         $controller = new AtributoController();
         if(isset($_GET['selecionar'])){
+            $controller->editar();
             $controller->selecionar();
             return;
         }else if(isset($_GET['deletar'])){
             $controller->deletar();
-            return;
-        }else if(isset($_GET['editar'])){
-            $controller->editar();
             return;
         }
         
@@ -118,7 +116,7 @@ class AtributoController {
         echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=objeto&selecionar='.$objeto->getId().'">';
 	}
     public function editar(){
-	    if(!isset($_GET['editar'])){
+	    if(!isset($_POST['editar_atributo'])){
 	        return;
 	    }
 	    $usuarioDao = new UsuarioDAO($this->dao->getConexao());
@@ -128,7 +126,7 @@ class AtributoController {
 	    $usuario->setId($sessao->getIdUsuario());
 	    
 	    $selecionado = new Atributo();
-	    $selecionado->setId($_GET['editar']);
+	    $selecionado->setId($_GET['selecionar']);
 	    
 	    if(!$usuarioDao->verificarPosseAtributo($usuario, $selecionado)){
 	        echo "Armaria, nam! Vc quer mesmo bugar o sistema! Continue que uma hora vc consegue. Nunca mencionei que o sistema era isento de falhas. ";
@@ -159,7 +157,7 @@ class AtributoController {
 		} else {
 			echo "Fracasso";
 		}
-        echo '<META HTTP-EQUIV="REFRESH" CONTENT="3; URL=index.php?pagina=atributo">';
+        echo '<META HTTP-EQUIV="REFRESH" CONTENT="3; URL=index.php?pagina=atributo&selecionar='.$_GET['selecionar'].'">';
 
     }
     public function deletar(){
