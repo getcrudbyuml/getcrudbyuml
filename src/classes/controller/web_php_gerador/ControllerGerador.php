@@ -81,17 +81,17 @@ class ControllerGerador{
 		if (! ( ';
         $i = 0;
         $numDeComunsSemPK = 0;
+        $issetList = array();
         foreach ($atributosComuns as $atributo) {
             $i ++;
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
             $numDeComunsSemPK++;
-            $codigo .= 'isset ( $_POST [\'' . $atributo->getNomeSnakeCase() . '\'] )';
-            if ($i != count($atributosComuns)) {
-                $codigo .= ' && ';
-            }
+            $issetList[] = 'isset ( $_POST [\'' . $atributo->getNomeSnakeCase() . '\'] )';
+            
         }
+        $codigo .= implode(' && ', $issetList);
         $i = 0;
         foreach($atributosObjetos as $atributoObjeto){
             foreach($this->software->getObjetos() as $objeto3){
@@ -207,17 +207,17 @@ class ControllerGerador{
 		if (! ( ';
         $i = 0;
         $numDeComunsSemPK = 0;
+        $issetLista = array();
         foreach ($atributosComuns as $atributo) {
             $i ++;
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
             $numDeComunsSemPK++;
-            $codigo .= 'isset ( $_POST [\'' . $atributo->getNomeSnakeCase() . '\'] )';
-            if ($i != count($atributosComuns)) {
-                $codigo .= ' && ';
-            }
+            $issetLista[] = 'isset ( $_POST [\'' . $atributo->getNomeSnakeCase() . '\'] )';
+            
         }
+        $codigo .= implode(' && ', $issetLista);
         $i = 0;
         foreach($atributosObjetos as $atributoObjeto){
             foreach($this->software->getObjetos() as $objeto3){
@@ -878,17 +878,18 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         if (! ( ';
         $i = 0;
         $numDeComunsSemPK = 0;
+        $listIsset = array();
         foreach ($atributosComuns as $atributo) {
             $i ++;
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
             $numDeComunsSemPK++;
-            $codigo .= 'isset ( $jsonBody [\'' . $atributo->getNome() . '\'] )';
-            if ($i != count($atributosComuns)) {
-                $codigo .= ' && ';
-            }
+            
+            $listIsset[] = 'isset ( $jsonBody [\'' . $atributo->getNome() . '\'] )';
+
         }
+        $codigo .= implode(" && ", $listIsset);
         $i = 0;
         foreach($atributosObjetos as $atributoObjeto){
             foreach($this->software->getObjetos() as $objeto3){

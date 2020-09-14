@@ -48,9 +48,8 @@ class SQLGerador {
                         if($atributo3->getIndice() == Atributo::INDICE_PRIMARY){
                             $filtro = $atributoObjeto->getTipoSnakeCase().' as '.$atributoObjeto->getNomeSnakeCase().' ON '.
                                 $atributoObjeto->getNomeSnakeCase().'.'.
-                                $atributo3->getNome().' = '.
-                                $objeto->getNomeSnakeCase().'.'.$atributo3->getNome().
-                                '_'.$atributoObjeto->getNomeSnakeCase();
+                                $atributo3->getNomeSnakeCase().' = '.
+                                $objeto->getNomeSnakeCase().'.id_'.$atributoObjeto->getNomeSnakeCase();
                             
                             $from[$filtro] = $filtro;
                             break;

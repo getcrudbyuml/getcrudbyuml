@@ -238,11 +238,25 @@ class DAO {
             }
             if($atributo->tipoListado()){
                 $codigo .= '
-		$' . lcfirst($atributo->getNome()) . ' = $' . lcfirst($objeto->getNOme()) . '->get' . ucfirst($atributo->getNome()) . '();';
+		$' . lcfirst($atributo->getNome()) . ' = $' . lcfirst($objeto->getNome()) . '->get' . ucfirst($atributo->getNome()) . '();';
             }else if($atributo->isObjeto())
             {
+                $strCampoPrimary = '';
+                foreach($this->software->getObjetos() as $objetoDoAtributo){
+                    if($objetoDoAtributo->getNome() == $atributo->getTipo()){
+                        foreach($objetoDoAtributo->getAtributos() as $att){
+                            if($att->isPrimary()){
+                                $strCampoPrimary = ucfirst($att->getNome());
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+                
+                
                 $codigo .= '
-		$' . lcfirst($atributo->getNome()). ' = $' . lcfirst($objeto->getNome()) . '->get' . ucfirst($atributo->getNome()) . '()->getId();';
+		$' . lcfirst($atributo->getNome()). ' = $' . lcfirst($objeto->getNome()) . '->get' . ucfirst($atributo->getNome()) . '()->get'.$strCampoPrimary.'();';
                 
             }
             

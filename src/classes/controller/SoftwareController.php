@@ -54,6 +54,7 @@ class SoftwareController
         $usuarioDao->buscarSoftwares($usuario);
         $this->view->exibirLista($usuario->getSoftwares());
     }
+    
     public function escrever()
     {
         foreach($this->selecionado->getObjetos() as $objeto){
@@ -100,7 +101,13 @@ class SoftwareController
         
         
         $diretorio = './sistemas/' . $sessao->getLoginUsuario() . '/' . $this->selecionado->getNomeSimples();
+//         if(file_exists($diretorio))
+//             rmdir($diretorio);
 
+// rename('sistemas/' . $sessao->getLoginUsuario() . '/' . $this->selecionado->getNomeSimples(), 
+//     './sistemas_trash/' . $sessao->getLoginUsuario() . '/trash/' . $this->selecionado->getNomeSimples());
+        
+        
         EscritorDeSoftware::main($this->selecionado, $diretorio);
         
         

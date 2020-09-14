@@ -81,7 +81,7 @@ $(document).ready(function(e) {
             	else
             	{
             		
-                	$("#textoModalResposta").text("Falha ao inserir ' .$objeto->getNomeTextual() . ', fale com o Fabiano. ");                	
+                	$("#textoModalResposta").text("Falha ao inserir ' .$objeto->getNomeTextual() . ', fale com o suporte. ");                	
             		$("#modalResposta").modal("show");
             	}
 

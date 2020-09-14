@@ -109,7 +109,22 @@ class ViewGerador{
                                             '.$atributo->getFormHtml().'
                                         </div>';
         }
+        
         foreach($atributosObjetos as $atributo){
+            
+            $strCampoPrimary = '';
+            foreach($this->software->getObjetos() as $objetoDoAtributo){
+                if($objetoDoAtributo->getNome() == $atributo->getTipo()){
+                    foreach($objetoDoAtributo->getAtributos() as $att){
+                        if($att->isPrimary()){
+                            $strCampoPrimary = ucfirst($att->getNome());
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            
             $codigo .= '
                                         <div class="form-group">
                                           <label for="' . $atributo->getNomeSnakeCase(). '">' . $atributo->getNomeTextual(). '</label>
@@ -117,7 +132,7 @@ class ViewGerador{
                                             <option value="">Selecione o '.$atributo->getNomeTextual().'</option>\';
                                                 
         foreach( $lista'.ucfirst($atributo->getNome()).' as $elemento){
-            echo \'<option value="\'.$elemento->getId().\'">\'.$elemento.\'</option>\';
+            echo \'<option value="\'.$elemento->get'.$strCampoPrimary.'().\'">\'.$elemento.\'</option>\';
         }
             
         echo \'
