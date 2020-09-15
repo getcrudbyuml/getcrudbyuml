@@ -54,7 +54,23 @@ class SoftwareController
         $usuarioDao->buscarSoftwares($usuario);
         $this->view->exibirLista($usuario->getSoftwares());
     }
-    
+    public function excluiDir($dir){
+        
+        if ($dd = opendir($dir)) {
+            while (false !== ($arq = readdir($dd))) {
+                if($arq != "." && $arq != ".."){
+                    $path = "$dir/$arq";
+                    if(is_dir($path)){
+                        self::excluiDir($path);
+                    }elseif(is_file($path)){
+                        unlink($path);
+                    }
+                }
+            }
+            closedir($dd);
+        }
+        rmdir($dir);
+    }
     public function escrever()
     {
         foreach($this->selecionado->getObjetos() as $objeto){
@@ -85,6 +101,8 @@ class SoftwareController
             echo '</div>';
             return;
         }
+        
+        
         foreach($this->selecionado->getObjetos() as $objeto){
             if(count($objeto->getAtributos()) == 0){
                 echo '<div class="row justify-content-center">';
@@ -100,13 +118,8 @@ class SoftwareController
         }
         
         
-        $diretorio = './sistemas/' . $sessao->getLoginUsuario() . '/' . $this->selecionado->getNomeSimples();
-//         if(file_exists($diretorio))
-//             rmdir($diretorio);
-
-// rename('sistemas/' . $sessao->getLoginUsuario() . '/' . $this->selecionado->getNomeSimples(), 
-//     './sistemas_trash/' . $sessao->getLoginUsuario() . '/trash/' . $this->selecionado->getNomeSimples());
-        
+        $diretorio = './sistemas/' . $sessao->getLoginUsuario() . '/' . $this->selecionado->getNomeSimples();        
+        $this->excluiDir( './sistemas/' . $sessao->getLoginUsuario() . '/');
         
         EscritorDeSoftware::main($this->selecionado, $diretorio);
         
