@@ -223,7 +223,7 @@ if(isset($_GET[\'pagina\'])){
           <a href="#">Voltar ao topo</a>
         </p>
         <p>Este é um software desenvolvido automaticamente pelo escritor de Software.</p>
-        <p>Novo no Escritor De Software? Problema o seu.</p>
+        <p>Novo no Escritor De Software? Acesse <a href="https://getcrudbyuml.com">GetCrudbyUml.com</a>.</p>
       </div>
     </footer>
             
