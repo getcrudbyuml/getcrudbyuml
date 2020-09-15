@@ -120,8 +120,13 @@ class SoftwareController
         
         $diretorio = './sistemas/' . $sessao->getLoginUsuario() . '/' . $this->selecionado->getNomeSimples();        
         $this->excluiDir( './sistemas/' . $sessao->getLoginUsuario() . '/');
+        if($_GET['escrever'] == 1){
+            EscritorDeSoftware::main($this->selecionado, $diretorio);
+        }else{
+//             EscritorDeSoftware::main($this->selecionado, $diretorio);
+            echo "Reservado para escrever JAVA";
+        }
         
-        EscritorDeSoftware::main($this->selecionado, $diretorio);
         
         
         
@@ -294,10 +299,11 @@ class SoftwareController
         echo '<div class="row">';
         echo '<div class="col-xl-8 col-lg-8 col-md-12 col-sm-12">';
         echo '<h3>Software: ' . $this->selecionado->getNome() . '</h3>';
+
         echo '<a href="?pagina=software&selecionar=' . $this->selecionado->getId() . '&escrever=1" class="btn btn-success m-2">Pegar Código</a>';
         echo '<a href="?pagina=software&deletar=' . $this->selecionado->getId() . '" class="btn btn-danger m-2">Deletar Software</a>';
         
-        
+
         
         
         $this->escrever();
@@ -310,7 +316,17 @@ class SoftwareController
         echo '<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">';
         $objetoController = new ObjetoController();
         $objetoController->cadastrar($this->selecionado);
+        echo '
+<div class="alert alert-warning m-2" role="alert">
+  Dica!<br> Utilize camel case para as classes e atributos para obter o melhor resultado. 
+  Ou seja, separando as palavras com letra maiúscula, como em idImovel, nomeAluno... 
+<br>Use nomeAluno ao invés de nome_aluno. <br>
+
+</div>
+            
+';
         echo '</div>';
+        
         echo '</div>';
         
         echo '<br><br><hr>';
