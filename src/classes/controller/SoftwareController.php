@@ -122,6 +122,11 @@ class SoftwareController
         $this->excluiDir( './sistemas/' . $sessao->getLoginUsuario() . '/');
         if($_GET['escrever'] == 1){
             EscritorDeSoftware::main($this->selecionado, $diretorio);
+            $numeroDeArquivos = 0;
+            
+            $zipador = new Zipador();
+            $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/../'.$this->selecionado->getNomeSimples().'.zip');
+            
         }else{
 //             EscritorDeSoftware::main($this->selecionado, $diretorio);
             echo "Reservado para escrever JAVA";
@@ -130,10 +135,6 @@ class SoftwareController
         
         
         
-        $numeroDeArquivos = 0;
-        
-        $zipador = new Zipador();
-        $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/../'.$this->selecionado->getNomeSimples().'.zip');
         
         
         
