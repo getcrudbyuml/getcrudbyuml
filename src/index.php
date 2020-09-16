@@ -90,6 +90,7 @@ if (isset($_GET['ajax'])) {
 <link rel="stylesheet" type="text/css" href="css/style.css" />
 <link href="css/simple-sidebar.css" rel="stylesheet">
 <link href="css/selectize.bootstrap3.css" rel="stylesheet">
+<link rel="stylesheet" href="css/chat.css">
 <title>getCrudByUml</title>
 </head>
 <body>
@@ -118,6 +119,13 @@ MainController::main($sessao);
 			</div>
 		</div>
 		
+<?php 
+
+
+// MainChat::main();
+
+?>
+
 
 	</div>
 	<script src="js/jquery-3.4.1.min.js"></script>
@@ -132,6 +140,7 @@ MainController::main($sessao);
 	<script src="js/selectize.js"></script>
 	<script src="js/escritor.js"></script>
 	<script src="js/usuario.js"></script>
+	<script src="js/chat.js"></script>
 
 </body>
 </html>
