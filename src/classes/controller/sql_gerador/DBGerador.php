@@ -137,12 +137,18 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase() . '_' . strtolower(explode(" ", $at
         foreach ($this->software->getObjetos() as $objeto) {
             foreach ($objeto->getAtributos() as $atributo) {
                 if ($atributo->isObjeto()) {
+                    $objetoDoAtributo = null;
                     foreach ($this->software->getObjetos() as $objeto2) {
                         if ($atributo->getTipo() == $objeto2->getNome()) {
                             $objetoDoAtributo = $objeto2;
                             break;
                         }
                     }
+                    if($objetoDoAtributo == null){
+                        echo "<br>Atributo do tipo ".$atributo->getTipo().' não pode ser criada.<br>';
+                        break;
+                    }
+                    
                     foreach ($objetoDoAtributo->getAtributos() as $atributo3) {
                         if ($atributo3->getIndice() == Atributo::INDICE_PRIMARY) {
                             $atributoPrimary = $atributo3;
