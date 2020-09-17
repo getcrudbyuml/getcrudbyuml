@@ -51,6 +51,12 @@ class SoftwareController
     public function listarPorUsuario(Usuario $usuario)
     {
         $usuarioDao = new UsuarioDAO($this->dao->getConexao());
+        $sessao = new Sessao();
+        if($sessao->getNivelAcesso() == Sessao::NIVEL_ADM){
+            if(isset($_GET['usuario_selecionado'])){
+                $usuario->setId($_GET['usuario_selecionado']);
+            }
+        }
         $usuarioDao->buscarSoftwares($usuario);
         $this->view->exibirLista($usuario->getSoftwares());
     }
@@ -266,7 +272,6 @@ class SoftwareController
     public function selecionar()
     {
         
-
         if (! isset($_GET['selecionar'])) {
             echo '<p>Bem vindo ao Escritor de Software</p>';
             echo '<p>Utilize o formulário na barra lateral a esquerda para 
@@ -282,12 +287,16 @@ class SoftwareController
         $sessao = new Sessao();
         $usuario = new Usuario();
         $usuario->setId($sessao->getIdUsuario());
+        
         if(!$usuarioDao->verificarPosse($usuario, $this->selecionado)){
             echo '<p>Bem vindo ao Escritor de Software</p>';
             echo '<p>Selecione um software que pertença a você ou 
                     Utilize o formulário na barra lateral a esquerda 
                     para inserir um novo software.</p>';
-            return;
+            if($sessao->getNivelAcesso() != Sessao::NIVEL_ADM){
+                return;
+            }
+            
         }
         $this->dao->pesquisaPorId($this->selecionado);
         $objetoDao = new ObjetoDAO($this->dao->getConexao());

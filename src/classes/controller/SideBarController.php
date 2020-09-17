@@ -18,9 +18,12 @@ class SideBarController{
         $softwareController = new SoftwareController();
         $softwareController->cadastrar();
         $softwareController->listarPorUsuario($usuario);
-        
+        if($sessao->getNivelAcesso() == Sessao::NIVEL_ADM){
+            $controller = new UsuarioCustomController();
+            $controller->listar();
+        }
 
-echo '
+        echo '
 
 <div class="row justify-content-center m-3">
 
@@ -38,6 +41,13 @@ echo '
 
     </div>
     <!-- /#sidebar-wrapper -->';
+
+
+
+
+
+
+
     }
     
     

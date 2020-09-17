@@ -115,6 +115,36 @@ class UsuarioCustomView extends UsuarioView {
 ';
     }
 
+    public function exibirLista($lista){
+        if(count($lista) == 0){
+            echo '
+                
+                
+                
+                
+    <div class="alert alert-info list-group p-3" role="alert">
+    Utilize o formulário acima para incluir softwares
+    </div>
+                
+                
+                
+';
+        }
+        echo '<h3 class="m-3">Usuarios</h3>';
+        echo '
+            
+<div class="list-group list-group-flush">';
+        
+        foreach($lista as $elemento){
+            echo '
+  <a href="?pagina=software&usuario_selecionado='.$elemento->getId().'" class="list-group-item list-group-item-action bg-light">'.$elemento->getNome().'</a>';
+        }
+        echo '
+</div>
+';
+        
+        
+    }
     
     public function editarSenha($mensagem = ''){
         if($mensagem != ''){

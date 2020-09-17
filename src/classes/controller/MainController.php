@@ -44,6 +44,7 @@ class MainController{
             case 'atributo':
                 AtributoController::main();
                 break;
+            
             case 'mudar_senha':
                 $controller = new UsuarioCustomController();
                 $usuario = new Usuario();
