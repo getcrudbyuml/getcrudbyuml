@@ -102,14 +102,36 @@ function autoload($classe) {
 spl_autoload_register(\'autoload\');
 
 if(isset($_REQUEST[\'api\'])){
-';
+
+    
+    $url = explode("/", $_REQUEST[\'api\']);
+    
+    if(isset($url[1])){
+        if($url[1] == \'\'){
+            echo "Bem vindo a nossa API";
+            exit;
+        }
+    }else{
+        echo "Bem vindo a nossa API";
+        exit;
+    }
+    switch($url[1]){';
+        
         foreach ($this->software->getObjetos() as $objeto) {
             $codigo .= '
-    '.ucfirst($objeto->getNome()).'Controller::mainREST();';
-            
+		case \'' .$objeto->getNomeSnakeCase() . '\':
+            '.ucfirst($objeto->getNome()).'CustomController::mainREST();
+            break;';
         }
-        
-        
+        $codigo .= '
+
+        default:
+            echo \'URL inválida.\';
+            break;
+    
+    }
+
+';
         $codigo .= '
     exit;
 }
