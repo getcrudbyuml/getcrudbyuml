@@ -53,8 +53,7 @@ class ModelGerador
     }
     private function geraModel(Objeto $objeto)
     {
-        $codigo = '
-<?php
+        $codigo = '<?php
             
 /**
  * Classe feita para manipulação do objeto ' . $objeto->getNome() . '

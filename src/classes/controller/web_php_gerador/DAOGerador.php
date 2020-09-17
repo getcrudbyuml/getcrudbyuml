@@ -104,8 +104,7 @@ class DAO {
 	}
 }
 	    
-?>
-		';
+?>';
         $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/dao/DAO.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
