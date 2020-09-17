@@ -124,8 +124,10 @@ class SoftwareController
         }
         
         
-        $diretorio = './sistemas/' . $sessao->getLoginUsuario() . '/' . $this->selecionado->getNomeSimples();        
-        $this->excluiDir( './sistemas/' . $sessao->getLoginUsuario() . '/');
+        $diretorio = './sistemas/' . $sessao->getLoginUsuario() . '/' . $this->selecionado->getNomeSimples();
+        if(is_dir('./sistemas/' . $sessao->getLoginUsuario() . '/')){
+            $this->excluiDir( './sistemas/' . $sessao->getLoginUsuario() . '/');
+        }
         if($_GET['escrever'] == 1){
             EscritorDeSoftware::main($this->selecionado, $diretorio);
             $numeroDeArquivos = 0;
