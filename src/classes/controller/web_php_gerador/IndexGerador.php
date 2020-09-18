@@ -52,6 +52,7 @@ RewriteRule ^(.*)$ index.php?api=$1 [QSA,L]
         $codigo = '<?php
             
 define("DB_INI", "../../../' . $this->software->getNomeSnakeCase() . '_bd.ini");
+define("API_INI", "../../../' . $this->software->getNomeSnakeCase() . '_api_rest.ini");
              
 function autoload($classe) {
             
@@ -121,7 +122,7 @@ if(isset($_REQUEST[\'api\'])){
             $codigo .= '
 		case \'' .$objeto->getNomeSnakeCase() . '\':
             $controller = new '.ucfirst ($objeto->getNome()).'CustomController();
-            $controller->mainREST();
+            $controller->mainREST(API_INI);
             break;';
         }
         $codigo .= '

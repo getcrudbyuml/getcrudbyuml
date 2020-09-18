@@ -23,11 +23,11 @@ class AtributoView {
                                         <div class="form-group">
                 						  <select class="form-control form-control-user" id="select-tipo-atributo" name="tipo" placeholder="tipo">
                                             <option value="'.Atributo::TIPO_STRING.'">String</option>
-                                            <option value="'.Atributo::TIPO_INT.'">Inteiro</option>
+                                            <option value="'.Atributo::TIPO_INT.'">Int</option>
                                             <option value="'.Atributo::TIPO_BOOLEAN.'">Boolean</option>
                                             <option value="'.Atributo::TIPO_FLOAT.'">Float</option>
-                                            <option value="'.Atributo::TIPO_DATE.'">Data</option>
-                                            <option value="'.Atributo::TIPO_DATE_TIME.'">Data e Hora</option>
+                                            <option value="'.Atributo::TIPO_DATE.'">Date</option>
+                                            <option value="'.Atributo::TIPO_DATE_TIME.'">Datetime</option>
 ';
 
 		 

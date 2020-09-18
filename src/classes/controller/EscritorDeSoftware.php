@@ -45,6 +45,7 @@ class EscritorDeSoftware
         DAOCustomGerador::main($this->software, $this->diretorio);
         ViewCustomGerador::main($this->software, $this->diretorio);
         JSAjaxGerador::main($this->software, $this->diretorio);
+        IniAPIRest::main($this->software, $this->diretorio);
         $sessao = new Sessao();
         if($sessao->getNivelAcesso() == Sessao::NIVEL_ADM)
         {

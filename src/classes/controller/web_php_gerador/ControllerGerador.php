@@ -558,15 +558,19 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         
             
     }
-    public function mainREST()
+    public function mainREST($arquivoIni)
     {
+        $config = parse_ini_file ( $arquivoIni );
+        $usuario = $config [\'user\'];
+        $senha = $config [\'password\'];
+        
         if(!isset($_SERVER[\'PHP_AUTH_USER\'])){
             header("WWW-Authenticate: Basic realm=\\\\"Private Area\\\\" ");
             header("HTTP/1.0 401 Unauthorized");
             echo \'{"erro":[{"status":"error","message":"Authentication failed"}]}\';
             return;
         }
-        if($_SERVER[\'PHP_AUTH_USER\'] == \'usuario\' && ($_SERVER[\'PHP_AUTH_PW\'] == \'senha@12\')){
+        if($_SERVER[\'PHP_AUTH_USER\'] == $usuario && ($_SERVER[\'PHP_AUTH_PW\'] == $senha)){
             header(\'Content-type: application/json\');
             
             $this->restGET();

@@ -29,18 +29,19 @@ class IniAPIRest
     }
     
     public function geraIniAPI(){
+        
         if (! count($this->software->getObjetos())) {
             return;
         }
         $codigo  = ';Aruqivo de configuração para a api rest. 
 
 user = usuario
-password = sua_senha
+password = senha@12
 ';
-        $caminho = $this->diretorio.'/';
-        $caminho = $caminho.'escola_api_rest.ini';
-        $this->listaDeArquivos[$caminho] = $codigo;
         
+        $caminho = $this->diretorio.'/';
+        $caminho = $caminho.$this->software->getNomeSnakeCase() .'_api_rest.ini';
+        $this->listaDeArquivos[$caminho] = $codigo;
     }
     
 
