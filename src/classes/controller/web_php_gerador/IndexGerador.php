@@ -120,7 +120,8 @@ if(isset($_REQUEST[\'api\'])){
         foreach ($this->software->getObjetos() as $objeto) {
             $codigo .= '
 		case \'' .$objeto->getNomeSnakeCase() . '\':
-            '.ucfirst($objeto->getNome()).'CustomController::mainREST();
+            $controller = new '.ucfirst ($objeto->getNome()).'CustomController();
+            $controller->mainREST();
             break;';
         }
         $codigo .= '
@@ -207,25 +208,25 @@ if(isset($_GET[\'ajax\'])){
             
 <?php
 if(isset($_GET[\'pagina\'])){
-					switch ($_GET[\'pagina\']){';
+	switch ($_GET[\'pagina\']){';
         
         foreach ($this->software->getObjetos() as $objeto) {
             $codigo .= '
-						case \'' .$objeto->getNomeSnakeCase() . '\':
-                            $controller = new '.ucfirst ($objeto->getNome()).'CustomController();
-						    $controller->main();
-							break;';
+    	case \'' .$objeto->getNomeSnakeCase() . '\':
+            $controller = new '.ucfirst ($objeto->getNome()).'CustomController();
+    	    $controller->main();
+    		break;';
         }
         
         $codigo .= '
-						default:
-							echo \'<p>Página solicitada não encontrada.</p>\';
-							break;
-					}
-				}else{
-                    $controller = new '.ucfirst ($objeto->getNome()).'CustomController();
-					$controller->main();
-				}
+		default:
+			echo \'<p>Página solicitada não encontrada.</p>\';
+			break;
+	}
+}else{
+    $controller = new '.ucfirst ($objeto->getNome()).'CustomController();
+	$controller->main();
+}
 					    
 ?>';
         

@@ -558,7 +558,7 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         
             
     }
-    public static function mainREST()
+    public function mainREST()
     {
         if(!isset($_SERVER[\'PHP_AUTH_USER\'])){
             header("WWW-Authenticate: Basic realm=\\\\"Private Area\\\\" ");
@@ -568,11 +568,11 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         }
         if($_SERVER[\'PHP_AUTH_USER\'] == \'usuario\' && ($_SERVER[\'PHP_AUTH_PW\'] == \'senha@12\')){
             header(\'Content-type: application/json\');
-            $controller = new '.$nomeDoObjetoMa.'Controller();
-            $controller->restGET();
+            
+            $this->restGET();
             //$controller->restPOST();
             //$controller->restPUT();
-            $controller->resDELETE();
+            $this->resDELETE();
         }else{
             header("WWW-Authenticate: Basic realm=\\\\"Private Area\\\\" ");
             header("HTTP/1.0 401 Unauthorized");
