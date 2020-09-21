@@ -236,14 +236,14 @@ public class DAO {
         
         
         $codigo = '
-package br.com.escritordesoftware.'.strtolower($this->software->getNome()).'.dao;
+package com.'.strtolower($this->software->getNome()).'.dao;
     
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
     
-import br.com.escritordesoftware.'.strtolower($this->software->getNome()).'.model.*;
+import com.'.strtolower($this->software->getNome()).'.model.*;
     
 /**
  * Classe feita para manipulação do objeto '.ucfirst($objeto->getNome()).'
@@ -462,8 +462,8 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
 		ArrayList<'.ucfirst($objeto->getNome()).'>lista = new ArrayList<'.ucfirst($objeto->getNome()).'>();
 		String sql = "';
         $sqlGerador = new SQLGerador($this->software);
-        $codigo .= $sqlGerador->getSQLSelect($objeto);
-        
+        $sql = $sqlGerador->getSQLSelect($objeto);
+        $codigo .= $sql;
         $codigo .= ' LIMIT 1000";
             
     		PreparedStatement ps;

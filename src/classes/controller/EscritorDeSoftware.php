@@ -9,20 +9,44 @@ class EscritorDeSoftware
     
     private $diretorio;
     
-
-    public static function main(Software $software, $diretorio)
-    {
-        $escritor = new EscritorDeSoftware($software, $diretorio);
-        $escritor->gerarCodigo();
-    }
-
     public function __construct(Software $software, $diretorio)
     {
         $this->diretorio = $diretorio;
         $this->software = $software;
     }
+    
+    public static function main(Software $software, $diretorio)
+    {
+        $escritor = new EscritorDeSoftware($software, $diretorio);
+        $escritor->gerarCodigoPHP();
+    }
+    public static function mainJAVA(Software $software, $diretorio){
+        $escritor = new EscritorDeSoftware($software, $diretorio);
+        $escritor->geraCodigoJAVA();
+        
+    }
 
-    public function gerarCodigo()
+    public function geraCodigoJAVA()
+    {
+        
+        if(count($this->software->getObjetos()) == 0){
+            echo "Não existem Objetos. Adicione pelo menos um objeto.";
+            return;
+        }
+        foreach($this->software->getObjetos() as $objeto){
+            if(count($objeto->getAtributos()) == 0){
+                echo "Existe pelo menos um objeto sem atributos. Adicione atributos.";
+                return;
+            }
+        }
+        POMGerador::main($this->software, $this->diretorio);
+        MainJavaGerador::main($this->software, $this->diretorio);
+        ModelJavaGerador::main($this->software, $this->diretorio);
+        DAOJavaGerador::main($this->software, $this->diretorio);
+        ViewJavaGerador::main($this->software, $this->diretorio);
+        
+    }
+    public function gerarCodigoPHP()
     {
         if(count($this->software->getObjetos()) == 0){
             echo "Não existem Objetos. Adicione pelo menos um objeto.";
@@ -46,15 +70,6 @@ class EscritorDeSoftware
         ViewCustomGerador::main($this->software, $this->diretorio);
         JSAjaxGerador::main($this->software, $this->diretorio);
         IniAPIRest::main($this->software, $this->diretorio);
-        $sessao = new Sessao();
-        if($sessao->getNivelAcesso() == Sessao::NIVEL_ADM)
-        {
-//             POMGerador::main($this->software, $this->diretorio);
-//             MainJavaGerador::main($this->software, $this->diretorio);
-//             ModelJavaGerador::main($this->software, $this->diretorio);
-//             DAOJavaGerador::main($this->software, $this->diretorio);
-//             ViewJavaGerador::main($this->software, $this->diretorio);
-            
-        }
+
     }
 }

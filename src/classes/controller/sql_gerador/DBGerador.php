@@ -353,7 +353,7 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase();
                 } else if ($atributo->isObjeto()) {
                     $codigo .= '    id_' . $atributo->getNomeSnakeCase() . ' INTEGER NOT NULL';
                 }
-                if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
+                if ($atributo->getIndice() == Atributo::INDICE_PRIMARY && $atributo->getTipo() == Atributo::TIPO_INT) {
                     $codigo .= '    PRIMARY KEY AUTOINCREMENT';
                 }
                 if ($i >= count($atributosComuns)) {

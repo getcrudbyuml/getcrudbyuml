@@ -141,6 +141,7 @@ MainController::main($sessao);
 	<script src="js/escritor.js"></script>
 	<script src="js/usuario.js"></script>
 	<script src="js/chat.js"></script>
+	<script data-ad-client="ca-pub-1493485857193768" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
 </body>
 </html>
