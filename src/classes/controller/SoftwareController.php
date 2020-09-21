@@ -125,9 +125,9 @@ class SoftwareController
         
         
         $diretorio = './sistemas/' . $sessao->getLoginUsuario() . '/' . $this->selecionado->getNomeSimples();
-//         if(is_dir('./sistemas/' . $sessao->getLoginUsuario() . '/')){
-//             $this->excluiDir( './sistemas/' . $sessao->getLoginUsuario() . '/');
-//         }
+        if(is_dir('./sistemas/' . $sessao->getLoginUsuario() . '/')){
+            $this->excluiDir( './sistemas/' . $sessao->getLoginUsuario() . '/');
+        }
         if($_GET['escrever'] == 1){
             EscritorDeSoftware::main($this->selecionado, $diretorio);
             $numeroDeArquivos = 0;
@@ -135,8 +135,8 @@ class SoftwareController
                 EscritorDeSoftware::mainJAVA($this->selecionado, $diretorio);
             }
             
-//             $zipador = new Zipador();
-//             $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/../'.$this->selecionado->getNomeSimples().'.zip');
+            $zipador = new Zipador();
+            $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/../'.$this->selecionado->getNomeSimples().'.zip');
             
         }else{
 //             EscritorDeSoftware::main($this->selecionado, $diretorio);
