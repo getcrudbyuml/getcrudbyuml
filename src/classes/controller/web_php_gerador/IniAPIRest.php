@@ -48,7 +48,7 @@ password = senha@12
     
     public function criarArquivos(){
         
-        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src';
+        $caminho = $this->diretorio.'/AppWebPHP/src';
         if(!file_exists($caminho.'/img')) {
             mkdir($caminho.'/img', 0777, true);
         }

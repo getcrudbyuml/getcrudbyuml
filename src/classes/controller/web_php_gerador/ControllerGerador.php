@@ -24,7 +24,7 @@ class ControllerGerador{
     }
     private function criarArquivos(){
         
-        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/controller';
+        $caminho = $this->diretorio.'/AppWebPHP/src/classes/controller';
         if(!file_exists($caminho)) {
             mkdir($caminho, 0777, true);
         }
@@ -958,7 +958,7 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         $codigo .= '
 }
 ?>';
-        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/controller/'.ucfirst($objeto->getNome()).'Controller.php';
+        $caminho = $this->diretorio.'/AppWebPHP/src/classes/controller/'.ucfirst($objeto->getNome()).'Controller.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
     

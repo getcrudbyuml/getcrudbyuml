@@ -37,7 +37,7 @@ class JSAjaxGerador
     }
     private function criarArquivos(){
         
-        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/model/';
+        $caminho = $this->diretorio.'/AppWebPHP/src/classes/model/';
         if(!file_exists($caminho)) {
             mkdir($caminho, 0777, true);
         }
@@ -97,7 +97,7 @@ $(document).ready(function(e) {
 ';
         
         
-        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/js/'.$objeto->getNomeSnakeCase().'.js';
+        $caminho = $this->diretorio.'/AppWebPHP/src/js/'.$objeto->getNomeSnakeCase().'.js';
         $this->listaDeArquivos[$caminho] = $codigo;
         
     }

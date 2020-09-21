@@ -199,7 +199,7 @@ class SoftwareController
         
         $diretorio = './sistemas/' . $sessao->getLoginUsuario() . '/' . $this->selecionado->getNomeSimples();
         
-        $dir= dir($diretorio.'/AppWebPHP/'.$this->selecionado->getNomeSimples().'/src/classes/model');
+        $dir= dir($diretorio.'/AppWebPHP/src/classes/model');
         $listaDeArquivos = array();
         while($arquivo = $dir-> read()){
             if($arquivo == '.' || $arquivo == '..'){
@@ -209,7 +209,7 @@ class SoftwareController
             break;
         }
         $dir-> close();
-        $dir= dir($diretorio.'/AppWebPHP/'.$this->selecionado->getNomeSimples().'/src/classes/view');
+        $dir= dir($diretorio.'/AppWebPHP/src/classes/view');
         while($arquivo = $dir-> read()){
             if($arquivo == '.' || $arquivo == '..'){
                 continue;
@@ -218,7 +218,7 @@ class SoftwareController
             break;
         }
         $dir-> close();
-        $dir= dir($diretorio.'/AppWebPHP/'.$this->selecionado->getNomeSimples().'/src/classes/controller');
+        $dir= dir($diretorio.'/AppWebPHP/src/classes/controller');
         while($arquivo = $dir-> read()){
             if($arquivo == '.' || $arquivo == '..'){
                 continue;
@@ -227,7 +227,7 @@ class SoftwareController
             break;
         }
         $dir-> close();
-        $dir= dir($diretorio.'/AppWebPHP/'.$this->selecionado->getNomeSimples().'/src/classes/dao');
+        $dir= dir($diretorio.'/AppWebPHP/src/classes/dao');
         while($arquivo = $dir-> read()){
             if($arquivo == '.' || $arquivo == '..'){
                 continue;
@@ -259,7 +259,7 @@ class SoftwareController
               
     <div id="collapse'.$i.'" class="collapse" aria-labelledby="heading'.$i.'" data-parent="#accordionApp">
       <div class="card-body">
-        '.$this->formataPHP(file_get_contents($diretorio.'/AppWebPHP/'.$this->selecionado->getNomeSimples().'/src/classes/'.$arquivo)).'
+        '.$this->formataPHP(file_get_contents($diretorio.'/AppWebPHP/src/classes/'.$arquivo)).'
       </div>
     </div>
   </div>';

@@ -25,7 +25,7 @@ class ControllerCustomGerador{
     }
     private function criarArquivos(){
         
-        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/custom/controller';
+        $caminho = $this->diretorio.'/AppWebPHP/src/classes/custom/controller';
         if(!file_exists($caminho)) {
             mkdir($caminho, 0777, true);
         }
@@ -70,7 +70,7 @@ class ' . ucfirst($objeto->getNome()) . 'CustomController  extends ' . ucfirst($
 	        
 }
 ?>';
-        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/custom/controller/'.ucfirst($objeto->getNome()).'CustomController.php';
+        $caminho = $this->diretorio.'/AppWebPHP/src/classes/custom/controller/'.ucfirst($objeto->getNome()).'CustomController.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
     

@@ -38,7 +38,7 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php?api=$1 [QSA,L]
 ';
-        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/';
+        $caminho = $this->diretorio.'/AppWebPHP/src/';
         $caminho = $caminho.'.htaccess';
         $this->listaDeArquivos[$caminho] = $codigo;
         
@@ -51,8 +51,8 @@ RewriteRule ^(.*)$ index.php?api=$1 [QSA,L]
         }
         $codigo = '<?php
             
-define("DB_INI", "../../../' . $this->software->getNomeSnakeCase() . '_bd.ini");
-define("API_INI", "../../../' . $this->software->getNomeSnakeCase() . '_api_rest.ini");
+define("DB_INI", "../../' . $this->software->getNomeSnakeCase() . '_bd.ini");
+define("API_INI", "../../' . $this->software->getNomeSnakeCase() . '_api_rest.ini");
              
 function autoload($classe) {
             
@@ -290,7 +290,7 @@ if(isset($_GET[\'pagina\'])){
         $codigo .= '
 	</body>
 </html>';
-        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/index.php';
+        $caminho = $this->diretorio.'/AppWebPHP/src/index.php';
         $this->listaDeArquivos[$caminho] = $codigo;
         
     }
@@ -298,13 +298,13 @@ if(isset($_GET[\'pagina\'])){
     public function geraStyle()
     {
         $codigo = "/*Digite aqui seu arquivo css*/";
-        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/css/style.css';
+        $caminho = $this->diretorio.'/AppWebPHP/src/css/style.css';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
     
     public function criarArquivos(){
         
-        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src';
+        $caminho = $this->diretorio.'/AppWebPHP/src';
         if(!file_exists($caminho.'/img')) {
             mkdir($caminho.'/img', 0777, true);
         }

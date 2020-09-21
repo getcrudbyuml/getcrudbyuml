@@ -31,7 +31,7 @@ class ViewGerador{
     }
     private function criarArquivos(){
         
-        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/view/';
+        $caminho = $this->diretorio.'/AppWebPHP/src/classes/view/';
         
         if(!file_exists($caminho)) {
             mkdir($caminho, 0777, true);
@@ -725,7 +725,7 @@ class ' . $objeto->getNome() . 'View {';
 }';
 
         
-        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/view/'.ucfirst($objeto->getNome()).'View.php';
+        $caminho = $this->diretorio.'/AppWebPHP/src/classes/view/'.ucfirst($objeto->getNome()).'View.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
    

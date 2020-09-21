@@ -33,7 +33,7 @@ class DAOCustomGerador
     }
     private function criarArquivos(){
         
-        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/custom/dao';
+        $caminho = $this->diretorio.'/AppWebPHP/src/classes/custom/dao';
         if(!file_exists($caminho)) {
             mkdir($caminho, 0777, true);
         }
@@ -68,7 +68,7 @@ class  ' . ucfirst($objeto->getNome()) . 'CustomDAO extends ' . ucfirst($objeto-
         $codigo .= '
 }';
 
-        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/custom/dao/'.ucfirst($objeto->getNome()).'CustomDAO.php';
+        $caminho = $this->diretorio.'/AppWebPHP/src/classes/custom/dao/'.ucfirst($objeto->getNome()).'CustomDAO.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
 }

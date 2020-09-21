@@ -31,7 +31,7 @@ class ViewCustomGerador{
     }
     private function criarArquivos(){
         
-        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/custom/view/';
+        $caminho = $this->diretorio.'/AppWebPHP/src/classes/custom/view/';
         
         if(!file_exists($caminho)) {
             mkdir($caminho, 0777, true);
@@ -69,7 +69,7 @@ class ' . $objeto->getNome() . 'CustomView extends ' . $objeto->getNome() . 'Vie
 }';
 
         
-        $caminho = $this->diretorio.'/AppWebPHP/'.$this->software->getNomeSimples().'/src/classes/custom/view/'.ucfirst($objeto->getNome()).'CustomView.php';
+        $caminho = $this->diretorio.'/AppWebPHP/src/classes/custom/view/'.ucfirst($objeto->getNome()).'CustomView.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
    
