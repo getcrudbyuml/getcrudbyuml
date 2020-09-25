@@ -68,13 +68,7 @@ class ObjetoController {
 	    echo '</div>';
 	    echo '<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">';
 	    $atributoController->cadastrar($this->selecionado);
-	    echo '
-<div class="alert alert-warning m-2" role="alert">
-  Dica!<br> Utilize camel case para as classes e atributos para obter o melhor resultado.
-  Ou seja, separando as palavras com letra maiúscula, como em idImovel, nomeAluno...
-<br>Use nomeAluno ao invés de nome_aluno. <br>
-</div>	        
-';
+
 	    echo '</div>';
 
 	    echo '</div><hr>';

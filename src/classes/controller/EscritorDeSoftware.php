@@ -39,6 +39,8 @@ class EscritorDeSoftware
                 return;
             }
         }
+        
+        DBGerador::main($this->software, $this->diretorio);
         POMGerador::main($this->software, $this->diretorio);
         MainJavaGerador::main($this->software, $this->diretorio);
         ModelJavaGerador::main($this->software, $this->diretorio);

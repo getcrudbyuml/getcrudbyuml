@@ -92,6 +92,7 @@ if (isset($_GET['ajax'])) {
 <link href="css/selectize.bootstrap3.css" rel="stylesheet">
 <link rel="stylesheet" href="css/chat.css">
 <title>getCrudByUml</title>
+<script data-ad-client="ca-pub-1493485857193768" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 </head>
 <body>
 	<div class="d-flex" id="wrapper">
@@ -141,7 +142,7 @@ MainController::main($sessao);
 	<script src="js/escritor.js"></script>
 	<script src="js/usuario.js"></script>
 	<script src="js/chat.js"></script>
-	<script data-ad-client="ca-pub-1493485857193768" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	
 
 </body>
 </html>

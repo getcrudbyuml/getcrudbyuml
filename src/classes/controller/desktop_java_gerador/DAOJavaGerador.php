@@ -255,88 +255,7 @@ import com.'.strtolower($this->software->getNome()).'.model.*;
 public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
         
         
-        $codigo .= '
-            
-            
-            
-    public boolean atualizar('.ucfirst($objeto->getNome()).' '.strtolower($objeto->getNome()).'){
-		PreparedStatement ps;';
-        foreach($objeto->getAtributos() as $atributo){
-            if($atributo->getIndice() == Atributo::INDICE_PRIMARY){
-                $codigo .= '
-            int id = '.strtolower($objeto->getNome()).'.get'.ucfirst ($atributo->getNome()).'();';
-                
-            }else if($atributo->tipoListado()){
-                $codigo .= '
-            '.$atributo->getTipoJava().' '.strtolower($atributo->getNome()).' = '.strtolower($objeto->getNome()).'.get'.ucfirst($atributo->getNome()).'();';
-            }
-        }
-        $codigo .= '
-            
-        String sql = "UPDATE '.$nomeDoObjeto.'"
-                +"SET"
-                ';
-        $listaAtributo = array();
-        foreach ($atributosComuns as $atributo) {
-            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                continue;
-            }
-            if(substr($atributo->getTipo(), 0, 6) == 'Array '){
-                continue;
-            }
-            $listaAtributo[] = $atributo;
-        }
-        $i = 0;
-        foreach ($listaAtributo as $atributo) {
-            $i ++;
-            $codigo .= '+"'.$atributo->getNome().' = ?';
-            if ($i != count($listaAtributo)) {
-                $codigo .= ',"
-                ';
-            }else{
-                $codigo .= '"';
-            }
-        }
-        $codigo .= '
-                +"WHERE '.$nomeDoObjeto.'.id ="+id+";";';
-        
-        $codigo .= '
-		try {
-			ps = this.getConexao().prepareStatement(sql);';
-        $i = 1;
-        foreach ($listaAtributo as $atributo) {
-            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                continue;
-            }
-            $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
-            if($atributo->getTipo() == Atributo::TIPO_INT){
-                $codigo .= '
-                ps.setInt('.$i.', ' . $atributo->getNome() . ');';
-            }else if($atributo->getTipo() == Atributo::TIPO_FLOAT){
-                $codigo .= '
-                ps.setFloat('.$i.', ' . $atributo->getNome() . ');';
-            }else if($atributo->getTipo() == Atributo::TIPO_STRING){
-                $codigo .= '
-                ps.setString('.$i.', ' . $atributo->getNome() . ');';
-            }
-            
-            $i++;
-        }
-        $codigo .= '
-            
-			ps.executeUpdate();
-            return true;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-            return false;
-		}
-            
-            
-	}
-            
-            
-                ';
+        $codigo .= $this->atualizar($objeto);
         
         
         
@@ -807,6 +726,101 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
         
         $caminho = $this->diretorio.'/AppDesktopJava/'.$this->software->getNomeSimples().'/src/main/java/com/'.strtolower($this->software->getNomeSimples()).'/dao/'.ucfirst($objeto->getNome()).'DAO.java';
         $this->listaDeArquivos[$caminho] = $codigo;
+        return $codigo;
+    }
+    public function atualizar(Objeto $objeto){
+        $codigo = '';
+        $codigo = '';
+        $nomeDoObjeto = lcfirst($objeto->getNome());
+        $atributosComuns = array();
+        foreach ($objeto->getAtributos() as $atributo) {
+            if ($atributo->tipoListado()) {
+                $atributosComuns[] = $atributo;
+            }
+        }
+        
+        $codigo .= '
+            
+            
+            
+    public boolean atualizar('.ucfirst($objeto->getNome()).' '.strtolower($objeto->getNome()).'){
+		PreparedStatement ps;';
+        foreach($objeto->getAtributos() as $atributo){
+            if($atributo->getIndice() == Atributo::INDICE_PRIMARY){
+                $codigo .= '
+            int id = '.strtolower($objeto->getNome()).'.get'.ucfirst ($atributo->getNome()).'();';
+                
+            }else if($atributo->tipoListado()){
+                $codigo .= '
+            '.$atributo->getTipoJava().' '.strtolower($atributo->getNome()).' = '.strtolower($objeto->getNome()).'.get'.ucfirst($atributo->getNome()).'();';
+            }
+        }
+        $codigo .= '
+            
+        String sql = "UPDATE '.$nomeDoObjeto.'"
+                +"SET"
+                ';
+        $listaAtributo = array();
+        foreach ($atributosComuns as $atributo) {
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
+                continue;
+            }
+            if(substr($atributo->getTipo(), 0, 6) == 'Array '){
+                continue;
+            }
+            $listaAtributo[] = $atributo;
+        }
+        $i = 0;
+        foreach ($listaAtributo as $atributo) {
+            $i ++;
+            $codigo .= '+"'.$atributo->getNome().' = ?';
+            if ($i != count($listaAtributo)) {
+                $codigo .= ',"
+                ';
+            }else{
+                $codigo .= '"';
+            }
+        }
+        $codigo .= '
+                +"WHERE '.$nomeDoObjeto.'.id ="+id+";";';
+        
+        $codigo .= '
+		try {
+			ps = this.getConexao().prepareStatement(sql);';
+        $i = 1;
+        foreach ($listaAtributo as $atributo) {
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
+                continue;
+            }
+            $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
+            if($atributo->getTipo() == Atributo::TIPO_INT){
+                $codigo .= '
+                ps.setInt('.$i.', ' . $atributo->getNome() . ');';
+            }else if($atributo->getTipo() == Atributo::TIPO_FLOAT){
+                $codigo .= '
+                ps.setFloat('.$i.', ' . $atributo->getNome() . ');';
+            }else if($atributo->getTipo() == Atributo::TIPO_STRING){
+                $codigo .= '
+                ps.setString('.$i.', ' . $atributo->getNome() . ');';
+            }
+            
+            $i++;
+        }
+        $codigo .= '
+            
+			ps.executeUpdate();
+            return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+            return false;
+		}
+            
+            
+	}
+            
+            
+                ';
         return $codigo;
     }
     

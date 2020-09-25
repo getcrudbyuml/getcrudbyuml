@@ -126,22 +126,18 @@ class SoftwareController
         
         $diretorio = './sistemas/' . $sessao->getLoginUsuario() . '/' . $this->selecionado->getNomeSimples();
         if(is_dir('./sistemas/' . $sessao->getLoginUsuario() . '/')){
-            $this->excluiDir( './sistemas/' . $sessao->getLoginUsuario() . '/');
+//             $this->excluiDir( './sistemas/' . $sessao->getLoginUsuario() . '/');
         }
+        
+        $numeroDeArquivos = 0;
         if($_GET['escrever'] == 1){
+            
             EscritorDeSoftware::main($this->selecionado, $diretorio);
-            $numeroDeArquivos = 0;
-            if($sessao->getNivelAcesso() == Sessao::NIVEL_ADM){
-                EscritorDeSoftware::mainJAVA($this->selecionado, $diretorio);
-            }
-            
-            $zipador = new Zipador();
-            $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/../'.$this->selecionado->getNomeSimples().'.zip');
-            
-        }else{
-//             EscritorDeSoftware::main($this->selecionado, $diretorio);
-            echo "Reservado para escrever JAVA";
+            EscritorDeSoftware::mainJAVA($this->selecionado, $diretorio);
         }
+        
+//         $zipador = new Zipador();
+//         $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/../'.$this->selecionado->getNomeSimples().'.zip');
         
         
         
@@ -151,45 +147,42 @@ class SoftwareController
         
         echo '
                 <button type="button" class="btn btn-primary m-2" data-toggle="modal" data-target="#getAppWeb">
-                  Pegar Aplicação Web
+                  Pegar Aplicação
                 </button>';
         
         
         
-        $texto = $this->getTextoResumo();
+       
         
         
         
         echo '
         <!-- Modal -->
         <div class="modal fade" id="getAppWeb" tabindex="-1" role="dialog" aria-labelledby="labelGetAppWeb" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-        <div class="modal-header">
-        <h5 class="modal-title" id="labelGetAppWeb">Aplicação Web Completa</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-        </button>
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="labelGetAppWeb">Aplicação Web Completa</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>O link de Download Contém um arquivo .zip com '.$numeroDeArquivos.' arquivos. 
+                        Basicamente um CRUD simples usando MVC.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Sair</button>
+                        <a href="'.$diretorio.'/../'.$this->selecionado->getNome().'.zip" class="btn btn-success"  > Download</a>';
+        if($_GET['escrever'] == 1){
+            echo '
+                
+                        <a href="'.$diretorio.'/AppWebPHP/src/" class="btn btn-success"  target="_blank">Testar</a>';
+        }
+        
+        echo '
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="modal-body">
-        <p>O link de Download Contém um arquivo .zip com '.$numeroDeArquivos.' arquivos.
-        Basicamente um CRUD simples usando MVC. Veja um resumo:</p>
-        '.$texto.'
-            
-            <p>Ainda podem conter erros em situações de relacionamentos Array 1:n
-            ou outros casos que não usem chave primária.</p>
-            
-            <p>Caso queira incentivar a correção desses erros ou a conclusão do desenvolvimento da versão
-            para Java ou android, faça uma doação. Um realzinho não vai fazer falta.</p>
-            </div>
-            <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Sair</button>
-            <a href="'.$diretorio.'/../'.$this->selecionado->getNome().'.zip" class="btn btn-success"  > Download</a>
-            <a href="'.$diretorio.'/AppWebPHP/'.$this->selecionado->getNomeSimples().'/src/" class="btn btn-success"  target="_blank">Testar</a>
-            </div>
-            </div>
-            </div>
-            </div>
             
             ';
                 
@@ -331,15 +324,7 @@ class SoftwareController
         echo '<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">';
         $objetoController = new ObjetoController();
         $objetoController->cadastrar($this->selecionado);
-        echo '
-<div class="alert alert-warning m-2" role="alert">
-  Dica!<br> Utilize camel case para as classes e atributos para obter o melhor resultado. 
-  Ou seja, separando as palavras com letra maiúscula, como em idImovel, nomeAluno... 
-<br>Use nomeAluno ao invés de nome_aluno. <br>
 
-</div>
-            
-';
         echo '</div>';
         
         echo '</div>';

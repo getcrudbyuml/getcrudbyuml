@@ -108,6 +108,42 @@ class DAO {
         $caminho = $this->diretorio.'/AppWebPHP/src/classes/dao/DAO.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
+    private function geraDAOs(Objeto $objeto)
+    {
+        $codigo = '';
+        $codigo .= '<?php
+            
+/**
+ * Classe feita para manipulação do objeto ' . ucfirst($objeto->getNome()) . '
+ * feita automaticamente com programa gerador de software inventado por
+ * @author Jefferson Uchôa Ponte
+ *
+ *
+ */
+     
+     
+     
+class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
+    
+    
+';
+        $codigo .= $this->atualizar($objeto);
+        $codigo .= $this->inserir($objeto);
+        $codigo .= $this->inserirComPK($objeto);
+        $codigo .= $this->excluir($objeto);
+        $codigo .= $this->retornaLista($objeto);
+        $codigo .= $this->pesaquisarPor($objeto);
+        $codigo .= $this->preencherPor($objeto);
+        $codigo .= $this->buscarAtributoNN($objeto);
+        $codigo .= $this->inserirAtributoNN($objeto);
+        $codigo .= $this->removerAtributoNN($objeto);
+        $codigo .= '
+}';
+        
+        $caminho = $this->diretorio.'/AppWebPHP/src/classes/dao/'.ucfirst($objeto->getNome()).'DAO.php';
+        $this->listaDeArquivos[$caminho] = $codigo;
+    }
+    
     private function atualizar(Objeto $objeto){
         $codigo = '';
         $nomeDoObjeto = lcfirst($objeto->getNome());
@@ -117,11 +153,6 @@ class DAO {
                 $atributosComuns[] = $atributo;
             }
         }
-        $codigo = '
-            
-            
-    public function atualizar(' . ucfirst($objeto->getNome()) . ' $' . lcfirst($objeto->getNome()) . ')
-    {';
         $atributoPrimary = null;
         foreach ($objeto->getAtributos() as $atributo) {
             if ($atributo->isPrimary()) {
@@ -129,10 +160,19 @@ class DAO {
                 break;
             }
         }
-        if ($atributoPrimary != null) {
-            $codigo .= '
-        $id = $' . lcfirst($objeto->getNome()) . '->get' . ucfirst($atributoPrimary->getNome()) . '();';
+        if ($atributoPrimary == null) {
+            $atributoPrimary = $objeto->getAtributos()[0];
         }
+        
+        $codigo = '
+            
+            
+    public function atualizar(' . ucfirst($objeto->getNome()) . ' $' . lcfirst($objeto->getNome()) . ')
+    {';
+       
+        
+        $codigo .= '
+        $id = $' . lcfirst($objeto->getNome()) . '->get' . ucfirst($atributoPrimary->getNome()) . '();';
         $codigo .= '
             
             
@@ -778,41 +818,7 @@ class DAO {
         }
         return $codigo; 
     }
-    private function geraDAOs(Objeto $objeto)
-    {
-        $codigo = '';
-        $codigo .= '<?php
-                
-/**
- * Classe feita para manipulação do objeto ' . ucfirst($objeto->getNome()) . '
- * feita automaticamente com programa gerador de software inventado por
- * @author Jefferson Uchôa Ponte
- *
- *
- */
 
-
-
-class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
-    
-
-';
-        $codigo .= $this->atualizar($objeto);
-        $codigo .= $this->inserir($objeto);
-        $codigo .= $this->inserirComPK($objeto);
-        $codigo .= $this->excluir($objeto);
-        $codigo .= $this->retornaLista($objeto);
-        $codigo .= $this->pesaquisarPor($objeto);
-        $codigo .= $this->preencherPor($objeto);
-        $codigo .= $this->buscarAtributoNN($objeto);
-        $codigo .= $this->inserirAtributoNN($objeto);
-        $codigo .= $this->removerAtributoNN($objeto);
-        $codigo .= '
-}';
-
-        $caminho = $this->diretorio.'/AppWebPHP/src/classes/dao/'.ucfirst($objeto->getNome()).'DAO.php';
-        $this->listaDeArquivos[$caminho] = $codigo;
-    }
 }
 
 ?>
