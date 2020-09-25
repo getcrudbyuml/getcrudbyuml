@@ -256,111 +256,12 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
         
         
         $codigo .= $this->atualizar($objeto);
-        
-        
+        $codigo .= $this->retornaLista($objeto);
+        $codigo .= $this->inserir($objeto);
         
         $codigo .= '
             
-	public boolean inserir(' . ucfirst($objeto->getNome()). ' ' . strtolower($objeto->getNome()). '){
-	    
-        String sql = "INSERT into '.strtolower($objeto->getNome()).'(';
-        $i = 0;
-        foreach ($atributosComuns as $atributo) {
-            $i ++;
-            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                continue;
-            }
-            $codigo .= strtolower($atributo->getNome());
-            if ($i != count($atributosComuns)) {
-                $codigo .= ', ';
-            }
-        }
-        $i = 0;
-        foreach ($atributosObjetos as $atributo) {
-            $i ++;
-            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                continue;
-            }
-            if(count($atributosComuns) != 0 && $i == 1){
-                $codigo .= ', ';
-            }
-            $codigo .= 'id_'.strtolower($atributo->getTipo()).'_'.strtolower($atributo->getNome());
-            if ($i != count($atributosObjetos)) {
-                $codigo .= ', ';
-            }
-        }
-        $codigo .= ') VALUES(';
-        $i = 0;
-        foreach ($atributosComuns as $atributo) {
-            $i ++;
-            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                continue;
-            }
-            $codigo .= '?';
-            if ($i != count($atributosComuns)) {
-                $codigo .= ', ';
-            }
-        }
-        $i = 0;
-        foreach ($atributosObjetos as $atributo) {
-            $i ++;
-            if(count($atributosComuns) && $i == 1){
-                $codigo .= ', ';
-            }
-            $codigo .= '?';
-            if ($i != count($atributosObjetos)) {
-                $codigo .= ', ';
-            }
-        }
-        $codigo .= ')";';
-        $codigo .= '
-            
-		try {
-            
-			PreparedStatement ps = this.getConexao().prepareStatement(sql);';
-        
-        $i = 0;
-        foreach ($atributosComuns as $atributo) {
-            
-            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                continue;
-            }else{
-                $i++;
-            }
-            if($atributo->getTipo() == Atributo::TIPO_INT){
-                $codigo .= '
-            ps.setInt('.$i.', '.strtolower($objeto->getNome()).'.get'.ucfirst($atributo->getNome()).'());';
-            }else if($atributo->getTipo() == Atributo::TIPO_STRING){
-                $codigo .= '
-            ps.setString('.$i.', '.strtolower($objeto->getNome()).'.get'.ucfirst($atributo->getNome()).'());';
-            }else if($atributo->getTipo() == Atributo::TIPO_FLOAT){
-                $codigo .= '
-            ps.setFloat('.$i.', '.strtolower($objeto->getNome()).'.get'.ucfirst($atributo->getNome()).'());';
-                
-            }
-            
-        }
-        
-        foreach ($atributosObjetos as $atributo) {
-            $i ++;
-            if(count($atributosComuns) && $i == 1){
-                $codigo .= ', ';
-            }
-            $codigo .= '
-            ps.setInt('.$i.', '.strtolower($objeto->getNome()).'.get'.ucfirst($atributo->getNome()).'().getId());';
-            
-        }
-        $codigo .= '
-            
-			ps.executeUpdate();
-			return true;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
-    }
-            
+
 	public boolean excluir(' . ucfirst($objeto->getNome()). ' ' . strtolower($objeto->getNome()). '){
 		String sql = "DELETE FROM ' . $nomeDoObjeto . ' WHERE ' . $objeto->getAtributos()[0]->getNome() . ' = ?";
 		try{
@@ -377,90 +278,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
 	}
         	    
         	    
-	public ArrayList<'.ucfirst($objeto->getNome()).'> retornaLista() {
-		ArrayList<'.ucfirst($objeto->getNome()).'>lista = new ArrayList<'.ucfirst($objeto->getNome()).'>();
-		String sql = "';
-        $sqlGerador = new SQLGerador($this->software);
-        $sql = $sqlGerador->getSQLSelect($objeto);
-        $codigo .= $sql;
-        $codigo .= ' LIMIT 1000";
-            
-    		PreparedStatement ps;
-    		try {
-    			ps = this.getConexao().prepareStatement(sql);
-    			ResultSet resultSet = ps.executeQuery();
-    			while(resultSet.next()){
-    				' . $nomeDoObjetoMA . ' ' . $nomeDoObjeto . ' = new ' . $nomeDoObjetoMA . '();';
-        foreach ($atributosComuns as $atributo) {
-            $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
-            if($atributo->getTipo() == Atributo::TIPO_INT){
-                $codigo .= '
-                    ' . $nomeDoObjeto . '.set' . $nomeDoAtributoMA . '( resultSet.getInt("' . $atributo->getNome() . '"));';
-            }else if($atributo->getTipo() == Atributo::TIPO_FLOAT){
-                $codigo .= '
-                    ' . $nomeDoObjeto . '.set' . $nomeDoAtributoMA . '( resultSet.getFloat("' . $atributo->getNome() . '"));';
-            }else if($atributo->getTipo() == Atributo::TIPO_STRING){
-                $codigo .= '
-                    ' . $nomeDoObjeto . '.set' . $nomeDoAtributoMA . '( resultSet.getString("' . $atributo->getNome() . '"));';
-            }
-            
-        }
-        foreach($atributosObjetos as $atributoObjeto){
-            
-            foreach($this->software->getObjetos() as $objeto2){
-                if($objeto2->getNome() == $atributoObjeto->getTipo()){
-                    foreach($objeto2->getAtributos() as $atributo3){
-                        if($atributo3->getIndice() == Atributo::INDICE_PRIMARY){
-                            
-                            if($atributo3->getTipo() == Atributo::TIPO_INT){
-                                $codigo .= '
-                    ' . $nomeDoObjeto . '.get' . ucfirst($atributoObjeto->getNome()) . '().set'.ucfirst($atributo3->getNome()).'( resultSet.getInt("' . strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome()) . '" ));';
-                            }else if($atributo3->getTipo() == Atributo::TIPO_FLOAT){
-                                $codigo .= '
-                    ' . $nomeDoObjeto . '.get' . ucfirst($atributoObjeto->getNome()) . '().set'.ucfirst($atributo3->getNome()).'( resultSet.getFloat("' . strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome()) . '" ));';
-                            }else if($atributo3->getTipo() == Atributo::TIPO_STRING){
-                                $codigo .= '
-                    ' . $nomeDoObjeto . '.get' . ucfirst($atributoObjeto->getNome()) . '().set'.ucfirst($atributo3->getNome()).'( resultSet.getString("' . strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome()) . '" ));';
-                            }
-                            
-                            
-                        }
-                        else
-                        {
-                            
-                            if($atributo3->getTipo() == Atributo::TIPO_INT){
-                                $codigo .= '
-                    ' . $nomeDoObjeto . '.get' . ucfirst($atributoObjeto->getNome()) . '().set'.ucfirst($atributo3->getNome()).'( resultSet.getInt("' . strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome()) . '" ));';
-                                
-                            }else if($atributo3->getTipo() == Atributo::TIPO_FLOAT){
-                                $codigo .= '
-                    ' . $nomeDoObjeto . '.get' . ucfirst($atributoObjeto->getNome()) . '().set'.ucfirst($atributo3->getNome()).'( resultSet.getFloat("' . strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome()) . '" ));';
-                            }else if($atributo3->getTipo() == Atributo::TIPO_STRING){
-                                $codigo .= '
-                    ' . $nomeDoObjeto . '.get' . ucfirst($atributoObjeto->getNome()) . '().set'.ucfirst($atributo3->getNome()).'( resultSet.getString("' . strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome()) . '" ));';
-                            }
-                            
-                        }
-                        
-                    }
-                    break;
-                }
-            }
-            
-        }
-        $codigo .= '
-            
-            
-    				lista.add(' . $nomeDoObjeto . ');
-    			}
-                return lista;
-    		} catch (SQLException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-                return null;
-    		}
-    				    
-	}';
+';
         
         foreach ($atributosComuns as $atributo) {
             
@@ -731,33 +549,42 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
     public function atualizar(Objeto $objeto){
         $codigo = '';
         $codigo = '';
-        $nomeDoObjeto = lcfirst($objeto->getNome());
         $atributosComuns = array();
         foreach ($objeto->getAtributos() as $atributo) {
             if ($atributo->tipoListado()) {
                 $atributosComuns[] = $atributo;
             }
         }
+        $atributoPrimary = null;
+        foreach ($objeto->getAtributos() as $atributo) {
+            if ($atributo->isPrimary()) {
+                $atributoPrimary = $atributo;
+                break;
+            }
+        }
+        if ($atributoPrimary == null) {
+            $atributoPrimary = $objeto->getAtributos()[0];
+        }
         
         $codigo .= '
             
             
-            
-    public boolean atualizar('.ucfirst($objeto->getNome()).' '.strtolower($objeto->getNome()).'){
+    public boolean atualizar('.ucfirst($objeto->getNome()).' '.lcfirst($objeto->getNome()).')
+    {
 		PreparedStatement ps;';
         foreach($objeto->getAtributos() as $atributo){
             if($atributo->getIndice() == Atributo::INDICE_PRIMARY){
                 $codigo .= '
-            int id = '.strtolower($objeto->getNome()).'.get'.ucfirst ($atributo->getNome()).'();';
+        int id = '.lcfirst($objeto->getNome()).'.get'.ucfirst ($atributo->getNome()).'();';
                 
             }else if($atributo->tipoListado()){
                 $codigo .= '
-            '.$atributo->getTipoJava().' '.strtolower($atributo->getNome()).' = '.strtolower($objeto->getNome()).'.get'.ucfirst($atributo->getNome()).'();';
+        '.$atributo->getTipoJava().' '.lcfirst($atributo->getNome()).' = '.lcfirst($objeto->getNome()).'.get'.ucfirst($atributo->getNome()).'();';
             }
         }
         $codigo .= '
             
-        String sql = "UPDATE '.$nomeDoObjeto.'"
+        String sql = "UPDATE '.$objeto->getNomeSnakeCase().'"
                 +"SET"
                 ';
         $listaAtributo = array();
@@ -773,7 +600,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
         $i = 0;
         foreach ($listaAtributo as $atributo) {
             $i ++;
-            $codigo .= '+"'.$atributo->getNome().' = ?';
+            $codigo .= '+"'.$atributo->getNomeSnakeCase().' = ?';
             if ($i != count($listaAtributo)) {
                 $codigo .= ',"
                 ';
@@ -782,7 +609,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
             }
         }
         $codigo .= '
-                +"WHERE '.$nomeDoObjeto.'.id ="+id+";";';
+                +"WHERE '.$objeto->getNomeSnakeCase().'.id ="+id+";";';
         
         $codigo .= '
 		try {
@@ -792,16 +619,23 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
-            $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
+            
             if($atributo->getTipo() == Atributo::TIPO_INT){
                 $codigo .= '
-                ps.setInt('.$i.', ' . $atributo->getNome() . ');';
+            ps.setInt('.$i.', ' . $atributo->getNome() . ');';
+                
             }else if($atributo->getTipo() == Atributo::TIPO_FLOAT){
                 $codigo .= '
-                ps.setFloat('.$i.', ' . $atributo->getNome() . ');';
+            ps.setFloat('.$i.', ' . $atributo->getNome() . ');';
+                
             }else if($atributo->getTipo() == Atributo::TIPO_STRING){
                 $codigo .= '
-                ps.setString('.$i.', ' . $atributo->getNome() . ');';
+            ps.setString('.$i.', ' . $atributo->getNome() . ');';
+                
+            }else if($atributo->getTipo() == Atributo::TIPO_DATE || $atributo->getTipo() == Atributo::TIPO_DATE_TIME){
+                $codigo .= '
+            ps.setString('.$i.', ' . $atributo->getNome() . ');';
+                
             }
             
             $i++;
@@ -824,7 +658,201 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
         return $codigo;
     }
     
+    private function retornaLista($objeto) : string {
+        $codigo = '';
+        $nomeDoObjeto = lcfirst($objeto->getNome());
+        
+        $atributosComuns = array();
+        $atributosObjetos = array();
+        foreach ($objeto->getAtributos() as $atributo) {
+            if ($atributo->tipoListado()) {
+                $atributosComuns[] = $atributo;
+            } else if ($atributo->isObjeto()) {
+                $atributosObjetos[] = $atributo;
+            }
+        }
+        
+        $codigo .= '
+
+	public ArrayList<'.ucfirst($objeto->getNome()).'> retornaLista() {
+		ArrayList<'.ucfirst($objeto->getNome()).'>lista = new ArrayList<'.ucfirst($objeto->getNome()).'>();
+		String sql = "';
+        $sqlGerador = new SQLGerador($this->software);
+        $sql = $sqlGerador->getSQLSelect($objeto);
+        $codigo .= $sql;
+        $codigo .= ' LIMIT 1000";
+            
+		PreparedStatement ps;
+		try {
+			ps = this.getConexao().prepareStatement(sql);
+			ResultSet resultSet = ps.executeQuery();
+			while(resultSet.next()){
+				' . ucfirst($objeto->getNome()) . ' ' . lcfirst($objeto->getNome()). ' = new ' . ucfirst($objeto->getNome()). '();';
+        foreach ($atributosComuns as $atributo) {
+            
+            if($atributo->getTipo() == Atributo::TIPO_INT){
+                $codigo .= '
+                ' . lcfirst($objeto->getNome()) . '.set' . ucfirst($atributo->getNome()) . '( resultSet.getInt("' . $atributo->getNomeSnakeCase() . '"));';
+            }else if($atributo->getTipo() == Atributo::TIPO_FLOAT){
+                $codigo .= '
+                ' . lcfirst($objeto->getNome()) . '.set' . ucfirst($atributo->getNome())  . '( resultSet.getFloat("' . $atributo->getNomeSnakeCase() . '"));';
+            }else if($atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_DATE_TIME || $atributo->getTipo() == Atributo::TIPO_DATE){
+                $codigo .= '
+                ' . lcfirst($objeto->getNome()) . '.set' . ucfirst($atributo->getNome())  . '( resultSet.getString("' . $atributo->getNomeSnakeCase() . '"));';
+            }
+            
+        }
+        foreach($atributosObjetos as $atributoObjeto){
+            
+            foreach($this->software->getObjetos() as $objeto2){
+                if($objeto2->getNome() == $atributoObjeto->getTipo()){
+                    foreach($objeto2->getAtributos() as $atributo3){
+                        if($atributo3->getIndice() == Atributo::INDICE_PRIMARY){
+                            
+                            if($atributo3->getTipo() == Atributo::TIPO_INT){
+                                $codigo .= '
+                ' . $nomeDoObjeto . '.get' . ucfirst($atributoObjeto->getNome()) . '().set'.ucfirst($atributo3->getNome()).'( resultSet.getInt("' . strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome()) . '" ));';
+                            }else if($atributo3->getTipo() == Atributo::TIPO_FLOAT){
+                                $codigo .= '
+                ' . $nomeDoObjeto . '.get' . ucfirst($atributoObjeto->getNome()) . '().set'.ucfirst($atributo3->getNome()).'( resultSet.getFloat("' . strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome()) . '" ));';
+                            }else if($atributo3->getTipo() == Atributo::TIPO_STRING){
+                                $codigo .= '
+                ' . $nomeDoObjeto . '.get' . ucfirst($atributoObjeto->getNome()) . '().set'.ucfirst($atributo3->getNome()).'( resultSet.getString("' . strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome()) . '" ));';
+                            }
+                            
+                            
+                        }
+                        else
+                        {
+                            
+                            if($atributo3->getTipo() == Atributo::TIPO_INT){
+                                $codigo .= '
+                ' . $nomeDoObjeto . '.get' . ucfirst($atributoObjeto->getNome()) . '().set'.ucfirst($atributo3->getNome()).'( resultSet.getInt("' . strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome()) . '" ));';
+                                
+                            }else if($atributo3->getTipo() == Atributo::TIPO_FLOAT){
+                                $codigo .= '
+                ' . $nomeDoObjeto . '.get' . ucfirst($atributoObjeto->getNome()) . '().set'.ucfirst($atributo3->getNome()).'( resultSet.getFloat("' . strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome()) . '" ));';
+                            }else if($atributo3->getTipo() == Atributo::TIPO_STRING){
+                                $codigo .= '
+                ' . $nomeDoObjeto . '.get' . ucfirst($atributoObjeto->getNome()) . '().set'.ucfirst($atributo3->getNome()).'( resultSet.getString("' . strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome()) . '" ));';
+                            }
+                            
+                        }
+                        
+                    }
+                    break;
+                }
+            }
+            
+        }
+        $codigo .= '
+            
+        
+				lista.add(' . $nomeDoObjeto . ');
+			}
+            return lista;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+            return null;
+		}
+    				    
+	}
+
+';
+        
+        
+        
+        return $codigo;
+    }
     
+    private function inserir(Objeto $objeto)
+    {
+        $codigo = '
+	public boolean inserir(' . ucfirst($objeto->getNome()). ' ' . lcfirst($objeto->getNome()). '){
+	    
+        String sql = "INSERT into '.$objeto->getNomeSnakeCase().'(';
+        $listaAtributos = array();
+        $listaAtributosVar = array();
+        foreach ($objeto->getAtributos() as $atributo)
+        {
+            if($atributo->isPrimary()){
+                continue;
+            }
+            if($atributo->tipoListado()){
+                $listaAtributos[] = $atributo->getNomeSnakeCase();
+                $listaAtributosVar[] = '?';
+                
+            }else if($atributo->isObjeto()){
+                $listaAtributos[] = 'id_' . $atributo->getNomeSnakeCase();
+                $listaAtributosVar[] = '?';
+                
+            }else{
+                continue;
+            }
+        }
+        $codigo .= implode(", ", $listaAtributos);
+        $codigo .= ') VALUES (';
+        $codigo .= implode(", ", $listaAtributosVar);
+        $codigo .= ');";';
+       
+        $codigo .= '
+            
+		try {
+            
+			PreparedStatement ps = this.getConexao().prepareStatement(sql);';
+        
+        $i = 0;
+        foreach ($objeto->getAtributos() as $atributo) {
+            
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
+                continue;
+            }else{
+                $i++;
+            }
+            if($atributo->tipoListado()){
+                $codigo .= '
+            ps.set'.$atributo->getTipoJava().'('.$i.', '.strtolower($objeto->getNome()).'.get'.ucfirst($atributo->getNome()).'());';
+        
+            }else if($atributo->isObjeto()){
+                $strCampoPrimary = '';
+                foreach($this->software->getObjetos() as $objetoDoAtributo){
+                    if($objetoDoAtributo->getNome() == $atributo->getTipo()){
+                        foreach($objetoDoAtributo->getAtributos() as $att){
+                            if($att->isPrimary()){
+                                $strCampoPrimary = ucfirst($att->getNome());
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+                
+                $codigo .= '
+            ps.setInt('.$i.', '.lcfirst($atributo->getNome()).'.get'.ucfirst($atributo->getNome()).'().get'.$strCampoPrimary.'());';
+                
+                
+            }
+            
+        }
+        
+        $codigo .= '
+            
+			ps.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+    }
+            
+    
+';
+        
+        return $codigo;
+        
+    }
     
     
 }

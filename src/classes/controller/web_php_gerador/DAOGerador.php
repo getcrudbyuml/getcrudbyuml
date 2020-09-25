@@ -128,10 +128,10 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
     
 ';
         $codigo .= $this->atualizar($objeto);
+        $codigo .= $this->retornaLista($objeto);
         $codigo .= $this->inserir($objeto);
         $codigo .= $this->inserirComPK($objeto);
         $codigo .= $this->excluir($objeto);
-        $codigo .= $this->retornaLista($objeto);
         $codigo .= $this->pesaquisarPor($objeto);
         $codigo .= $this->preencherPor($objeto);
         $codigo .= $this->buscarAtributoNN($objeto);
@@ -181,7 +181,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                 ';
         $listaAtributo = array();
         foreach ($atributosComuns as $atributo) {
-            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
+            if ($atributo->isPrimary()) {
                 continue;
             }
             if (substr($atributo->getTipo(), 0, 6) == 'Array ') {
@@ -453,8 +453,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         $codigo .= $sqlGerador->getSQLSelect($objeto);
         
         
-        $codigo .= '
-                 LIMIT 1000";
+        $codigo .= ' LIMIT 1000";
 
         try {
             $stmt = $this->conexao->prepare($sql);
