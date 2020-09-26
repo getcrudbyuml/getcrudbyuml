@@ -51,6 +51,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -62,7 +63,10 @@ import javax.swing.border.EmptyBorder;
 public class ' . ucfirst($objeto->getNome()) . 'View extends JFrame {
 	
     private JPanel contentPane;
-
+    private JButton btnSubmit;
+    public JButton getBtnSubmit(){
+        return this.btnSubmit;
+    }
     public ' . ucfirst($objeto->getNome()) . 'View() {
         setTitle("' . ucfirst($objeto->getNome()) . '");
     	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -93,6 +97,13 @@ public class ' . ucfirst($objeto->getNome()) . 'View extends JFrame {
             }
             
         }
+        $codigo .= '
+		         
+        btnSubmit = new JButton("submit");
+        btnSubmit.setBounds(200, '.(12+$i*28).', 86, 20);
+        this.getContentPane().add(btnSubmit);
+
+';
         
         $codigo .= '
 
