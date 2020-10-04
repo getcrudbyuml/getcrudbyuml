@@ -1,38 +1,14 @@
 <?php
 define("DB_INI", "../escritordesoftware_bd.ini");
 
-function autoload($classe)
-{
-    if (file_exists('classes/dao/' . $classe . '.php')) {
-        include_once 'classes/dao/' . $classe . '.php';
-    } else if (file_exists('classes/model/' . $classe . '.php')) {
-        include_once 'classes/model/' . $classe . '.php';
-    } else if (file_exists('classes/controller/' . $classe . '.php')) {
-        include_once 'classes/controller/' . $classe . '.php';
-    } else if (file_exists('classes/util/' . $classe . '.php')) {
-        include_once 'classes/util/' . $classe . '.php';
-    } else if (file_exists('classes/view/' . $classe . '.php')) {
-        include_once 'classes/view/' . $classe . '.php';
-    } else if (file_exists('classes/controller/web_php_gerador/' . $classe . '.php')) {
-        include_once 'classes/controller/web_php_gerador/' . $classe . '.php';
-    }else if (file_exists('classes/controller/sql_gerador/' . $classe . '.php')) {
-        include_once 'classes/controller/sql_gerador/' . $classe . '.php';
-    }else if(file_exists('classes/controller/desktop_java_gerador/' . $classe . '.php')){
-        include_once 'classes/controller/desktop_java_gerador/' . $classe . '.php';
-    }else if (file_exists ( 'classes/custom/controller/' . $classe . '.php' )){
-        include_once 'classes/custom/controller/' . $classe . '.php';
-        return;
-    }
-    else if (file_exists ( 'classes/custom/view/' . $classe . '.php' )){
-        include_once 'classes/custom/view/' . $classe . '.php';
-        return;
-    }else if(file_exists ( 'classes/custom/dao/' . $classe . '.php' )){
-        include_once 'classes/custom/dao/' . $classe . '.php';
-        return;
-    }
-    
-}
-spl_autoload_register('autoload');
+
+use GetCrudByUML\controller\MainController;
+use GetCrudByUML\controller\NavBarController;
+use GetCrudByUML\controller\SideBarController;
+use GetCrudByUML\custom\controller\UsuarioCustomController;
+use GetCrudByUML\dao\AuditoriaDAO;
+use GetCrudByUML\model\Auditoria;
+use GetCrudByUML\util\Sessao;
 
 $sessao = new Sessao();
 
