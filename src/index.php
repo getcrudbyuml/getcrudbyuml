@@ -1,14 +1,16 @@
 <?php
-define("DB_INI", "../escritordesoftware_bd.ini");
 
+define("DB_INI", "../escritordesoftware_bd.ini");
+include 'GetCrudByUML/autoload.php';
 
 use GetCrudByUML\controller\MainController;
 use GetCrudByUML\controller\NavBarController;
 use GetCrudByUML\controller\SideBarController;
 use GetCrudByUML\custom\controller\UsuarioCustomController;
 use GetCrudByUML\dao\AuditoriaDAO;
-use GetCrudByUML\model\Auditoria;
+
 use GetCrudByUML\util\Sessao;
+use GetCrudByUML\model\Auditoria;
 
 $sessao = new Sessao();
 

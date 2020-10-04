@@ -1,25 +1,21 @@
 <?php
 
 
-namespace GetCrudByUML\controller;
+namespace GetCrudByUML\gerador\javaDesktopEscritor\crudMvcDao;
 
-use GetCrudByUML\gerador\javaDesktopEscritor\crudMvcDao\DAOJavaGerador;
 use GetCrudByUML\gerador\sqlGerador\DBGerador;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\ControllerCustomGerador;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\ControllerGerador;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\DAOCustomGerador;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\DAOGerador;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\IndexGerador;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\IniAPIRest;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\JSAjaxGerador;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\ModelGerador;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\ViewCustomGerador;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\ViewGerador;
 use GetCrudByUML\model\Software;
-use ControllerCustomGerador;
-use ControllerGerador;
-use DAOCustomGerador;
-use DAOGerador;
-use IndexGerador;
-use IniAPIRest;
-use JSAjaxGerador;
-use MainJavaGerador;
-use ModelGerador;
-use ModelJavaGerador;
-use POMGerador;
-use ViewCustomGerador;
-use ViewGerador;
-use ViewJavaGerador;
+
 
 class EscritorDeSoftware
 {

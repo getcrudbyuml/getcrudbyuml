@@ -5,8 +5,7 @@ namespace GetCrudByUML\controller;
 use GetCrudByUML\custom\controller\UsuarioCustomController;
 use GetCrudByUML\model\Usuario;
 use GetCrudByUML\util\Sessao;
-use ObjetoController;
-use SoftwareController;
+
 
 class MainController{
     

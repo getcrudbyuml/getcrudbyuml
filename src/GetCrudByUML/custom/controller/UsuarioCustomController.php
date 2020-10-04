@@ -3,11 +3,11 @@
 
 namespace GetCrudByUML\custom\controller;
 
+use GetCrudByUML\controller\UsuarioController;
 use GetCrudByUML\custom\dao\UsuarioCustomDAO;
 use GetCrudByUML\custom\view\UsuarioCustomView;
 use GetCrudByUML\model\Usuario;
 use GetCrudByUML\util\Sessao;
-use UsuarioController;
 
 
 
