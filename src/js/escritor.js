@@ -10,3 +10,8 @@ $('#select-tipo-atributo').selectize({
     sortField: 'text'
 });
 
+$('#select-tipo-codigo').selectize({
+    create: false,
+    sortField: 'text'
+});
+

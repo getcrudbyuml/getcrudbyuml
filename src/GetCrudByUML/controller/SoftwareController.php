@@ -12,7 +12,7 @@ use GetCrudByUML\dao\AtributoDAO;
 use GetCrudByUML\gerador\javaDesktopEscritor\crudMvcDao\EscritorDeSoftware as EscritorJava;
 use GetCrudByUML\gerador\webPHPEscritor\crudMVCDaoEstiloPT\EscritorDeSoftware as EscritorPHPPortugues;
 use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\EscritorDeSoftware as EscritorPHP;
-
+use GetCrudByUML\util\Zipador;
 
 /**
  * Classe feita para manipulação do objeto Software
@@ -140,26 +140,21 @@ class SoftwareController
         
         $diretorio = './sistemas/' . $sessao->getLoginUsuario() . '/' . $this->selecionado->getNomeSimples();
         if(is_dir('./sistemas/' . $sessao->getLoginUsuario() . '/')){
-//             $this->excluiDir( './sistemas/' . $sessao->getLoginUsuario() . '/');
+            $this->excluiDir( './sistemas/' . $sessao->getLoginUsuario() . '/');
         }
         
         $numeroDeArquivos = 0;
         if($_GET['escrever'] == 1){
-            
-            
+
+            EscritorPHP::main($this->selecionado, $diretorio);            
+        }else if($_GET['escrever'] == 2){
             EscritorPHPPortugues::main($this->selecionado, $diretorio);
-            EscritorPHP::main($this->selecionado, $diretorio);
-            
+        }else if($_GET['escrever'] == 3){
             EscritorJava::main($this->selecionado, $diretorio);
         }
         
-//         $zipador = new Zipador();
-//         $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/../'.$this->selecionado->getNomeSimples().'.zip');
-        
-        
-        
-        
-        
+        $zipador = new Zipador();
+        $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/../'.$this->selecionado->getNomeSimples().'.zip');
         
         
         echo '
@@ -233,7 +228,7 @@ class SoftwareController
             if($arquivo == '.' || $arquivo == '..'){
                 continue;
             }
-//             $listaDeArquivos[] = 'controller/'.$arquivo;
+
             break;
         }
         $dir-> close();
@@ -325,7 +320,8 @@ class SoftwareController
         echo '<div class="col-xl-8 col-lg-8 col-md-12 col-sm-12">';
         echo '<h3>Software: ' . $this->selecionado->getNome() . '</h3>';
 
-        echo '<a href="?pagina=software&selecionar=' . $this->selecionado->getId() . '&escrever=1" class="btn btn-success m-2">Pegar Código</a>';
+        
+        echo '<button type="button" class="btn btn-success m-2" data-toggle="modal" data-target="#modalEscrever">Pegar Código</button>';
         echo '<a href="?pagina=software&deletar=' . $this->selecionado->getId() . '" class="btn btn-danger m-2">Deletar Software</a>';
         
 
@@ -355,6 +351,50 @@ class SoftwareController
         $this->view->mostrarSelecionado($this->selecionado);
         
         echo '</div>';
+        $this->modalEscrever();
+    }
+    
+    public function modalEscrever(){
+        if(!isset($_GET['selecionar'])){
+            return;
+        }
+        echo '
+
+<!-- Modal -->
+<div class="modal fade" id="modalEscrever" tabindex="-1" aria-labelledby="modalEscreverLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEscreverLabel">Select your application</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+
+        <form id="form-escrever" method="get">
+        <input type="hidden" name="pagina" value="software">
+        <input type="hidden" name="selecionar" value="'.$_GET['selecionar'].'">
+        <select id="select-tipo-codigo" name="escrever">
+            <option value="1">PHP Web CRUD MVC Bootstrap</option>
+            <option value="2">PHP Web CRUD MVC Bootstrap Identificadores em Português</option>
+            <option value="3">JAVA CRUD MVC Desktop</option>
+        
+        </select>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" form="form-escrever" class="btn btn-primary">Get</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+';
+        
     }
 
     public function modalSelect(){
