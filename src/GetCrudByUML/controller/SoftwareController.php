@@ -10,7 +10,9 @@ use GetCrudByUML\dao\UsuarioDAO;
 use GetCrudByUML\dao\ObjetoDAO;
 use GetCrudByUML\dao\AtributoDAO;
 use GetCrudByUML\gerador\javaDesktopEscritor\crudMvcDao\EscritorDeSoftware as EscritorJava;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDaoEstiloPT\EscritorDeSoftware as EscritorPHPPortugues;
 use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\EscritorDeSoftware as EscritorPHP;
+
 
 /**
  * Classe feita para manipulação do objeto Software
@@ -145,9 +147,10 @@ class SoftwareController
         if($_GET['escrever'] == 1){
             
             
-            
+            EscritorPHPPortugues::main($this->selecionado, $diretorio);
             EscritorPHP::main($this->selecionado, $diretorio);
-            EscritorJava::mainJAVA($this->selecionado, $diretorio);
+            
+            EscritorJava::main($this->selecionado, $diretorio);
         }
         
 //         $zipador = new Zipador();

@@ -2,7 +2,7 @@
 
 
 
-namespace GetCrudByUML\gerador\webPHPEscritor\crudMVCDao;
+namespace GetCrudByUML\gerador\webPHPEscritor\crudMVCDaoEstiloPT;
 
 use GetCrudByUML\model\Atributo;
 use GetCrudByUML\model\Objeto;
@@ -67,7 +67,7 @@ class ViewGerador{
             }
         }
         $codigo = '
-    public function showFormInsert(';
+    public function mostraFormInserir(';
         $i = count($atributosObjetos);
         foreach($atributosObjetos as $atributoObjeto){
             $i--;
@@ -154,7 +154,7 @@ class ViewGerador{
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-        <button form="form_submit_'.$objeto->getNomeSnakeCase().'" type="submit" class="btn btn-primary">Cadastrar</button>
+        <button form="form_enviar_'.$objeto->getNomeSnakeCase().'" type="submit" class="btn btn-primary">Cadastrar</button>
       </div>
     </div>
   </div>
@@ -187,7 +187,7 @@ class ViewGerador{
         
         $codigo .= '                                            
                                             
-    public function showList($lista){
+    public function exibirLista($lista){
            echo \'
                                             
                                             
@@ -226,7 +226,7 @@ class ViewGerador{
             
         }
         $codigo .= '
-                        <th>Actions</th>';
+                        <th>Ações</th>';
         $codigo .= '
 					</tr>
 				</thead>
@@ -331,7 +331,7 @@ class ViewGerador{
 
 
             
-        public function showSelected('.$objeto->getNome().' $'.$nomeDoObjeto.'){
+        public function mostrarSelecionado('.$objeto->getNome().' $'.$nomeDoObjeto.'){
             echo \'
             
 	<div class="card o-hidden border-0 shadow-lg my-5">
@@ -384,7 +384,7 @@ class ViewGerador{
         $codigo .= '
 
             
-	public function showEditForm(';
+	public function mostraFormEditar(';
        $codigo .= implode(', ', $listaParametros);
 	   $codigo .= ') {
 		echo \'
@@ -491,7 +491,7 @@ class ViewGerador{
         
         
         
-        $codigo .= '                    Are you sure you want to delete this object?
+        $codigo .= '                    Tem Certeza que deseja deletar este objeto?
 
                                         <input type="submit" class="btn btn-primary btn-user btn-block" value="Deletar" name="deletar_' . $objeto->getNomeSnakeCase() . '">
                                         <hr>
