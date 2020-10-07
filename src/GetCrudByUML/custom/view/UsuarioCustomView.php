@@ -14,7 +14,7 @@ class UsuarioCustomView extends UsuarioView {
     public function mostraFormInserir() {
         echo '
 <button type="button" class="btn btn-outline-secondary m-3" data-toggle="modal" data-target="#modalAddUsuario">
-  Quero Começar
+  Create Account
 </button>
      
 <!-- Modal -->
@@ -24,7 +24,7 @@ class UsuarioCustomView extends UsuarioView {
     <div class="modal-content">
         <form class="user" method="post" id="form_enviar_usuario">
       <div class="modal-header">
-        <h5 class="modal-title" id="labelAddUsuario">Adicionar Usuario</h5>
+        <h5 class="modal-title" id="labelAddUsuario">Create Account</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -36,20 +36,20 @@ class UsuarioCustomView extends UsuarioView {
             <span id="local-do-email"></span>
         
             <div class="form-group">
-              <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome Completo" required>
+              <input type="text" class="form-control" id="nome" name="nome" placeholder="Name" required>
             </div>
             <div class="form-group">
               <input type="text" class="form-control" id="login" name="login" placeholder="Login" pattern="[a-zA-Z0-9]+" required>
             </div>
             <div class="form-group">
-              <input type="mail" class="form-control" id="email" name="email" placeholder="Email" required>
+              <input type="mail" class="form-control" id="email" name="email" placeholder="E-mail" required>
             </div>
             <div class="form-group row">
               <div class="col-sm-6 mb-3 mb-sm-0">
-                <input type="password" autocomplete=​"new-password" class="form-control" id="exampleInputPassword" name="senha" placeholder="Senha" required>
+                <input type="password" autocomplete=​"new-password" class="form-control" id="exampleInputPassword" name="senha" placeholder="Password" required>
               </div>
               <div class="col-sm-6">
-                <input type="password" autocomplete=​"new-password" class="form-control" id="exampleRepeatPassword" name="senha_confirmada" placeholder="Repita sua Senha" required>
+                <input type="password" autocomplete=​"new-password" class="form-control" id="exampleRepeatPassword" name="senha_confirmada" placeholder="Confirm Password" required>
               </div>
             </div>
                 <input type="hidden" name="form_enviar_usuario" value="1">
@@ -60,7 +60,7 @@ class UsuarioCustomView extends UsuarioView {
       <div class="modal-footer">
         <a class="btn btn-primary" href="?pagina=login">Já tenho conta.</a>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-        <input type="submit" name="form_enviar_usuario1" class="btn btn-primary" value="Cadastrar">
+        <input type="submit" name="form_enviar_usuario1" class="btn btn-primary" value="Submit">
       </div>
     </div>
     </form>     

@@ -43,13 +43,13 @@ class NavBarController{
                 
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Configurar Conta
+                Set up Account
               </a>
                 
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="?pagina=mudar_senha">Mudar Senha</a>
+                <a class="dropdown-item" href="?pagina=mudar_senha">Change Password</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="?sair=1">Sair</a>
+                <a class="dropdown-item" href="?sair=1">Sign Out</a>
               </div>
             </li>';
         }

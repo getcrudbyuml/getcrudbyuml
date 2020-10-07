@@ -140,7 +140,7 @@ class SoftwareController
         
         $diretorio = './sistemas/' . $sessao->getLoginUsuario() . '/' . $this->selecionado->getNomeSimples();
         if(is_dir('./sistemas/' . $sessao->getLoginUsuario() . '/')){
-            $this->excluiDir( './sistemas/' . $sessao->getLoginUsuario() . '/');
+//             $this->excluiDir( './sistemas/' . $sessao->getLoginUsuario() . '/');
         }
         
         $numeroDeArquivos = 0;
@@ -153,8 +153,8 @@ class SoftwareController
             EscritorJava::main($this->selecionado, $diretorio);
         }
         
-        $zipador = new Zipador();
-        $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/../'.$this->selecionado->getNomeSimples().'.zip');
+//         $zipador = new Zipador();
+//         $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/../'.$this->selecionado->getNomeSimples().'.zip');
         
         
         echo '
