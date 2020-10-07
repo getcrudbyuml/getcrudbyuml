@@ -13,8 +13,17 @@ class UsuarioCustomView extends UsuarioView {
 
     public function mostraFormInserir() {
         echo '
-<button type="button" class="btn btn-outline-secondary m-3" data-toggle="modal" data-target="#modalAddUsuario">
-  Create Account
+<button type="button" class="btn btn-outline-secondary m-3" data-toggle="modal" data-target="#modalAddUsuario">';
+        if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt')
+        {
+            echo '
+  Criar Conta';
+        }else{
+            echo '
+  Create Account';
+        }
+        
+        echo '
 </button>
      
 <!-- Modal -->
@@ -24,7 +33,15 @@ class UsuarioCustomView extends UsuarioView {
     <div class="modal-content">
         <form class="user" method="post" id="form_enviar_usuario">
       <div class="modal-header">
-        <h5 class="modal-title" id="labelAddUsuario">Create Account</h5>
+        <h5 class="modal-title" id="labelAddUsuario">';
+        if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt')
+        {
+            echo 'Criar Conta';
+        }else{
+            echo 'Create Account';
+        }
+        
+        echo '</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -36,20 +53,46 @@ class UsuarioCustomView extends UsuarioView {
             <span id="local-do-email"></span>
         
             <div class="form-group">
-              <input type="text" class="form-control" id="nome" name="nome" placeholder="Name" required>
-            </div>
-            <div class="form-group">
-              <input type="text" class="form-control" id="login" name="login" placeholder="Login" pattern="[a-zA-Z0-9]+" required>
+              <input type="text" class="form-control" id="nome" name="nome" placeholder="';
+        if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt')
+        {
+            echo 'Nome';
+        }else{
+            echo 'Name';
+        }
+              
+              echo '" required>
             </div>
             <div class="form-group">
               <input type="mail" class="form-control" id="email" name="email" placeholder="E-mail" required>
             </div>
+            <div class="form-group">
+              <input type="text" class="form-control" id="login" name="login" placeholder="Login" pattern="[a-zA-Z0-9]+" required>
+            </div>
+            
             <div class="form-group row">
               <div class="col-sm-6 mb-3 mb-sm-0">
-                <input type="password" autocomplete=​"new-password" class="form-control" id="exampleInputPassword" name="senha" placeholder="Password" required>
+                <input type="password" autocomplete=​"new-password" class="form-control" id="exampleInputPassword" name="senha" placeholder="';
+         
+              if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt')
+              {
+                  echo 'Senha';
+              }else{
+                  echo 'Password';
+              }
+                
+                echo '" required>
               </div>
               <div class="col-sm-6">
-                <input type="password" autocomplete=​"new-password" class="form-control" id="exampleRepeatPassword" name="senha_confirmada" placeholder="Confirm Password" required>
+                <input type="password" autocomplete=​"new-password" class="form-control" id="exampleRepeatPassword" name="senha_confirmada" placeholder="';
+                if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt')
+                {
+                    echo 'Confirme a Senha';
+                }else{
+                    echo 'Confirm Password';
+                }
+                
+                echo '" required>
               </div>
             </div>
                 <input type="hidden" name="form_enviar_usuario" value="1">
@@ -60,7 +103,10 @@ class UsuarioCustomView extends UsuarioView {
       <div class="modal-footer">
         <a class="btn btn-primary" href="?pagina=login">Já tenho conta.</a>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-        <input type="submit" name="form_enviar_usuario1" class="btn btn-primary" value="Submit">
+        <input type="submit" name="form_enviar_usuario1" class="btn btn-primary" value="';
+        
+        echo 'Submit';
+        echo '">
       </div>
     </div>
     </form>     
@@ -92,15 +138,39 @@ class UsuarioCustomView extends UsuarioView {
                                 <form id="login-form" class="form" action="" method="post">
                                     <h3 class="text-center text-info">Login</h3>
                                     <div class="form-group">
-                                        <label for="username" class="text-info">Login ou E-mail:</label><br>
+                                        <label for="username" class="text-info">Login ';
+        if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt')
+        {
+            echo 'ou';
+        }else{
+            echo 'or';
+        }
+                                         
+                                        echo ' E-mail:</label><br>
                                         <input type="text" name="login" id="username" class="form-control">
                                     </div>
                                     <div class="form-group">
-                                        <label for="password" class="text-info">Senha:</label><br>
+                                        <label for="password" class="text-info">';
+        if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt')
+        {
+            echo 'Senha';
+        }else{
+            echo 'Password';
+        }
+            
+                                        echo ':</label><br>
                                         <input type="password" name="senha" id="password" class="form-control">
                                     </div>
                                     <div class="form-group">
-                                        <input type="submit" name="form_login" class="btn btn-info btn-md" value="Entrar">
+                                        <input type="submit" name="form_login" class="btn btn-info btn-md" value="';
+        if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt')
+        {
+            echo 'Entrar';
+        }else{
+            echo 'Login';
+        }
+            
+                                        echo '">
                                     </div>
             
                                 </form>

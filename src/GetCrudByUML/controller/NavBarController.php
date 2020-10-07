@@ -26,7 +26,15 @@ class NavBarController{
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
             <li class="nav-item active">
-              <a class="nav-link" href="./">Início</a>
+              <a class="nav-link" href="./">';
+        if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt')
+        {
+            echo 'Início';
+        }else{
+            echo 'Home';
+        }
+              
+              echo '</a>
             </li>';
         
         if($sessao->getNivelAcesso() == Sessao::NIVEL_DESLOGADO || $sessao->getNivelAcesso() == Sessao::NIVEL_VERIFICADO)

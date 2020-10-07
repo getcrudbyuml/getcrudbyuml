@@ -32,8 +32,16 @@ class HomeController{
         
         echo '
                 </p>
-                <div class="embed-responsive embed-responsive-16by9">
-                    <iframe src="https://www.youtube.com/embed/-_HPhLOIE4g" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <div class="embed-responsive embed-responsive-16by9">';
+        
+        if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+            echo '<iframe src="https://www.youtube.com/embed/-_HPhLOIE4g" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+        }else{//I need to record this. 
+            echo '<iframe src="https://www.youtube.com/embed/-_HPhLOIE4g" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+        }
+        
+        
+        echo '
                 </div><br><br>
                 
 
@@ -180,7 +188,14 @@ echo '" height="200" alt="QR Code">
     ';
         $sessao = new Sessao();
         if($sessao->getNivelAcesso() != Sessao::NIVEL_DESLOGADO){
-            echo 'You are logged in. ';
+            if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt')
+            {
+                echo 'Você está Logado. ';
+            }else
+            {
+                echo 'You are logged in. ';
+            }
+            
         }else{
             $usuarioView = new UsuarioCustomView();
             $usuarioView->mostraFormInserir();
