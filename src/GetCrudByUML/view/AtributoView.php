@@ -21,7 +21,15 @@ class AtributoView {
   <div class="card-body">
 						              <form class="user" method="post">
                                         <div class="form-group">
-                						  <input type="text" class="form-control form-control-user campmo-selecionado" id="nome" name="nome" placeholder="Nome do Atributo">
+                						  <input type="text" class="form-control form-control-user campmo-selecionado" id="nome" name="nome" placeholder="';
+		
+		if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+		    echo 'Nome do Atributo';
+		}else{
+		    echo 'Attribute Name';
+		}
+                						  
+                						  echo '">
                 						</div>
                                         <div class="form-group">
                 						  <select class="form-control form-control-user" id="select-tipo-atributo" name="tipo" placeholder="tipo">

@@ -101,11 +101,34 @@ class UsuarioCustomView extends UsuarioView {
             
       </div>
       <div class="modal-footer">
-        <a class="btn btn-primary" href="?pagina=login">Já tenho conta.</a>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-        <input type="submit" name="form_enviar_usuario1" class="btn btn-primary" value="';
+        <a class="btn btn-primary" href="?pagina=login">';
+                if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt')
+                {
+                    echo 'Já tenho conta.';
+                }else{
+                    echo 'I already have an account..';
+                }
         
-        echo 'Submit';
+        echo '</a>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">';
+        if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt')
+        {
+            echo 'Fechar';
+        }else{
+            echo 'Close';
+        }
+        
+        
+        echo '</button>
+        <input type="submit" name="form_enviar_usuario1" class="btn btn-primary" value="';
+        if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt')
+        {
+            
+            echo 'Cadastrar';
+        }else{
+            
+            echo 'Submit';
+        }
         echo '">
       </div>
     </div>
@@ -245,15 +268,35 @@ class UsuarioCustomView extends UsuarioView {
 								<div class="p-5">
                                     '.$mensagem.'
 									<div class="text-center">
-										<h1 class="h4 text-gray-900 mb-4">Digite sua nova senha duas vezes</h1>
+										<h1 class="h4 text-gray-900 mb-4">';
+        if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+            echo 'Mudar Senha';
+        }else{
+            echo 'Change Password';
+        }
+										echo '</h1>
 									</div>
 						              <form class="user" method="post">
 						                <div class="form-group row">
 						                  <div class="col-sm-6 mb-3 mb-sm-0">
-						                    <input type="password"  autocomplete=​"new-password"  class="form-control" id="exampleInputPassword" name="senha" placeholder="Senha">
+						                    <input type="password"  autocomplete=​"new-password"  class="form-control" id="exampleInputPassword" name="senha" placeholder="';
+        if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+            echo 'Senha';
+        }else{
+            echo 'Password';
+        }
+						                    
+						                    echo '">
 						                  </div>
 						                  <div class="col-sm-6">
-						                    <input type="password"  autocomplete=​"new-password"  class="form-control" id="exampleRepeatPassword" name="senha_confirmada" placeholder="Repita sua Senha">
+						                    <input type="password"  autocomplete=​"new-password"  class="form-control" id="exampleRepeatPassword" name="senha_confirmada" placeholder="';
+        if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+            echo 'Repita sua Senha';
+        }else{
+            echo 'Confirm your password';
+        }
+						                    
+						                    echo '">
 						                  </div>
 						                </div>
 						                <input type="submit" class="btn btn-primary btn-user btn-block" value="Alterar" name="atualizar_senha">

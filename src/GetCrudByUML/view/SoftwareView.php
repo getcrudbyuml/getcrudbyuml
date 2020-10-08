@@ -13,9 +13,26 @@ class SoftwareView {
 <div class="col-md-12">
     <form class="user" method="post">
         <div class="form-group">
-          <input type="text" class="form-control form-control-user campmo-selecionado" id="nome" name="nome" placeholder="Novo Software" required>
+          <input type="text" class="form-control form-control-user campmo-selecionado" id="nome" name="nome" placeholder="';
+		if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt')
+		{
+		    echo 'Novo Software';
+		}else{
+		    echo 'New Software';
+		}
+          
+          echo '" required>
         </div>
-        <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastrar" name="enviar_software">
+        <input type="submit" class="btn btn-primary btn-user btn-block" value="';
+          if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt')
+          {
+              echo 'Cadastrar';
+              
+          }else{
+              echo 'Submit';
+          }
+        
+        echo '" name="enviar_software">
         <br>
             
     </form>

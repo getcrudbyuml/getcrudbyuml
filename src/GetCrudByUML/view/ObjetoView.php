@@ -22,7 +22,13 @@ class ObjetoView {
 		    
 						              <form class="user" method="post">
                                         <div class="form-group">
-                						  <input type="text" class="form-control form-control-user campmo-selecionado" id="nome" name="nome" placeholder="Adicionar Classe">
+                						  <input type="text" class="form-control form-control-user campmo-selecionado" id="nome" name="nome" placeholder="';
+		if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+		    echo 'Adicionar Classe';
+		}else{
+		    echo 'Add Class';
+		}
+                						  echo '">
                 						</div>';
 		
 		if(count($listaSoftware)){
@@ -39,7 +45,14 @@ class ObjetoView {
 		}
 		echo '
 		    
-                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastrar" name="enviar_objeto">
+                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="';
+		if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+		    echo 'Cadastrar';
+		}else{
+		    echo 'Submit';
+		}
+         
+                                        echo '" name="enviar_objeto">
 						              </form>
 		    
 		    

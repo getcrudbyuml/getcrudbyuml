@@ -51,13 +51,34 @@ class NavBarController{
                 
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Set up Account
+                ';
+            if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+                echo 'Configurações';
+            }else{
+                echo 'Set up Account';
+            }
+                
+                echo '
               </a>
                 
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="?pagina=mudar_senha">Change Password</a>
+                <a class="dropdown-item" href="?pagina=mudar_senha">                ';
+            if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+                echo 'Mudar Senha';
+            }else{
+                echo 'Change Password';
+            }
+                
+                echo '</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="?sair=1">Sign Out</a>
+                <a class="dropdown-item" href="?sair=1">';
+            if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+                echo 'Sair';
+            }else{
+                echo 'Sign Out';
+            }
+                
+                echo '</a>
               </div>
             </li>';
         }

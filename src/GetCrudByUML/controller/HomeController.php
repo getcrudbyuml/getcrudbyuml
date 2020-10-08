@@ -74,7 +74,14 @@ class HomeController{
         <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-3">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title">Step 1</h5>
+                <h5 class="card-title">';
+                if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+                    echo 'Passo 1';
+                }else{
+                    echo 'Step 1';
+                }
+                
+                echo '</h5>
                 <p class="card-text">';
     if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
         echo 'Utilize os formulários para inserir as classes e atributos.';
@@ -84,7 +91,7 @@ class HomeController{
                 
                 
                 echo '</p>
-                <img src="';
+                <img  class="img-fluid" src="';
     if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
         echo './images/classes.png';
     }else{
@@ -98,7 +105,14 @@ class HomeController{
         <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-3">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title">Step 2</h5>
+                <h5 class="card-title">';
+                if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+                    echo 'Passo 2';
+                }else{
+                    echo 'Step 2';
+                }
+                
+                echo '</h5>
                 <p class="card-text">';
                 
                 
@@ -110,7 +124,7 @@ class HomeController{
                 
                 echo '</p>
 
-                <img src="';
+                <img  class="img-fluid" src="';
                 if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
                     echo './images/sql2.png';
                 }else{
@@ -124,8 +138,15 @@ class HomeController{
         <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 mb-3">
             <div class="card">
               <div class="card-body">
-                    <h5 class="card-title">Step 3</h5>';
-        echo '
+                                    <h5 class="card-title">';
+                if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+                    echo 'Passo 3';
+                }else{
+                    echo 'Step 3';
+                }
+                
+                echo '</h5>';
+                echo '
         
                      <p class="card-text">';
         if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
@@ -162,8 +183,7 @@ class HomeController{
                      
          echo '
 <br>
-<br>
-<img src="';
+<img class="img-fluid" src="';
 
          
          if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
