@@ -58,7 +58,14 @@ class AtributoView {
                 						</div>
                                         <div class="form-group">
                 						  <select class="form-control form-control-user" id="indice" name="indice">
-                                                <option value="">Nenhum Indice</option>
+                                                <option value="">';
+                                          if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+                                              echo 'Nenhum Indice';
+                                          }else{
+                                              echo 'No Index';
+                                          }
+                                                
+                                                echo '</option>
                                                 <option value="'.Atributo::INDICE_PRIMARY.'">PRIMARY KEY</option>
                                            </select>
                 						</div>';
@@ -78,7 +85,14 @@ class AtributoView {
 		}
 		echo '
 
-                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastrar Atributo" name="enviar_atributo">
+                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="';
+		if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+		    echo 'Adicionar Atributo';
+		}else{
+		    echo 'Add Attribute';
+		}
+                                        
+                                        echo '" name="enviar_atributo">
                                             
 						              </form>
 
@@ -217,10 +231,12 @@ class AtributoView {
 							<div class="col-lg-12">
 								<div class="p-5">
 									<div class="text-center">
-										<h1 class="h4 text-gray-900 mb-4"> Deletar Atributo</h1>
+										<h1 class="h4 text-gray-900 mb-4"> Delete Attribute</h1>
 									</div>
-						              <form class="user" method="post">                    Tem Certeza que deseja deletar o '.$atributo->getNome().'
-                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Deletar" name="deletar_atributo">
+						              <form class="user" method="post">
+
+                                            Are you sure you want to delete this attribute.
+                                            <input type="submit" class="btn btn-primary btn-user btn-block" value="Deletar" name="deletar_atributo">
                                             
 						              </form>
                                             

@@ -63,8 +63,17 @@ class AtributoController {
 	    echo '<div class="row">';
 	    echo '<div class="col-xl-8 col-lg-8 col-md-12 col-sm-12">';
 	    echo '<h3>Software: '.$software->getNome().' - Atributo '.$selecionado->getNome().'</h3>';
-	    echo '<a href="?pagina=software&selecionar='.$software->getId().'&escrever=1" class="btn btn-success m-2">Pegar Código</a>';
-	    echo '<a href="?pagina=software&deletar='.$software->getId().'" class="btn btn-danger m-2">Deletar Software</a>';
+	    echo '<button type="button" class="btn btn-success m-2" data-toggle="modal" data-target="#modalEscrever">';
+	    
+	    if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+	        echo 'Pegar Código';
+	    }else{
+	        echo 'Get Code';
+	    }
+	    echo '</button>';
+	    
+	    
+	    echo '<a href="?pagina=software&deletar='.$software->getId().'" class="btn btn-danger m-2">Delete Software</a>';
 	    echo '<a href="?pagina=software&selecionar='.$software->getId().'" class="btn btn-success m-2">Voltar para '.$software->getNome().'</a>';
 	    echo '</div>';
 	    echo '<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">';
@@ -119,9 +128,29 @@ class AtributoController {
 		
 		if ($this->dao->inserir ( $atributo, $objeto )) 
         {
-			echo "Sucesso";
+			echo '
+<div class="alert alert-success" role="alert">
+  ';
+			if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+			    echo 'Sucesso';
+			}else{
+			    echo 'Success';
+			}
+  echo '
+</div>
+';
 		} else {
-			echo "Fracasso";
+			echo '
+<div class="alert alert-danger" role="alert">
+  ';
+			if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+			    echo 'Erro';
+			}else{
+			    echo 'Error';
+			}
+  echo '
+</div>
+';
 		}
         echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=objeto&selecionar='.$objeto->getId().'">';
 	}
@@ -183,7 +212,7 @@ class AtributoController {
         }
         $software = $this->dao->softwareDoAtributo($selecionado);
         if($this->dao->excluir($selecionado)){
-            echo "excluido com sucesso";
+            echo "Success";
         }else{
             echo "Errou";
         }

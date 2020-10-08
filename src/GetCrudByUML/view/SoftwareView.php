@@ -77,8 +77,16 @@ class SoftwareView {
             
             
             if(count($software->getObjetos()) == 0){
-                echo '<div class="alert alert-info" role="alert">
-                        Começe inserindo alguma classe! Use o formulário acima!
+                echo '<div class="alert alert-info" role="alert">';
+                
+                if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+                    echo 'Começe inserindo alguma classe! Use o formulário acima!';
+                }else{
+                    echo 'Start by inserting some class! Use the form above!';
+                }
+                
+                
+                echo '
                         </div>';
                 
             }

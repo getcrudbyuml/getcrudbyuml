@@ -97,8 +97,16 @@ class SoftwareController
             if(count($objeto->getAtributos()) == 0){
                 echo '<div class="row justify-content-center">';
                 echo '
-           <div class="alert alert-info" role="alert">
-                Clique no nome de algum objeto para selecioná-lo e poder adicionar atributos. 
+           <div class="alert alert-info" role="alert">';
+                if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+                    echo '
+                Clique no nome de algum objeto para selecioná-lo e poder adicionar atributos.';
+                }else{
+                    echo '
+                Click on name of an object to select it and add attributes.';
+                }
+                
+                echo '
             </div>
             ';
                 
@@ -113,8 +121,15 @@ class SoftwareController
         if (count($this->selecionado->getObjetos()) == 0) {
             echo '<div class="row justify-content-center">';
             echo '
-            <div class="alert alert-warning" role="alert">
-              <p>Não existem classes cadastradas, cadastre pelo menos uma classe, use o formulário acima.</p>
+            <div class="alert alert-warning" role="alert">';
+            if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+                echo 'Não existem classes cadastradas, cadastre pelo menos uma classe, use o formulário acima.';
+            }else{
+                echo 'There are no registered classes, register at least one class, use the form above.';
+            }
+            
+            
+            echo '
             </div>
             ';
             
@@ -140,64 +155,49 @@ class SoftwareController
         
         $diretorio = './sistemas/' . $sessao->getLoginUsuario() . '/' . $this->selecionado->getNomeSimples();
         if(is_dir('./sistemas/' . $sessao->getLoginUsuario() . '/')){
-//             $this->excluiDir( './sistemas/' . $sessao->getLoginUsuario() . '/');
+            $this->excluiDir( './sistemas/' . $sessao->getLoginUsuario() . '/');
         }
         
         $numeroDeArquivos = 0;
         if($_GET['escrever'] == 1){
-
             EscritorPHP::main($this->selecionado, $diretorio);            
         }else if($_GET['escrever'] == 2){
             EscritorPHPPortugues::main($this->selecionado, $diretorio);
         }else if($_GET['escrever'] == 3){
             EscritorJava::main($this->selecionado, $diretorio);
+        }else{
+            return;
         }
         
-//         $zipador = new Zipador();
-//         $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/../'.$this->selecionado->getNomeSimples().'.zip');
-        
-        
-        echo '
-                <button type="button" class="btn btn-primary m-2" data-toggle="modal" data-target="#getAppWeb">
-                  Pegar Aplicação
-                </button>';
-        
-        
-        
-       
-        
-        
-        
-        echo '
-        <!-- Modal -->
-        <div class="modal fade" id="getAppWeb" tabindex="-1" role="dialog" aria-labelledby="labelGetAppWeb" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="labelGetAppWeb">Aplicação Web Completa</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>O link de Download Contém um arquivo .zip com '.$numeroDeArquivos.' arquivos. 
-                        Basicamente um CRUD simples usando MVC.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Sair</button>
-                        <a href="'.$diretorio.'/../'.$this->selecionado->getNome().'.zip" class="btn btn-success"  > Download</a>';
-        if($_GET['escrever'] == 1){
+        $zipador = new Zipador();
+        $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/../'.$this->selecionado->getNomeSimples().'.zip');
+
+        if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
             echo '
-                
-                        <a href="'.$diretorio.'/AppWebPHP/src/" class="btn btn-success"  target="_blank">Testar</a>';
+
+<div class="alert alert-success" role="alert">
+    O link de Download Contém um arquivo .zip com '.$numeroDeArquivos.' arquivos.  
+</div>
+';
+        }else{
+            
+            echo '
+<div class="alert alert-success" role="alert">
+    The Download link contains a .zip file with '.$numeroDeArquivos.' files.
+</div>
+';
         }
         
-        echo '
-                    </div>
-                </div>
-            </div>
-        </div>
-            
-            ';
+        
+        echo '<a href="'.$diretorio.'/../'.$this->selecionado->getNome().'.zip" class="btn btn-success m-2">Download</a>';
+        if($_GET['escrever'] == 2 || $_GET['escrever'] == 1){
+            echo '<a href="'.$diretorio.'/AppWebPHP/src/" class="btn btn-success m-2"  target="_blank">Test</a>';
+        }
+        
+        
+        
                 
+  
     }
     public function getTextoResumo(){
         $sessao = new Sessao();
@@ -283,9 +283,6 @@ class SoftwareController
     {
         
         if (! isset($_GET['selecionar'])) {
-            echo '<p>Bem vindo ao Escritor de Software</p>';
-            echo '<p>Utilize o formulário na barra lateral a esquerda para 
-                    inserir um novo software.</p>';
             return;
         }
         
@@ -299,10 +296,7 @@ class SoftwareController
         $usuario->setId($sessao->getIdUsuario());
         
         if(!$usuarioDao->verificarPosse($usuario, $this->selecionado)){
-            echo '<p>Bem vindo ao Escritor de Software</p>';
-            echo '<p>Selecione um software que pertença a você ou 
-                    Utilize o formulário na barra lateral a esquerda 
-                    para inserir um novo software.</p>';
+
             if($sessao->getNivelAcesso() != Sessao::NIVEL_ADM){
                 return;
             }
@@ -321,8 +315,16 @@ class SoftwareController
         echo '<h3>Software: ' . $this->selecionado->getNome() . '</h3>';
 
         
-        echo '<button type="button" class="btn btn-success m-2" data-toggle="modal" data-target="#modalEscrever">Pegar Código</button>';
-        echo '<a href="?pagina=software&deletar=' . $this->selecionado->getId() . '" class="btn btn-danger m-2">Deletar Software</a>';
+        echo '<button type="button" class="btn btn-success m-2" data-toggle="modal" data-target="#modalEscrever">';
+        
+        if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+            echo 'Pegar Código';
+        }else{
+            echo 'Get Code';
+        }
+        echo '</button>';
+        
+        echo '<a href="?pagina=software&deletar=' . $this->selecionado->getId() . '" class="btn btn-danger m-2">Delete Software</a>';
         
 
         
@@ -698,10 +700,7 @@ class SoftwareController
         $usuario = new Usuario();
         $usuario->setId($sessao->getIdUsuario());
         if(!$usuarioDao->verificarPosse($usuario, $this->selecionado)){
-            echo '<p>Bem vindo ao Escritor de Software</p>';
-            echo '<p>Selecione um software que pertença a você ou
-                    Utilize o formulário na barra lateral a esquerda
-                    para inserir um novo software.</p>';
+            
             return;
         }
         
@@ -742,10 +741,7 @@ class SoftwareController
         $usuario = new Usuario();
         $usuario->setId($sessao->getIdUsuario());
         if(!$usuarioDao->verificarPosse($usuario, $this->selecionado)){
-            echo '<p>Bem vindo ao Escritor de Software</p>';
-            echo '<p>Selecione um software que pertença a você ou
-                    Utilize o formulário na barra lateral a esquerda
-                    para inserir um novo software.</p>';
+            
             return;
         }
         
@@ -756,9 +752,9 @@ class SoftwareController
             return;
         }
         if ($this->dao->excluir($this->selecionado)) {
-            echo "excluido com sucesso";
+            echo "Success";
         } else {
-            echo "Errou";
+            echo "Error";
         }
         echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=software">';
     }

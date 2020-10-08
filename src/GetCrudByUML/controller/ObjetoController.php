@@ -72,8 +72,15 @@ class ObjetoController {
 	    echo '<div class="row">';
 	    echo '<div class="col-xl-8 col-lg-8 col-md-12 col-sm-12">';
 	    echo '<h3>Software: '.$software->getNome().' - Objeto: '.$this->selecionado->getNome().'</h3>';
-	    echo '<a href="?pagina=software&selecionar='.$software->getId().'&escrever=1" class="btn btn-success m-2">Pegar Código</a>';
-	    echo '<a href="?pagina=software&deletar='.$software->getId().'" class="btn btn-danger m-2">Deletar Software</a>';
+	    echo '<button type="button" class="btn btn-success m-2" data-toggle="modal" data-target="#modalEscrever">';
+	    
+	    if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+	        echo 'Pegar Código';
+	    }else{
+	        echo 'Get Code';
+	    }
+	    echo '</button>';
+	    echo '<a href="?pagina=software&deletar='.$software->getId().'" class="btn btn-danger m-2">Delete Software</a>';
 	    echo '<a href="?pagina=software&selecionar='.$software->getId().'" class="btn btn-success m-2">'.$software->getNome().'</a>';
 	    echo '</div>';
 	    echo '<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">';
@@ -84,6 +91,8 @@ class ObjetoController {
 	    echo '</div><hr>';
 	    
 	    $this->view->mostrarSelecionado($this->selecionado);
+	    $softwareController = new SoftwareController();
+	    $softwareController->modalEscrever();
 	    
     }
 	public function cadastrar(Software $software = null) 
@@ -122,10 +131,30 @@ class ObjetoController {
 		    }
 		}
 		if ($this->dao->inserir ( $objeto, $software )) 
-        {
-			echo "Sucesso";
+		{
+		    echo '
+<div class="alert alert-success" role="alert">
+  ';
+		    if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+		        echo 'Sucesso';
+		    }else{
+		        echo 'Success';
+		    }
+		    echo '
+</div>
+';
 		} else {
-			echo "Fracasso";
+		    echo '
+<div class="alert alert-danger" role="alert">
+  ';
+		    if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+		        echo 'Erro';
+		    }else{
+		        echo 'Error';
+		    }
+		    echo '
+</div>
+';
 		}
         echo '<META HTTP-EQUIV="REFRESH" CONTENT="0; URL=index.php?pagina=software&selecionar='.$software->getId().'">';
 	}
