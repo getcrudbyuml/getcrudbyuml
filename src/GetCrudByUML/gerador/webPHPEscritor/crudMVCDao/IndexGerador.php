@@ -126,7 +126,7 @@ if(isset($_REQUEST[\'api\'])){
             $codigo .= '
 		case \'' .$objeto->getNomeSnakeCase() . '\':
             $controller = new '.ucfirst ($objeto->getNome()).'CustomController();
-            $controller->mainREST(API_INI);
+            $controller->mainREST();
             break;';
         }
         $codigo .= '
