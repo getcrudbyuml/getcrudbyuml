@@ -77,7 +77,7 @@ $(document).ready(function(e) {
             	if(data.split(":")[1] == \'sucesso\'){
             		
             		$("#botao-modal-resposta").click(function(){
-            			window.location.href=\'?pagina=' .$objeto->getNomeSnakeCase() . '\';
+            			window.location.href=\'?page=' .$objeto->getNomeSnakeCase() . '\';
             		});
             		$("#textoModalResposta").text("' .$objeto->getNomeTextual() . ' enviado com sucesso! ");                	
             		$("#modalResposta").modal("show");

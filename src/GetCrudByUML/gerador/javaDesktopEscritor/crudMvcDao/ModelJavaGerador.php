@@ -58,6 +58,7 @@ class ModelJavaGerador{
    
     private function geraModel(Objeto $objeto, Software $software)
     {
+        
         $codigo = 'package com.'.strtolower($software->getNome()).'.model;
 ';
         if($objeto->possuiArray()){
@@ -75,8 +76,16 @@ import java.util.ArrayList;
 public class ' . ucfirst ($objeto->getNome()) . ' {';
         foreach ($objeto->getAtributos() as $atributo) {
             
+            if($atributo->isObjeto()){
+                $codigo .= '
+	private '.ucfirst($atributo->getTipo()) . ' '. $atributo->getNome() . ';';
+                
+            }else{
                 $codigo .= '
 	private '.$atributo->getTipoJava() . ' '. $atributo->getNome() . ';';
+                
+            }
+                
                 
         }
         
@@ -96,7 +105,7 @@ public class ' . ucfirst ($objeto->getNome()) . ' {';
             else
             {
                     $codigo .= '
-        this.'.strtolower($atributo->getNome()).' = new '.ucfirst($atributo->getTipo()).'();';
+        this.'.lcfirst($atributo->getNome()).' = new '.ucfirst($atributo->getTipo()).'();';
                     
             }
             

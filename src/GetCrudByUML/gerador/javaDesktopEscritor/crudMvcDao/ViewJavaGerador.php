@@ -66,6 +66,11 @@ import javax.swing.border.EmptyBorder;
  */
 
 public class ' . ucfirst($objeto->getNome()) . 'View extends JFrame {
+
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
     private JPanel contentPane;
     private JButton btnSubmit;

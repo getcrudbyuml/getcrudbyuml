@@ -186,7 +186,7 @@ if(isset($_GET[\'ajax\'])){
         
         foreach ($this->software->getObjetos() as $objeto) {
             
-            $codigo .= '<a class="nav-item nav-link" href="?pagina=' . $objeto->getNomeSnakeCase() . '">' . $objeto->getNomeTextual() . '</a>';
+            $codigo .= '<a class="nav-item nav-link" href="?page=' . $objeto->getNomeSnakeCase() . '">' . $objeto->getNomeTextual() . '</a>';
         }
         
         $codigo .= '
@@ -212,8 +212,8 @@ if(isset($_GET[\'ajax\'])){
             
             
 <?php
-if(isset($_GET[\'pagina\'])){
-	switch ($_GET[\'pagina\']){';
+if(isset($_GET[\'page\'])){
+	switch ($_GET[\'page\']){';
         
         foreach ($this->software->getObjetos() as $objeto) {
             $codigo .= '

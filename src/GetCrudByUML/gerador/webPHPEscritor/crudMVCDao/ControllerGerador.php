@@ -304,7 +304,7 @@ class ControllerGerador{
 
 \';
 		}
-        echo \'<META HTTP-EQUIV="REFRESH" CONTENT="3; URL=index.php?pagina=' . $objeto->getNomeSnakeCase() . '">\';
+        echo \'<META HTTP-EQUIV="REFRESH" CONTENT="3; URL=index.php?page=' . $objeto->getNomeSnakeCase() . '">\';
 	}
 
 
@@ -359,7 +359,7 @@ class ControllerGerador{
 
 \';
 		}
-    	echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina=' . $objeto->getNomeSnakeCase() . '">\';
+    	echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?page=' . $objeto->getNomeSnakeCase() . '">\';
     }
 
 ';
@@ -482,7 +482,7 @@ class ControllerGerador{
 
 \';
 		}
-        echo \'<META HTTP-EQUIV="REFRESH" CONTENT="3; URL=index.php?pagina=' . $objeto->getNomeSnakeCase() . '">\';
+        echo \'<META HTTP-EQUIV="REFRESH" CONTENT="3; URL=index.php?page=' . $objeto->getNomeSnakeCase() . '">\';
             
     }
         ';
@@ -535,9 +535,9 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
     
     public function main(){
         
-        if (isset($_GET[\'selecionar\'])){
+        if (isset($_GET[\'select\'])){
             echo \'<div class="row justify-content-center">\';
-                $this->selecionar();
+                $this->select();
             echo \'</div>\';
             return;
         }
@@ -595,17 +595,17 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
 
         $codigo .= '
 
-    public function selecionar(){
-	    if(!isset($_GET[\'selecionar\'])){
+    public function select(){
+	    if(!isset($_GET[\'select\'])){
 	        return;
 	    }
         $selected = new '.$nomeDoObjetoMa.'();
-	    $selected->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'selecionar\']);
+	    $selected->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'select\']);
 	        
         $this->dao->fillBy'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selected);
 
         echo \'<div class="col-xl-7 col-lg-7 col-md-12 col-sm-12">\';
-	    $this->view->showSingle($selected);
+	    $this->view->showSelected($selected);
         echo \'</div>\';
             
 ';
@@ -646,7 +646,7 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
 
 \';
 		    }
-            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina='.$objeto->getNomeSnakeCase().'&selecionar=\'.$selected->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
+            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?page='.$objeto->getNomeSnakeCase().'&select=\'.$selected->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
             return;
         }else  if(isset($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
             
@@ -670,7 +670,7 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
 
 \';
 		      }
-            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina='.$objeto->getNomeSnakeCase().'&selecionar=\'.$selected->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
+            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?page='.$objeto->getNomeSnakeCase().'&select=\'.$selected->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
             return;
         }
                 
