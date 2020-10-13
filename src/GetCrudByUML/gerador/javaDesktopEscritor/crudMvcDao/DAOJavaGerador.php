@@ -85,15 +85,14 @@ public class DAO {
 	/**
 	 * Conexão com banco.
 	 */
-	private Connection conexao;
+	private Connection connection;
     
     
 	/**
 	 * Constroi objeto DAO com conexão com banco de dados.
 	 */
 	public DAO() {
-		fazerConexao();
-	}
+		conneconnection	}
     
 	/**
 	 * Constroi objeto DAO com conexão com banco de dados.
@@ -106,7 +105,7 @@ public class DAO {
 	/**
 	 * Faz uma conexão com banco de dados de acordo com as informações do arquivo de configuração.
 	 */
-	public void fazerConexao() {
+	public void connect() {
 		this.conexao = null;
 		try {
 			Properties config = new Properties();
@@ -125,14 +124,14 @@ public class DAO {
 			file.close();
 			if (sgdb.equals("postgres")) {
 				Class.forName(DRIVER_POSTGRES);
-				this.conexao = DriverManager.getConnection(JDBC_BANCO_POSTGRES+ "//" + host + "/" + bdNome, usuario, senha);
+				this.connection = DriverManager.getConnection(JDBC_BANCO_POSTGRES+ "//" + host + "/" + bdNome, usuario, senha);
     
 			} else if (sgdb.equals("sqlite")) {
 				Class.forName(DRIVER_SQLITE);
-				this.conexao = DriverManager.getConnection(JDBC_BANCO_SQLITE+bdNome);
+				this.connection = DriverManager.getConnection(JDBC_BANCO_SQLITE+bdNome);
 			} else if (sgdb.equals("mysql")) {
 				Class.forName(DRIVER_MYSQL);
-				this.conexao = DriverManager.getConnection(JDBC_BANCO_MYSQL + "//" + host +":"+ porta + "/" + bdNome, usuario, senha);
+				this.connection = DriverManager.getConnection(JDBC_BANCO_MYSQL + "//" + host +":"+ porta + "/" + bdNome, usuario, senha);
 			}
     
 		} catch (ClassNotFoundException e1) {
@@ -150,15 +149,15 @@ public class DAO {
 	 * Retorna a conexão com banco de dados.
 	 * @return
 	 */
-	public Connection getConexao() {
-		return conexao;
+	public Connection getConnection() {
+		return connection;
 	}
 	/**
 	 * Atribui a conexão com banco de dados.
-	 * @param conexao
+	 * @param connection
 	 */
-	public void setConexao(Connection conexao) {
-		this.conexao = conexao;
+	public void setConnection(Connection connection) {
+		this.connection = connection;
 	}
     
     
@@ -259,9 +258,9 @@ import com.'.strtolower($this->software->getNome()).'.model.*;
 public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
         
         
-        $codigo .= $this->atualizar($objeto);
-        $codigo .= $this->retornaLista($objeto);
-        $codigo .= $this->inserir($objeto);
+        $codigo .= $this->update($objeto);
+        $codigo .= $this->fetch($objeto);
+        $codigo .= $this->insert($objeto);
         
         $codigo .= '
             
@@ -269,7 +268,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
 	public boolean excluir(' . ucfirst($objeto->getNome()). ' ' . strtolower($objeto->getNome()). '){
 		String sql = "DELETE FROM ' . $nomeDoObjeto . ' WHERE ' . $objeto->getAtributos()[0]->getNome() . ' = ?";
 		try{
-        	PreparedStatement stmt = this.getConexao().prepareStatement(sql);
+        	PreparedStatement stmt = this.getConnection().prepareStatement(sql);
         	stmt.setInt(1, '.$nomeDoObjeto.'.get' . ucfirst($objeto->getAtributos()[0]->getNome()). '());
         	stmt.execute();
         	stmt.close();
@@ -311,7 +310,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
             $codigo .= ' LIMIT 1000";
     		PreparedStatement ps;
     		try {
-    			ps = this.getConexao().prepareStatement(sql);';
+    			ps = this.getConnection().prepareStatement(sql);';
             
             if($atributo->getTipo() == Atributo::TIPO_INT){
                 $codigo .= '
@@ -423,7 +422,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
             $codigo .= '
         PreparedStatement ps;
         try {
-            ps = this.getConexao().prepareStatement(sql);
+            ps = this.getConnection().prepareStatement(sql);
 			ResultSet resultSet = ps.executeQuery();
     		while(resultSet.next()){
                 '.ucfirst(explode(' ', $atributo->getTipo())[2]).' '.strtolower(explode(' ', $atributo->getTipo())[2]).' = new '.ucfirst(explode(' ', $atributo->getTipo())[2]).'();';
@@ -458,7 +457,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
                         }else if(substr($atr->getTipo(), 0, 6) == 'Array '){
                             
                             $codigo .= '
-                '.ucfirst(explode(' ', $atributo->getTipo())[2]).'DAO '.strtolower(explode(' ', $atributo->getTipo())[2]).'Dao = new '.ucfirst(explode(' ', $atributo->getTipo())[2]).'DAO($this->getConexao());
+                '.ucfirst(explode(' ', $atributo->getTipo())[2]).'DAO '.strtolower(explode(' ', $atributo->getTipo())[2]).'Dao = new '.ucfirst(explode(' ', $atributo->getTipo())[2]).'DAO($this->getConnection());
                 '.strtolower(explode(' ', $atributo->getTipo())[2]).'Dao.buscar'.ucfirst($atr->getNome()).'($'.strtolower(explode(' ', $atributo->getTipo())[2]).');';
                             //$objetoDao->buscar
                         }
@@ -501,7 +500,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
                 
 		try {
                 
-			PreparedStatement ps = this.getConexao().prepareStatement(sql);
+			PreparedStatement ps = this.getConnection().prepareStatement(sql);
             ps.setInt(1, id'.ucfirst($objeto->getNome()).');
             ps.setInt(2, id'.ucfirst(explode(' ', $atributo->getTipo())[2]) . ');
 			ps.executeUpdate();
@@ -525,7 +524,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
                 
 		try {
                 
-			PreparedStatement ps = this.getConexao().prepareStatement(sql);
+			PreparedStatement ps = this.getConnection().prepareStatement(sql);
             ps.setInt(1, id'.ucfirst($objeto->getNome()).');
             ps.setInt(2, id'.ucfirst(explode(' ', $atributo->getTipo())[2]) . ');
 			ps.executeUpdate();
@@ -550,7 +549,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
         $this->listaDeArquivos[$caminho] = $codigo;
         return $codigo;
     }
-    public function atualizar(Objeto $objeto){
+    private function update(Objeto $objeto){
         $codigo = '';
         $codigo = '';
         $atributosComuns = array();
@@ -573,7 +572,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
         $codigo .= '
             
             
-    public boolean atualizar('.ucfirst($objeto->getNome()).' '.lcfirst($objeto->getNome()).')
+    public boolean update('.ucfirst($objeto->getNome()).' '.lcfirst($objeto->getNome()).')
     {
 		PreparedStatement ps;';
         foreach($objeto->getAtributos() as $atributo){
@@ -617,7 +616,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
         
         $codigo .= '
 		try {
-			ps = this.getConexao().prepareStatement(sql);';
+			ps = this.getConnection().prepareStatement(sql);';
         $i = 1;
         foreach ($listaAtributo as $atributo) {
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
@@ -662,7 +661,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
         return $codigo;
     }
     
-    private function retornaLista($objeto) : string {
+    private function fetch($objeto) : string {
         $codigo = '';
         $nomeDoObjeto = lcfirst($objeto->getNome());
         
@@ -678,7 +677,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
         
         $codigo .= '
 
-	public ArrayList<'.ucfirst($objeto->getNome()).'> retornaLista() {
+	public ArrayList<'.ucfirst($objeto->getNome()).'> fetch() {
 		ArrayList<'.ucfirst($objeto->getNome()).'>lista = new ArrayList<'.ucfirst($objeto->getNome()).'>();
 		String sql = "';
         $sqlGerador = new SQLGerador($this->software);
@@ -688,7 +687,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
             
 		PreparedStatement ps;
 		try {
-			ps = this.getConexao().prepareStatement(sql);
+			ps = this.getConnection().prepareStatement(sql);
 			ResultSet resultSet = ps.executeQuery();
 			while(resultSet.next()){
 				' . ucfirst($objeto->getNome()) . ' ' . lcfirst($objeto->getNome()). ' = new ' . ucfirst($objeto->getNome()). '();';
@@ -770,10 +769,10 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
         return $codigo;
     }
     
-    private function inserir(Objeto $objeto)
+    private function insert(Objeto $objeto)
     {
         $codigo = '
-	public boolean inserir(' . ucfirst($objeto->getNome()). ' ' . lcfirst($objeto->getNome()). '){
+	public boolean insert(' . ucfirst($objeto->getNome()). ' ' . lcfirst($objeto->getNome()). '){
 	    
         String sql = "INSERT into '.$objeto->getNomeSnakeCase().'(';
         $listaAtributos = array();
@@ -804,7 +803,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
             
 		try {
             
-			PreparedStatement ps = this.getConexao().prepareStatement(sql);';
+			PreparedStatement ps = this.getConnection().prepareStatement(sql);';
         
         $i = 0;
         foreach ($objeto->getAtributos() as $atributo) {
