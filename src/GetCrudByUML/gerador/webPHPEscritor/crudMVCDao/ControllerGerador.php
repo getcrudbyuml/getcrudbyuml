@@ -56,7 +56,7 @@ class ControllerGerador{
 ';
         return $codigo;
     }
-    private function cadastrarAjax(Objeto $objeto){
+    private function addAjax(Objeto $objeto){
         $codigo = '';
         $nomeDoObjeto = lcfirst($objeto->getNome());
         $nomeDoObjetoMa = ucfirst($objeto->getNome());
@@ -75,7 +75,7 @@ class ControllerGerador{
         
         $codigo .= '
             
-	public function cadastrarAjax() {
+	public function addAjax() {
             
         if(!isset($_POST[\'enviar_' . $objeto->getNomeSnakeCase() . '\'])){';
             $codigo .= '
@@ -170,7 +170,7 @@ class ControllerGerador{
         
         return $codigo;
     }
-    private function cadastrar(Objeto $objeto){
+    private function add(Objeto $objeto){
         $codigo = '';
         $nomeDoObjeto = lcfirst($objeto->getNome());
         $nomeDoObjetoMa = ucfirst($objeto->getNome());
@@ -189,7 +189,7 @@ class ControllerGerador{
         
         $codigo .= '
 
-	public function cadastrar() {
+	public function add() {
             
         if(!isset($_POST[\'enviar_' . $objeto->getNomeSnakeCase() . '\'])){';
         $listaParametros = array();
@@ -250,7 +250,7 @@ class ControllerGerador{
         $codigo .= ')) {
 			echo \'
                 <div class="alert alert-danger" role="alert">
-                    Falha ao cadastrar. Algum campo deve estar faltando. 
+                    Failed to register. Some field must be missing. 
                 </div>
 
                 \';
@@ -312,7 +312,7 @@ class ControllerGerador{
         
         return $codigo;
     }
-    private function deletar(Objeto $objeto) : string
+    private function delete(Objeto $objeto) : string
     {
         $codigo = '';
         $atributoPrimaryKey = null;
@@ -323,25 +323,25 @@ class ControllerGerador{
         }
         if($atributoPrimaryKey == null){
             $codigo .= '
-        //Objeto sem PrimaryKey Não Possui Implementação do Método Deletar
-        public function deletar(){}
+        //Object without PrimaryKey has no implementation of the delete method.
+        public function delete(){}
 
 ';
             return $codigo;
         }
         
         $codigo .= '
-    public function deletar(){
-	    if(!isset($_GET[\'deletar\'])){
+    public function delete(){
+	    if(!isset($_GET[\'delete\'])){
 	        return;
 	    }
-        $selecionado = new '.ucfirst($objeto->getNome()).'();
-	    $selecionado->set'.ucfirst ($atributoPrimaryKey->getNome()).'($_GET[\'deletar\']);
-        if(!isset($_POST[\'deletar_' . $objeto->getNomeSnakeCase() . '\'])){
-            $this->view->confirmarDeletar($selecionado);
+        $selected = new '.ucfirst($objeto->getNome()).'();
+	    $selected->set'.ucfirst ($atributoPrimaryKey->getNome()).'($_GET[\'delete\']);
+        if(!isset($_POST[\'delete_' . $objeto->getNomeSnakeCase() . '\'])){
+            $this->view->confirmDelete($selected);
             return;
         }
-        if($this->dao->excluir($selecionado))
+        if($this->dao->excluir($selected))
         {
 			echo \'
 
@@ -377,7 +377,7 @@ class ControllerGerador{
 ';
         return $codigo;
     }
-    private function editar(Objeto $objeto) : string {
+    private function edit(Objeto $objeto) : string {
         $atributosComuns = array();
         $atributosObjetos = array();
         foreach ($objeto->getAtributos() as $atributo) {
@@ -393,15 +393,15 @@ class ControllerGerador{
         $codigo = '';
         $codigo .= '
             
-    public function editar(){
-	    if(!isset($_GET[\'editar\'])){
+    public function edit(){
+	    if(!isset($_GET[\'edit\'])){
 	        return;
 	    }
-        $selecionado = new '.ucfirst($objeto->getNome()).'();
-	    $selecionado->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'editar\']);
-	    $this->dao->preenchePor'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selecionado);
+        $selected = new '.ucfirst($objeto->getNome()).'();
+	    $selected->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'edit\']);
+	    $this->dao->preenchePor'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selected);
 	        
-        if(!isset($_POST[\'editar_' . $objeto->getNomeSnakeCase() . '\'])){';
+        if(!isset($_POST[\'edit_' . $objeto->getNomeSnakeCase() . '\'])){';
         $listaParametros = array();
         foreach($atributosObjetos as $atributoObjeto){
             $codigo .= '
@@ -412,9 +412,9 @@ class ControllerGerador{
             
             
         }
-        $listaParametros[] = '$selecionado';
+        $listaParametros[] = '$selected';
         $codigo .= '
-            $this->view->mostraFormEditar(';
+            $this->view->showEditForm(';
         
         $codigo .= implode(', ', $listaParametros);
         
@@ -459,12 +459,12 @@ class ControllerGerador{
                 continue;
             }
             $codigo .= '
-		$selecionado->set' . ucfirst($atributo->getNome()). ' ( $_POST [\'' . $atributo->getNomeSnakeCase() . '\'] );';
+		$selected->set' . ucfirst($atributo->getNome()). ' ( $_POST [\'' . $atributo->getNomeSnakeCase() . '\'] );';
         }
         
         $codigo .= '
             
-		if ($this->dao->atualizar ($selecionado ))
+		if ($this->dao->update ($selected ))
         {
 			echo \'
 
@@ -525,11 +525,11 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
 	protected  $view;
     protected $dao;';
         $codigo .= $this->construct($objeto);
-        $codigo .= $this->deletar($objeto);
+        $codigo .= $this->delete($objeto);
         $codigo .= $this->listar();
-        $codigo .= $this->cadastrar($objeto);
-        $codigo .= $this->cadastrarAjax($objeto);
-        $codigo .= $this->editar($objeto);
+        $codigo .= $this->add($objeto);
+        $codigo .= $this->addAjax($objeto);
+        $codigo .= $this->edit($objeto);
         
         $codigo .= '
     
@@ -545,12 +545,12 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
 		<div class="row justify-content-center">\';
         echo \'<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">\';
         
-        if(isset($_GET[\'editar\'])){
-            $this->editar();
-        }else if(isset($_GET[\'deletar\'])){
-            $this->deletar();
+        if(isset($_GET[\'edit\'])){
+            $this->edit();
+        }else if(isset($_GET[\'delete\'])){
+            $this->delete();
 	    }else{
-            $this->cadastrar();
+            $this->add();
         }
         $this->listar();
         
@@ -560,15 +560,16 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
     }
     public function mainAjax(){
 
-        $this->cadastrarAjax();
+        $this->addAjax();
         
             
     }
-    public function mainREST($arquivoIni)
+    public function mainREST($iniApiFile = API_INI)
     {
-        $config = parse_ini_file ( $arquivoIni );
-        $usuario = $config [\'user\'];
-        $senha = $config [\'password\'];
+        
+        $config = parse_ini_file ( $iniApiFile );
+        $user = $config [\'user\'];
+        $password = $config [\'password\'];
         
         if(!isset($_SERVER[\'PHP_AUTH_USER\'])){
             header("WWW-Authenticate: Basic realm=\\\\"Private Area\\\\" ");
@@ -576,7 +577,7 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
             echo \'{"erro":[{"status":"error","message":"Authentication failed"}]}\';
             return;
         }
-        if($_SERVER[\'PHP_AUTH_USER\'] == $usuario && ($_SERVER[\'PHP_AUTH_PW\'] == $senha)){
+        if($_SERVER[\'PHP_AUTH_USER\'] == $user && ($_SERVER[\'PHP_AUTH_PW\'] == $password)){
             header(\'Content-type: application/json\');
             
             $this->restGET();
@@ -598,25 +599,25 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
 	    if(!isset($_GET[\'selecionar\'])){
 	        return;
 	    }
-        $selecionado = new '.$nomeDoObjetoMa.'();
-	    $selecionado->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'selecionar\']);
+        $selected = new '.$nomeDoObjetoMa.'();
+	    $selected->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'selecionar\']);
 	        
-        $this->dao->preenchePor'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selecionado);
+        $this->dao->fillBy'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selected);
 
         echo \'<div class="col-xl-7 col-lg-7 col-md-12 col-sm-12">\';
-	    $this->view->mostrarSelecionado($selecionado);
+	    $this->view->showSingle($selected);
         echo \'</div>\';
             
 ';
         
         foreach($atributosNN as $atributoNN){
             $codigo .= '
-        $this->dao->buscar'.ucfirst($atributoNN->getNome()).'($selecionado);
+        $this->dao->buscar'.ucfirst($atributoNN->getNome()).'($selected);
         $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'Dao = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'DAO($this->dao->getConexao());
         $lista = $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'Dao->retornaLista();
             
         echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
-        $this->view->exibir'.ucfirst($atributoNN->getNome()).'($selecionado);
+        $this->view->exibir'.ucfirst($atributoNN->getNome()).'($selected);
         echo \'</div>\';
             
             
@@ -627,7 +628,7 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         }else if(isset($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
             $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).' = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'();
             $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'->setId($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']);
-            if($this->dao->inserir'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selecionado, $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'))
+            if($this->dao->inserir'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selected, $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'))
             {
 			echo \'
 
@@ -645,13 +646,13 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
 
 \';
 		    }
-            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina='.$objeto->getNomeSnakeCase().'&selecionar=\'.$selecionado->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
+            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina='.$objeto->getNomeSnakeCase().'&selecionar=\'.$selected->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
             return;
         }else  if(isset($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
             
             $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).' = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'();
             $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'->setId($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']);
-            if($this->dao->remover'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selecionado, $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'))
+            if($this->dao->remover'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selected, $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'))
             {
 		      echo \'
 
@@ -669,7 +670,7 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
 
 \';
 		      }
-            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina='.$objeto->getNomeSnakeCase().'&selecionar=\'.$selecionado->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
+            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?pagina='.$objeto->getNomeSnakeCase().'&selecionar=\'.$selected->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
             return;
         }
                 
