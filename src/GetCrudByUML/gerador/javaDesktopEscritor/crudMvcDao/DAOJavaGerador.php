@@ -92,13 +92,14 @@ public class DAO {
 	 * Constroi objeto DAO com conexão com banco de dados.
 	 */
 	public DAO() {
-		conneconnection	}
+		connect();
+	}
     
 	/**
 	 * Constroi objeto DAO com conexão com banco de dados.
 	 */
-	public DAO(Connection conexao) {
-		this.conexao = conexao;
+	public DAO(Connection connection) {
+		this.connection = connection;
 	}
     
     
@@ -106,7 +107,7 @@ public class DAO {
 	 * Faz uma conexão com banco de dados de acordo com as informações do arquivo de configuração.
 	 */
 	public void connect() {
-		this.conexao = null;
+		this.connection = null;
 		try {
 			Properties config = new Properties();
 			FileInputStream file;
@@ -360,16 +361,16 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
                             
                             if($atributo3->getTipo() == Atributo::TIPO_INT){
                                 $codigo .= '
-                    ' . $nomeDoObjeto . '.get' . ucfirst($atributoObjeto->getNome()) . '().set'.ucfirst($atributo3->getNome()).'( resultSet.getInt("' . strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome()) . '"));';
+                    ' . $nomeDoObjeto . '.get' . ucfirst($atributoObjeto->getNome()) . '().set'.ucfirst($atributo3->getNome()).'( resultSet.getInt("' . $atributo3->getNomeSnakeCase().'_'.$atributoObjeto->getTipoSnakeCase().'_'.$atributoObjeto->getNomeSnakeCase() . '"));';
                                 
                             }else if($atributo3->getTipo() == Atributo::TIPO_FLOAT){
                                 $codigo .= '
-                    ' . $nomeDoObjeto . '.get' . ucfirst($atributoObjeto->getNome()) . '().set'.ucfirst($atributo3->getNome()).'( resultSet.getFloat("' . strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome()) . '"));';
+                    ' . $nomeDoObjeto . '.get' . ucfirst($atributoObjeto->getNome()) . '().set'.ucfirst($atributo3->getNome()).'( resultSet.getFloat("' . $atributo3->getNomeSnakeCase().'_'.$atributoObjeto->getTipoSnakeCase().'_'.$atributoObjeto->getNomeSnakeCase() . '"));';
                                 
                             }
                             else if($atributo3->getTipo() == Atributo::TIPO_STRING){
                                 $codigo .= '
-                    ' . $nomeDoObjeto . '.get' . ucfirst($atributoObjeto->getNome()) . '().set'.ucfirst($atributo3->getNome()).'( resultSet.getString("' . strtolower($atributo3->getNome()).'_'.strtolower($atributoObjeto->getTipo()).'_'.strtolower($atributoObjeto->getNome()) . '"));';
+                    ' . $nomeDoObjeto . '.get' . ucfirst($atributoObjeto->getNome()) . '().set'.ucfirst($atributo3->getNome()).'( resultSet.getString("' . $atributo3->getNomeSnakeCase().'_'.$atributoObjeto->getTipoSnakeCase().'_'.$atributoObjeto->getNomeSnakeCase() . '"));';
                                 
                             }
                             
@@ -398,7 +399,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
         
         foreach($atributosNN as $atributo){
             $codigo .= '
-    public '.ucfirst($objeto->getNome()).' buscar'.ucfirst($atributo->getNome()).'('.ucfirst($objeto->getNome()).' '.strtolower($objeto->getNome()).')
+    public '.ucfirst($objeto->getNome()).' fetch'.ucfirst($atributo->getNome()).'('.ucfirst($objeto->getNome()).' '.strtolower($objeto->getNome()).')
     {
         int id = '.strtolower($objeto->getNome()).'.getId();
         String sql = "SELECT ';
@@ -815,7 +816,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
             }
             if($atributo->tipoListado()){
                 $codigo .= '
-            ps.set'.$atributo->getTipoJava().'('.$i.', '.strtolower($objeto->getNome()).'.get'.ucfirst($atributo->getNome()).'());';
+            ps.set'.ucfirst($atributo->getTipoJava()).'('.$i.', '.lcfirst($objeto->getNome()).'.get'.ucfirst($atributo->getNome()).'());';
         
             }else if($atributo->isObjeto()){
                 $strCampoPrimary = '';
