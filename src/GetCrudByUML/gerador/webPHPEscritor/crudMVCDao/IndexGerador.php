@@ -55,7 +55,7 @@ RewriteRule ^(.*)$ index.php?api=$1 [QSA,L]
         }
         $codigo = '<?php
             
-define("DB_INI", "../../' . $this->software->getNomeSnakeCase() . '_bd.ini");
+define("DB_INI", "../../' . $this->software->getNomeSnakeCase() . '_db.ini");
 define("API_INI", "../../' . $this->software->getNomeSnakeCase() . '_api_rest.ini");
              
 function autoload($classe) {

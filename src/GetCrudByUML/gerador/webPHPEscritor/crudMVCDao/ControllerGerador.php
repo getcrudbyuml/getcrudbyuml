@@ -157,7 +157,7 @@ class ControllerGerador{
             
 		if ($this->dao->inserir ( $' . $nomeDoObjeto . ' ))
         {
-			$id = $this->dao->getConexao()->lastInsertId();
+			$id = $this->dao->getConnection()->lastInsertId();
             echo \':sucesso:\'.$id;
             
 		} else {
@@ -195,15 +195,15 @@ class ControllerGerador{
         $listaParametros = array();
         foreach($atributosObjetos as $atributoObjeto){
             $codigo .= '
-            $'.strtolower($atributoObjeto->getTipo()).'Dao = new '.ucfirst ($atributoObjeto->getTipo()).'DAO($this->dao->getConexao());
-            $lista'.ucfirst ($atributoObjeto->getTipo()).' = $'.strtolower($atributoObjeto->getTipo()).'Dao->retornaLista();
+            $'.strtolower($atributoObjeto->getTipo()).'Dao = new '.ucfirst ($atributoObjeto->getTipo()).'DAO($this->dao->getConnection());
+            $lista'.ucfirst ($atributoObjeto->getTipo()).' = $'.strtolower($atributoObjeto->getTipo()).'Dao->fetch();
 ';
             $listaParametros[] = '$lista'.ucfirst ($atributoObjeto->getTipo());
             
             
         }
         $codigo .= '
-            $this->view->mostraFormInserir(';
+            $this->view->showInsertForm(';
         
         $codigo .= implode(', ', $listaParametros);
         $codigo .= ');';
@@ -341,7 +341,7 @@ class ControllerGerador{
             $this->view->confirmDelete($selected);
             return;
         }
-        if($this->dao->excluir($selected))
+        if($this->dao->delete($selected))
         {
 			echo \'
 
@@ -366,13 +366,13 @@ class ControllerGerador{
         return $codigo;
         
     }
-    private function listar() : string {
+    private function list() : string {
         $codigo = '
 
-	public function listar() 
+	public function list() 
     {
-		$lista = $this->dao->retornaLista ();
-		$this->view->exibirLista($lista);
+		$list = $this->dao->fetch();
+		$this->view->showList($list);
 	}
 ';
         return $codigo;
@@ -399,16 +399,16 @@ class ControllerGerador{
 	    }
         $selected = new '.ucfirst($objeto->getNome()).'();
 	    $selected->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'edit\']);
-	    $this->dao->preenchePor'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selected);
+	    $this->dao->fillBy'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selected);
 	        
         if(!isset($_POST[\'edit_' . $objeto->getNomeSnakeCase() . '\'])){';
         $listaParametros = array();
         foreach($atributosObjetos as $atributoObjeto){
             $codigo .= '
-            $'.strtolower($atributoObjeto->getTipo()).'Dao = new '.ucfirst ($atributoObjeto->getTipo()).'DAO($this->dao->getConexao());
-            $lista'.ucfirst ($atributoObjeto->getTipo()).' = $'.strtolower($atributoObjeto->getTipo()).'Dao->retornaLista();
+            $'.strtolower($atributoObjeto->getTipo()).'Dao = new '.ucfirst ($atributoObjeto->getTipo()).'DAO($this->dao->getConnection());
+            $list'.ucfirst ($atributoObjeto->getTipo()).' = $'.strtolower($atributoObjeto->getTipo()).'Dao->fetch();
 ';
-            $listaParametros[] = '$lista'.ucfirst ($atributoObjeto->getTipo());
+            $listaParametros[] = '$list'.ucfirst ($atributoObjeto->getTipo());
             
             
         }
@@ -526,7 +526,7 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
     protected $dao;';
         $codigo .= $this->construct($objeto);
         $codigo .= $this->delete($objeto);
-        $codigo .= $this->listar();
+        $codigo .= $this->list();
         $codigo .= $this->add($objeto);
         $codigo .= $this->addAjax($objeto);
         $codigo .= $this->edit($objeto);
@@ -552,7 +552,7 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
 	    }else{
             $this->add();
         }
-        $this->listar();
+        $this->list();
         
         echo \'</div>\';
         echo \'</div>\';
@@ -613,8 +613,8 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         foreach($atributosNN as $atributoNN){
             $codigo .= '
         $this->dao->buscar'.ucfirst($atributoNN->getNome()).'($selected);
-        $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'Dao = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'DAO($this->dao->getConexao());
-        $lista = $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'Dao->retornaLista();
+        $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'Dao = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'DAO($this->dao->getConnection());
+        $lista = $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'Dao->fetch();
             
         echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
         $this->view->exibir'.ucfirst($atributoNN->getNome()).'($selected);
@@ -704,21 +704,21 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         if(isset($url[2])){
             $parametro = $url[2];
             $id = intval($parametro);
-            $pesquisado = new '.ucfirst($objeto->getNome()).'();
-            $pesquisado->setId($id);
-            $pesquisado = $this->dao->preenchePorId($pesquisado);
-            if ($pesquisado == null) {
+            $selected = new '.ucfirst($objeto->getNome()).'();
+            $selected->setId($id);
+            $selected = $this->dao->preenchePorId($selected);
+            if ($selected == null) {
                 echo "{}";
                 return;
             }
 
-            $pesquisado = array(';
+            $selected = array(';
         $i = 0;
         foreach ($atributosComuns as $atributo) {
             $i ++;
             $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
             $codigo .= '
-					\'' . $atributo->getNome() . '\' => $pesquisado->get' . $nomeDoAtributoMA . ' ()';
+					\'' . $atributo->getNome() . '\' => $selected->get' . $nomeDoAtributoMA . ' ()';
             if ($i != count($objeto->getAtributos())) {
                 $codigo .= ', ';
             }
@@ -728,10 +728,10 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
             
             
 			);
-            echo json_encode($pesquisado);
+            echo json_encode($selected);
             return;
         }        
-        $lista = $this->dao->retornaLista();
+        $lista = $this->dao->fetch();
         $listagem = array();
         foreach ( $lista as $linha ) {
 			$listagem [\'lista\'] [] = array (';
@@ -775,15 +775,15 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         }
     
         $id = intval($parametro);
-        $pesquisado = new '.ucfirst($objeto->getNome()).'();
-        $pesquisado->setId($id);
-        $pesquisado = $this->dao->pesquisaPorId($pesquisado);
-        if ($pesquisado == null) {
+        $selected = new '.ucfirst($objeto->getNome()).'();
+        $selected->setId($id);
+        $selected = $this->dao->pesquisaPorId($selected);
+        if ($selected == null) {
             echo "{}";
             return;
         }
 
-        if($this->dao->excluir($pesquisado))
+        if($this->dao->excluir($selected))
         {
             echo "{}";
             return;
@@ -822,11 +822,11 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         }
 
         $id = intval($parametro);
-        $pesquisado = new '.ucfirst($objeto->getNome()).'();
-        $pesquisado->setId($id);
-        $pesquisado = $this->dao->pesquisaPorId($pesquisado);
+        $selected = new '.ucfirst($objeto->getNome()).'();
+        $selected->setId($id);
+        $selected = $this->dao->pesquisaPorId($selected);
 
-        if ($pesquisado == null) {
+        if ($selected == null) {
             return;
         }
 
@@ -838,7 +838,7 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
             if($atributo->tipoListado()){
                 $codigo .= '
         if (isset($jsonBody[\''.$atributo->getNomeSnakeCase().'\'])) {
-            $pesquisado->set'.ucfirst($atributo->getNome()).'($jsonBody[\''.$atributo->getNomeSnakeCase().'\']);
+            $selected->set'.ucfirst($atributo->getNome()).'($jsonBody[\''.$atributo->getNomeSnakeCase().'\']);
         }
                     
 ';
@@ -846,7 +846,7 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         }
   
         $codigo .= '
-        if ($this->dao->atualizar($pesquisado)) 
+        if ($this->dao->update($selected)) 
                 {
 			echo \'
 

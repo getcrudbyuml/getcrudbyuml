@@ -501,7 +501,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
 		} catch(PDOException $e) {
 		    echo $e->getMessage();
  		}
-        return $lista;	
+        return $list;	
     }
         ';
         

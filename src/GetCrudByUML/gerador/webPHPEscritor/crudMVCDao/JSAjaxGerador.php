@@ -61,7 +61,7 @@ class JSAjaxGerador
         $codigo = '
 
 $(document).ready(function(e) {
-	$("#form_enviar_'.$objeto->getNomeSnakeCase().'").on(\'submit\', function(e) {
+	$("#insert_form_'.$objeto->getNomeSnakeCase().'").on(\'submit\', function(e) {
 		e.preventDefault();
         $(\'#modalAdd'.$objeto->getNome().'\').modal(\'hide\');
 

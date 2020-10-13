@@ -78,12 +78,12 @@ class DBGerador
             
 sgdb = sqlite
 host = localhost
-porta = 5432
-bd_nome = ../../' . $this->software->getNomeSnakeCase() . '.db
-usuario = root
-senha = 123
+port = 5432
+db_name = ../../' . $this->software->getNomeSnakeCase() . '.db
+user = root
+password = 123
 ';
-        $path = $this->diretorio . '/' . $this->software->getNomeSnakeCase() . '_bd.ini';
+        $path = $this->diretorio . '/' . $this->software->getNomeSnakeCase() . '_db.ini';
         $this->listaDeArquivos[$path] = $codigo;
         return $codigo;
     }

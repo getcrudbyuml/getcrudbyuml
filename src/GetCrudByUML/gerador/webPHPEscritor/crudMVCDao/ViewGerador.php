@@ -98,7 +98,7 @@ class ViewGerador{
         
 
 
-          <form id="form_enviar_'.$objeto->getNomeSnakeCase().'" class="user" method="post">
+          <form id="insert_form_'.$objeto->getNomeSnakeCase().'" class="user" method="post">
             <input type="hidden" name="enviar_' . $objeto->getNomeSnakeCase() . '" value="1">                
 
 ';
@@ -154,7 +154,7 @@ class ViewGerador{
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-        <button form="form_submit_'.$objeto->getNomeSnakeCase().'" type="submit" class="btn btn-primary">Cadastrar</button>
+        <button form="insert_form_'.$objeto->getNomeSnakeCase().'" type="submit" class="btn btn-primary">Cadastrar</button>
       </div>
     </div>
   </div>
