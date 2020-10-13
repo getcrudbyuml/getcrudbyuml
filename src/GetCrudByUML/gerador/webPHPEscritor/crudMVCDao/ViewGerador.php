@@ -650,7 +650,7 @@ class ' . $objeto->getNome() . 'View {';
                 
     }
                 
-    public function adicionar'.ucfirst(explode(' ', $atributoNN->getTipo())[2]).'($lista){
+    public function add'.ucfirst(explode(' ', $atributoNN->getTipo())[2]).'($lista){
         
         
         echo \'

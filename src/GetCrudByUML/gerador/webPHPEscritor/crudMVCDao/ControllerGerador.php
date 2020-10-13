@@ -155,7 +155,7 @@ class ControllerGerador{
         
         $codigo .= '
             
-		if ($this->dao->inserir ( $' . $nomeDoObjeto . ' ))
+		if ($this->dao->insert ( $' . $nomeDoObjeto . ' ))
         {
 			$id = $this->dao->getConnection()->lastInsertId();
             echo \':sucesso:\'.$id;
@@ -196,9 +196,9 @@ class ControllerGerador{
         foreach($atributosObjetos as $atributoObjeto){
             $codigo .= '
             $'.strtolower($atributoObjeto->getTipo()).'Dao = new '.ucfirst ($atributoObjeto->getTipo()).'DAO($this->dao->getConnection());
-            $lista'.ucfirst ($atributoObjeto->getTipo()).' = $'.strtolower($atributoObjeto->getTipo()).'Dao->fetch();
+            $list'.ucfirst ($atributoObjeto->getTipo()).' = $'.strtolower($atributoObjeto->getTipo()).'Dao->fetch();
 ';
-            $listaParametros[] = '$lista'.ucfirst ($atributoObjeto->getTipo());
+            $listaParametros[] = '$list'.ucfirst ($atributoObjeto->getTipo());
             
             
         }
@@ -286,7 +286,7 @@ class ControllerGerador{
         
         $codigo .= '
             
-		if ($this->dao->inserir ( $' . $nomeDoObjeto . ' ))
+		if ($this->dao->insert ( $' . $nomeDoObjeto . ' ))
         {
 			echo \'
 
@@ -612,23 +612,23 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         
         foreach($atributosNN as $atributoNN){
             $codigo .= '
-        $this->dao->buscar'.ucfirst($atributoNN->getNome()).'($selected);
+        $this->dao->fetch'.ucfirst($atributoNN->getNome()).'($selected);
         $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'Dao = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'DAO($this->dao->getConnection());
-        $lista = $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'Dao->fetch();
+        $list = $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'Dao->fetch();
             
         echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
-        $this->view->exibir'.ucfirst($atributoNN->getNome()).'($selected);
+        $this->view->show'.ucfirst($atributoNN->getNome()).'($selected);
         echo \'</div>\';
             
             
         if(!isset($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']) && !isset($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
             echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
-            $this->view->adicionar'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($lista);
+            $this->view->add'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($list);
             echo \'</div>\';
         }else if(isset($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
             $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).' = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'();
             $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'->setId($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']);
-            if($this->dao->inserir'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selected, $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'))
+            if($this->dao->insert'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selected, $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'))
             {
 			echo \'
 
@@ -731,10 +731,10 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
             echo json_encode($selected);
             return;
         }        
-        $lista = $this->dao->fetch();
+        $list = $this->dao->fetch();
         $listagem = array();
-        foreach ( $lista as $linha ) {
-			$listagem [\'lista\'] [] = array (';
+        foreach ( $list as $linha ) {
+			$listagem [\'list\'] [] = array (';
         $i = 0;
         foreach ($atributosComuns as $atributo) {
             $i ++;

@@ -89,13 +89,13 @@ class DAO {
 	    $this->sgdb = $sgdb;
 
 		if ($sgdb == "postgres") {
-			$this->conexao = new PDO ( \'pgsql:host=\' . $host. \' port=\'.$port.\' dbname=\' . $dbName . \' user=\' . $user . \' password=\' . $password);
+			$this->connection = new PDO ( \'pgsql:host=\' . $host. \' port=\'.$port.\' dbname=\' . $dbName . \' user=\' . $user . \' password=\' . $password);
 		} else if ($sgdb == "mssql") {
-			$this->conexao = new PDO ( \'dblib:host=\' . $host . \';dbname=\' . $dbName, $user, $password);
+			$this->connection = new PDO ( \'dblib:host=\' . $host . \';dbname=\' . $dbName, $user, $password);
 		}else if($sgdb == "mysql"){
-			$this->conexao = new PDO( \'mysql:host=\' . $host . \';dbname=\' .  $dbName, $user, $password);
+			$this->connection = new PDO( \'mysql:host=\' . $host . \';dbname=\' .  $dbName, $user, $password);
 		}else if($sgdb == "sqlite"){
-			$this->conexao = new PDO(\'sqlite:\'.$dbName);
+			$this->connection = new PDO(\'sqlite:\'.$dbName);
 		}
 		
 	}
@@ -220,7 +220,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
             
         try {
             
-            $stmt = $this->getConexao()->prepare($sql);';
+            $stmt = $this->getConnection()->prepare($sql);';
         foreach ($atributosComuns as $atributo) {
             if (substr($atributo->getTipo(), 0, 6) == 'Array ') {
                 continue;
@@ -306,7 +306,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         }
         $codigo .= '
 		try {
-			$db = $this->getConexao();
+			$db = $this->getConnection();
 			$stmt = $db->prepare($sql);';
         foreach ($objeto->getAtributos() as $atributo)
         {
@@ -384,7 +384,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         }
         $codigo .= '
 		try {
-			$db = $this->getConexao();
+			$db = $this->getConnection();
 			$stmt = $db->prepare($sql);';
         foreach ($objeto->getAtributos() as $atributo) 
         {
@@ -421,7 +421,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
 		$sql = "DELETE FROM ' . $objeto->getNomeSnakeCase() . ' WHERE ' . $objeto->getAtributos()[0]->getNomeSnakeCase() . ' = :' . $objeto->getAtributos()[0]->getNomeSnakeCase() . '";
 		    
 		try {
-			$db = $this->getConexao();
+			$db = $this->getConnection();
 			$stmt = $db->prepare($sql);
 			$stmt->bindParam(":' . $objeto->getAtributos()[0]->getNomeSnakeCase() . '", $' . $objeto->getAtributos()[0]->getNomeSnakeCase() . ', PDO::PARAM_INT);
 			return $stmt->execute();
@@ -460,10 +460,10 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         $codigo .= ' LIMIT 1000";
 
         try {
-            $stmt = $this->conexao->prepare($sql);
+            $stmt = $this->connection->prepare($sql);
             
 		    if(!$stmt){   
-                echo "<br>Mensagem de erro retornada: ".$this->conexao->errorInfo()[2]."<br>";
+                echo "<br>Mensagem de erro retornada: ".$this->connection->errorInfo()[2]."<br>";
 		        return $list;
 		    }
             $stmt->execute();
@@ -493,7 +493,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
             }
         }
         $codigo .= '
-                $lista [] = $' . $nomeDoObjeto . ';';
+                $list [] = $' . $nomeDoObjeto . ';';
         $codigo .= '
 
 	
@@ -552,7 +552,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                 
         try {
                 
-            $stmt = $this->conexao->prepare($sql);
+            $stmt = $this->connection->prepare($sql);
             $stmt->bindParam(":'.$atributo->getNome().'", $'.$atributo->getNome().', PDO::'.$atributo->getTipoParametroPDO().');
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -629,10 +629,10 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                  LIMIT 1000";
                 
         try {
-            $stmt = $this->conexao->prepare($sql);
+            $stmt = $this->connection->prepare($sql);
                 
 		    if(!$stmt){
-                echo "<br>Mensagem de erro retornada: ".$this->conexao->errorInfo()[2]."<br>";
+                echo "<br>Mensagem de erro retornada: ".$this->connection->errorInfo()[2]."<br>";
 		    }
             $stmt->bindParam(":'.$atributo->getNome().'", $'.$atributo->getNome().', PDO::'.$atributo->getTipoParametroPDO().');
             $stmt->execute();
@@ -692,7 +692,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                 INNER JOIN ' . strtolower(explode(' ', $atributo->getTipo())[2]) . '
                 ON  ' . strtolower($objeto->getNome()) . '_' . strtolower(explode(' ', $atributo->getTipo())[2]) . '.id_' . strtolower(explode(' ', $atributo->getTipo())[2]) . ' = ' . strtolower(explode(' ', $atributo->getTipo())[2]) . '.id
                  WHERE ' . strtolower($objeto->getNome()) . '_' . strtolower(explode(' ', $atributo->getTipo())[2]) . '.id_' . $objeto->getNomeSnakeCase() . ' = $id";
-        $result = $this->getConexao ()->query ( $sql );
+        $result = $this->getConnection ()->query ( $sql );
                      
         foreach ($result as $row) {
             $' . strtolower(explode(' ', $atributo->getTipo())[2]) . ' = new ' . ucfirst(explode(' ', $atributo->getTipo())[2]) . '();';
@@ -709,7 +709,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                         } else if (substr($atr->getTipo(), 0, 6) == 'Array ') {
                             //
                             $codigo .= '
-            $' . strtolower(explode(' ', $atributo->getTipo())[2]) . 'Dao = new ' . ucfirst(explode(' ', $atributo->getTipo())[2]) . 'DAO($this->getConexao());
+            $' . strtolower(explode(' ', $atributo->getTipo())[2]) . 'Dao = new ' . ucfirst(explode(' ', $atributo->getTipo())[2]) . 'DAO($this->getConnection());
             $' . strtolower(explode(' ', $atributo->getTipo())[2]) . 'Dao->fetch' . ucfirst($atr->getNome()) . '($' . strtolower(explode(' ', $atributo->getTipo())[2]) . ');';
                             // $objetoDao->fetch
                         }
@@ -756,7 +756,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
             $codigo .= ')";';
             $codigo .= '
 		try {
-			$db = $this->getConexao();
+			$db = $this->getConnection();
 			$stmt = $db->prepare($sql);';
             
             $codigo .= '
@@ -798,7 +798,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
             
             $codigo .= '
 		try {
-			$db = $this->getConexao();
+			$db = $this->getConnection();
 			$stmt = $db->prepare($sql);';
             
             $codigo .= '
