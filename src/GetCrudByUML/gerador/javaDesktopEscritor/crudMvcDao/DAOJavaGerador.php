@@ -113,26 +113,26 @@ public class DAO {
 			FileInputStream file;
 			file = new FileInputStream(ARQUIVO_CONFIGURACAO);
 			config.load(file);
-			String sgdb, host, porta, bdNome, usuario, senha;
+			String sgdb, host, port, dbName, user, password;
     
 			sgdb = config.getProperty("sgdb");
 			host = config.getProperty("host");
-			porta = config.getProperty("porta");
-			bdNome = config.getProperty("bd_nome");
-			usuario = config.getProperty("usuario");
-			senha = config.getProperty("senha");
+			port = config.getProperty("port");
+			dbName = config.getProperty("db_name");
+			user = config.getProperty("user");
+			password = config.getProperty("password");
     
 			file.close();
 			if (sgdb.equals("postgres")) {
 				Class.forName(DRIVER_POSTGRES);
-				this.connection = DriverManager.getConnection(JDBC_BANCO_POSTGRES+ "//" + host + "/" + bdNome, usuario, senha);
+				this.connection = DriverManager.getConnection(JDBC_BANCO_POSTGRES+ "//" + host + "/" + dbName, user, password);
     
 			} else if (sgdb.equals("sqlite")) {
 				Class.forName(DRIVER_SQLITE);
-				this.connection = DriverManager.getConnection(JDBC_BANCO_SQLITE+bdNome);
+				this.connection = DriverManager.getConnection(JDBC_BANCO_SQLITE+dbName);
 			} else if (sgdb.equals("mysql")) {
 				Class.forName(DRIVER_MYSQL);
-				this.connection = DriverManager.getConnection(JDBC_BANCO_MYSQL + "//" + host +":"+ porta + "/" + bdNome, usuario, senha);
+				this.connection = DriverManager.getConnection(JDBC_BANCO_MYSQL + "//" + host +":"+ port + "/" + dbName, user, password);
 			}
     
 		} catch (ClassNotFoundException e1) {
@@ -215,7 +215,38 @@ public class DAO {
         $this->listaDeArquivos[$caminho] = $codigo;
         return $this->listaDeArquivos;
     }
-    
+    private function delete(Objeto $objeto){
+        $atributoPrimary = null;
+        foreach ($objeto->getAtributos() as $atributo) {
+            if ($atributo->isPrimary()) {
+                $atributoPrimary = $atributo;
+                break;
+            }
+        }
+        if ($atributoPrimary == null) {
+            $atributoPrimary = $objeto->getAtributos()[0];
+        }
+        $codigo = '
+
+
+	public boolean delete(' . ucfirst($objeto->getNome()). ' ' . strtolower($objeto->getNome()). '){
+		String sql = "DELETE FROM ' . $objeto->getNomeSnakeCase(). ' WHERE ' . $atributoPrimary->getNomeSnakeCase() . ' = ?";
+		try{
+        	PreparedStatement stmt = this.getConnection().prepareStatement(sql);
+        	stmt.setInt(1, '.lcfirst($objeto->getNome()).'.get' . ucfirst($atributoPrimary()->getNome()). '());
+        	stmt.execute();
+        	stmt.close();
+        	return true;
+    	} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+        	    
+	}
+
+';
+        return $codigo;
+    }
     private function geraDAOs(Objeto $objeto)
     {
         $codigo = '';
@@ -237,6 +268,7 @@ public class DAO {
                 $atributosObjetos[] = $atributo;
             }
         }
+        
         
         
         $codigo = '
@@ -262,24 +294,10 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
         $codigo .= $this->update($objeto);
         $codigo .= $this->fetch($objeto);
         $codigo .= $this->insert($objeto);
-        
+        $codigo .= $this->delete($objeto);
         $codigo .= '
             
 
-	public boolean excluir(' . ucfirst($objeto->getNome()). ' ' . strtolower($objeto->getNome()). '){
-		String sql = "DELETE FROM ' . $nomeDoObjeto . ' WHERE ' . $objeto->getAtributos()[0]->getNome() . ' = ?";
-		try{
-        	PreparedStatement stmt = this.getConnection().prepareStatement(sql);
-        	stmt.setInt(1, '.$nomeDoObjeto.'.get' . ucfirst($objeto->getAtributos()[0]->getNome()). '());
-        	stmt.execute();
-        	stmt.close();
-        	return true;
-    	} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-        	    
-	}
         	    
         	    
 ';
@@ -833,7 +851,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
                 }
                 
                 $codigo .= '
-            ps.setInt('.$i.', '.lcfirst($atributo->getNome()).'.get'.ucfirst($atributo->getNome()).'().get'.$strCampoPrimary.'());';
+            ps.setInt('.$i.', '.lcfirst($objeto->getNome()).'.get'.ucfirst($atributo->getNome()).'().get'.$strCampoPrimary.'());';
                 
                 
             }

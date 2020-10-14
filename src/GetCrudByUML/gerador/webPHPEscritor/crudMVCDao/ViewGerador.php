@@ -252,7 +252,7 @@ class ViewGerador{
             
         }
         $codigo .= '
-                        <th>Ações</th>';
+                        <th>Actions</th>';
         $codigo .= '
 					</tr>
 				</tfoot>
@@ -398,7 +398,7 @@ class ViewGerador{
 							<div class="col-lg-12">
 								<div class="p-5">
 									<div class="text-center">
-										<h1 class="h4 text-gray-900 mb-4"> Editar ' . $objeto->getNomeTextual() . '</h1>
+										<h1 class="h4 text-gray-900 mb-4"> Edit ' . $objeto->getNomeTextual() . '</h1>
 									</div>
 						              <form class="user" method="post">';
         
@@ -432,7 +432,7 @@ class ViewGerador{
         }
         
         $codigo .= '
-                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Alterar" name="editar_' . $objeto->getNomeSnakeCase() . '">
+                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Alterar" name="edit_' . $objeto->getNomeSnakeCase() . '">
                                         <hr>
                                             
 						              </form>
@@ -478,7 +478,7 @@ class ViewGerador{
 							<div class="col-lg-12">
 								<div class="p-5">
 									<div class="text-center">
-										<h1 class="h4 text-gray-900 mb-4"> Deletar ' . $objeto->getNomeTextual() . '</h1>
+										<h1 class="h4 text-gray-900 mb-4"> Delete ' . $objeto->getNomeTextual() . '</h1>
 									</div>
 						              <form class="user" method="post">';
         
@@ -493,7 +493,7 @@ class ViewGerador{
         
         $codigo .= '                    Are you sure you want to delete this object?
 
-                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Deletar" name="deletar_' . $objeto->getNomeSnakeCase() . '">
+                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Delete" name="delete_' . $objeto->getNomeSnakeCase() . '">
                                         <hr>
                                             
 						              </form>
@@ -585,7 +585,7 @@ class ' . $objeto->getNome() . 'View {';
                 $codigo .= '
 						<th>'.$atributo3->getNome().'</th>';
             }
-            $codigo .= '<th>Ações</th>';
+            $codigo .= '<th>Actions</th>';
             $codigo .= '
 					</tr>
 				</thead>
@@ -600,7 +600,7 @@ class ' . $objeto->getNome() . 'View {';
                 $codigo .= '
                         <th>'.$atributo3->getNome().'</th>';
             }
-            $codigo .= '<th>Ações</th>';
+            $codigo .= '<th>Actions</th>';
             $codigo .= '
 					</tr>
 				</tfoot>

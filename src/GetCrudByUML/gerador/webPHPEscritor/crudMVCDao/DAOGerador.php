@@ -414,16 +414,26 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         
     }
     private function delete(Objeto $objeto) : string {
+        $atributoPrimary = null;
+        foreach ($objeto->getAtributos() as $atributo) {
+            if ($atributo->isPrimary()) {
+                $atributoPrimary = $atributo;
+                break;
+            }
+        }
+        if ($atributoPrimary == null) {
+            $atributoPrimary = $objeto->getAtributos()[0];
+        }
         $codigo = '
 
 	public function delete(' . $objeto->getNome() . ' $' . lcfirst($objeto->getNome()). '){
-		$' . $objeto->getAtributos()[0]->getNome() . ' = $' . lcfirst($objeto->getNome()) . '->get' . ucfirst($objeto->getAtributos()[0]->getNome()) . '();
-		$sql = "DELETE FROM ' . $objeto->getNomeSnakeCase() . ' WHERE ' . $objeto->getAtributos()[0]->getNomeSnakeCase() . ' = :' . $objeto->getAtributos()[0]->getNomeSnakeCase() . '";
+		$' . $atributoPrimary->getNome() . ' = $' . lcfirst($objeto->getNome()) . '->get' . ucfirst($objeto->getAtributos()[0]->getNome()) . '();
+		$sql = "DELETE FROM ' . $objeto->getNomeSnakeCase() . ' WHERE ' . $atributoPrimary->getNomeSnakeCase() . ' = :' . $atributoPrimary->getNomeSnakeCase() . '";
 		    
 		try {
 			$db = $this->getConnection();
 			$stmt = $db->prepare($sql);
-			$stmt->bindParam(":' . $objeto->getAtributos()[0]->getNomeSnakeCase() . '", $' . $objeto->getAtributos()[0]->getNomeSnakeCase() . ', PDO::PARAM_INT);
+			$stmt->bindParam(":' . $atributoPrimary->getNomeSnakeCase() . '", $' . $atributoPrimary->getNome() . ', PDO::PARAM_INT);
 			return $stmt->execute();
 			    
 		} catch(PDOException $e) {
