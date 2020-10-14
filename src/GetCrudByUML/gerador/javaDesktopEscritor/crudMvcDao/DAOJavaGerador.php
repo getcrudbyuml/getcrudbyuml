@@ -233,7 +233,7 @@ public class DAO {
 		String sql = "DELETE FROM ' . $objeto->getNomeSnakeCase(). ' WHERE ' . $atributoPrimary->getNomeSnakeCase() . ' = ?";
 		try{
         	PreparedStatement stmt = this.getConnection().prepareStatement(sql);
-        	stmt.setInt(1, '.lcfirst($objeto->getNome()).'.get' . ucfirst($atributoPrimary()->getNome()). '());
+        	stmt.setInt(1, '.lcfirst($objeto->getNome()).'.get' . ucfirst($atributoPrimary->getNome()). '());
         	stmt.execute();
         	stmt.close();
         	return true;
@@ -421,22 +421,21 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
     {
         int id = '.strtolower($objeto->getNome()).'.getId();
         String sql = "SELECT ';
-            
+            $listaCampos = array();
             foreach($this->software->getObjetos() as $obj){
-                if(strtolower($obj->getNome()) == strtolower(explode(' ', $atributo->getTipo())[2]))
+                if($obj->getNome() == $atributo->getTipoDeArray())
                 {
                     $i = 0;
                     foreach($obj->getAtributos() as $atr){
                         
                         $i++;
-                        $codigo .= strtolower($atributo->getTipoDeArray().'.'.$atr->getNome().' as '. $atr->getNome().'_'.$atributo->getTipoDeArray());
-                        if($i < count($obj->getAtributos())){
-                            $codigo .= ', ';
-                        }
+                        $listaCampos[] = $atributo->getTipoDeArraySnakeCase().'.'.$atr->getNomeSnakeCase().' as '. $atr->getNomeSnakeCase().'_'.$atributo->getTipoDeArraySnakeCase();
                     }
                 }
             }
-            $codigo .= ' FROM '.strtolower($objeto->getNome()).'_'.strtolower(explode(' ', $atributo->getTipo())[2]).' INNER JOIN '.strtolower(explode(' ', $atributo->getTipo())[2]).' ON  '.strtolower($objeto->getNome()).'_'.strtolower(explode(' ', $atributo->getTipo())[2]).'.id'.strtolower(explode(' ', $atributo->getTipo())[2]).' = '.strtolower(explode(' ', $atributo->getTipo())[2]).'.id WHERE '.strtolower($objeto->getNome()).'_'.strtolower(explode(' ', $atributo->getTipo())[2]).'.id'.strtolower($objeto->getNome()).' = "+id;';
+            $codigo .= implode(', ', $listaCampos);
+            $codigo .= ' FROM '.$objeto->getNomeSnakeCase().'_'.$atributo->getTipoDeArraySnakeCase().' INNER JOIN '.$atributo->getTipoDeArraySnakeCase().' ON  '.$objeto->getNomeSnakeCase().'_'.$atributo->getTipoDeArraySnakeCase().'.id_'.$atributo->getTipoDeArraySnakeCase().' = '.$atributo->getTipoDeArraySnakeCase().'.id WHERE '.$objeto->getNomeSnakeCase().'_'.$atributo->getTipoDeArraySnakeCase().'.id_'.$objeto->getNomeSnakeCase().' = "+id;';
+            
             
             $codigo .= '
         PreparedStatement ps;
