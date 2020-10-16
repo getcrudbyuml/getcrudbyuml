@@ -309,8 +309,8 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
             
             $codigo .= '
                 
-    public ArrayList<'.$nomeDoObjetoMA.'> pesquisaPor'.$nomeDoAtributoMA.'(' . $nomeDoObjetoMA . ' ' . $nomeDoObjeto . ') {
-        ArrayList<'.$nomeDoObjetoMA.'>lista = new ArrayList<'.$nomeDoObjetoMA.'>();';
+    public ArrayList<'.ucfirst($objeto->getNome()).'> fetchBy'.ucfirst($atributo->getNome()).'(' . ucfirst($objeto->getNome()). ' ' . lcfirst($objeto->getNome()) . ') {
+        ArrayList<'.ucfirst($objeto->getNome()).'>lista = new ArrayList<'.ucfirst($objeto->getNome()).'>();';
             
             $id = $atributo->getNome();
             $codigo .= '
@@ -318,7 +318,8 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
             $sqlGerador = new SQLGerador($this->software);
             $codigo .= $sqlGerador->getSQLSelect($objeto);
             $codigo .= '"';
-            if($atributo->getTipo() == Atributo::TIPO_STRING){
+            if($atributo->getTipo() == Atributo::TIPO_STRING)
+            {
                 $codigo .=  '
                 +" WHERE '.strtolower($objeto->getNome()).'.'.$id.' like \'%?%\'';
                 
@@ -449,26 +450,30 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
                 {
                     foreach($obj->getAtributos() as $atr){
                         
-                        $nomeDoAtributoMA = ucfirst($atr->getNome());
                         
                         if($atr->tipoListado())
                         {
                             
+                            
                             if($atr->getTipo() == Atributo::TIPO_INT)
                             {
                                 $codigo .= '
-                '.strtolower(explode(' ', $atributo->getTipo())[2]).'.set'.$nomeDoAtributoMA.'( resultSet.getInt("'. $atr->getNome().'_'.strtolower($atributo->getTipoDeArray()).'"));';
+                '.strtolower(explode(' ', $atributo->getTipo())[2]).'.set'.ucfirst($atr->getNome()).'( resultSet.getInt("'. $atr->getNome().'_'.strtolower($atributo->getTipoDeArray()).'"));';
                             }
                             else if($atr->getTipo() == Atributo::TIPO_FLOAT)
                             {
                                 $codigo .= '
-                '.strtolower(explode(' ', $atributo->getTipo())[2]).'.set'.$nomeDoAtributoMA.'( resultSet.getFloat("'. $atr->getNome().'_'.strtolower($atributo->getTipoDeArray()).'"));';
+                '.strtolower(explode(' ', $atributo->getTipo())[2]).'.set'.ucfirst($atr->getNome()).'( resultSet.getFloat("'. $atr->getNome().'_'.strtolower($atributo->getTipoDeArray()).'"));';
                             }
                             else if($atr->getTipo() == Atributo::TIPO_STRING)
                             {
                                 
                                 $codigo .= '
-                '.strtolower(explode(' ', $atributo->getTipo())[2]).'.set'.$nomeDoAtributoMA.'( resultSet.getString("'. $atr->getNome().'_'.strtolower($atributo->getTipoDeArray()).'"));';
+                '.strtolower(explode(' ', $atributo->getTipo())[2]).'.set'.ucfirst($atr->getNome()).'( resultSet.getString("'. $atr->getNome().'_'.strtolower($atributo->getTipoDeArray()).'"));';
+                                
+                            }else{
+                                $codigo .= '
+                '.strtolower(explode(' ', $atributo->getTipo())[2]).'.set'.ucfirst($atr->getNome()).'( resultSet.getString("'. $atr->getNome().'_'.strtolower($atributo->getTipoDeArray()).'"));';
                                 
                             }
                             
@@ -678,7 +683,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
                 ';
         return $codigo;
     }
-    
+
     private function fetch($objeto) : string {
         $codigo = '';
         $nomeDoObjeto = lcfirst($objeto->getNome());

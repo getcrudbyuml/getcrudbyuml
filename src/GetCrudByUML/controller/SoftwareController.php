@@ -353,10 +353,10 @@ class SoftwareController
         $this->view->mostrarSelecionado($this->selecionado);
         
         echo '</div>';
-        $this->modalEscrever();
+        $this->modalEscrever($this->selecionado);
     }
     
-    public function modalEscrever(){
+    public function modalEscrever(Software $software){
         if(!isset($_GET['selecionar'])){
             return;
         }
@@ -377,7 +377,7 @@ class SoftwareController
 
         <form id="form-escrever" method="get">
         <input type="hidden" name="pagina" value="software">
-        <input type="hidden" name="selecionar" value="'.$_GET['selecionar'].'">
+        <input type="hidden" name="selecionar" value="'.$software->getId().'">
         <select id="select-tipo-codigo" name="escrever">
             <option value="1">PHP Web CRUD MVC Bootstrap API REST (EN)</option>
             <option value="2">PHP Web CRUD MVC Bootstrap API REST (PT)</option>

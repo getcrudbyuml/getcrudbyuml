@@ -92,7 +92,7 @@ class ObjetoController {
 	    
 	    $this->view->mostrarSelecionado($this->selecionado);
 	    $softwareController = new SoftwareController();
-	    $softwareController->modalEscrever();
+	    $softwareController->modalEscrever($software);
 	    
     }
 	public function cadastrar(Software $software = null) 
