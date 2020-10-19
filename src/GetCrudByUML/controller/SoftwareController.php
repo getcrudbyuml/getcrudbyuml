@@ -10,7 +10,6 @@ use GetCrudByUML\dao\UsuarioDAO;
 use GetCrudByUML\dao\ObjetoDAO;
 use GetCrudByUML\dao\AtributoDAO;
 use GetCrudByUML\gerador\javaDesktopEscritor\crudMvcDao\EscritorDeSoftware as EscritorJava;
-use GetCrudByUML\gerador\webPHPEscritor\crudMVCDaoEstiloPT\EscritorDeSoftware as EscritorPHPPortugues;
 use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\EscritorDeSoftware as EscritorPHP;
 use GetCrudByUML\util\Zipador;
 
@@ -161,8 +160,6 @@ class SoftwareController
         $numeroDeArquivos = 0;
         if($_GET['escrever'] == 1){
             EscritorPHP::main($this->selecionado, $diretorio);            
-        }else if($_GET['escrever'] == 2){
-            EscritorPHPPortugues::main($this->selecionado, $diretorio);
         }else if($_GET['escrever'] == 3){
             EscritorJava::main($this->selecionado, $diretorio);
         }else{
@@ -379,9 +376,8 @@ class SoftwareController
         <input type="hidden" name="pagina" value="software">
         <input type="hidden" name="selecionar" value="'.$software->getId().'">
         <select id="select-tipo-codigo" name="escrever">
-            <option value="1">PHP Web CRUD MVC Bootstrap (EN)</option>
-            <option value="2">PHP Web CRUD MVC Bootstrap (PT)</option>
-            <option value="3">JAVA CRUD MVC Desktop (EN) (20% complet)</option>
+            <option value="1">PHP Web CRUD MVC Bootstrap</option>
+            <option value="3">JAVA CRUD MVC Desktop (20% complet)</option>
         
         </select>
         </form>
