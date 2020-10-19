@@ -35,9 +35,14 @@ class HomeController{
                 <div class="embed-responsive embed-responsive-16by9">';
         
         if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
-            echo '<iframe src="https://www.youtube.com/embed/-_HPhLOIE4g" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+            echo '
+
+                <iframe src="https://www.youtube.com/embed/Vj0AYfTCCFQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+';
         }else{//I need to record this. 
-            echo '<iframe src="https://www.youtube.com/embed/-_HPhLOIE4g" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+            echo '
+                <iframe src="https://www.youtube.com/embed/Vj0AYfTCCFQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+';
         }
         
         

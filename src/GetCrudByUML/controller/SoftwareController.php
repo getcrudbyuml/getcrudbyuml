@@ -379,8 +379,8 @@ class SoftwareController
         <input type="hidden" name="pagina" value="software">
         <input type="hidden" name="selecionar" value="'.$software->getId().'">
         <select id="select-tipo-codigo" name="escrever">
-            <option value="1">PHP Web CRUD MVC Bootstrap API REST (EN)</option>
-            <option value="2">PHP Web CRUD MVC Bootstrap API REST (PT)</option>
+            <option value="1">PHP Web CRUD MVC Bootstrap (EN)</option>
+            <option value="2">PHP Web CRUD MVC Bootstrap (PT)</option>
             <option value="3">JAVA CRUD MVC Desktop (EN) (20% complet)</option>
         
         </select>
