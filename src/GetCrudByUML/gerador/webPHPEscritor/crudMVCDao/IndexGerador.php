@@ -125,8 +125,8 @@ if(isset($_REQUEST[\'api\'])){
         foreach ($this->software->getObjetos() as $objeto) {
             $codigo .= '
 		case \'' .$objeto->getNomeSnakeCase() . '\':
-            $controller = new '.ucfirst ($objeto->getNome()).'CustomController();
-            $controller->mainREST();
+            $controller = new '.ucfirst ($objeto->getNome()).'ApiRestController();
+            $controller->main(API_INI);
             break;';
         }
         $codigo .= '

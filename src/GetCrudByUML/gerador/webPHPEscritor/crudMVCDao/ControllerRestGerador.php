@@ -56,438 +56,10 @@ class ControllerRestGerador{
 ';
         return $codigo;
     }
-    private function addAjax(Objeto $objeto){
-        $codigo = '';
-        $nomeDoObjeto = lcfirst($objeto->getNome());
-        $nomeDoObjetoMa = ucfirst($objeto->getNome());
-        
-        $atributosComuns = array();
-        $atributosObjetos = array();
-        foreach ($objeto->getAtributos() as $atributo) {
-            if($atributo->tipoListado()){
-                $atributosComuns[] = $atributo;
-            }
-            else if($atributo->isObjeto()){
-                $atributosObjetos[] = $atributo;
-                
-            }
-        }
-        
-        $codigo .= '
-            
-	public function addAjax() {
-            
-        if(!isset($_POST[\'enviar_' . $objeto->getNomeSnakeCase() . '\'])){';
-            $codigo .= '
-            return;    
-        }
-        
-		    
-		
-		if (! ( ';
-        $i = 0;
-        $numDeComunsSemPK = 0;
-        $issetList = array();
-        foreach ($atributosComuns as $atributo) {
-            $i ++;
-            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                continue;
-            }
-            $numDeComunsSemPK++;
-            $issetList[] = 'isset ( $_POST [\'' . $atributo->getNomeSnakeCase() . '\'] )';
-            
-        }
-        $codigo .= implode(' && ', $issetList);
-        $i = 0;
-        foreach($atributosObjetos as $atributoObjeto){
-            foreach($this->software->getObjetos() as $objeto3){
-                if($atributoObjeto->getTipo() == $objeto3->getNome())
-                {
-                    foreach($objeto3->getAtributos() as $atributo2){
-                        if($atributo2->getIndice() == Atributo::INDICE_PRIMARY){
-                            
-                            if($numDeComunsSemPK > 0 && $i == 0){
-                                $codigo .= ' && ';
-                            }else if($i > 0){
-                                $codigo .= ' && ';
-                            }
-                            $i++;
-                            $codigo .= ' isset($_POST [\'' . $atributoObjeto->getNomeSnakeCase() . '\'])';
-                            break;
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-        
-        $codigo .= ')) {
-			echo \':incompleto\';
-			return;
-		}';
-        
-        $codigo .= '
-            
-		$' . $nomeDoObjeto . ' = new ' . $nomeDoObjetoMa . ' ();';
-        foreach ($atributosComuns as $atributo) {
-            
-            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                continue;
-            }
-            $codigo .= '
-		$' . $nomeDoObjeto . '->set' . ucfirst($atributo->getNome()) . ' ( $_POST [\'' . $atributo->getNomeSnakeCase() . '\'] );';
-        }
-        foreach($atributosObjetos as $atributoObjeto){
-            foreach($this->software->getObjetos() as $objeto3){
-                if($atributoObjeto->getTipo() == $objeto3->getNome())
-                {
-                    foreach($objeto3->getAtributos() as $atributo2){
-                        if($atributo2->getIndice() == Atributo::INDICE_PRIMARY){
-                            $codigo .= '
-		$' . $nomeDoObjeto . '->get' .ucfirst($atributoObjeto->getNome()) . '()->set'.ucfirst ($atributo2->getNome()).' ( $_POST [\'' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
-                            break;
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-        
-        $codigo .= '
-            
-		if ($this->dao->insert ( $' . $nomeDoObjeto . ' ))
-        {
-			$id = $this->dao->getConnection()->lastInsertId();
-            echo \':sucesso:\'.$id;
-            
-		} else {
-			 echo \':falha\';
-		}
-	}
-            
-            
-';
-        
-        return $codigo;
-    }
-    private function add(Objeto $objeto){
-        $codigo = '';
-        $nomeDoObjeto = lcfirst($objeto->getNome());
-        $nomeDoObjetoMa = ucfirst($objeto->getNome());
-        
-        $atributosComuns = array();
-        $atributosObjetos = array();
-        foreach ($objeto->getAtributos() as $atributo) {
-            if($atributo->tipoListado()){
-                $atributosComuns[] = $atributo;
-            }
-            else if($atributo->isObjeto()){
-                $atributosObjetos[] = $atributo;
-                
-            }
-        }
-        
-        $codigo .= '
+ 
 
-	public function add() {
-            
-        if(!isset($_POST[\'enviar_' . $objeto->getNomeSnakeCase() . '\'])){';
-        $listaParametros = array();
-        foreach($atributosObjetos as $atributoObjeto){
-            $codigo .= '
-            $'.strtolower($atributoObjeto->getTipo()).'Dao = new '.ucfirst ($atributoObjeto->getTipo()).'DAO($this->dao->getConnection());
-            $list'.ucfirst ($atributoObjeto->getTipo()).' = $'.strtolower($atributoObjeto->getTipo()).'Dao->fetch();
-';
-            $listaParametros[] = '$list'.ucfirst ($atributoObjeto->getTipo());
-            
-            
-        }
-        $codigo .= '
-            $this->view->showInsertForm(';
-        
-        $codigo .= implode(', ', $listaParametros);
-        $codigo .= ');';
-        $codigo .= '
-		    return;
-		}
-		if (! ( ';
-        $i = 0;
-        $numDeComunsSemPK = 0;
-        $issetLista = array();
-        foreach ($atributosComuns as $atributo) {
-            $i ++;
-            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                continue;
-            }
-            $numDeComunsSemPK++;
-            $issetLista[] = 'isset ( $_POST [\'' . $atributo->getNomeSnakeCase() . '\'] )';
-            
-        }
-        $codigo .= implode(' && ', $issetLista);
-        $i = 0;
-        foreach($atributosObjetos as $atributoObjeto){
-            foreach($this->software->getObjetos() as $objeto3){
-                if($atributoObjeto->getTipo() == $objeto3->getNome())
-                {
-                    foreach($objeto3->getAtributos() as $atributo2){
-                        if($atributo2->getIndice() == Atributo::INDICE_PRIMARY){
-                            
-                            if($numDeComunsSemPK > 0 && $i == 0){
-                                $codigo .= ' && ';
-                            }else if($i > 0){
-                                $codigo .= ' && ';
-                            }
-                            $i++;
-                            $codigo .= ' isset($_POST [\'' . $atributoObjeto->getNomeSnakeCase() . '\'])';
-                            break;
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-        
-        $codigo .= ')) {
-			echo \'
-                <div class="alert alert-danger" role="alert">
-                    Failed to register. Some field must be missing. 
-                </div>
-
-                \';
-			return;
-		}';
-        
-        $codigo .= '
-            
-		$' . $nomeDoObjeto . ' = new ' . $nomeDoObjetoMa . ' ();';
-        foreach ($atributosComuns as $atributo) {
-            
-            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                continue;
-            }
-            $codigo .= '
-		$' . $nomeDoObjeto . '->set' . ucfirst($atributo->getNome()) . ' ( $_POST [\'' . $atributo->getNomeSnakeCase() . '\'] );';
-        }
-        foreach($atributosObjetos as $atributoObjeto){
-            foreach($this->software->getObjetos() as $objeto3){
-                if($atributoObjeto->getTipo() == $objeto3->getNome())
-                {
-                    foreach($objeto3->getAtributos() as $atributo2){
-                        if($atributo2->getIndice() == Atributo::INDICE_PRIMARY){
-                            $codigo .= '
-		$' . $nomeDoObjeto . '->get' .ucfirst($atributoObjeto->getNome()) . '()->set'.ucfirst ($atributo2->getNome()).' ( $_POST [\'' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
-                            break;
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-        
-        $codigo .= '
-            
-		if ($this->dao->insert ( $' . $nomeDoObjeto . ' ))
-        {
-			echo \'
-
-<div class="alert alert-success" role="alert">
-  Sucesso ao inserir '.$objeto->getNomeTextual().'
-</div>
-
-\';
-		} else {
-			echo \'
-
-<div class="alert alert-danger" role="alert">
-  Falha ao tentar Inserir '.$objeto->getNomeTextual().'
-</div>
-
-\';
-		}
-        echo \'<META HTTP-EQUIV="REFRESH" CONTENT="3; URL=index.php?page=' . $objeto->getNomeSnakeCase() . '">\';
-	}
-
-
-';
-        
-        return $codigo;
-    }
-    private function delete(Objeto $objeto) : string
-    {
-        $codigo = '';
-        $atributoPrimaryKey = null;
-        foreach($objeto->getAtributos() as $atributo){
-            if($atributo->isPrimary()){
-                $atributoPrimaryKey = $atributo;
-            }
-        }
-        if($atributoPrimaryKey == null){
-            $codigo .= '
-        //Object without PrimaryKey has no implementation of the delete method.
-        public function delete(){}
-
-';
-            return $codigo;
-        }
-        
-        $codigo .= '
-    public function delete(){
-	    if(!isset($_GET[\'delete\'])){
-	        return;
-	    }
-        $selected = new '.ucfirst($objeto->getNome()).'();
-	    $selected->set'.ucfirst ($atributoPrimaryKey->getNome()).'($_GET[\'delete\']);
-        if(!isset($_POST[\'delete_' . $objeto->getNomeSnakeCase() . '\'])){
-            $this->view->confirmDelete($selected);
-            return;
-        }
-        if($this->dao->delete($selected))
-        {
-			echo \'
-
-<div class="alert alert-success" role="alert">
-  Sucesso ao excluir '.$objeto->getNomeTextual().'
-</div>
-
-\';
-		} else {
-			echo \'
-
-<div class="alert alert-danger" role="alert">
-  Falha ao tentar excluir '.$objeto->getNomeTextual().'
-</div>
-
-\';
-		}
-    	echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?page=' . $objeto->getNomeSnakeCase() . '">\';
-    }
-
-';
-        return $codigo;
-        
-    }
-    private function list() : string {
-        $codigo = '
-
-	public function list() 
-    {
-		$list = $this->dao->fetch();
-		$this->view->showList($list);
-	}
-';
-        return $codigo;
-    }
-    private function edit(Objeto $objeto) : string {
-        $atributosComuns = array();
-        $atributosObjetos = array();
-        foreach ($objeto->getAtributos() as $atributo) {
-            if($atributo->tipoListado()){
-                $atributosComuns[] = $atributo;
-            }else if($atributo->isObjeto()){
-                $atributosObjetos[] = $atributo;
-                
-            }
-        }
-        
-        
-        $codigo = '';
-        $codigo .= '
-            
-    public function edit(){
-	    if(!isset($_GET[\'edit\'])){
-	        return;
-	    }
-        $selected = new '.ucfirst($objeto->getNome()).'();
-	    $selected->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'edit\']);
-	    $this->dao->fillBy'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selected);
-	        
-        if(!isset($_POST[\'edit_' . $objeto->getNomeSnakeCase() . '\'])){';
-        $listaParametros = array();
-        foreach($atributosObjetos as $atributoObjeto){
-            $codigo .= '
-            $'.strtolower($atributoObjeto->getTipo()).'Dao = new '.ucfirst ($atributoObjeto->getTipo()).'DAO($this->dao->getConnection());
-            $list'.ucfirst ($atributoObjeto->getTipo()).' = $'.strtolower($atributoObjeto->getTipo()).'Dao->fetch();
-';
-            $listaParametros[] = '$list'.ucfirst ($atributoObjeto->getTipo());
-            
-            
-        }
-        $listaParametros[] = '$selected';
-        $codigo .= '
-            $this->view->showEditForm(';
-        
-        $codigo .= implode(', ', $listaParametros);
-        
-        $codigo .= ');
-            return;
-        }
-            
-		if (! ( ';
-        $campos = array();
-        foreach ($atributosComuns as $atributo) {    
-            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                continue;
-            }else{
-                $campos[] = 'isset ( $_POST [\'' . $atributo->getNomeSnakeCase() . '\'] )';
-            }
-        }
-        
-        foreach($atributosObjetos as $atributoObjeto){
-            foreach($this->software->getObjetos() as $objeto3){
-                if($atributoObjeto->getTipo() == $objeto3->getNome())
-                {
-                    foreach($objeto3->getAtributos() as $atributo2){
-                        if($atributo2->getIndice() == Atributo::INDICE_PRIMARY){
-
-                            $campos[] = ' isset($_POST [\'' . $atributoObjeto->getNomeSnakeCase() . '\'])';
-                            break;
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-        $codigo .= implode(" && ", $campos);
-        $codigo .= ')) {
-			echo "Incompleto";
-			return;
-		}
-';
-        foreach ($atributosComuns as $atributo) 
-        {
-            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                continue;
-            }
-            $codigo .= '
-		$selected->set' . ucfirst($atributo->getNome()). ' ( $_POST [\'' . $atributo->getNomeSnakeCase() . '\'] );';
-        }
-        
-        $codigo .= '
-            
-		if ($this->dao->update ($selected ))
-        {
-			echo \'
-
-<div class="alert alert-success" role="alert">
-  Sucesso 
-</div>
-
-\';
-		} else {
-			echo \'
-
-<div class="alert alert-danger" role="alert">
-  Falha 
-</div>
-
-\';
-		}
-        echo \'<META HTTP-EQUIV="REFRESH" CONTENT="3; URL=index.php?page=' . $objeto->getNomeSnakeCase() . '">\';
-            
-    }
-        ';
-        return $codigo;
-    }
+    
+    
     private function geraControllers(Objeto $objeto)
     {
         $codigo = '';
@@ -526,10 +98,10 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
     protected $dao;';
         $codigo .= $this->construct($objeto);
         
-        
         $codigo .= '
     
-    public function main(){
+    public function main($iniApiFile)
+    {
         
         $config = parse_ini_file ( $iniApiFile );
         $user = $config [\'user\'];
@@ -545,20 +117,107 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
             header(\'Content-type: application/json\');
             
             $this->restGET();
-            $this->restPOST();
-            $this->restPUT();
+            //$controller->restPOST();
+            //$controller->restPUT();
             $this->resDELETE();
         }else{
             header("WWW-Authenticate: Basic realm=\\\\"Private Area\\\\" ");
             header("HTTP/1.0 401 Unauthorized");
             echo \'{"erro":[{"status":"error","message":"Authentication failed"}]}\';
         }
-            
+
     }';
         
 
+        $codigo .= '
+
+    public function select(){
+	    if(!isset($_GET[\'select\'])){
+	        return;
+	    }
+        $selected = new '.$nomeDoObjetoMa.'();
+	    $selected->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'select\']);
+	        
+        $this->dao->fillBy'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selected);
+
+        echo \'<div class="col-xl-7 col-lg-7 col-md-12 col-sm-12">\';
+	    $this->view->showSelected($selected);
+        echo \'</div>\';
+            
+';
         
-       
+        foreach($atributosNN as $atributoNN){
+            $codigo .= '
+        $this->dao->fetch'.ucfirst($atributoNN->getNome()).'($selected);
+        $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'Dao = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'DAO($this->dao->getConnection());
+        $list = $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'Dao->fetch();
+            
+        echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
+        $this->view->show'.ucfirst($atributoNN->getNome()).'($selected);
+        echo \'</div>\';
+            
+            
+        if(!isset($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']) && !isset($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
+            echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
+            $this->view->add'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($list);
+            echo \'</div>\';
+        }else if(isset($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
+            $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).' = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'();
+            $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'->setId($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']);
+            if($this->dao->insert'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selected, $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'))
+            {
+			echo \'
+
+<div class="alert alert-success" role="alert">
+  Sucesso 
+</div>
+
+\';
+		} else {
+			echo \'
+
+<div class="alert alert-danger" role="alert">
+  Falha 
+</div>
+
+\';
+		    }
+            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?page='.$objeto->getNomeSnakeCase().'&select=\'.$selected->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
+            return;
+        }else  if(isset($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
+            
+            $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).' = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'();
+            $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'->setId($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']);
+            if($this->dao->remover'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selected, $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'))
+            {
+		      echo \'
+
+<div class="alert alert-success" role="alert">
+  Sucesso 
+</div>
+
+\';
+		} else {
+			echo \'
+
+<div class="alert alert-danger" role="alert">
+  Falha 
+</div>
+
+\';
+		      }
+            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?page='.$objeto->getNomeSnakeCase().'&select=\'.$selected->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
+            return;
+        }
+                
+                
+        ';
+            
+            
+        }
+        $codigo .= '
+            
+    }';
         $codigo .= '
 	public function restGET()
     {
