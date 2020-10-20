@@ -160,7 +160,7 @@ class SoftwareController
         $numeroDeArquivos = 0;
         if($_GET['escrever'] == 1){
             EscritorPHP::main($this->selecionado, $diretorio);            
-        }else if($_GET['escrever'] == 3){
+        }else if($_GET['escrever'] == 2){
             EscritorJava::main($this->selecionado, $diretorio);
         }else{
             return;
@@ -376,8 +376,8 @@ class SoftwareController
         <input type="hidden" name="pagina" value="software">
         <input type="hidden" name="selecionar" value="'.$software->getId().'">
         <select id="select-tipo-codigo" name="escrever">
-            <option value="1">PHP Web CRUD MVC Bootstrap</option>
-            <option value="3">JAVA CRUD MVC Desktop (20% complet)</option>
+            <option value="1">PHP Web CRUD MVC Bootstrap API Rest</option>
+            <option value="2">JAVA CRUD MVC Desktop (20% complet)</option>
         
         </select>
         </form>
