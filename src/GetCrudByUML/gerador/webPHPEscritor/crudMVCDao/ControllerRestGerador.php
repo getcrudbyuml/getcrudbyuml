@@ -57,169 +57,60 @@ class ControllerRestGerador{
         return $codigo;
     }
  
+    public function delete(Objeto $objeto):string{
+        $codigo = '
 
-    
-    
-    private function geraControllers(Objeto $objeto)
+    public function delete()
     {
-        $codigo = '';
-        $nomeDoObjeto = lcfirst($objeto->getNome());
-        $nomeDoObjetoMa = ucfirst($objeto->getNome());
+        if ($_SERVER[\'REQUEST_METHOD\'] != \'DELETE\') {
+            return;
+        }
+        $path = explode(\'/\', $_GET[\'api\']);
+        $parametro = "";
+        if (count($path) < 2) {
+            return;
+        }
+        $parametro = $path[1];
+        if ($parametro == "") {
+            return;
+        }
+    
+        $id = intval($parametro);
+        $selected = new '.ucfirst($objeto->getNome()).'();
+        $selected->setId($id);
+        $selected = $this->dao->pesquisaPorId($selected);
+        if ($selected == null) {
+            echo "{}";
+            return;
+        }
+
+        if($this->dao->excluir($selected))
+        {
+            echo "{}";
+            return;
+        }
+        
+        echo "Erro.";
+        
+    }
+
+';
+        return $codigo;
+        
+    }
+
+    public function get(Objeto $objeto):string{
         
         $atributosComuns = array();
-        $atributosNN = array();
-        $atributosObjetos = array();
         foreach ($objeto->getAtributos() as $atributo) {
             if($atributo->tipoListado()){
                 $atributosComuns[] = $atributo;
-            }else if($atributo->isArrayNN()){
-                $atributosNN[] = $atributo;
-            }
-            else if($atributo->isObjeto()){
-                $atributosObjetos[] = $atributo;
-                
             }
         }
-        
-        
-        $codigo = '<?php
-            
-/**
- * Classe feita para manipulação do objeto ' . $nomeDoObjetoMa . '
- * feita automaticamente com programa gerador de software inventado por
- * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
- */
-
-
-
-class ' . ucfirst($objeto->getNome()) . 'ApiRestController {
-
-	protected  $view;
-    protected $dao;';
-        $codigo .= $this->construct($objeto);
-        
-        $codigo .= '
-    
-    public function main($iniApiFile)
-    {
-        
-        $config = parse_ini_file ( $iniApiFile );
-        $user = $config [\'user\'];
-        $password = $config [\'password\'];
-        
-        if(!isset($_SERVER[\'PHP_AUTH_USER\'])){
-            header("WWW-Authenticate: Basic realm=\\\\"Private Area\\\\" ");
-            header("HTTP/1.0 401 Unauthorized");
-            echo \'{"erro":[{"status":"error","message":"Authentication failed"}]}\';
-            return;
-        }
-        if($_SERVER[\'PHP_AUTH_USER\'] == $user && ($_SERVER[\'PHP_AUTH_PW\'] == $password)){
-            header(\'Content-type: application/json\');
-            
-            $this->restGET();
-            //$controller->restPOST();
-            //$controller->restPUT();
-            $this->resDELETE();
-        }else{
-            header("WWW-Authenticate: Basic realm=\\\\"Private Area\\\\" ");
-            header("HTTP/1.0 401 Unauthorized");
-            echo \'{"erro":[{"status":"error","message":"Authentication failed"}]}\';
-        }
-
-    }';
-        
-
+        $codigo = '';
         $codigo .= '
 
-    public function select(){
-	    if(!isset($_GET[\'select\'])){
-	        return;
-	    }
-        $selected = new '.$nomeDoObjetoMa.'();
-	    $selected->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'select\']);
-	        
-        $this->dao->fillBy'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selected);
-
-        echo \'<div class="col-xl-7 col-lg-7 col-md-12 col-sm-12">\';
-	    $this->view->showSelected($selected);
-        echo \'</div>\';
-            
-';
-        
-        foreach($atributosNN as $atributoNN){
-            $codigo .= '
-        $this->dao->fetch'.ucfirst($atributoNN->getNome()).'($selected);
-        $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'Dao = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'DAO($this->dao->getConnection());
-        $list = $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'Dao->fetch();
-            
-        echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
-        $this->view->show'.ucfirst($atributoNN->getNome()).'($selected);
-        echo \'</div>\';
-            
-            
-        if(!isset($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']) && !isset($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
-            echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
-            $this->view->add'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($list);
-            echo \'</div>\';
-        }else if(isset($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
-            $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).' = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'();
-            $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'->setId($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']);
-            if($this->dao->insert'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selected, $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'))
-            {
-			echo \'
-
-<div class="alert alert-success" role="alert">
-  Sucesso 
-</div>
-
-\';
-		} else {
-			echo \'
-
-<div class="alert alert-danger" role="alert">
-  Falha 
-</div>
-
-\';
-		    }
-            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?page='.$objeto->getNomeSnakeCase().'&select=\'.$selected->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
-            return;
-        }else  if(isset($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
-            
-            $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).' = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'();
-            $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'->setId($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']);
-            if($this->dao->remover'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selected, $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'))
-            {
-		      echo \'
-
-<div class="alert alert-success" role="alert">
-  Sucesso 
-</div>
-
-\';
-		} else {
-			echo \'
-
-<div class="alert alert-danger" role="alert">
-  Falha 
-</div>
-
-\';
-		      }
-            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?page='.$objeto->getNomeSnakeCase().'&select=\'.$selected->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
-            return;
-        }
-                
-                
-        ';
-            
-            
-        }
-        $codigo .= '
-            
-    }';
-        $codigo .= '
-	public function restGET()
+    public function get()
     {
 
         if ($_SERVER[\'REQUEST_METHOD\'] != \'GET\') {
@@ -233,7 +124,7 @@ class ' . ucfirst($objeto->getNome()) . 'ApiRestController {
         if (count($url) == 0 || $url[0] == "") {
             return;
         }
-        if ($url[1] != \''.$nomeDoObjeto.'\') {
+        if ($url[1] != \''.$objeto->getNomeSnakeCase().'\') {
             return;
         }
 
@@ -293,42 +184,47 @@ class ' . ucfirst($objeto->getNome()) . 'ApiRestController {
 		
 		
 		
-	}
-
-    public function resDELETE()
-    {
-        if ($_SERVER[\'REQUEST_METHOD\'] != \'DELETE\') {
-            return;
-        }
-        $path = explode(\'/\', $_GET[\'api\']);
-        $parametro = "";
-        if (count($path) < 2) {
-            return;
-        }
-        $parametro = $path[1];
-        if ($parametro == "") {
-            return;
-        }
-    
-        $id = intval($parametro);
-        $selected = new '.ucfirst($objeto->getNome()).'();
-        $selected->setId($id);
-        $selected = $this->dao->pesquisaPorId($selected);
-        if ($selected == null) {
-            echo "{}";
-            return;
-        }
-
-        if($this->dao->excluir($selected))
-        {
-            echo "{}";
-            return;
-        }
-        
-        echo "Erro.";
+	}';
+        return $codigo;
         
     }
-    public function restPUT()
+    public function geraMain() : string {
+        $codigo = '
+            
+    public function main($iniApiFile)
+    {
+            
+        $config = parse_ini_file ( $iniApiFile );
+        $user = $config [\'user\'];
+        $password = $config [\'password\'];
+            
+        if(!isset($_SERVER[\'PHP_AUTH_USER\'])){
+            header("WWW-Authenticate: Basic realm=\\\\"Private Area\\\\" ");
+            header("HTTP/1.0 401 Unauthorized");
+            echo \'{"erro":[{"status":"error","message":"Authentication failed"}]}\';
+            return;
+        }
+        if($_SERVER[\'PHP_AUTH_USER\'] == $user && ($_SERVER[\'PHP_AUTH_PW\'] == $password)){
+            header(\'Content-type: application/json\');
+            
+            $this->get();
+            $this->post();
+            $this->put();
+            $this->delete();
+        }else{
+            header("WWW-Authenticate: Basic realm=\\\\"Private Area\\\\" ");
+            header("HTTP/1.0 401 Unauthorized");
+            echo \'{"erro":[{"status":"error","message":"Authentication failed"}]}\';
+        }
+            
+    }';
+        return $codigo;
+    }
+    public function put(Objeto $objeto):string{
+        $codigo = '
+
+
+    public function put()
     {
         if ($_SERVER[\'REQUEST_METHOD\'] != \'PUT\') {
             return;
@@ -384,23 +280,31 @@ class ' . ucfirst($objeto->getNome()) . 'ApiRestController {
         $codigo .= '
         if ($this->dao->update($selected)) 
                 {
-			echo \'
-
-<div class="alert alert-success" role="alert">
-  Sucesso 
-</div>
-
-\';
+			echo \'Sucesso\';
 		} else {
-			echo \'
-
-<div class="alert alert-danger" role="alert">
-  Falha 
-</div>
-
-\';
+			echo \'Falha\';
 		}
     }
+
+';
+        return $codigo;
+    }
+    public function post(Objeto $objeto):string
+    {  
+        
+        $atributosComuns = array();
+        $atributosObjetos = array();
+        foreach ($objeto->getAtributos() as $atributo) {
+            if($atributo->tipoListado()){
+                $atributosComuns[] = $atributo;
+            }
+            else if($atributo->isObjeto()){
+                $atributosObjetos[] = $atributo;
+                
+            }
+        }
+        $codigo = '
+
 
     public function restPOST()
     {
@@ -478,25 +382,40 @@ class ' . ucfirst($objeto->getNome()) . 'ApiRestController {
         $codigo .= '
         if ($this->dao->inserir($adicionado)) 
                 {
-			echo \'
-
-<div class="alert alert-success" role="alert">
-  Sucesso 
-</div>
-
-\';
+			echo \' Sucesso\';
 		} else {
-			echo \'
-
-<div class="alert alert-danger" role="alert">
-  Falha 
-</div>
-
-\';
+			echo \'Falha \';
 		}
-    }            
+    }       
+
+';
+        return $codigo;
+    }
+    private function geraControllers(Objeto $objeto)
+    {
+        $codigo = '';        
+        $codigo = '<?php
             
-		';
+/**
+ * Classe feita para manipulação do objeto ' . $objeto->getNome() . 'ApiRestController
+ * feita automaticamente com programa gerador de software inventado por
+ * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
+ */
+
+
+
+class ' . ucfirst($objeto->getNome()) . 'ApiRestController {
+
+	protected  $view;
+    protected $dao;';
+        $codigo .= $this->construct($objeto);
+        
+        $codigo .= $this->geraMain();
+        $codigo .= $this->get($objeto);
+        $codigo .= $this->delete($objeto);
+        $codigo .= $this->put($objeto);
+        $codigo .= $this->post($objeto);
+
         
         $codigo .= '
 }
