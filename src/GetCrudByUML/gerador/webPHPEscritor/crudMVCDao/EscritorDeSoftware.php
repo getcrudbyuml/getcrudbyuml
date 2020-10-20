@@ -52,6 +52,7 @@ class EscritorDeSoftware
         ViewCustomGerador::main($this->software, $this->diretorio);
         JSAjaxGerador::main($this->software, $this->diretorio);
         IniAPIRest::main($this->software, $this->diretorio);
+        ControllerRestGerador::main($this->software, $this->diretorio);
 
     }
 }

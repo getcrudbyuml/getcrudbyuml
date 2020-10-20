@@ -92,7 +92,7 @@ class ControllerRestGerador{
 
 
 
-class ' . ucfirst($objeto->getNome()) . 'Controller {
+class ' . ucfirst($objeto->getNome()) . 'ApiRestController {
 
 	protected  $view;
     protected $dao;';
@@ -501,7 +501,7 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         $codigo .= '
 }
 ?>';
-        $caminho = $this->diretorio.'/AppWebPHP/src/classes/controller/'.ucfirst($objeto->getNome()).'Controller.php';
+        $caminho = $this->diretorio.'/AppWebPHP/src/classes/controller/'.ucfirst($objeto->getNome()).'ApiRestController.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
     
