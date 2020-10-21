@@ -10,40 +10,23 @@ use GetCrudByUML\model\Software;
 class ControllerGerador{
     private $software;
     private $listaDeArquivos;
-    private $diretorio;
     
-    public static function main(Software $software, $diretorio){
-        $gerador = new ControllerGerador($software, $diretorio);
-        $gerador->gerarCodigo();
+    public static function main(Software $software){
+        $gerador = new ControllerGerador($software);
+        return $gerador->gerarCodigo();
     }
-    public function __construct(Software $software, $diretorio){
+    public function __construct(Software $software){
         $this->software = $software;
-        $this->diretorio = $diretorio;
     }
 
     public function gerarCodigo(){
         foreach ($this->software->getObjetos() as $objeto){
             $this->geraControllers($objeto);
         }
-        $this->criarArquivos();
+        return $this->listaDeArquivos;
         
     }
-    private function criarArquivos(){
-        
-        $caminho = $this->diretorio.'/AppWebPHP/src/classes/controller';
-        if(!file_exists($caminho)) {
-            mkdir($caminho, 0777, true);
-        }
-        
-        foreach ($this->listaDeArquivos as $path => $codigo) {
-            if (file_exists($path)) {
-                unlink($path);
-            }
-            $file = fopen($path, "w+");
-            fwrite($file, stripslashes($codigo));
-            fclose($file);
-        }
-    }
+    
    
     private function construct(Objeto $objeto){
         $codigo = '
@@ -655,7 +638,7 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         $codigo .= '
 }
 ?>';
-        $caminho = $this->diretorio.'/AppWebPHP/src/classes/controller/'.ucfirst($objeto->getNome()).'Controller.php';
+        $caminho = ucfirst($objeto->getNome()).'Controller.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
     

@@ -14,18 +14,18 @@ class DAOGerador
 
     private $listaDeArquivos;
 
-    private $diretorio;
 
-    public static function main(Software $software, $diretorio)
+
+    public static function main(Software $software)
     {
-        $gerador = new DAOGerador($software, $diretorio);
-        $gerador->geraCodigo();
+        $gerador = new DAOGerador($software);
+        return $gerador->geraCodigo();
     }
 
-    public function __construct(Software $software, $diretorio)
+    public function __construct(Software $software)
     {
         $this->software = $software;
-        $this->diretorio = $diretorio;
+        
     }
 
     private function geraCodigo()
@@ -34,31 +34,18 @@ class DAOGerador
         foreach($this->software->getObjetos() as $objeto){
             $this->geraDAOs($objeto);
         }
+        return $this->listaDeArquivos;
+
         
-        $this->criarArquivos();
-        
-    }
-    private function criarArquivos(){
-        
-        $caminho = $this->diretorio.'/AppWebPHP/src/classes/dao';
-        if(!file_exists($caminho)) {
-            mkdir($caminho, 0777, true);
-        }
-        
-        foreach ($this->listaDeArquivos as $path => $codigo) {
-            if (file_exists($path)) {
-                unlink($path);
-            }
-            $file = fopen($path, "w+");
-            fwrite($file, stripslashes($codigo));
-            fclose($file);
-        }
     }
     private function geraDAOGeral()
     {
         $codigo = '<?php
                 
                 
+namespace '.$this->software->getNome().'\\\\dao;
+use PDO;
+
 class DAO {
  
     protected $iniFile;
@@ -111,7 +98,7 @@ class DAO {
 }
 	    
 ?>';
-        $caminho = $this->diretorio.'/AppWebPHP/src/classes/dao/DAO.php';
+        $caminho = 'DAO.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
     private function geraDAOs(Objeto $objeto)
@@ -125,7 +112,10 @@ class DAO {
  * @author Jefferson Uchôa Ponte
  */
      
-     
+namespace '.$this->software->getNome().'\\\\dao;
+use PDO;
+use PDOException;
+use '.$this->software->getNome().'\\\\model\\\\'.ucfirst($objeto->getNome()).';
      
 class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
     
@@ -144,7 +134,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         $codigo .= '
 }';
         
-        $caminho = $this->diretorio.'/AppWebPHP/src/classes/dao/'.ucfirst($objeto->getNome()).'DAO.php';
+        $caminho = ucfirst($objeto->getNome()).'DAO.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
     

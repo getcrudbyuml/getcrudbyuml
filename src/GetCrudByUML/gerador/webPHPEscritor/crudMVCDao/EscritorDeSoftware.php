@@ -10,7 +10,7 @@ use GetCrudByUML\model\Software;
 class EscritorDeSoftware
 {
 
-    private $listaDeArquivos;
+    
 
     private $software;
     
@@ -28,6 +28,21 @@ class EscritorDeSoftware
         $escritor->gerarCodigoPHP();
     }
     
+    private function criarArquivos($arquivos, $diretorio){
+        
+        if(!file_exists($diretorio)) {
+            mkdir($diretorio, 0777, true);
+        }
+        
+        foreach ($arquivos as $path => $codigo) {
+            if (file_exists($diretorio.'/'.$path)) {
+                unlink($path);
+            }
+            $file = fopen($diretorio.'/'.$path, "w+");
+            fwrite($file, stripslashes($codigo));
+            fclose($file);
+        }
+    }
     public function gerarCodigoPHP()
     {
         if(count($this->software->getObjetos()) == 0){
@@ -41,18 +56,27 @@ class EscritorDeSoftware
             }
         }
         
-        DBGerador::main($this->software, $this->diretorio);
-        ModelGerador::main($this->software, $this->diretorio);
-        DAOGerador::main($this->software, $this->diretorio);
-        ViewGerador::main($this->software, $this->diretorio);
-        ControllerGerador::main($this->software, $this->diretorio);
-        IndexGerador::main($this->software, $this->diretorio);
-        ControllerCustomGerador::main($this->software, $this->diretorio);
-        DAOCustomGerador::main($this->software, $this->diretorio);
-        ViewCustomGerador::main($this->software, $this->diretorio);
-        JSAjaxGerador::main($this->software, $this->diretorio);
-        IniAPIRest::main($this->software, $this->diretorio);
-        ControllerRestGerador::main($this->software, $this->diretorio);
+        
+        $this->diretorio .= '/srcAPIPHP';
+        $diretorio = $this->diretorio.'/'.$this->software->getNomeSimples();
+        
+        $this->criarArquivos(ModelGerador::main($this->software), $diretorio.'/'.'model');
+        $this->criarArquivos(DAOGerador::main($this->software), $diretorio.'/dao');
+        $this->criarArquivos(ControllerRestGerador::main($this->software), $diretorio.'/controller');
+//         $this->criarArquivos(ViewGerador::main($this->software), $diretorio.'/'.'view');
+//         $this->criarArquivos(ControllerGerador::main($this->software), $diretorio.'/'.'controller');
+//         $this->criarArquivos(IndexGerador::main($this->software), $diretorio);
+        $this->criarArquivos(IndexAPIGerador::main($this->software), $diretorio.'/..');
+        
+//         ControllerCustomGerador::main($this->software, $this->diretorio);
+//         DAOCustomGerador::main($this->software, $this->diretorio);
+//         ViewCustomGerador::main($this->software, $this->diretorio);
+//         JSAjaxGerador::main($this->software, $this->diretorio);
+//         IniAPIRest::main($this->software, $this->diretorio);
+//         
+        
+//         DBGerador::main($this->software, $this->diretorio);
+        
 
     }
 }

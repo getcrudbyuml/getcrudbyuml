@@ -12,18 +12,15 @@ class ModelGerador
 
     private $listaDeArquivos;
 
-    private $diretorio;
-
-    public static function main(Software $software, $diretorio)
+    public static function main(Software $software)
     {
-        $gerador = new ModelGerador($software, $diretorio);
-        $gerador->geraCodigo();
+        $gerador = new ModelGerador($software);
+        return $gerador->geraCodigo();
     }
 
-    public function __construct(Software $software, $diretorio)
+    public function __construct(Software $software)
     {
         $this->software = $software;
-        $this->diretorio = $diretorio;
     }
 
     /**
@@ -33,30 +30,14 @@ class ModelGerador
      */
     public function geraCodigo()
     {
+        $this->listaDeArquivos = array();
         foreach($this->software->getObjetos() as $objeto){
             $this->geraModel($objeto);
-        }
-        $this->criarArquivos();
-        
-        
+        }        
+        return $this->listaDeArquivos;
     }
-    private function criarArquivos(){
-        
-        $caminho = $this->diretorio.'/AppWebPHP/src/classes/model/';
-        if(!file_exists($caminho)) {
-            mkdir($caminho, 0777, true);
-        }
-        
-        foreach ($this->listaDeArquivos as $path => $codigo) {
-            if (file_exists($path)) {
-                unlink($path);
-            }
-            $file = fopen($path, "w+");
-            fwrite($file, stripslashes($codigo));
-            fclose($file);
-        }
-    }
-    private function geraModel(Objeto $objeto)
+    
+    public function geraModel(Objeto $objeto)
     {
         $codigo = '<?php
             
@@ -66,7 +47,7 @@ class ModelGerador
  * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
  */
 
-
+namespace '.$this->software->getNome().'\\\\model;
 
 class ' . ucfirst($objeto->getNome()) . ' {';
         if (count($objeto->getAtributos()) == 0) {
@@ -157,10 +138,8 @@ class ' . ucfirst($objeto->getNome()) . ' {';
 }
 ?>';
         
-        
-        $caminho = $this->diretorio.'/AppWebPHP/src/classes/model/'.ucfirst($objeto->getNome()).'.php';
-        $this->listaDeArquivos[$caminho] = $codigo;
-        
+        $this->listaDeArquivos[ucfirst($objeto->getNome()).'.php'] = $codigo;
+        return $codigo;
     }
 
 }

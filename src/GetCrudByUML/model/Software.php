@@ -38,6 +38,10 @@ class Software {
 	    $nome = preg_replace("/[^a-zA-Z0-9_]/", "", $nome);
 	    return $nome;
 	}
+	/**
+	 * Retira simbolos, ideal para criar pastas. 
+	 * @return mixed
+	 */
 	public function getNomeSimples() {
 	    $texto = preg_replace("/[^a-zA-Z0-9]/", "", $this->nome);
 	    return $texto;

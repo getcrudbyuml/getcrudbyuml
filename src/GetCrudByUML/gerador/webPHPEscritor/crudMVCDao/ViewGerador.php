@@ -11,16 +11,16 @@ use GetCrudByUML\model\Software;
 class ViewGerador{
     private $software;
     private $listaDeArquivos;
-    private $diretorio;
-    public static function main(Software $software, $diretorio){
-        $gerador = new ViewGerador($software, $diretorio);
-        $gerador->gerarCodigo();
+    
+    public static function main(Software $software){
+        $gerador = new ViewGerador($software);
+        return $gerador->gerarCodigo();
         
     }
     
-    public function __construct(Software $software, $diretorio){
+    public function __construct(Software $software){
         $this->software = $software;
-        $this->diretorio = $diretorio;
+        
     }
     /**
      * Selecione uma linguagem
@@ -31,27 +31,10 @@ class ViewGerador{
             $this->geraViews($objeto);
         }
         
-        $this->criarArquivos();
+        return $this->listaDeArquivos;
         
     }
-    private function criarArquivos(){
-        
-        $caminho = $this->diretorio.'/AppWebPHP/src/classes/view/';
-        
-        if(!file_exists($caminho)) {
-            mkdir($caminho, 0777, true);
-        }
-        
-        foreach ($this->listaDeArquivos as $path => $codigo) {
-            
-            if (file_exists($path)) {
-                unlink($path);
-            }
-            $file = fopen($path, "w+");
-            fwrite($file, stripslashes($codigo));
-            fclose($file);
-        }
-    }
+
     private function showInsertForm(Objeto $objeto) : string {
         $codigo = '';
         
@@ -730,7 +713,7 @@ class ' . $objeto->getNome() . 'View {';
 }';
 
         
-        $caminho = $this->diretorio.'/AppWebPHP/src/classes/view/'.ucfirst($objeto->getNome()).'View.php';
+        $caminho = ucfirst($objeto->getNome()).'View.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
    

@@ -11,25 +11,21 @@ class IndexGerador
     
     private $listaDeArquivos;
     
-    private $diretorio;
-    
-    public static function main(Software $software, $diretorio = 'sistemas'){
-        $gerador = new IndexGerador($software, $diretorio);
-        $gerador->gerarCodigo();
+    public static function main(Software $software){
+        $gerador = new IndexGerador($software);
+        return $gerador->gerarCodigo();
     }
     
     
-    public function __construct(Software $software, $diretorio)
+    public function __construct(Software $software)
     {
         $this->software = $software;
-        $this->diretorio = $diretorio;
         $this->listaDeArquivos = array();
     }
     public function gerarCodigo(){
         $this->geraHTACCESS();
-        $this->geraStyle();
         $this->geraIndex();
-        $this->criarArquivos();
+        return $this->listaDeArquivos;
         
     }
     
@@ -42,8 +38,8 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php?api=$1 [QSA,L]
 ';
-        $caminho = $this->diretorio.'/AppWebPHP/src/';
-        $caminho = $caminho.'.htaccess';
+
+        $caminho = '.htaccess';
         $this->listaDeArquivos[$caminho] = $codigo;
         
     }
@@ -171,7 +167,6 @@ if(isset($_GET[\'ajax\'])){
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="css/style.css" />
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -294,40 +289,13 @@ if(isset($_GET[\'page\'])){
         $codigo .= '
 	</body>
 </html>';
-        $caminho = $this->diretorio.'/AppWebPHP/src/index.php';
+        $caminho = 'index.php';
         $this->listaDeArquivos[$caminho] = $codigo;
         
     }
     
-    public function geraStyle()
-    {
-        $codigo = "/*Digite aqui seu arquivo css*/";
-        $caminho = $this->diretorio.'/AppWebPHP/src/css/style.css';
-        $this->listaDeArquivos[$caminho] = $codigo;
-    }
     
-    public function criarArquivos(){
-        
-        $caminho = $this->diretorio.'/AppWebPHP/src';
-        if(!file_exists($caminho.'/img')) {
-            mkdir($caminho.'/img', 0777, true);
-        }
-        if(!file_exists($caminho.'/css')) {
-            mkdir($caminho.'/css', 0777, true);
-        }
-        if(!file_exists($caminho.'/js')) {
-            mkdir($caminho.'/js', 0777, true);
-        }
-        
-        foreach ($this->listaDeArquivos as $path => $codigo) {  
-            if (file_exists($path)) {
-                unlink($path);
-            }
-            $file = fopen($path, "w+");
-            fwrite($file, stripslashes($codigo));
-            fclose($file);
-        }
-    }
+    
 }
 
 ?>
