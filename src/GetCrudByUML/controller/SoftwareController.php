@@ -154,9 +154,9 @@ class SoftwareController
         
         
         $diretorio = './sistemas/' . $sessao->getLoginUsuario() . '/' . $this->selecionado->getNomeSimples();
-//         if(is_dir('./sistemas/' . $sessao->getLoginUsuario() . '/')){
-//             $this->excluiDir( './sistemas/' . $sessao->getLoginUsuario() . '/');
-//         }
+        if(is_dir('./sistemas/' . $sessao->getLoginUsuario() . '/')){
+            $this->excluiDir( './sistemas/' . $sessao->getLoginUsuario() . '/');
+        }
         
         $numeroDeArquivos = 0;
         
@@ -171,8 +171,8 @@ class SoftwareController
             return;
         }
         
-//         $zipador = new Zipador();
-//         $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/../'.$this->selecionado->getNomeSimples().'.zip');
+        $zipador = new Zipador();
+        $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/../'.$this->selecionado->getNomeSimples().'.zip');
 
         if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
             echo '
