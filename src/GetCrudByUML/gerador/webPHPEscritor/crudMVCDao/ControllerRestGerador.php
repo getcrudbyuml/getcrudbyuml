@@ -179,10 +179,10 @@ class ControllerRestGerador{
     public function main($iniApiFile)
     {
             
-        $config = parse_ini_file ( $iniApiFile );
-        $user = $config [\'user\'];
-        $password = $config [\'password\'];
-            
+        //$config = parse_ini_file ( $iniApiFile );
+        //$user = $config [\'user\'];
+        //$password = $config [\'password\'];
+        /*    
         if(!isset($_SERVER[\'PHP_AUTH_USER\'])){
             header("WWW-Authenticate: Basic realm=\\\\"Private Area\\\\" ");
             header("HTTP/1.0 401 Unauthorized");
@@ -190,17 +190,20 @@ class ControllerRestGerador{
             return;
         }
         if($_SERVER[\'PHP_AUTH_USER\'] == $user && ($_SERVER[\'PHP_AUTH_PW\'] == $password)){
+*/
             header(\'Content-type: application/json\');
             
             $this->get();
             $this->post();
             $this->put();
             $this->delete();
+/*
         }else{
             header("WWW-Authenticate: Basic realm=\\\\"Private Area\\\\" ");
             header("HTTP/1.0 401 Unauthorized");
             echo \'{"erro":[{"status":"error","message":"Authentication failed"}]}\';
         }
+*/
             
     }';
         return $codigo;

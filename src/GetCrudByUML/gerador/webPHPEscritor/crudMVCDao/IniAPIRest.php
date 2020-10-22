@@ -34,8 +34,11 @@ class IniAPIRest
         if (! count($this->software->getObjetos())) {
             return;
         }
-        $codigo  = ';Aruqivo de configuração para a api rest. 
+        $codigo  = '
 
+;Config ini api rest. 
+
+enable = true
 user = usuario
 password = senha@12
 ';
