@@ -1,11 +1,20 @@
 <?php
 
 
-namespace GetCrudByUML\gerador\webPHPEscritor\crudMVCDao;
+namespace GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\crudPHP;
 
 use GetCrudByUML\gerador\sqlGerador\DBGerador;
 use GetCrudByUML\model\Software;
 use PDO;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\ModelGerador;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\DAOGerador;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\ViewGerador;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\ControllerGerador;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\IndexGerador;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\JSAjaxGerador;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\ControllerCustomGerador;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\DAOCustomGerador;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\ViewCustomGerador;
 
 class EscritorDeSoftware
 {
@@ -73,10 +82,7 @@ class EscritorDeSoftware
         $pdo = new PDO('sqlite:' . $bdNome);
         $pdo->exec($codigo);
         
-        
-        
         $this->criarArquivos(JSAjaxGerador::main($this->software), $diretorio.'/../js');
-//         $this->criarArquivos(StyleCssGerador::main($this->software), $diretorio.'/../css');
         
         //Classes de customização. 
         $this->criarArquivos(ControllerCustomGerador::main($this->software), $diretorio.'/'.'custom/controller');        

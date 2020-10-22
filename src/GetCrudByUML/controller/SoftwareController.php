@@ -10,7 +10,7 @@ use GetCrudByUML\dao\UsuarioDAO;
 use GetCrudByUML\dao\ObjetoDAO;
 use GetCrudByUML\dao\AtributoDAO;
 use GetCrudByUML\gerador\javaDesktopEscritor\crudMvcDao\EscritorDeSoftware as EscritorJava;
-use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\EscritorDeSoftware as EscritorPHP;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\crudPHP\EscritorDeSoftware as EscritorPHP;
 use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\apiRestPHP\EscritorDeSoftware as EscritorAPIPHP;
 use GetCrudByUML\util\Zipador;
 
