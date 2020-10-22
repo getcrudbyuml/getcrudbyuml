@@ -618,10 +618,24 @@ class ControllerGerador{
  */
 
 namespace '.$this->software->getNome().'\\\\controller;
-use '.$this->software->getNome().'\\\\model\\\\'.ucfirst($objeto->getNome()).';
-use '.$this->software->getNome().'\\\\dao\\\\'.ucfirst($objeto->getNome()).'DAO;
-use '.$this->software->getNome().'\\\\view\\\\'.ucfirst($objeto->getNome()).'View;
 
+use '.$this->software->getNome().'\\\\dao\\\\'.ucfirst($objeto->getNome()).'DAO;
+';
+        
+        foreach ($objeto->getAtributos() as $atributo) {
+            if ($atributo->isObjeto()) {
+                $codigo .= '
+
+use '.$this->software->getNome().'\\\\dao\\\\'.ucfirst($atributo->getTipo()).'DAO;
+
+';
+                
+            }
+        }
+        $codigo .= '
+
+use '.$this->software->getNome().'\\\\model\\\\'.ucfirst($objeto->getNome()).';
+use '.$this->software->getNome().'\\\\view\\\\'.ucfirst($objeto->getNome()).'View;
 
 
 class ' . ucfirst($objeto->getNome()) . 'Controller {

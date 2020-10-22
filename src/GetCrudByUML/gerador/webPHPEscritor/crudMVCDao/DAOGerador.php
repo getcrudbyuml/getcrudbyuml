@@ -40,6 +40,8 @@ class DAOGerador
     }
     private function geraDAOGeral()
     {
+        
+        
         $codigo = '<?php
                 
                 
@@ -103,6 +105,8 @@ class DAO {
     }
     private function geraDAOs(Objeto $objeto)
     {
+
+        
         $codigo = '';
         $codigo .= '<?php
             
@@ -116,7 +120,20 @@ namespace '.$this->software->getNome().'\\\\dao;
 use PDO;
 use PDOException;
 use '.$this->software->getNome().'\\\\model\\\\'.ucfirst($objeto->getNome()).';
-     
+';
+        
+        foreach ($objeto->getAtributos() as $atributo) {
+            if ($atributo->isArrayNN()) {
+                $codigo .= '
+
+use '.$this->software->getNome().'\\\\model\\\\'.ucfirst($atributo->getTipoDeArray()).';
+
+';
+                
+            }
+        }
+        $codigo .= '
+
 class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
     
     

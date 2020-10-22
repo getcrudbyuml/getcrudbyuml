@@ -13,16 +13,16 @@ class ModelJavaGerador{
     
     private $diretorio;
     
-    public static function main(Software $software, $diretorio)
+    public static function main(Software $software)
     {
-        $gerador = new ModelJavaGerador($software, $diretorio);
-        $gerador->geraCodigo();
+        $gerador = new ModelJavaGerador($software);
+        return $gerador->geraCodigo();
     }
     
-    public function __construct(Software $software, $diretorio)
+    public function __construct(Software $software)
     {
         $this->software = $software;
-        $this->diretorio = $diretorio;
+        
     }
     
     /**
@@ -35,25 +35,9 @@ class ModelJavaGerador{
         foreach($this->software->getObjetos() as $objeto){
             $this->geraModel($objeto, $this->software);
         }
-        $this->criarArquivos();
+        return $this->listaDeArquivos;
         
         
-    }
-    private function criarArquivos(){
-        
-        $caminho = $this->diretorio.'/AppDesktopJava/'.$this->software->getNomeSimples().'/src/main/java/com/'.strtolower($this->software->getNomeSimples()).'/model';
-        if(!file_exists($caminho)) {
-            mkdir($caminho, 0777, true);
-        }
-        
-        foreach ($this->listaDeArquivos as $path => $codigo) {
-            if (file_exists($path)) {
-                unlink($path);
-            }
-            $file = fopen($path, "w+");
-            fwrite($file, stripslashes($codigo));
-            fclose($file);
-        }
     }
    
     private function geraModel(Objeto $objeto, Software $software)
@@ -184,7 +168,7 @@ public class ' . ucfirst ($objeto->getNome()) . ' {';
 }
 ';
         
-        $caminho = $this->diretorio.'/AppDesktopJava/'.$this->software->getNomeSimples().'/src/main/java/com/'.strtolower($this->software->getNomeSimples()).'/model/'.ucfirst($objeto->getNome()).'.java';
+        $caminho = ucfirst($objeto->getNome()).'.java';
         $this->listaDeArquivos[$caminho] = $codigo;
         return $codigo;
     }

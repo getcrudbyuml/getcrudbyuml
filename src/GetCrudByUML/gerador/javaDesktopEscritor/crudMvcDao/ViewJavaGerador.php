@@ -11,41 +11,23 @@ class ViewJavaGerador{
     private $listaDeArquivos;
     private $diretorio;
     
-    public static function main(Software $software, $diretorio){
-        $gerador = new ViewJavaGerador($software, $diretorio);
-        $gerador->gerarCodigo();
+    public static function main(Software $software){
+        $gerador = new ViewJavaGerador($software);
+        return $gerador->gerarCodigo();
     }
-    public function __construct(Software $software, $diretorio){
+    public function __construct(Software $software){
         $this->software = $software;
-        $this->diretorio = $diretorio;
     }
     
     public function gerarCodigo(){
         foreach ($this->software->getObjetos() as $objeto){
             $this->geraViewsJava($objeto, $this->software);
         }
-        $this->criarArquivos();
+        return $this->listaDeArquivos;
         
-    }
-    private function criarArquivos(){
-        
-        $caminho = $this->diretorio.'/AppDesktopJava/'.$this->software->getNomeSimples().'/src/main/java/com/'.strtolower($this->software->getNomeSimples()).'/view';
-        
-        if(!file_exists($caminho)) {
-            mkdir($caminho, 0777, true);
-        }
-        
-        foreach ($this->listaDeArquivos as $path => $codigo) {
-            if (file_exists($path)) {
-                unlink($path);
-            }
-            $file = fopen($path, "w+");
-            fwrite($file, stripslashes($codigo));
-            fclose($file);
-        }
     }
     
-    private function geraViewsJava(Objeto $objeto, Software $software)
+    public function geraViewsJava(Objeto $objeto, Software $software)
     {
         $codigo = '';
         $codigo = '
@@ -123,9 +105,10 @@ public class ' . ucfirst($objeto->getNome()) . 'View extends JFrame {
 
 }';
         
-        $caminho = $this->diretorio.'/AppDesktopJava/'.$this->software->getNomeSimples().'/src/main/java/com/'.strtolower($this->software->getNomeSimples()).'/view/'.ucfirst($objeto->getNome()).'View.java';
+        $caminho = ucfirst($objeto->getNome()).'View.java';
         
         $this->listaDeArquivos[$caminho] = $codigo;
+        return $codigo;
     }
 }
 

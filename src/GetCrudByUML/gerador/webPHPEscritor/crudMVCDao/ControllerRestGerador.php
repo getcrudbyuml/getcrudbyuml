@@ -118,7 +118,7 @@ class ControllerRestGerador{
             $id = intval($parametro);
             $selected = new '.ucfirst($objeto->getNome()).'();
             $selected->setId($id);
-            $selected = $this->dao->preenchePorId($selected);
+            $selected = $this->dao->fillById($selected);
             if ($selected == null) {
                 echo "{}";
                 return;
@@ -391,8 +391,8 @@ class ControllerRestGerador{
  */
 
 namespace '.$this->software->getNome().'\\\\controller;
-use '.$this->software->getNome().'\\\\model\\\\'.ucfirst($objeto->getNome()).';
 use '.$this->software->getNome().'\\\\dao\\\\'.ucfirst($objeto->getNome()).'DAO;
+use '.$this->software->getNome().'\\\\model\\\\'.ucfirst($objeto->getNome()).';
 
 class ' . ucfirst($objeto->getNome()) . 'ApiRestController {
 

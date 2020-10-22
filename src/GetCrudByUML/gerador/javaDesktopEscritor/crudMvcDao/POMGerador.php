@@ -8,37 +8,20 @@ use GetCrudByUML\model\Software;
 class POMGerador{
         private $software;
         private $listaDeArquivos;
-        private $diretorio;
         
-        public static function main(Software $software, $diretorio){
-            $gerador = new POMGerador($software, $diretorio);
-            $gerador->gerarCodigo();
+        public static function main(Software $software){
+            $gerador = new POMGerador($software);
+            return $gerador->gerarCodigo();
         }
-        public function __construct(Software $software, $diretorio){
+        public function __construct(Software $software){
             $this->software = $software;
-            $this->diretorio = $diretorio;
         }
         
         public function gerarCodigo(){
             $this->geraPOMXML();
-            $this->criarArquivos();
+            return $this->listaDeArquivos;
         }
-        private function criarArquivos(){
-            
-            $caminho = $this->diretorio.'/AppDesktopJava/'.$this->software->getNomeSimples();
-            if(!file_exists($caminho)) {
-                mkdir($caminho, 0777, true);
-            }
-            
-            foreach ($this->listaDeArquivos as $path => $codigo) {
-                if (file_exists($path)) {
-                    unlink($path);
-                }
-                $file = fopen($path, "w+");
-                fwrite($file, stripslashes($codigo));
-                fclose($file);
-            }
-        }
+        
         public function geraPOMXML(){
             $codigo = '';
             $codigo .= '
@@ -123,7 +106,7 @@ class POMGerador{
         <url>https://escritordesoftware.com.br</url>
     </organization>
 </project>';
-            $caminho = $this->diretorio.'/AppDesktopJava/'.$this->software->getNomeSimples().'/pom.xml';
+            $caminho = 'pom.xml';
             $this->listaDeArquivos[$caminho] = $codigo;
             return $codigo;
         }

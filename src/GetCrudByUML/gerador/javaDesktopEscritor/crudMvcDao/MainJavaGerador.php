@@ -9,18 +9,17 @@ class MainJavaGerador{
     private $listaDeArquivos;
     private $diretorio;
     
-    public static function main(Software $software, $diretorio){
-        $gerador = new MainJavaGerador($software, $diretorio);
-        $gerador->gerarCodigo();
+    public static function main(Software $software){
+        $gerador = new MainJavaGerador($software);
+        return $gerador->gerarCodigo();
     }
-    public function __construct(Software $software, $diretorio){
+    public function __construct(Software $software){
         $this->software = $software;
-        $this->diretorio = $diretorio;
     }
     
     public function gerarCodigo(){
         $this->geraMain();
-        $this->criarArquivos();
+        return $this->listaDeArquivos;
     }
     private function criarArquivos(){
         
@@ -52,7 +51,7 @@ public class Main {
 }
             
 ';
-        $caminho = $this->diretorio.'/AppDesktopJava/'.$this->software->getNomeSimples().'/src/main/java/com/'.strtolower($this->software->getNomeSimples()).'/main/Main.java';
+        $caminho = 'Main.java';
         $this->listaDeArquivos[$caminho] = $codigo;
         return $codigo;
         

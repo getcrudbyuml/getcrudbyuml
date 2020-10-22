@@ -28,7 +28,17 @@ class EscritorDeSoftware
         $escritor->geraCodigoJAVA();
         
     }
-
+    private function criarArquivos($arquivos, $diretorio){
+        
+        if(!file_exists($diretorio)) {
+            mkdir($diretorio, 0777, true);
+        }
+        foreach ($arquivos as $path => $codigo) {
+            $file = fopen($diretorio.'/'.$path, "w+");
+            fwrite($file, stripslashes($codigo));
+            fclose($file);
+        }
+    }
     public function geraCodigoJAVA()
     {
         
@@ -43,12 +53,17 @@ class EscritorDeSoftware
             }
         }
         
-        DBGerador::main($this->software, $this->diretorio);
-        POMGerador::main($this->software, $this->diretorio);
-        MainJavaGerador::main($this->software, $this->diretorio);
-        ModelJavaGerador::main($this->software, $this->diretorio);
-        DAOJavaGerador::main($this->software, $this->diretorio);
-        ViewJavaGerador::main($this->software, $this->diretorio);
+        
+        $this->diretorio .= '/crudJAVA';
+        $diretorio = $this->diretorio.'/src';
+        $this->criarArquivos(DBGerador::main($this->software), $diretorio.'/../..');
+        $this->criarArquivos(POMGerador::main($this->software), $diretorio.'/..');
+        $this->criarArquivos(MainJavaGerador::main($this->software), $diretorio.'/main/java/com/'.strtolower($this->software->getNomeSimples()).'/main');
+        $this->criarArquivos(ModelJavaGerador::main($this->software), $diretorio.'/main/java/com/'.strtolower($this->software->getNomeSimples()).'/model');
+        $this->criarArquivos(DAOJavaGerador::main($this->software), $diretorio.'/main/java/com/'.strtolower($this->software->getNomeSimples()).'/dao');
+        $this->criarArquivos(ViewJavaGerador::main($this->software), $diretorio.'/main/java/com/'.strtolower($this->software->getNomeSimples()).'/dao');
+        
+
         
     }
     

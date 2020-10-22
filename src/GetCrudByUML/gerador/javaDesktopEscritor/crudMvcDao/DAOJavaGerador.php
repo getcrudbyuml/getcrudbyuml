@@ -16,16 +16,15 @@ class DAOJavaGerador{
     
     private $diretorio;
     
-    public static function main(Software $software, $diretorio)
+    public static function main(Software $software)
     {
-        $gerador = new DAOJavaGerador($software, $diretorio);
-        $gerador->geraCodigo();
+        $gerador = new DAOJavaGerador($software);
+        return $gerador->geraCodigo();
     }
     
-    public function __construct(Software $software, $diretorio)
+    public function __construct(Software $software)
     {
         $this->software = $software;
-        $this->diretorio = $diretorio;
     }
     
     private function geraCodigo()
@@ -35,26 +34,10 @@ class DAOJavaGerador{
             $this->geraDAOs($objeto);
         }
         
-        $this->criarArquivos();
+        return $this->listaDeArquivos;
         
     }
-    private function criarArquivos(){
-        
-        $caminho = $this->diretorio.'/AppDesktopJava/'.$this->software->getNomeSimples().'/src/main/java/com/'.strtolower($this->software->getNomeSimples()).'/dao/';
-        if(!file_exists($caminho)) {
-            mkdir($caminho, 0777, true);
-        }
-        
-        foreach ($this->listaDeArquivos as $path => $codigo) {
-            if (file_exists($path)) {
-                unlink($path);
-            }
-            $file = fopen($path, "w+");
-            fwrite($file, stripslashes($codigo));
-            fclose($file);
-        }
-    }
-    
+   
     private function geraDAOGeral(){
         $codigo = '';
         $codigo .= '
@@ -211,7 +194,7 @@ public class DAO {
 	    
 }';
         
-        $caminho = $this->diretorio.'/AppDesktopJava/'.$this->software->getNomeSimples().'/src/main/java/com/'.strtolower($this->software->getNomeSimples()).'/dao/DAO.java';
+        $caminho = 'DAO.java';
         $this->listaDeArquivos[$caminho] = $codigo;
         return $this->listaDeArquivos;
     }
@@ -568,7 +551,7 @@ public class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO{';
 }';
         
         
-        $caminho = $this->diretorio.'/AppDesktopJava/'.$this->software->getNomeSimples().'/src/main/java/com/'.strtolower($this->software->getNomeSimples()).'/dao/'.ucfirst($objeto->getNome()).'DAO.java';
+        $caminho = ucfirst($objeto->getNome()).'DAO.java';
         $this->listaDeArquivos[$caminho] = $codigo;
         return $codigo;
     }
