@@ -192,8 +192,10 @@ class SoftwareController
         
         
         echo '<a href="'.$diretorio.'/../'.$this->selecionado->getNome().'.zip" class="btn btn-success m-2">Download</a>';
-        if($_GET['escrever'] == 2 || $_GET['escrever'] == 1){
-            echo '<a href="'.$diretorio.'/AppWebPHP/src/" class="btn btn-success m-2"  target="_blank">Test</a>';
+        if($_GET['escrever'] == "crud_php"){
+            echo '<a href="'.$diretorio.'/crudPHP" class="btn btn-success m-2"  target="_blank">Test</a>';
+        }else if($_GET['escrever'] == "api_php"){
+            echo '<a href="'.$diretorio.'/apiPHP/api" class="btn btn-success m-2"  target="_blank">Test</a>';
         }
         
         

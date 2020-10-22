@@ -51,13 +51,13 @@ RewriteRule ^(.*)$ index.php?api=$1 [QSA,L]
         }
         $codigo = '<?php
             
-define("DB_INI", "../../' . $this->software->getNomeSnakeCase() . '_db.ini");
-define("API_INI", "../../' . $this->software->getNomeSnakeCase() . '_api_rest.ini");
+define("DB_INI", "../' . $this->software->getNomeSnakeCase() . '_db.ini");
+define("API_INI", "../' . $this->software->getNomeSnakeCase() . '_api_rest.ini");
              
 function autoload($classe) {
 
     $prefix = \''.$this->software->getNome().'\';
-    $base_dir = __DIR__ . \'/src/classes/\';
+    $base_dir = \''.$this->software->getNome().'\';
     $len = strlen($prefix);
     if (strncmp($prefix, $classe, $len) !== 0) {
         return;
