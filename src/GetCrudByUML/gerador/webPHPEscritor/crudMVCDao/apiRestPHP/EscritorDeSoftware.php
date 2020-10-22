@@ -1,11 +1,15 @@
 <?php
 
 
-namespace GetCrudByUML\gerador\webPHPEscritor\crudMVCDao;
-
+namespace GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\apiRestPHP;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\ControllerRestGerador;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\DAOGerador;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\IndexAPIGerador;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\ModelGerador;
 use GetCrudByUML\gerador\sqlGerador\DBGerador;
 use GetCrudByUML\model\Software;
 use PDO;
+
 
 class EscritorDeSoftware
 {
@@ -53,14 +57,13 @@ class EscritorDeSoftware
         }
         
         
-        $this->diretorio .= '/crudPHP';
+        $this->diretorio .= '/apiPHP';
         $diretorio = $this->diretorio.'/'.$this->software->getNomeSimples();
         
         $this->criarArquivos(ModelGerador::main($this->software), $diretorio.'/'.'model');
         $this->criarArquivos(DAOGerador::main($this->software), $diretorio.'/dao');
-        $this->criarArquivos(ViewGerador::main($this->software), $diretorio.'/'.'view');
-        $this->criarArquivos(ControllerGerador::main($this->software), $diretorio.'/'.'controller');
-        $this->criarArquivos(IndexGerador::main($this->software), $diretorio.'/..');
+        $this->criarArquivos(ControllerRestGerador::main($this->software), $diretorio.'/controller');
+        $this->criarArquivos(IndexAPIGerador::main($this->software), $diretorio.'/..');
         
         $this->criarArquivos(DBGerador::main($this->software), $diretorio.'/../..');
         
@@ -74,13 +77,6 @@ class EscritorDeSoftware
         $pdo->exec($codigo);
         
         
-        
-        $this->criarArquivos(JSAjaxGerador::main($this->software), $diretorio.'/../js');
-        
-        //Classes de customização. 
-        $this->criarArquivos(ControllerCustomGerador::main($this->software), $diretorio.'/'.'custom/controller');        
-        $this->criarArquivos(DAOCustomGerador::main($this->software), $diretorio.'/'.'custom/dao');
-        $this->criarArquivos(ViewCustomGerador::main($this->software), $diretorio.'/'.'custom/view');
 
     }
 }

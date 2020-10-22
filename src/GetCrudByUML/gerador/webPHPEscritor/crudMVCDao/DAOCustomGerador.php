@@ -14,16 +14,15 @@ class DAOCustomGerador
 
     private $diretorio;
 
-    public static function main(Software $software, $diretorio)
+    public static function main(Software $software)
     {
-        $gerador = new DAOCustomGerador($software, $diretorio);
-        $gerador->geraCodigo();
+        $gerador = new DAOCustomGerador($software);
+        return $gerador->geraCodigo();
     }
 
-    public function __construct(Software $software, $diretorio)
+    public function __construct(Software $software)
     {
         $this->software = $software;
-        $this->diretorio = $diretorio;
     }
 
     private function geraCodigo()
@@ -33,26 +32,10 @@ class DAOCustomGerador
             $this->geraDAOs($objeto);
         }
         
-        $this->criarArquivos();
+        return $this->listaDeArquivos;
         
     }
-    private function criarArquivos(){
-        
-        $caminho = $this->diretorio.'/AppWebPHP/src/classes/custom/dao';
-        if(!file_exists($caminho)) {
-            mkdir($caminho, 0777, true);
-        }
-        
-        foreach ($this->listaDeArquivos as $path => $codigo) {
-            if (file_exists($path)) {
-                unlink($path);
-            }
-            $file = fopen($path, "w+");
-            fwrite($file, stripslashes($codigo));
-            fclose($file);
-        }
-    }
-
+   
     private function geraDAOs(Objeto $objeto)
     {
         $codigo = '';
@@ -64,6 +47,9 @@ class DAOCustomGerador
  */
 
 
+namespace '.$this->software->getNome().'\\\\custom\\\\dao;
+use '.$this->software->getNome().'\\\\dao\\\\'.ucfirst($objeto->getNome()).'DAO;
+
 
 class  ' . ucfirst($objeto->getNome()) . 'CustomDAO extends ' . ucfirst($objeto->getNome()) . 'DAO {
     
@@ -73,7 +59,7 @@ class  ' . ucfirst($objeto->getNome()) . 'CustomDAO extends ' . ucfirst($objeto-
         $codigo .= '
 }';
 
-        $caminho = $this->diretorio.'/AppWebPHP/src/classes/custom/dao/'.ucfirst($objeto->getNome()).'CustomDAO.php';
+        $caminho = ucfirst($objeto->getNome()).'CustomDAO.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
 }

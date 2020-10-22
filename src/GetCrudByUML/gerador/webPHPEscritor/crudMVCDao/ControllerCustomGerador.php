@@ -12,39 +12,22 @@ class ControllerCustomGerador{
     private $diretorio;
     
     
-    public static function main(Software $software, $diretorio){
-        $gerador = new ControllerCustomGerador($software, $diretorio);
-        $gerador->gerarCodigo();
+    public static function main(Software $software){
+        $gerador = new ControllerCustomGerador($software);
+        return $gerador->gerarCodigo();
     }
-    public function __construct(Software $software, $diretorio){
+    public function __construct(Software $software){
         $this->software = $software;
-        $this->diretorio = $diretorio;
     }
 
     public function gerarCodigo(){
         foreach ($this->software->getObjetos() as $objeto){
             $this->geraControllers($objeto);
         }
-        $this->criarArquivos();
+        return $this->listaDeArquivos;
         
     }
-    private function criarArquivos(){
-        
-        $caminho = $this->diretorio.'/AppWebPHP/src/classes/custom/controller';
-        if(!file_exists($caminho)) {
-            mkdir($caminho, 0777, true);
-        }
-        
-        foreach ($this->listaDeArquivos as $path => $codigo) {
-            if (file_exists($path)) {
-                unlink($path);
-            }
-            $file = fopen($path, "w+");
-            fwrite($file, stripslashes($codigo));
-            fclose($file);
-        }
-    }
-   
+    
     private function construct(Objeto $objeto){
         $codigo = '
 
@@ -65,7 +48,10 @@ class ControllerCustomGerador{
  * @author Jefferson Uchôa Ponte <jefponte@gmail.com>
  */
 
-
+namespace '.$this->software->getNome().'\\\\custom\\\\controller;
+use '.$this->software->getNome().'\\\\controller\\\\'.ucfirst($objeto->getNome()).'Controller;
+use '.$this->software->getNome().'\\\\custom\\\\dao\\\\'.ucfirst($objeto->getNome()).'CustomDAO;
+use '.$this->software->getNome().'\\\\custom\\\\view\\\\'.ucfirst($objeto->getNome()).'CustomView;
 
 class ' . ucfirst($objeto->getNome()) . 'CustomController  extends ' . ucfirst($objeto->getNome()) . 'Controller {
     ';
@@ -75,7 +61,7 @@ class ' . ucfirst($objeto->getNome()) . 'CustomController  extends ' . ucfirst($
 	        
 }
 ?>';
-        $caminho = $this->diretorio.'/AppWebPHP/src/classes/custom/controller/'.ucfirst($objeto->getNome()).'CustomController.php';
+        $caminho = ucfirst($objeto->getNome()).'CustomController.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
     

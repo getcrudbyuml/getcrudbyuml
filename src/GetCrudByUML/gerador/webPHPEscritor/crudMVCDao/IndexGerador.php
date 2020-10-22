@@ -55,37 +55,6 @@ define("DB_INI", "../../' . $this->software->getNomeSnakeCase() . '_db.ini");
 define("API_INI", "../../' . $this->software->getNomeSnakeCase() . '_api_rest.ini");
              
 function autoload($classe) {
-            
-    if (file_exists ( \'classes/dao/\' . $classe . \'.php\' )){
-		include_once \'classes/dao/\' . $classe . \'.php\';
-        return;
-	}
-	else if (file_exists ( \'classes/model/\' . $classe . \'.php\' )){
-		include_once \'classes/model/\' . $classe . \'.php\';
-        return;
-	}
-	else if (file_exists ( \'classes/controller/\' . $classe . \'.php\' )){
-		include_once \'classes/controller/\' . $classe . \'.php\';
-        return;
-	}
-	else if (file_exists ( \'classes/util/\' . $classe . \'.php\' )){
-		include_once \'classes/util/\' . $classe . \'.php\';
-        return;
-	}
-	else if (file_exists ( \'classes/view/\' . $classe . \'.php\' )){
-		include_once \'classes/view/\' . $classe . \'.php\';
-        return;
-	}else if (file_exists ( \'classes/custom/controller/\' . $classe . \'.php\' )){
-		include_once \'classes/custom/controller/\' . $classe . \'.php\';
-        return;
-	}
-    else if (file_exists ( \'classes/custom/view/\' . $classe . \'.php\' )){
-		include_once \'classes/custom/view/\' . $classe . \'.php\';
-        return;
-	}else if(file_exists ( \'classes/custom/dao/\' . $classe . \'.php\' )){
-		include_once \'classes/custom/dao/\' . $classe . \'.php\';
-        return;
-	}
 
     $prefix = \''.$this->software->getNome().'\';
     $base_dir = __DIR__ . \'/src/classes/\';
@@ -101,42 +70,15 @@ function autoload($classe) {
 
 }
 spl_autoload_register(\'autoload\');
-
-if(isset($_REQUEST[\'api\'])){
-
-    
-    $url = explode("/", $_REQUEST[\'api\']);
-    
-    if(isset($url[1])){
-        if($url[1] == \'\'){
-            echo "Bem vindo a nossa API";
-            exit;
-        }
-    }else{
-        echo "Bem vindo a nossa API";
-        exit;
-    }
-    switch($url[1]){';
-        
+';
         foreach ($this->software->getObjetos() as $objeto) {
             $codigo .= '
-		case \'' .$objeto->getNomeSnakeCase() . '\':
-            $controller = new '.ucfirst ($objeto->getNome()).'ApiRestController();
-            $controller->main(API_INI);
-            break;';
+use '.$this->software->getNomeSimples().'\\\\custom\\\\controller\\\\'.ucfirst($objeto->getNome()).'CustomController;';
+            
+            
         }
+        
         $codigo .= '
-
-        default:
-            echo \'URL inválida.\';
-            break;
-    
-    }
-
-';
-        $codigo .= '
-    exit;
-}
 if(isset($_GET[\'ajax\'])){
     switch ($_GET[\'ajax\']){';
         

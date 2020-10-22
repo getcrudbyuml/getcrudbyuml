@@ -14,16 +14,16 @@ class JSAjaxGerador
 
     private $diretorio;
 
-    public static function main(Software $software, $diretorio)
+    public static function main(Software $software)
     {
-        $gerador = new JSAjaxGerador($software, $diretorio);
-        $gerador->geraCodigo();
+        $gerador = new JSAjaxGerador($software);
+        return $gerador->geraCodigo();
     }
 
-    public function __construct(Software $software, $diretorio)
+    public function __construct(Software $software)
     {
         $this->software = $software;
-        $this->diretorio = $diretorio;
+        
     }
 
     /**
@@ -36,26 +36,11 @@ class JSAjaxGerador
         foreach($this->software->getObjetos() as $objeto){
             $this->geraModel($objeto);
         }
-        $this->criarArquivos();
+        return $this->listaDeArquivos;
         
         
     }
-    private function criarArquivos(){
-        
-        $caminho = $this->diretorio.'/AppWebPHP/src/classes/model/';
-        if(!file_exists($caminho)) {
-            mkdir($caminho, 0777, true);
-        }
-        
-        foreach ($this->listaDeArquivos as $path => $codigo) {
-            if (file_exists($path)) {
-                unlink($path);
-            }
-            $file = fopen($path, "w+");
-            fwrite($file, stripslashes($codigo));
-            fclose($file);
-        }
-    }
+   
     private function geraModel(Objeto $objeto)
     {
         $codigo = '
@@ -102,7 +87,7 @@ $(document).ready(function(e) {
 ';
         
         
-        $caminho = $this->diretorio.'/AppWebPHP/src/js/'.$objeto->getNomeSnakeCase().'.js';
+        $caminho = $objeto->getNomeSnakeCase().'.js';
         $this->listaDeArquivos[$caminho] = $codigo;
         
     }

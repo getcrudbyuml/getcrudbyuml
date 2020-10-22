@@ -11,6 +11,7 @@ use GetCrudByUML\dao\ObjetoDAO;
 use GetCrudByUML\dao\AtributoDAO;
 use GetCrudByUML\gerador\javaDesktopEscritor\crudMvcDao\EscritorDeSoftware as EscritorJava;
 use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\EscritorDeSoftware as EscritorPHP;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\apiRestPHP\EscritorDeSoftware as EscritorAPIPHP;
 use GetCrudByUML\util\Zipador;
 
 /**
@@ -158,10 +159,14 @@ class SoftwareController
 //         }
         
         $numeroDeArquivos = 0;
-        if($_GET['escrever'] == 1){
-            EscritorPHP::main($this->selecionado, $diretorio);            
-        }else if($_GET['escrever'] == 2){
+        
+        if($_GET['escrever'] == "api_php"){
+            EscritorAPIPHP::main($this->selecionado, $diretorio);
+        }else if($_GET['escrever'] == "crud_php"){
+            EscritorPHP::main($this->selecionado, $diretorio);   
+        }else if($_GET['escrever'] == "crud_java"){
             EscritorJava::main($this->selecionado, $diretorio);
+            
         }else{
             return;
         }
@@ -376,8 +381,9 @@ class SoftwareController
         <input type="hidden" name="pagina" value="software">
         <input type="hidden" name="selecionar" value="'.$software->getId().'">
         <select id="select-tipo-codigo" name="escrever">
-            <option value="1">PHP Web CRUD MVC Bootstrap API Rest</option>
-            <option value="2">JAVA CRUD MVC Desktop (20% complet)</option>
+            <option value="crud_php">PHP Web CRUD MVC Bootstrap</option>
+            <option value="api_php">PHP Web API Rest</option>
+            <option value="crud_java">JAVA CRUD MVC Desktop (20% complet)</option>
         
         </select>
         </form>

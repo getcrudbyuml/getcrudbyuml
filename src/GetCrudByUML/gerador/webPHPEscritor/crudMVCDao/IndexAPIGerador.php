@@ -73,7 +73,7 @@ spl_autoload_register(\'autoload\');
 ';
         foreach ($this->software->getObjetos() as $objeto) {
             $codigo .= '
-use '.$this->software->getNomeSimples().'\\\\controller\\\\'.ucfirst($objeto->getNome()).'AiRestController;';
+use '.$this->software->getNomeSimples().'\\\\controller\\\\'.ucfirst($objeto->getNome()).'ApiRestController;';
             
             
         }

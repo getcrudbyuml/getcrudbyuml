@@ -617,6 +617,11 @@ class ControllerGerador{
  * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
  */
 
+namespace '.$this->software->getNome().'\\\\controller;
+use '.$this->software->getNome().'\\\\model\\\\'.ucfirst($objeto->getNome()).';
+use '.$this->software->getNome().'\\\\dao\\\\'.ucfirst($objeto->getNome()).'DAO;
+use '.$this->software->getNome().'\\\\view\\\\'.ucfirst($objeto->getNome()).'View;
+
 
 
 class ' . ucfirst($objeto->getNome()) . 'Controller {

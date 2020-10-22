@@ -389,6 +389,8 @@ class ControllerRestGerador{
 
 namespace '.$this->software->getNome().'\\\\controller;
 use '.$this->software->getNome().'\\\\model\\\\'.ucfirst($objeto->getNome()).';
+use '.$this->software->getNome().'\\\\dao\\\\'.ucfirst($objeto->getNome()).'DAO;
+
 class ' . ucfirst($objeto->getNome()) . 'ApiRestController {
 
 

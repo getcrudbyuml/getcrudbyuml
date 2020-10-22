@@ -5,7 +5,7 @@
 namespace GetCrudByUML\gerador\sqlGerador;
 use GetCrudByUML\model\Software;
 use GetCrudByUML\model\Atributo;
-use PDO;
+
 
 
 
@@ -16,17 +16,15 @@ class DBGerador
 
     private $software;
 
-    private $diretorio;
 
-    public static function main(Software $software, $diretorio)
+    public static function main(Software $software)
     {
-        $gerador = new DBGerador($software, $diretorio);
-        $gerador->gerarCodigo();
+        $gerador = new DBGerador($software);
+        return $gerador->gerarCodigo();
     }
 
-    public function __construct(Software $software, $diretorio)
+    public function __construct(Software $software)
     {
-        $this->diretorio = $diretorio;
         $this->software = $software;
     }
 
@@ -41,34 +39,11 @@ class DBGerador
         $this->geraBancoPG();
 //         $this->geraBancoMysql();
         $this->geraBancoSqlite();
-        $this->criarArquivos();
+
+        return $this->listaDeArquivos;
     }
 
-    private function criarArquivos()
-    {
-        $path = $this->diretorio;
-        if(!file_exists($path)) {
-            mkdir($path, 0777, true);
-        }
-        
-        foreach ($this->listaDeArquivos as $path => $codigo) {
-            if (file_exists($path)) {
-                unlink($path);
-            }
-            $file = fopen($path, "w+");
-            fwrite($file, stripslashes($codigo));
-            fclose($file);
-        }
-        
-        $bdNome = $this->diretorio . '/' . $this->software->getNomeSnakeCase() . '.db';
-        if (file_exists($bdNome)) {
-            unlink($bdNome);
-        }
-        
-        $pdo = new PDO('sqlite:' . $bdNome);
-        $pdo->exec($codigo);
-        
-    }
+   
 
     public function geraINI()
     {
@@ -83,7 +58,7 @@ db_name = ../../' . $this->software->getNomeSnakeCase() . '.db
 user = root
 password = 123
 ';
-        $path = $this->diretorio . '/' . $this->software->getNomeSnakeCase() . '_db.ini';
+        $path = $this->software->getNomeSnakeCase() . '_db.ini';
         $this->listaDeArquivos[$path] = $codigo;
         return $codigo;
     }
@@ -202,7 +177,7 @@ ALTER TABLE ' . $atributo->getArrayTipoSnakeCase() . '
                 }
             }
         }
-        $path = $this->diretorio . '/' . $this->software->getNomeSnakeCase() . '_banco_pg.sql';
+        $path = $this->software->getNomeSnakeCase() . '_banco_pg.sql';
         $this->listaDeArquivos[$path] = $codigo;
         return $codigo;
     }
@@ -326,7 +301,7 @@ ALTER TABLE ' . $atributo->getArrayTipoSnakeCase() . '
                 }
             }
         }
-        $path = $this->diretorio . '/' . $this->software->getNomeSnakeCase() . '_banco_mysql.sql';
+        $path = $this->software->getNomeSnakeCase() . '_banco_mysql.sql';
         $this->listaDeArquivos[$path] = $codigo;
         return $codigo;
     }
@@ -409,7 +384,7 @@ ALTER TABLE ' . $atributo->getArrayTipoSnakeCase() . ' ADD COLUMN  ' . $atributo
         }
         
         
-        $path = $this->diretorio . '/' . $this->software->getNomeSnakeCase() . '_banco_sqlite.sql';
+        $path = $this->software->getNomeSnakeCase() . '_banco_sqlite.sql';
         $this->listaDeArquivos[$path] = $codigo;
         return $codigo;
         

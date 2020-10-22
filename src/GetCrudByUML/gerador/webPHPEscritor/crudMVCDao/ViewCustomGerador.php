@@ -11,15 +11,14 @@ class ViewCustomGerador{
     private $software;
     private $listaDeArquivos;
     private $diretorio;
-    public static function main(Software $software, $diretorio){
-        $gerador = new ViewCustomGerador($software, $diretorio);
-        $gerador->gerarCodigo();
+    public static function main(Software $software){
+        $gerador = new ViewCustomGerador($software);
+        return $gerador->gerarCodigo();
         
     }
     
-    public function __construct(Software $software, $diretorio){
+    public function __construct(Software $software){
         $this->software = $software;
-        $this->diretorio = $diretorio;
     }
     /**
      * Selecione uma linguagem
@@ -30,27 +29,10 @@ class ViewCustomGerador{
             $this->geraViews($objeto);
         }
         
-        $this->criarArquivos();
+        return $this->listaDeArquivos;
         
     }
-    private function criarArquivos(){
-        
-        $caminho = $this->diretorio.'/AppWebPHP/src/classes/custom/view/';
-        
-        if(!file_exists($caminho)) {
-            mkdir($caminho, 0777, true);
-        }
-        
-        foreach ($this->listaDeArquivos as $path => $codigo) {
-            
-            if (file_exists($path)) {
-                unlink($path);
-            }
-            $file = fopen($path, "w+");
-            fwrite($file, stripslashes($codigo));
-            fclose($file);
-        }
-    }
+
     
     private function geraViews(Objeto $objeto)
     {
@@ -63,6 +45,11 @@ class ViewCustomGerador{
  * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
  *
  */
+
+namespace '.$this->software->getNome().'\\\\custom\\\\view;
+use '.$this->software->getNome().'\\\\view\\\\'.ucfirst($objeto->getNome()).'View;
+
+
 class ' . $objeto->getNome() . 'CustomView extends ' . $objeto->getNome() . 'View {
 
     ////////Digite seu código customizado aqui.
@@ -73,7 +60,7 @@ class ' . $objeto->getNome() . 'CustomView extends ' . $objeto->getNome() . 'Vie
 }';
 
         
-        $caminho = $this->diretorio.'/AppWebPHP/src/classes/custom/view/'.ucfirst($objeto->getNome()).'CustomView.php';
+        $caminho = ucfirst($objeto->getNome()).'CustomView.php';
         $this->listaDeArquivos[$caminho] = $codigo;
     }
    

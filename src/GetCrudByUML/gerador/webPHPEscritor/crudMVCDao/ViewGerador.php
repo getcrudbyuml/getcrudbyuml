@@ -517,6 +517,12 @@ class ViewGerador{
  * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
  *
  */
+
+namespace '.$this->software->getNome().'\\\\view;
+use '.$this->software->getNome().'\\\\model\\\\'.ucfirst($objeto->getNome()).';
+
+
+
 class ' . $objeto->getNome() . 'View {';
         $codigo .= '';
         $codigo .= $this->showInsertForm($objeto);
