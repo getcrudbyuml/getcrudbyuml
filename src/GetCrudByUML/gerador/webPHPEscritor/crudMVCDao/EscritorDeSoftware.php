@@ -76,7 +76,7 @@ class EscritorDeSoftware
         
         
         $this->criarArquivos(JSAjaxGerador::main($this->software), $diretorio.'/../js');
-        $this->criarArquivos(StyleCssGerador::main($this->software), $diretorio.'/../css');
+//         $this->criarArquivos(StyleCssGerador::main($this->software), $diretorio.'/../css');
         
         //Classes de customização. 
         $this->criarArquivos(ControllerCustomGerador::main($this->software), $diretorio.'/'.'custom/controller');        
