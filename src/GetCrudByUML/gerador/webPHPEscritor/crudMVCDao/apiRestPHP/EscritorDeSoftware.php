@@ -9,6 +9,7 @@ use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\ModelGerador;
 use GetCrudByUML\gerador\sqlGerador\DBGerador;
 use GetCrudByUML\model\Software;
 use PDO;
+use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\IniAPIRest;
 
 
 class EscritorDeSoftware
@@ -66,6 +67,8 @@ class EscritorDeSoftware
         $this->criarArquivos(IndexAPIGerador::main($this->software), $diretorio.'/..');
         
         $this->criarArquivos(DBGerador::main($this->software), $diretorio.'/../..');
+        
+        $this->criarArquivos(IniAPIRest::main($this->software), $diretorio.'/../..');
         
         $dbGerador = new DBGerador($this->software);
         $codigo = $dbGerador->geraBancoPG();

@@ -65,7 +65,7 @@ class EscritorDeSoftware
         $this->criarArquivos(DBGerador::main($this->software), $diretorio.'/../..');
         
         $dbGerador = new DBGerador($this->software);
-        $codigo = $dbGerador->geraBancoPG();
+        $codigo = $dbGerador->geraBancoSqlite();
         $bdNome = $this->diretorio . '/../' . $this->software->getNomeSnakeCase() . '.db';
         if (file_exists($bdNome)) {
             unlink($bdNome);
