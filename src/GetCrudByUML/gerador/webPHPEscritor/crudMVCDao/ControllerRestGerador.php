@@ -291,7 +291,7 @@ class ControllerRestGerador{
         $codigo = '
 
 
-    public function restPOST()
+    public function post()
     {
         if ($_SERVER[\'REQUEST_METHOD\'] != \'POST\') {
             return;
