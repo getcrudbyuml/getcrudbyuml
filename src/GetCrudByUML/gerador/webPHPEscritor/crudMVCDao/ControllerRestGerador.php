@@ -43,6 +43,13 @@ class ControllerRestGerador{
     }
  
     public function delete(Objeto $objeto):string{
+        
+        $atributoPrimary = $objeto->getAtributos()[0];
+        foreach ($objeto->getAtributos() as $atributo){
+            if($atributo->isPrimary()){
+                $atributoPrimary = $atributo;
+            }
+        }
         $codigo = '
 
     public function delete()
@@ -50,26 +57,39 @@ class ControllerRestGerador{
         if ($_SERVER[\'REQUEST_METHOD\'] != \'DELETE\') {
             return;
         }
-        $path = explode(\'/\', $_GET[\'api\']);
-        $parametro = "";
-        if (count($path) < 2) {
+        
+        if(!isset($_REQUEST[\'api\'])){
             return;
         }
-        $parametro = $path[1];
-        if ($parametro == "") {
+        $url = explode("/", $_REQUEST[\'api\']);
+        if (count($url) == 0 || $url[0] == "") {
             return;
         }
-    
-        $id = intval($parametro);
-        $selected = new '.ucfirst($objeto->getNome()).'();
-        $selected->setId($id);
-        $selected = $this->dao->pesquisaPorId($selected);
-        if ($selected == null) {
-            echo "{}";
+        if ($url[0] != \''.$objeto->getNomeSnakeCase().'\') {
+            echo \'error\';
             return;
         }
 
-        if($this->dao->excluir($selected))
+        if(!isset($url[1])){
+            echo \'error\';
+            return;
+        }
+        if($url[1] == \'\'){
+            echo \'error\';
+            return;
+        }
+        
+        $'.lcfirst($atributoPrimary->getNome()).' = $url[1];
+
+
+
+        $selected = new '.ucfirst($objeto->getNome()).'();
+        $selected->set'.ucfirst($objeto->getNome()).'($'.lcfirst($atributoPrimary->getNome()).');
+        $selected = $this->dao->fillBy'.ucfirst($atributoPrimary->getNome()).'($selected);
+        if ($selected == null) {
+            return;
+        }
+        if($this->dao->delete($selected))
         {
             echo "{}";
             return;
@@ -86,6 +106,12 @@ class ControllerRestGerador{
 
     public function get(Objeto $objeto):string{
         
+        $atributoPrimary = $objeto->getAtributos()[0];
+        foreach ($objeto->getAtributos() as $atributo){
+            if($atributo->isPrimary()){
+                $atributoPrimary = $atributo;
+            }
+        }
         $atributosComuns = array();
         foreach ($objeto->getAtributos() as $atributo) {
             if($atributo->tipoListado()){
@@ -109,16 +135,16 @@ class ControllerRestGerador{
         if (count($url) == 0 || $url[0] == "") {
             return;
         }
-        if ($url[1] != \''.$objeto->getNomeSnakeCase().'\') {
+        if ($url[0] != \''.$objeto->getNomeSnakeCase().'\') {
             return;
         }
 
-        if(isset($url[2])){
-            $parametro = $url[2];
-            $id = intval($parametro);
+        if(isset($url[1]) && $url[1] != \'\'){
+
+            $'.lcfirst($atributoPrimary->getNome()).' = $url[1];
             $selected = new '.ucfirst($objeto->getNome()).'();
-            $selected->setId($id);
-            $selected = $this->dao->fillById($selected);
+            $selected->set'.ucfirst($atributoPrimary->getNome()).'($'.lcfirst($atributoPrimary->getNome()).');
+            $selected = $this->dao->fillBy'.ucfirst($atributoPrimary->getNome()).'($selected);
             if ($selected == null) {
                 echo "{}";
                 return;
@@ -146,7 +172,7 @@ class ControllerRestGerador{
         $list = $this->dao->fetch();
         $listagem = array();
         foreach ( $list as $linha ) {
-			$listagem [\'list\'] [] = array (';
+			$listagem [] = array (';
         $i = 0;
         foreach ($atributosComuns as $atributo) {
             $i ++;
@@ -182,7 +208,7 @@ class ControllerRestGerador{
         //$config = parse_ini_file ( $iniApiFile );
         //$user = $config [\'user\'];
         //$password = $config [\'password\'];
-        /*    
+        /*    Descomente se quiser autenticação. 
         if(!isset($_SERVER[\'PHP_AUTH_USER\'])){
             header("WWW-Authenticate: Basic realm=\\\\"Private Area\\\\" ");
             header("HTTP/1.0 401 Unauthorized");
@@ -209,6 +235,12 @@ class ControllerRestGerador{
         return $codigo;
     }
     public function put(Objeto $objeto):string{
+        $atributoPrimary = $objeto->getAtributos()[0];
+        foreach ($objeto->getAtributos() as $atributo){
+            if($atributo->isPrimary()){
+                $atributoPrimary = $atributo;
+            }
+        }
         $codigo = '
 
 
@@ -218,33 +250,34 @@ class ControllerRestGerador{
             return;
         }
 
-        if (! array_key_exists(\'api\', $_GET)) {
+        if(!isset($_REQUEST[\'api\'])){
             return;
         }
-        $path = explode(\'/\', $_GET[\'api\']);
-        if (count($path) == 0 || $path[0] == "") {
-            echo \'Error. Path missing.\';
+        $url = explode("/", $_REQUEST[\'api\']);
+        if (count($url) == 0 || $url[0] == "") {
             return;
         }
-        
-        $param1 = "";
-        if (count($path) > 1) {
-            $parametro = $path[1];
-        }
-
-        if ($path[0] != \'info\') {
-            return;
-        }
-
-        if ($param1 == "") {
+        if ($url[0] != \''.$objeto->getNomeSnakeCase().'\') {
             echo \'error\';
             return;
         }
 
-        $id = intval($parametro);
+        if(!isset($url[1])){
+            echo \'error\';
+            return;
+        }
+        if($url[1] == \'\'){
+            echo \'error\';
+            return;
+        }
+        
+        $'.lcfirst($atributoPrimary->getNome()).' = $url[1];
+
+
+
         $selected = new '.ucfirst($objeto->getNome()).'();
-        $selected->setId($id);
-        $selected = $this->dao->pesquisaPorId($selected);
+        $selected->set'.ucfirst($atributoPrimary->getNome()).'($'.lcfirst($atributoPrimary->getNome()).');
+        $selected = $this->dao->fillBy'.ucfirst($atributoPrimary->getNome()).'($selected);
 
         if ($selected == null) {
             return;
@@ -255,7 +288,7 @@ class ControllerRestGerador{
         
         ';
         foreach($objeto->getAtributos() as $atributo){
-            if($atributo->tipoListado()){
+            if($atributo->tipoListado() && !$atributo->isPrimary()){
                 $codigo .= '
         if (isset($jsonBody[\''.$atributo->getNomeSnakeCase().'\'])) {
             $selected->set'.ucfirst($atributo->getNome()).'($jsonBody[\''.$atributo->getNomeSnakeCase().'\']);
@@ -299,15 +332,15 @@ class ControllerRestGerador{
         if ($_SERVER[\'REQUEST_METHOD\'] != \'POST\') {
             return;
         }
-        if (! array_key_exists(\'path\', $_GET)) {
-            echo \'Error. Path missing.\';
+        
+        if(!isset($_REQUEST[\'api\'])){
             return;
         }
-
-        $path = explode(\'/\', $_GET[\'path\']);
-
-        if (count($path) == 0 || $path[0] == "") {
-            echo \'Error. Path missing.\';
+        $url = explode("/", $_REQUEST[\'api\']);
+        if (count($url) == 0 || $url[0] == "") {
+            return;
+        }
+        if ($url[0] != \''.$objeto->getNomeSnakeCase().'\') {
             return;
         }
 
@@ -359,16 +392,19 @@ class ControllerRestGerador{
 
         $adicionado = new '.ucfirst($objeto->getNome()).'();';
         foreach($objeto->getAtributos() as $atributo){
-            if($atributo->tipoListado()){
+            if($atributo->tipoListado() && !$atributo->isPrimary()){
                 
                 $codigo .= '
-        $adicionado->set'.ucfirst($atributo->getNome()).'($jsonBody[\''.$atributo->getNomeSnakeCase().'\']);
+        if(isset($jsonBody[\''.$atributo->getNomeSnakeCase().'\'])){
+            $adicionado->set'.ucfirst($atributo->getNome()).'($jsonBody[\''.$atributo->getNomeSnakeCase().'\']);
+        }
+        
 ';
             }
         }
   
         $codigo .= '
-        if ($this->dao->inserir($adicionado)) 
+        if ($this->dao->insert($adicionado)) 
                 {
 			echo \' Sucesso\';
 		} else {
