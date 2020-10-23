@@ -2,7 +2,6 @@
 
 namespace GetCrudByUML\gerador\webPHPEscritor\crudMVCDao;
 
-use GetCrudByUML\model\Objeto;
 use GetCrudByUML\model\Software;
 
 class StyleCssGerador
@@ -32,9 +31,7 @@ class StyleCssGerador
      */
     public function geraCodigo()
     {
-        foreach($this->software->getObjetos() as $objeto){
-            $this->geraStyle($objeto);
-        }
+        $this->geraStyle();
         return $this->listaDeArquivos;
         
         
@@ -44,6 +41,7 @@ class StyleCssGerador
         $codigo = "/*Digite aqui seu arquivo css*/";
         $caminho = 'style.css';
         $this->listaDeArquivos[$caminho] = $codigo;
+        
     }
     
 }
