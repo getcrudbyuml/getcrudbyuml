@@ -135,41 +135,27 @@ class ControllerRestGerador{
         if (count($url) == 0 || $url[0] == "") {
             return;
         }
-        if ($url[0] != \''.$objeto->getNomeSnakeCase().'\') {
+        if(!isset($url[1])){
+            return;
+        }
+        if ($url[1] != \''.$objeto->getNomeSnakeCase().'\') {
             return;
         }
 
-        if(isset($url[1]) && $url[1] != \'\'){
+        if(isset($url[2]) && $url[2] != \'\'){
 
-            $'.lcfirst($atributoPrimary->getNome()).' = $url[1];
+            $'.lcfirst($atributoPrimary->getNome()).' = $url[2];
             $selected = new '.ucfirst($objeto->getNome()).'();
             $selected->set'.ucfirst($atributoPrimary->getNome()).'($'.lcfirst($atributoPrimary->getNome()).');
-            $selected = $this->dao->fillBy'.ucfirst($atributoPrimary->getNome()).'($selected);
-            if ($selected == null) {
+            $list = $this->dao->fetchBy'.ucfirst($atributoPrimary->getNome()).'($selected);
+            if (count($list) == 0) {
                 echo "{}";
                 return;
             }
-
-            $selected = array(';
-        $i = 0;
-        foreach ($atributosComuns as $atributo) {
-            $i ++;
-            $nomeDoAtributoMA = strtoupper(substr($atributo->getNome(), 0, 1)) . substr($atributo->getNome(), 1, 100);
-            $codigo .= '
-					\'' . $atributo->getNome() . '\' => $selected->get' . $nomeDoAtributoMA . ' ()';
-            if ($i != count($objeto->getAtributos())) {
-                $codigo .= ', ';
-            }
+        }else{
+            $list = $this->dao->fetch();
         }
         
-        $codigo .= '
-            
-            
-			);
-            echo json_encode($selected);
-            return;
-        }        
-        $list = $this->dao->fetch();
         $listagem = array();
         foreach ( $list as $linha ) {
 			$listagem [] = array (';
@@ -257,21 +243,26 @@ class ControllerRestGerador{
         if (count($url) == 0 || $url[0] == "") {
             return;
         }
-        if ($url[0] != \''.$objeto->getNomeSnakeCase().'\') {
+        if (!isset($url[1])) {
+            return;
+        }
+
+        if ($url[1] != \''.$objeto->getNomeSnakeCase().'\') {
             echo \'error\';
             return;
         }
 
-        if(!isset($url[1])){
+        if(!isset($url[2])){
             echo \'error\';
             return;
         }
-        if($url[1] == \'\'){
+
+        if($url[2] == \'\'){
             echo \'error\';
             return;
         }
         
-        $'.lcfirst($atributoPrimary->getNome()).' = $url[1];
+        $'.lcfirst($atributoPrimary->getNome()).' = $url[2];
 
 
 
@@ -340,7 +331,11 @@ class ControllerRestGerador{
         if (count($url) == 0 || $url[0] == "") {
             return;
         }
-        if ($url[0] != \''.$objeto->getNomeSnakeCase().'\') {
+
+        if(!isset($url[1])){
+            return;
+        }
+        if ($url[1] != \''.$objeto->getNomeSnakeCase().'\') {
             return;
         }
 

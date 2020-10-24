@@ -85,14 +85,19 @@ if(isset($_REQUEST[\'api\'])){
     
     $url = explode("/", $_REQUEST[\'api\']);
     
-    if(isset($url[1])){
-        if($url[1] == \'\'){
-            echo "Bem vindo a nossa API";
-            exit;
+    if(isset($url[0])){
+        if($url[0] != \'api\'){
+            return;
         }
-    }else{
-        echo "Bem vindo a nossa API";
-        exit;
+    }
+    if(!isset($url[1])){
+        echo "Bem vindo a nossa api<br>
+                Acesseo os objetos aqui: ";
+        return;
+    }else if($url[1] == ""){
+        echo "Bem vindo a nossa api<br>
+                Acesseo os objetos aqui: ";
+        return;
     }
     switch($url[1]){';
         
