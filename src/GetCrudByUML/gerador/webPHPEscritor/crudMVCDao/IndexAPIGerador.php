@@ -92,11 +92,29 @@ if(isset($_REQUEST[\'api\'])){
     }
     if(!isset($url[1])){
         echo "Bem vindo a nossa api<br>
-                Acesseo os objetos aqui: ";
+                Acesseo os objetos aqui:';
+        foreach ($this->software->getObjetos() as $objeto) {
+            $codigo .= '
+		          <br>GET: /api/'.$objeto->getNomeSnakeCase();
+            $codigo .= '
+		          <br>GET ONE: /api/'.$objeto->getNomeSnakeCase().'{id}';
+        }
+                $codigo .= '
+                
+                ";
         return;
     }else if($url[1] == ""){
         echo "Bem vindo a nossa api<br>
-                Acesseo os objetos aqui: ";
+                Acesseo os objetos aqui:';
+        foreach ($this->software->getObjetos() as $objeto) {
+            $codigo .= '
+		          <br>/api/'.$objeto->getNomeSnakeCase();
+            $codigo .= '
+		          <br>GET ONE: /api/'.$objeto->getNomeSnakeCase().'{id}';
+        }
+                $codigo .= '
+                
+                ";
         return;
     }
     switch($url[1]){';
