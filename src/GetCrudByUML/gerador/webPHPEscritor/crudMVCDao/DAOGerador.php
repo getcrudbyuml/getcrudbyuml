@@ -164,16 +164,14 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                 $atributosComuns[] = $atributo;
             }
         }
-        $atributoPrimary = null;
+        $atributoPrimary = $objeto->getAtributos()[0];
         foreach ($objeto->getAtributos() as $atributo) {
             if ($atributo->isPrimary()) {
                 $atributoPrimary = $atributo;
                 break;
             }
         }
-        if ($atributoPrimary == null) {
-            $atributoPrimary = $objeto->getAtributos()[0];
-        }
+        
         
         $codigo = '
             
@@ -183,7 +181,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
        
         
         $codigo .= '
-        $id = $' . lcfirst($objeto->getNome()) . '->get' . ucfirst($atributoPrimary->getNome()) . '();';
+        $' . lcfirst($atributoPrimary->getNome()) . ' = $' . lcfirst($objeto->getNome()) . '->get' . ucfirst($atributoPrimary->getNome()) . '();';
         $codigo .= '
             
             
@@ -211,7 +209,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         }
         if ($atributoPrimary != null) {
             $codigo .= '
-                WHERE ' . $objeto->getNomeSnakeCase() . '.id = :id;';
+                WHERE ' . $objeto->getNomeSnakeCase() . '.' . $atributoPrimary->getNomeSnakeCase() . ' = :' . lcfirst($atributoPrimary->getNome()) . ';';
         }
         $codigo .= '";';
         
