@@ -2,7 +2,7 @@
 
 
 
-namespace GetCrudByUML\gerador\webPHPEscritor\crudMVCDao;
+namespace GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\crudPHP;
 
 use GetCrudByUML\model\Atributo;
 use GetCrudByUML\model\Objeto;

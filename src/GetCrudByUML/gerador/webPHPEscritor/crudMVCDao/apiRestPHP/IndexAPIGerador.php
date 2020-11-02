@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCrudByUML\gerador\webPHPEscritor\crudMVCDao;
+namespace GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\apiRestPHP;
 
 use GetCrudByUML\model\Software;
 

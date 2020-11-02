@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCrudByUML\gerador\webPHPEscritor\crudMVCDao;
+namespace GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\crudPHP;
 
 use GetCrudByUML\model\Objeto;
 use GetCrudByUML\model\Software;
