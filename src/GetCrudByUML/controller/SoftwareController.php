@@ -151,10 +151,10 @@ class SoftwareController
                 return;
             }
         }
-        if($this->selecionado->getNomeSimples() == 'GetCrudByUML' && $_SERVER['HTTP_HOST'] == 'localhost'){
+        if(strtolower($this->selecionado->getNomeSimples()) == 'getcrudbyuml' && $_SERVER['HTTP_HOST'] == 'localhost'){
             echo '
             <div class="alert alert-warning" role="alert">
-              <p>Me Poupe. Vamos parar com a palhaçada!</p>
+              <p>Me Poupe. Tudo tem limite. Vamos parar com a palhaçada!</p>
             </div>
             ';
             return;

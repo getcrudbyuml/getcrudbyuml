@@ -28,12 +28,17 @@ class EscritorDeSoftware
         $escritor->geraCodigoJAVA();
         
     }
-    private function criarArquivos($arquivos, $diretorio){
+    private function criarArquivos($arquivos, $diretorio, $sobrescrever = true){
         
         if(!file_exists($diretorio)) {
             mkdir($diretorio, 0777, true);
         }
         foreach ($arquivos as $path => $codigo) {
+            if(file_exists($diretorio.'/'.$path)){
+                if($sobrescrever == false){
+                    break;
+                }
+            }
             $file = fopen($diretorio.'/'.$path, "w+");
             fwrite($file, stripslashes($codigo));
             fclose($file);
