@@ -71,7 +71,7 @@ class EscritorDeSoftware
         $this->criarArquivos(DAOGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/'.$this->software->getNomeSimples().'/dao');
         $this->criarArquivos(ViewGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/'.$this->software->getNomeSimples().'/view');
         $this->criarArquivos(ControllerGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/'.$this->software->getNomeSimples().'/controller');
-        $this->criarArquivos(IndexGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'');
+        $this->criarArquivos(IndexGerador::main($this->software), $diretorio.'/'.$diretorioSrc, false);
         
         $this->criarArquivos(DBGerador::main($this->software), $diretorio);
         

@@ -232,10 +232,7 @@ echo '" height="200" alt="QR Code">
 
 </section>
             
-<!-- Footer-->
-<footer class="py-5">
-    <div class="container"><div class="small text-center text-muted">Copyright © 2020 - contato@getcrudbyuml.com</div></div>
-</footer> 
+
 ';
         
     }

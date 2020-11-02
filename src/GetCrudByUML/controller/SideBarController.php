@@ -30,7 +30,11 @@ class SideBarController{
 
         echo '
 
-<div class="row justify-content-center m-3">';
+<div class="row justify-content-center m-3">
+
+
+
+';
         if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
             echo '<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 <input type="hidden" name="cmd" value="_s-xclick" />
@@ -60,6 +64,8 @@ if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
     echo 'images/qr_code.png';
 }
 echo '" alt="QR code">
+
+
 
 </div>
 
