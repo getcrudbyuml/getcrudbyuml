@@ -331,7 +331,7 @@ class SoftwareController
         }
         
         echo '<div class="row">';
-        echo '<div class="col-xl-8 col-lg-8 col-md-12 col-sm-12">';
+        echo '<div class="col-xl-9 col-lg-8 col-md-12 col-sm-12">';
         echo '<h3>Software: ' . $this->selecionado->getNome() . '</h3>';
 
         
@@ -356,7 +356,10 @@ class SoftwareController
         
         echo '</div>';
         
-        echo '<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">';
+        echo '<div class="col-xl-3 col-lg-4 col-md-12 col-sm-12">
+            
+        
+        ';
         $objetoController = new ObjetoController();
         $objetoController->cadastrar($this->selecionado);
 

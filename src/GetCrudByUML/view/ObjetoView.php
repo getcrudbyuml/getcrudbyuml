@@ -16,6 +16,18 @@ class ObjetoView {
 
 <div class="card">
   <div class="card-body">';
+		if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+		    echo '
+<h4>Adicionar Classe</h4>
+		        
+';
+		}else{
+		    echo '
+<h4>Add Class</h4>
+		        
+';
+		}
+		
 		
 		echo '
 		    
@@ -24,9 +36,9 @@ class ObjetoView {
                                         <div class="form-group">
                 						  <input type="text" class="form-control form-control-user campmo-selecionado" id="nome" name="nome" placeholder="';
 		if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
-		    echo 'Adicionar Classe';
+		    echo 'Nome da Classe';
 		}else{
-		    echo 'Add Class';
+		    echo 'Class Name';
 		}
                 						  echo '">
                 						</div>';
