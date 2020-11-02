@@ -60,37 +60,36 @@ class EscritorDeSoftware
                 return;
             }
         }
-        
-        $this->diretorio .= '/crudPHP';
-        $diretorio = $this->diretorio.'/'.$this->software->getNomeSimples();
-        
         if($_SERVER['HTTP_HOST'] == 'localhost'){
-            $this->diretorio = 'C:/web/odontoplex/src';
+            $diretorioSrc = 'src';
+        }else{
+            $diretorioSrc = 'crudPHP';
         }
+        $diretorio = $this->diretorio;
         
-        $this->criarArquivos(ModelGerador::main($this->software), $diretorio.'/'.'model');
-        $this->criarArquivos(DAOGerador::main($this->software), $diretorio.'/dao');
-        $this->criarArquivos(ViewGerador::main($this->software), $diretorio.'/'.'view');
-        $this->criarArquivos(ControllerGerador::main($this->software), $diretorio.'/'.'controller');
-        $this->criarArquivos(IndexGerador::main($this->software), $diretorio);
+        $this->criarArquivos(ModelGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/'.$this->software->getNomeSimples().'/model');
+        $this->criarArquivos(DAOGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/'.$this->software->getNomeSimples().'/dao');
+        $this->criarArquivos(ViewGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/'.$this->software->getNomeSimples().'/view');
+        $this->criarArquivos(ControllerGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/'.$this->software->getNomeSimples().'/controller');
+        $this->criarArquivos(IndexGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'');
         
-        $this->criarArquivos(DBGerador::main($this->software), $diretorio.'/../..');
+        $this->criarArquivos(DBGerador::main($this->software), $diretorio);
         
         $dbGerador = new DBGerador($this->software);
         $codigo = $dbGerador->geraBancoSqlite();
-        $bdNome = $this->diretorio . '/../' . $this->software->getNomeSnakeCase() . '.db';
+        $bdNome = $this->diretorio . '/' . $this->software->getNomeSnakeCase() . '.db';
         if (file_exists($bdNome)) {
             unlink($bdNome);
         }
         $pdo = new PDO('sqlite:' . $bdNome);
         $pdo->exec($codigo);
         
-        $this->criarArquivos(JSAjaxGerador::main($this->software), $diretorio.'/../js');
+        $this->criarArquivos(JSAjaxGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/js');
         
         //Classes de customização.
-        $this->criarArquivos(ControllerCustomGerador::main($this->software), $diretorio.'/'.'custom/controller', false);
-        $this->criarArquivos(DAOCustomGerador::main($this->software), $diretorio.'/'.'custom/dao', false);
-        $this->criarArquivos(ViewCustomGerador::main($this->software), $diretorio.'/'.'custom/view', false);
+        $this->criarArquivos(ControllerCustomGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/'.$this->software->getNomeSimples().'/custom/controller', false);
+        $this->criarArquivos(DAOCustomGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/'.$this->software->getNomeSimples().'/custom/dao', false);
+        $this->criarArquivos(ViewCustomGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/'.$this->software->getNomeSimples().'/custom/view', false);
         
     }
 }

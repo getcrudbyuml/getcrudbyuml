@@ -151,12 +151,26 @@ class SoftwareController
                 return;
             }
         }
-        
-        
-        $diretorio = './sistemas/' . $sessao->getLoginUsuario() . '/' . $this->selecionado->getNomeSimples();
-        if(is_dir('./sistemas/' . $sessao->getLoginUsuario() . '/')){
-            $this->excluiDir( './sistemas/' . $sessao->getLoginUsuario() . '/');
+        if($this->selecionado->getNomeSimples() == 'GetCrudByUML' && $_SERVER['HTTP_HOST'] == 'localhost'){
+            echo '
+            <div class="alert alert-warning" role="alert">
+              <p>Me Poupe. Vamos parar com a palhaçada!</p>
+            </div>
+            ';
+            return;
         }
+        
+        if($_SERVER['HTTP_HOST'] == 'localhost'){
+            $diretorio = 'C:/web/'. $this->selecionado->getNomeSimples();
+            
+        }else{
+            $diretorio = './sistemas/' . $sessao->getLoginUsuario() . '/' . $this->selecionado->getNomeSimples();
+            if(is_dir('./sistemas/' . $sessao->getLoginUsuario() . '/') ){
+                $this->excluiDir( './sistemas/' . $sessao->getLoginUsuario() . '/');
+            }
+        }
+        
+
         
         $numeroDeArquivos = 0;
         
@@ -170,9 +184,11 @@ class SoftwareController
         }else{
             return;
         }
+        if($_SERVER['HTTP_HOST'] != 'localhost'){
+            $zipador = new Zipador();
+            $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/../'.$this->selecionado->getNomeSimples().'.zip');
+        }
         
-        $zipador = new Zipador();
-        $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/../'.$this->selecionado->getNomeSimples().'.zip');
 
         if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
             echo '
