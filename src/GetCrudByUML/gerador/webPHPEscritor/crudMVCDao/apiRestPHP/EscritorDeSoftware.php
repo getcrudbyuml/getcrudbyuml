@@ -2,14 +2,11 @@
 
 
 namespace GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\apiRestPHP;
-use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\ControllerRestGerador;
 use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\DAOGerador;
-use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\IndexAPIGerador;
 use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\ModelGerador;
 use GetCrudByUML\gerador\sqlGerador\DBGerador;
 use GetCrudByUML\model\Software;
 use PDO;
-use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\IniAPIRest;
 
 
 class EscritorDeSoftware

@@ -8,13 +8,8 @@ use GetCrudByUML\model\Software;
 use PDO;
 use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\ModelGerador;
 use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\DAOGerador;
-use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\ViewGerador;
-use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\ControllerGerador;
-use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\IndexGerador;
-use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\JSAjaxGerador;
-use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\ControllerCustomGerador;
 use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\DAOCustomGerador;
-use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\ViewCustomGerador;
+
 
 class EscritorDeSoftware
 {
