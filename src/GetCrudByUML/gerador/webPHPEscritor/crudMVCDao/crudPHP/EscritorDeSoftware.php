@@ -13,9 +13,9 @@ use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\DAOCustomGerador;
 
 class EscritorDeSoftware
 {
-
     
-
+    
+    
     private $software;
     
     private $diretorio;
@@ -32,12 +32,17 @@ class EscritorDeSoftware
         $escritor->gerarCodigoPHP();
     }
     
-    private function criarArquivos($arquivos, $diretorio){
+    private function criarArquivos($arquivos, $diretorio, $sobrescrever = true){
         
         if(!file_exists($diretorio)) {
             mkdir($diretorio, 0777, true);
         }
         foreach ($arquivos as $path => $codigo) {
+            if(file_exists($diretorio.'/'.$path)){
+                if($sobrescrever == false){
+                    break;
+                }
+            }
             $file = fopen($diretorio.'/'.$path, "w+");
             fwrite($file, stripslashes($codigo));
             fclose($file);
@@ -56,15 +61,18 @@ class EscritorDeSoftware
             }
         }
         
-        
         $this->diretorio .= '/crudPHP';
         $diretorio = $this->diretorio.'/'.$this->software->getNomeSimples();
+        
+        if($_SERVER['HTTP_HOST'] == 'localhost'){
+            $this->diretorio = 'C:/web/odontoplex/src';
+        }
         
         $this->criarArquivos(ModelGerador::main($this->software), $diretorio.'/'.'model');
         $this->criarArquivos(DAOGerador::main($this->software), $diretorio.'/dao');
         $this->criarArquivos(ViewGerador::main($this->software), $diretorio.'/'.'view');
         $this->criarArquivos(ControllerGerador::main($this->software), $diretorio.'/'.'controller');
-        $this->criarArquivos(IndexGerador::main($this->software), $diretorio.'/..');
+        $this->criarArquivos(IndexGerador::main($this->software), $diretorio);
         
         $this->criarArquivos(DBGerador::main($this->software), $diretorio.'/../..');
         
@@ -79,10 +87,10 @@ class EscritorDeSoftware
         
         $this->criarArquivos(JSAjaxGerador::main($this->software), $diretorio.'/../js');
         
-        //Classes de customização. 
-        $this->criarArquivos(ControllerCustomGerador::main($this->software), $diretorio.'/'.'custom/controller');        
-        $this->criarArquivos(DAOCustomGerador::main($this->software), $diretorio.'/'.'custom/dao');
-        $this->criarArquivos(ViewCustomGerador::main($this->software), $diretorio.'/'.'custom/view');
-
+        //Classes de customização.
+        $this->criarArquivos(ControllerCustomGerador::main($this->software), $diretorio.'/'.'custom/controller', false);
+        $this->criarArquivos(DAOCustomGerador::main($this->software), $diretorio.'/'.'custom/dao', false);
+        $this->criarArquivos(ViewCustomGerador::main($this->software), $diretorio.'/'.'custom/view', false);
+        
     }
 }
