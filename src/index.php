@@ -148,7 +148,7 @@ echo '
           <a class="fb-ic" href="https://www.facebook.com/jefponte">
             <i class="fab fa-facebook-f fa-lg white-text mr-md-5 mr-3 fa-2x"> </i>
           </a>
-          <a class="tw-ic" href="https://chat.whatsapp.com/FLFEqPwD7gN2gdo2EoxzCU">
+          <a class="tw-ic" href="https://api.whatsapp.com/send?phone=5585981763936">
             <i class="fab fa-whatsapp fa-lg white-text mr-md-5 mr-3 fa-2x"> </i>
           </a>
           <a class="gplus-ic" href="https://www.instagram.com/getcrudbyuml/">
