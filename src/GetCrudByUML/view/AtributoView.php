@@ -39,6 +39,7 @@ class AtributoView {
                                             <option value="'.Atributo::TIPO_FLOAT.'">Float</option>
                                             <option value="'.Atributo::TIPO_DATE.'">Date</option>
                                             <option value="'.Atributo::TIPO_DATE_TIME.'">Datetime</option>
+                                            <option value="'.Atributo::TIPO_IMAGE.'">Image</option>
 ';
 
 		 

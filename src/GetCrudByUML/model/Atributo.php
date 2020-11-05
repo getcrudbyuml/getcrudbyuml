@@ -173,6 +173,9 @@ class Atributo {
 	        }else if($this->getTipo() == self::TIPO_DATE_TIME){
 	            $tipo = 'TEXT';
 	        }
+	        else if($this->getTipo() == self::TIPO_IMAGE){
+	            $tipo = 'TEXT';
+	        }
 	        else if($this->getTipo() == self::TIPO_BOOLEAN){
 	            $tipo = 'INTEGER';
 	        }else{
@@ -184,7 +187,7 @@ class Atributo {
 	public function getTipoPostgres(){
 	    $tipo = 'integer';
 	    if($this->getTipo() == self::TIPO_STRING){
-	        $tipo = 'character varying(150)';
+	        $tipo = 'character varying(400)';
 	    }else if($this->getTipo() == self::TIPO_INT){
 	        $tipo = 'integer';
 	    }else if($this->getTipo() == self::TIPO_FLOAT){
@@ -196,13 +199,15 @@ class Atributo {
 	        $tipo = 'timestamp without time zone';
 	    }else if($this->getTipo() == self::TIPO_DATE){
 	        $tipo = 'date';
+	    }else if($this->getTipo() == self::TIPO_IMAGE){
+	        $tipo = 'character varying(200)';
 	    }
 	    return $tipo;
 	}
 	public function getTipoMysql(){
 	    $tipo = 'INT';
 	    if($this->getTipo() == self::TIPO_STRING){
-	        $tipo = 'VARCHAR(150)';
+	        $tipo = 'VARCHAR(400)';
 	    }else if($this->getTipo() == self::TIPO_INT){
 	        $tipo = 'INT';
 	    }else if($this->getTipo() == self::TIPO_FLOAT){
@@ -214,6 +219,8 @@ class Atributo {
 	        $tipo = ' DATETIME';
 	    }else if($this->getTipo() == self::TIPO_DATE){
 	        $tipo = ' DATE ';
+	    }else if($this->getTipo() == self::TIPO_IMAGE){
+	        $tipo = 'VARCHAR(400)';
 	    }
 	    return $tipo;
 	}
@@ -231,6 +238,8 @@ class Atributo {
 	        $tipo = 'datetime-local';
 	    }else if($this->getTipo() == self::TIPO_DATE){
 	        $tipo = 'date';
+	    }else if($this->getTipo() == self::TIPO_IMAGE){
+	        $tipo = 'file';
 	    }
 	    return $tipo;
 	}
@@ -244,6 +253,10 @@ class Atributo {
                           <option value="1">Sim</option>
                           <option value="0">Não</option>
                     </select>';
+	    }else if($this->getTipo() == self::TIPO_IMAGE){
+	        
+	        $form = '<input type="'.$this->getTipoFormHTML().'" class="form-control"  name="' . $this->getNomeSnakeCase(). '" id="' . $this->getNomeSnakeCase(). '"  accept="image/png, image/jpeg">';
+	        
 	    }
 	    
 	    return $form;
@@ -288,6 +301,7 @@ class Atributo {
 	const TIPO_DATE = "date";
 	const TIPO_DATE_TIME = "date_time";
 	const TIPO_BOOLEAN = "boolean";
+	const TIPO_IMAGE = "Image";
 	const TIPO_FLOAT = "float";
 	const TIPO_ARRAY_NN = "Array n:n";
 	const TIPO_ARRAY_1N = "Array 1:n";
