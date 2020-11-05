@@ -40,6 +40,7 @@ class ViewGerador{
         
         
         $atributosComuns = array();
+        $existeCampoFile = false;
         $atributosObjetos = array();
         foreach ($objeto->getAtributos() as $atributo) {
             if($atributo->tipoListado()){
@@ -47,6 +48,9 @@ class ViewGerador{
             }else if($atributo->isObjeto())
             {
                 $atributosObjetos[] = $atributo;
+            }
+            if($atributo->getTipo() == Atributo::TIPO_IMAGE){
+                $existeCampoFile = true;
             }
         }
         $codigo = '
@@ -81,7 +85,11 @@ class ViewGerador{
         
 
 
-          <form id="insert_form_'.$objeto->getNomeSnakeCase().'" class="user" method="post">
+          <form id="insert_form_'.$objeto->getNomeSnakeCase().'" class="user" method="post"';
+        if($existeCampoFile){
+            $codigo .= ' enctype="multipart/form-data" ';
+        }
+          $codigo .= '>
             <input type="hidden" name="enviar_' . $objeto->getNomeSnakeCase() . '" value="1">                
 
 ';

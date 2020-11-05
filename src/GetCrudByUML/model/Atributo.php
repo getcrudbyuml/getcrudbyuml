@@ -69,7 +69,7 @@ class Atributo {
 		return $this->indice;
 	}
 	public function tipoListado(){
-	    if(
+	    if($this->tipo == self::TIPO_IMAGE || 
 	        $this->tipo == self::TIPO_INT 
 	        || 
 	        $this->tipo == self::TIPO_STRING || $this->tipo == self::TIPO_FLOAT || $this->tipo == self::TIPO_DATE || $this->tipo == self::TIPO_DATE_TIME || $this->tipo == self::TIPO_BOOLEAN){

@@ -590,7 +590,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
             $sqlGerador = new SQLGerador($this->software);
             $codigo .= $sqlGerador->getSQLSelect($objeto);
             
-            if ($atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_DATE || $atributo->getTipo() == Atributo::TIPO_DATE_TIME) {
+            if ($atributo->getTipo() == Atributo::TIPO_IMAGE || $atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_DATE || $atributo->getTipo() == Atributo::TIPO_DATE_TIME) {
                 $codigo .= '
             WHERE ' . $objeto->getNomeSnakeCase() . '.' . $atributo->getNomeSnakeCase() . ' like :' . $atributo->getNome() . '";';
             } 
