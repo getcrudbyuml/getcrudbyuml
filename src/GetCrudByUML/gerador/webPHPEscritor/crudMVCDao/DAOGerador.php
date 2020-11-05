@@ -523,7 +523,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         
         return $codigo;
     }
-    private function fetchBy($objeto) : string {
+    private function fetchBy(Objeto $objeto) : string {
         
         $codigo = '';
         $nomeDoObjeto = lcfirst($objeto->getNome());
@@ -539,15 +539,50 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
             }
         }
         
-        foreach ($atributosComuns as $atributo) {
-            
+        foreach ($objeto->getAtributos() as $atributo) {
+            if($atributo->isArray()){
+                continue;
+            }
             
             
             $codigo .= '
                 
     public function fetchBy' . ucfirst($atributo->getNome()) . '(' . $nomeDoObjetoMA . ' $' . $nomeDoObjeto . ') {
-        $lista = array();
+        $lista = array();';
+            
+            if($atributo->tipoListado()){
+                $codigo .= '
 	    $' . $atributo->getNome() . ' = $' . lcfirst($objeto->getNome()). '->get' . ucfirst($atributo->getNome()) . '();';
+            }else if($atributo->isObjeto()){
+                $objetoDesseAtributo = null;
+                foreach($this->software->getObjetos() as $objeto2){
+                    if($atributo->getTipo() == $objeto2->getNome()){
+                        $objetoDesseAtributo = $objeto2;
+                    }
+                }
+                if($objetoDesseAtributo == null){
+                    $codigo .= '
+    }//Metodo Nao implementado por falta de correspondencia de objeto';
+                    continue;
+                }
+                $atributoPrimaryDesseCara = null;
+                foreach($objetoDesseAtributo->getAtributos() as $atributo4){
+                    if($atributo4->isPrimary()){
+                        $atributoPrimaryDesseCara  = $atributo4;
+                    }
+                }
+                if($atributoPrimaryDesseCara == null){
+                    $codigo .= '
+    }//Metodo Nao implementado por falta de primary key na correspondencia de objeto';
+                    continue;
+                }
+                
+                $codigo .= '
+	    $' . $atributo->getNome() . ' = $' . lcfirst($objeto->getNome()). '->get' . ucfirst($atributo->getNome()) . '()->get'.ucfirst($atributoPrimaryDesseCara->getNome()).'();';
+                
+            }
+            
+            
             $codigo .= '
                 
         $sql = "';
@@ -558,9 +593,14 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
             if ($atributo->getTipo() == Atributo::TIPO_STRING || $atributo->getTipo() == Atributo::TIPO_DATE || $atributo->getTipo() == Atributo::TIPO_DATE_TIME) {
                 $codigo .= '
             WHERE ' . $objeto->getNomeSnakeCase() . '.' . $atributo->getNomeSnakeCase() . ' like :' . $atributo->getNome() . '";';
-            } else {
+            } 
+            else if($atributo->getTipo() == Atributo::TIPO_BOOLEAN || $atributo->getTipo() == Atributo::TIPO_FLOAT || $atributo->getTipo() == Atributo::TIPO_INT)
+            {
                 $codigo .= '
             WHERE ' . $objeto->getNomeSnakeCase() . '.' . $atributo->getNomeSnakeCase() . ' = :' . $atributo->getNome() . '";';
+            }else if($atributo->isOBjeto()){
+                $codigo .= '
+            WHERE ' . $objeto->getNomeSnakeCase() . '.' . $atributoPrimaryDesseCara->getNomeSnakeCase().'_'.$atributo->getNomeSnakeCase() . ' = :' . $atributo->getNome() . '";';
             }
             
             $codigo .= '
@@ -610,7 +650,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         }
         return $codigo;
     }
-    private function fillBy($objeto) : string {
+    private function fillBy(Objeto $objeto) : string {
         $nomeDoObjeto = lcfirst($objeto->getNome());
     
         
