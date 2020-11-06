@@ -77,7 +77,12 @@ class ControllerGerador{
                 continue;
             }
             $numDeComunsSemPK++;
-            $issetList[] = 'isset ( $_POST [\'' . $atributo->getNomeSnakeCase() . '\'] )';
+            if($atributo->getTipo() == Atributo::TIPO_IMAGE){
+                $issetList[] = 'isset ( $_FILES [\'' . $atributo->getNomeSnakeCase() . '\'] )';
+            }else{
+                $issetList[] = 'isset ( $_POST [\'' . $atributo->getNomeSnakeCase() . '\'] )';
+            }
+            
             
         }
         $codigo .= implode(' && ', $issetList);
@@ -117,8 +122,29 @@ class ControllerGerador{
             if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
                 continue;
             }
-            $codigo .= '
+            
+            if($atributo->getTipo() == Atributo::TIPO_IMAGE){
+                $codigo .= '
+                    
+		if(!file_exists(\'uploads/'.$objeto->getNomeSnakeCase().'/'.$atributo->getNomeSnakeCase().'/\')) {
+		    mkdir(\'uploads/'.$objeto->getNomeSnakeCase().'/'.$atributo->getNomeSnakeCase().'/\', 0777, true);
+		}
+		        
+		if(!move_uploaded_file($_FILES[\'' . $atributo->getNomeSnakeCase() . '\'][\'tmp_name\'], \'uploads/'.$objeto->getNomeSnakeCase().'/'.$atributo->getNomeSnakeCase().'/\'. $_FILES[\'' . $atributo->getNomeSnakeCase() . '\'][\'name\']))
+		{
+		    echo \':falha\';
+		    return;
+		}
+		    
+		$' . $nomeDoObjeto . '->set' . ucfirst($atributo->getNome()) . ' ( "uploads/'.$objeto->getNomeSnakeCase().'/'.$atributo->getNomeSnakeCase().'/".$_FILES [\'' . $atributo->getNomeSnakeCase() . '\'][\'name\'] );';
+                
+            }
+            else
+            {
+                $codigo .= '
 		$' . $nomeDoObjeto . '->set' . ucfirst($atributo->getNome()) . ' ( $_POST [\'' . $atributo->getNomeSnakeCase() . '\'] );';
+            }
+            
         }
         foreach($atributosObjetos as $atributoObjeto){
             foreach($this->software->getObjetos() as $objeto3){

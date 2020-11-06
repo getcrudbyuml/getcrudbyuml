@@ -84,7 +84,7 @@ class EscritorDeSoftware
         $pdo = new PDO('sqlite:' . $bdNome);
         $pdo->exec($codigo);
         
-        $this->criarArquivos(JSAjaxGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/js', false);
+        $this->criarArquivos(JSAjaxGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/js');
         
         //Classes de customização.
         $this->criarArquivos(ControllerCustomGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/'.$this->software->getNomeSimples().'/custom/controller', false);
