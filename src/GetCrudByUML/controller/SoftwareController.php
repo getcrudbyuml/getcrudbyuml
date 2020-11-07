@@ -12,6 +12,7 @@ use GetCrudByUML\dao\AtributoDAO;
 use GetCrudByUML\gerador\javaDesktopEscritor\crudMvcDao\EscritorDeSoftware as EscritorJava;
 use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\crudPHP\EscritorDeSoftware as EscritorPHP;
 use GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\apiRestPHP\EscritorDeSoftware as EscritorAPIPHP;
+use GetCrudByUML\gerador\python\EscritorDeSoftware as EscritorPython;
 use GetCrudByUML\util\Zipador;
 
 /**
@@ -180,8 +181,8 @@ class SoftwareController
             EscritorPHP::main($this->selecionado, $diretorio);   
         }else if($_GET['escrever'] == "crud_java"){
             EscritorJava::main($this->selecionado, $diretorio);
-            
-        }else{
+        }else if($_GET['escrever'] == "crud_python"){
+            EscritorPython::main($this->selecionado, $diretorio);
             return;
         }
         if($_SERVER['HTTP_HOST'] != 'localhost'){
@@ -404,6 +405,7 @@ class SoftwareController
         <select id="select-tipo-codigo" name="escrever">
             <option value="crud_php">PHP Web CRUD MVC Bootstrap</option>
             <option value="api_php">PHP Web API Rest</option>
+            <option value="crud_java">Python Simples CRUD Console</option>
             <option value="crud_java">JAVA CRUD MVC Desktop (20% complet)</option>
         
         </select>
