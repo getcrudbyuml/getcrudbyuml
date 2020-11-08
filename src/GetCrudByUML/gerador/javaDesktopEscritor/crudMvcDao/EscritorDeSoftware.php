@@ -5,7 +5,7 @@ namespace GetCrudByUML\gerador\javaDesktopEscritor\crudMvcDao;
 
 use GetCrudByUML\gerador\sqlGerador\DBGerador;
 use GetCrudByUML\model\Software;
-
+use PDO;
 
 class EscritorDeSoftware
 {
@@ -59,23 +59,31 @@ class EscritorDeSoftware
         }
         
         
-        $this->diretorio .= '/crudJAVA';
-        $diretorio = $this->diretorio.'/src';
-        $this->criarArquivos(DBGerador::main($this->software), $diretorio.'/../..');
-        $this->criarArquivos(POMGerador::main($this->software), $diretorio.'/..');
-        $this->criarArquivos(MainJavaGerador::main($this->software), $diretorio.'/main/java/com/'.strtolower($this->software->getNomeSimples()).'/main');
-        $this->criarArquivos(ModelJavaGerador::main($this->software), $diretorio.'/main/java/com/'.strtolower($this->software->getNomeSimples()).'/model');
-        $this->criarArquivos(DAOJavaGerador::main($this->software), $diretorio.'/main/java/com/'.strtolower($this->software->getNomeSimples()).'/dao');
-        $this->criarArquivos(ViewJavaGerador::main($this->software), $diretorio.'/main/java/com/'.strtolower($this->software->getNomeSimples()).'/dao');
+        if($_SERVER['HTTP_HOST'] == 'localhost'){
+            $diretorioSrc = 'crudJAVA';
+        }else{
+            $diretorioSrc = 'crudJAVA';
+        }
+        $diretorio = $this->diretorio;
+
+        
+        $this->criarArquivos(DBGerador::main($this->software), $diretorio);
         $dbGerador = new DBGerador($this->software);
         $codigo = $dbGerador->geraBancoSqlite();
-        $bdNome = $this->diretorio . '../../' . $this->software->getNomeSnakeCase() . '.db';
+        $bdNome = $this->diretorio . '/' . $this->software->getNomeSnakeCase() . '.db';
         if (file_exists($bdNome)) {
             unlink($bdNome);
         }
-        $pdo = new \PDO('sqlite:' . $bdNome);
+        $pdo = new PDO('sqlite:' . $bdNome);
         $pdo->exec($codigo);
-
+        
+        $this->criarArquivos(POMGerador::main($this->software), $diretorio.'/'.$diretorioSrc);
+        $this->criarArquivos(MainJavaGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/src/main/java/com/'.strtolower($this->software->getNomeSimples()).'/main');
+        $this->criarArquivos(ModelJavaGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/src/main/java/com/'.strtolower($this->software->getNomeSimples()).'/model');
+        $this->criarArquivos(DAOJavaGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/src/main/java/com/'.strtolower($this->software->getNomeSimples()).'/dao');
+        $this->criarArquivos(ControllerJavaGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/src/main/java/com/'.strtolower($this->software->getNomeSimples()).'/controller');
+        
+        
         
     }
     

@@ -406,10 +406,11 @@ class SoftwareController
         <input type="hidden" name="pagina" value="software">
         <input type="hidden" name="selecionar" value="'.$software->getId().'">
         <select id="select-tipo-codigo" name="escrever">
-            <option value="crud_php">PHP Web CRUD MVC Bootstrap</option>
-            <option value="api_php">PHP Web API Rest</option>
-            <option value="crud_python">Python Simples CRUD Console</option>
-            <option value="crud_java">JAVA CRUD MVC Desktop (20% complet)</option>
+            <option value="crud_php">PHP - MVC-Web</option>
+            <option value="api_php">PHP - API Rest</option>
+            <option value="cliente_rest_js">Javascript - Cliente Rest</option>
+            <option value="crud_python">Python - Console Application</option>
+            <option value="crud_java">Java - Console Application</option>
         
         </select>
         </form>

@@ -163,7 +163,7 @@ public class DAO {
 	/**
 	 * Arquivo de configuração do banco de dados.
 	 */
-	public static final String ARQUIVO_CONFIGURACAO = "../../'. strtolower($this->software->getNome()) . '_db.ini";
+	public static final String ARQUIVO_CONFIGURACAO = "../'. strtolower($this->software->getNome()) . '_db.ini";
 	    
 	/**
 	 * Drive jdbc para Sqlite.
