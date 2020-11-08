@@ -67,7 +67,14 @@ class EscritorDeSoftware
         $this->criarArquivos(ModelJavaGerador::main($this->software), $diretorio.'/main/java/com/'.strtolower($this->software->getNomeSimples()).'/model');
         $this->criarArquivos(DAOJavaGerador::main($this->software), $diretorio.'/main/java/com/'.strtolower($this->software->getNomeSimples()).'/dao');
         $this->criarArquivos(ViewJavaGerador::main($this->software), $diretorio.'/main/java/com/'.strtolower($this->software->getNomeSimples()).'/dao');
-        
+        $dbGerador = new DBGerador($this->software);
+        $codigo = $dbGerador->geraBancoSqlite();
+        $bdNome = $this->diretorio . '../../' . $this->software->getNomeSnakeCase() . '.db';
+        if (file_exists($bdNome)) {
+            unlink($bdNome);
+        }
+        $pdo = new \PDO('sqlite:' . $bdNome);
+        $pdo->exec($codigo);
 
         
     }

@@ -60,7 +60,7 @@ class EscritorDeSoftware
         if($_SERVER['HTTP_HOST'] == 'localhost'){
             $diretorioSrc = 'src';
         }else{
-            $diretorioSrc = 'crudPython';
+            $diretorioSrc = 'crudPHP';
         }
         $diretorio = $this->diretorio;
         

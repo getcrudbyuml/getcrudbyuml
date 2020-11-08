@@ -183,6 +183,9 @@ class SoftwareController
             EscritorJava::main($this->selecionado, $diretorio);
         }else if($_GET['escrever'] == "crud_python"){
             EscritorPython::main($this->selecionado, $diretorio);
+            
+        }
+        else{
             return;
         }
         if($_SERVER['HTTP_HOST'] != 'localhost'){
@@ -405,7 +408,7 @@ class SoftwareController
         <select id="select-tipo-codigo" name="escrever">
             <option value="crud_php">PHP Web CRUD MVC Bootstrap</option>
             <option value="api_php">PHP Web API Rest</option>
-            <option value="crud_java">Python Simples CRUD Console</option>
+            <option value="crud_python">Python Simples CRUD Console</option>
             <option value="crud_java">JAVA CRUD MVC Desktop (20% complet)</option>
         
         </select>

@@ -67,13 +67,33 @@ class '.ucfirst($objeto->getNome()).':
         conn.close()
     def cadastrar():
         conn = sqlite3.connect(\''.$this->software->getNomeSnakeCase().'.db\')
-        cursor = conn.cursor()
-        p_nome = input(\'Nome: \')
+        cursor = conn.cursor()';
+        foreach($objeto->getAtributos() as $atributo){
+            if($atributo->isPrimary()){
+                continue;
+            }
+            if($atributo->tipoListado()){
+                $codigo .= '
+        p_'.$atributo->getNomeSnakeCase().' = input(\' '.$atributo->getNomeTextual().': \')';
+                
+            }else if($atributo->isObjeto()){
+                $codigo .= '
+        '.'p_id_'.$atributo->getNomeSnakeCase().' = input(\'ID_'.$atributo->getNomeTextual().'\')';
+
+                
+            }else{
+                continue;
+            }
+            
+        }
+        $codigo .= '
+
         # inserindo dados na tabela
         cursor.execute("""';
         $codigo .= '
-        "INSERT INTO ' . $objeto->getNomeSnakeCase() . '(';
+        INSERT INTO ' . $objeto->getNomeSnakeCase() . '(';
         $listaAtributos = array();
+        $listaAtributosP = array();
         $listaAtributosVar = array();
         foreach ($objeto->getAtributos() as $atributo)
         {
@@ -82,11 +102,13 @@ class '.ucfirst($objeto->getNome()).':
             }
             if($atributo->tipoListado()){
                 $listaAtributos[] = $atributo->getNomeSnakeCase();
-                $listaAtributosVar[] = ':' .lcfirst($atributo->getNome());
+                $listaAtributosP[] = 'p_'.$atributo->getNomeSnakeCase();
+                $listaAtributosVar[] = '?';
                 
             }else if($atributo->isObjeto()){
                 $listaAtributos[] = 'id_' . $atributo->getNomeSnakeCase();
-                $listaAtributosVar[] = ':' .lcfirst($atributo->getNome());
+                $listaAtributosVar[] = '?';
+                $listaAtributosP[] = 'p_id_'.$atributo->getNomeSnakeCase();
                 
             }else{
                 continue;
@@ -96,16 +118,31 @@ class '.ucfirst($objeto->getNome()).':
         $codigo .= implode(", ", $listaAtributos);
         $codigo .= ') VALUES (';
         $codigo .= implode(", ", $listaAtributosVar);
-        $codigo .= ');";';
+        $codigo .= ')';
         
         $codigo .= '
-        """, (p_nome))
+        """, (';
+        $codigo .= implode(", ", $listaAtributosP);
+        if(count($listaAtributosP) == 1){
+            $codigo .= ',';    
+        }
+        $codigo .= '))
         conn.commit()
-        conn.close
+        conn.close';
 
-                
+        $codigo .= '
+
+    def main():
+        while(True):
+            comando = input("0 - Sair \\\\n1 - Listar  \\\\n2 - Cadastrar\\\\n")
+            if comando == "1":
+                '.$objeto->getNome().'.listar()
+            elif comando == "2":
+                '.$objeto->getNome().'.cadastrar()
+            else:
+                print ("Voltando")
+                break;
 ';
-
         
         
         $this->listaDeArquivos[$objeto->getNomeSnakeCase().'.py'] = $codigo;

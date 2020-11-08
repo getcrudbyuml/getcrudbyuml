@@ -26,18 +26,44 @@ class MainPyGerador{
     
     
     public function geraMain(){
-        $objeto1 = $this->software->getObjetos()[0];
-        $codigo  = '
-
-from '.$objeto1->getNomeSnakeCase().' import '.ucfirst($objeto1->getNome()).'
-
+        $codigo = '';
+        foreach($this->software->getObjetos() as $objeto){
+            $codigo  .= '
+from '.$objeto->getNomeSnakeCase().' import '.ucfirst($objeto->getNome()).'';
+            
+        }
+        
+        $codigo .= '
 def main():
     while(True):
-        comando = input("1 - Listar   2 - Cadastrar\n")
-        if comando == "1":
-            '.ucfirst($objeto1->getNome()).'.listar()
-        elif comando == "2":
-            '.ucfirst($objeto1->getNome()).'.cadastrar()
+        comando = input("';
+        $i = 0;
+        foreach($this->software->getObjetos() as $objeto){ 
+            $codigo .= $i.' - '.$objeto->getNome().''.'\\\\n';
+            $i++;
+        }
+        $codigo .= '")';
+        $codigo .= '';
+        $i = 0;
+        $arrayObjetoStr = array();
+        foreach($this->software->getObjetos() as $objeto){
+            if($i == 0){
+                $arrayObjetoStr[] = '
+        if comando == "'.$i.'":
+            '.ucfirst($objeto->getNome()).'.main()';
+            }else{
+                $arrayObjetoStr[] = '
+        elif comando == "'.$i.'":
+            '.ucfirst($objeto->getNome()).'.main()';
+            }
+            
+            $i++;
+            
+        }
+        $codigo .= implode("", $arrayObjetoStr);
+        $codigo .= '
+        else:
+            print ("Code Not Found?")
 
 if __name__ == "__main__":
     main()  
