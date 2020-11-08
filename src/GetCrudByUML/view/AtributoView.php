@@ -29,7 +29,7 @@ class AtributoView {
 		    echo 'Attribute Name';
 		}
                 						  
-                						  echo '">
+                						  echo '" required>
                 						</div>
                                         <div class="form-group">
                 						  <select class="form-control form-control-user" id="select-tipo-atributo" name="tipo" placeholder="tipo" required>

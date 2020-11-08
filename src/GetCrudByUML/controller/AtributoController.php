@@ -54,7 +54,7 @@ class AtributoController {
         $selecionado = new Atributo();
 	    $selecionado->setId($_GET['selecionar']);
 	    if(!$usuarioDao->verificarPosseAtributo($usuario, $selecionado)){
-	        echo "Armaria, nam! Vc quer mesmo bugar o sistema! Continue que uma hora vc consegue. Nunca mencionei que o sistema era isento de falhas. ";
+	        echo "Este atributo pertence a outro usuário";
 	        return;
 	    }
 	    
@@ -168,7 +168,7 @@ class AtributoController {
 	    $selecionado->setId($_GET['selecionar']);
 	    
 	    if(!$usuarioDao->verificarPosseAtributo($usuario, $selecionado)){
-	        echo "Armaria, nam! Vc quer mesmo bugar o sistema! Continue que uma hora vc consegue. Nunca mencionei que o sistema era isento de falhas. ";
+	        echo "Este atributo pertence a outro usuário";
 	        return;
 	    }
 	    
