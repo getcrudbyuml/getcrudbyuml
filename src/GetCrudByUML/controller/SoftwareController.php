@@ -405,7 +405,7 @@ class SoftwareController
         <form id="form-escrever" method="get">
         <input type="hidden" name="pagina" value="software">
         <input type="hidden" name="selecionar" value="'.$software->getId().'">
-        <select id="select-tipo-codigo" name="escrever">
+        <select id="select-tipo-codigo" name="escrever" required>
             <option value="crud_php">PHP - MVC-Web</option>
             <option value="api_php">PHP - API Rest</option>
             <option value="crud_python">Python - Console Application</option>
