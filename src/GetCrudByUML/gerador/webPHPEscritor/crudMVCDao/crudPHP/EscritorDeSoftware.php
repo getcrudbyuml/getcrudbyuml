@@ -61,7 +61,7 @@ class EscritorDeSoftware
             }
         }
         if($_SERVER['HTTP_HOST'] == 'localhost'){
-            $diretorioSrc = 'src';
+            $diretorioSrc = 'crudPHP';
         }else{
             $diretorioSrc = 'crudPHP';
         }
