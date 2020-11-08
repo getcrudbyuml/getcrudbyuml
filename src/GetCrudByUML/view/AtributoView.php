@@ -32,7 +32,7 @@ class AtributoView {
                 						  echo '">
                 						</div>
                                         <div class="form-group">
-                						  <select class="form-control form-control-user" id="select-tipo-atributo" name="tipo" placeholder="tipo">
+                						  <select class="form-control form-control-user" id="select-tipo-atributo" name="tipo" placeholder="tipo" required>
                                             <option value="'.Atributo::TIPO_STRING.'">String</option>
                                             <option value="'.Atributo::TIPO_INT.'">Int</option>
                                             <option value="'.Atributo::TIPO_BOOLEAN.'">Boolean</option>

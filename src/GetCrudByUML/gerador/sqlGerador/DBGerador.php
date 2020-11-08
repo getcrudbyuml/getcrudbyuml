@@ -129,7 +129,13 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase() . '_' . strtolower(explode(" ", $at
                         }
                     }
                     if($objetoDoAtributo == null){
-                        echo "<br>Atributo do tipo ".$atributo->getTipo().' não pode ser criada.<br>';
+                        if($atributo->getTipo() == ""){
+                            $tipo = $atributo->getNome()." Tipo: Vazio ";
+                        }else{
+                            $tipo = $atributo->getNome()."Tipo: ".$atributo->getTipo();
+                        }
+                        
+                        echo "<br>Atributo do tipo ".$tipo.' não pode ser criada.<br>';
                         break;
                     }
                     
