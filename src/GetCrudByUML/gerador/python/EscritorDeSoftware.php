@@ -58,9 +58,9 @@ class EscritorDeSoftware
             }
         }
         if($_SERVER['HTTP_HOST'] == 'localhost'){
-            $diretorioSrc = 'src';
+            $diretorioSrc = 'crudPython';
         }else{
-            $diretorioSrc = 'crudPHP';
+            $diretorioSrc = 'crudPython';
         }
         $diretorio = $this->diretorio;
         
@@ -75,30 +75,5 @@ class EscritorDeSoftware
         }
         $pdo = new PDO('sqlite:' . $bdNome);
         $pdo->exec($codigo);
-        
-        
-//         $this->criarArquivos(DAOGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/'.$this->software->getNomeSimples().'/dao');
-//         $this->criarArquivos(ViewGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/'.$this->software->getNomeSimples().'/view');
-//         $this->criarArquivos(ControllerGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/'.$this->software->getNomeSimples().'/controller');
-//         $this->criarArquivos(IndexGerador::main($this->software), $diretorio.'/'.$diretorioSrc, false);
-        
-//         $this->criarArquivos(DBGerador::main($this->software), $diretorio);
-        
-//         $dbGerador = new DBGerador($this->software);
-//         $codigo = $dbGerador->geraBancoSqlite();
-//         $bdNome = $this->diretorio . '/' . $this->software->getNomeSnakeCase() . '.db';
-//         if (file_exists($bdNome)) {
-//             unlink($bdNome);
-//         }
-//         $pdo = new PDO('sqlite:' . $bdNome);
-//         $pdo->exec($codigo);
-        
-//         $this->criarArquivos(JSAjaxGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/js');
-        
-//         //Classes de customização.
-//         $this->criarArquivos(ControllerCustomGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/'.$this->software->getNomeSimples().'/custom/controller', false);
-//         $this->criarArquivos(DAOCustomGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/'.$this->software->getNomeSimples().'/custom/dao', false);
-//         $this->criarArquivos(ViewCustomGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/'.$this->software->getNomeSimples().'/custom/view', false);
-        
     }
 }
