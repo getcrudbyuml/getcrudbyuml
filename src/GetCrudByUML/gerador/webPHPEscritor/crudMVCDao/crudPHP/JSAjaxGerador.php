@@ -4,6 +4,7 @@ namespace GetCrudByUML\gerador\webPHPEscritor\crudMVCDao\crudPHP;
 
 use GetCrudByUML\model\Objeto;
 use GetCrudByUML\model\Software;
+use GetCrudByUML\model\Atributo;
 
 class JSAjaxGerador
 {
@@ -43,15 +44,31 @@ class JSAjaxGerador
    
     private function geraModel(Objeto $objeto)
     {
+        $possuiCampoArquivo = false;
+        foreach($objeto->getAtributos() as $atributo){
+            if($atributo->getTipo() == Atributo::TIPO_IMAGE){
+                $possuiCampoArquivo = true;
+                break;
+            }
+        }
         $codigo = '
 
 $(document).ready(function(e) {
 	$("#insert_form_'.$objeto->getNomeSnakeCase().'").on(\'submit\', function(e) {
 		e.preventDefault();
         $(\'#modalAdd'.$objeto->getNome().'\').modal(\'hide\');
-
+        ';
+        if($possuiCampoArquivo){
+            $codigo .= '
         var dados = new FormData(this);
-
+        ';
+        }else{
+            $codigo .= '
+		var dados = jQuery( this ).serialize();
+        ';
+        }
+        
+        $codigo .= '
 		jQuery.ajax({
             type: "POST",
             url: "index.php?ajax=' .$objeto->getNomeSnakeCase() . '",
@@ -75,8 +92,11 @@ $(document).ready(function(e) {
                 	$("#textoModalResposta").text("Falha ao inserir ' .$objeto->getNomeTextual() . ', fale com o suporte. ");                	
             		$("#modalResposta").modal("show");
             	}
-
-            },         
+';
+        
+        if($possuiCampoArquivo){
+            $codigo .= '
+            },
             cache: false,
             contentType: false,
             processData: false,
@@ -87,7 +107,11 @@ $(document).ready(function(e) {
                     /* faz alguma coisa durante o progresso do upload */
                     }, false);
                 }
-                return myXhr;
+                return myXhr;';
+        }
+        
+        
+        $codigo .= '
             }
         });
 		
