@@ -38,16 +38,8 @@ class NavBarController{
             </li>';
               
              echo '
-            <li class="nav-item active">
-              <a class="nav-link" href="#noticias">';
-        if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt')
-        {
-            echo 'Notícias';
-        }else{
-            echo 'Blog';
-        }
-              
-              echo '</a>
+            <li class="nav-item">
+              <a class="nav-link" href="index.php#noticias">Blog</a>
             </li>';
               
                
@@ -58,7 +50,14 @@ class NavBarController{
     
               <li class="nav-item"> 
                 <a class="nav-link" href="?pagina=login">Login</a>
-             </li>  ';
+             </li> 
+
+              <li class="nav-item"> 
+                <a class="nav-link" data-toggle="modal" data-target="#modalAddUsuario">Create Account</a>
+             </li> 
+
+
+ ';
             
         }else if($sessao->getNivelAcesso() == Sessao::NIVEL_COMPLETO || $sessao->getNivelAcesso() == Sessao::NIVEL_ADM){
             echo '

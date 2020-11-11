@@ -1,7 +1,12 @@
 <?php
 
 define("DB_INI", "../config/escritordesoftware_bd.ini");
-define("DB_INI_BLOG", "../config/blog_get_crud_by_uml_db.ini");
+if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
+    define("DB_INI_BLOG", "../config/blog_get_crud_by_uml_db.ini");
+}else{
+    define("DB_INI_BLOG", "../config/blog_get_crud_by_uml_eng_db.ini");
+}
+
 define("PREFIXO_WP", 'wp_');
 include "blogGetCrudByUML/util/Simple_html_dom.php";
 
@@ -123,6 +128,7 @@ echo '
 
 <title>getCrudByUml</title>
 <script data-ad-client="ca-pub-1493485857193768" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
 </head>
 <body>
 	<div class="d-flex" id="wrapper">';
@@ -214,7 +220,6 @@ echo '
 <script src="js/escritor.js"></script>
 <script src="js/usuario.js"></script>
 <script src="js/chat.js"></script>
-<script data-ad-client="ca-pub-1493485857193768" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
 </body>
 </html>';
