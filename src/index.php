@@ -129,6 +129,7 @@ echo '
 <title>getCrudByUml</title>
 <script data-ad-client="ca-pub-1493485857193768" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
+
 </head>
 <body>
 	<div class="d-flex" id="wrapper">';
@@ -220,6 +221,14 @@ echo '
 <script src="js/escritor.js"></script>
 <script src="js/usuario.js"></script>
 <script src="js/chat.js"></script>
+';
+if(isset($_GET['create'])){
+    echo '
+<script>
+$(\'#modalAddUsuario\').modal(\'toggle\');
+</script>';
+}
 
+echo '
 </body>
 </html>';

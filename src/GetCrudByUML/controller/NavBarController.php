@@ -53,7 +53,7 @@ class NavBarController{
              </li> 
 
               <li class="nav-item"> 
-                <a class="nav-link" data-toggle="modal" data-target="#modalAddUsuario">Create Account</a>
+                <a class="nav-link" href="?create=account">Create Account</a>
              </li> 
 
 
