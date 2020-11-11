@@ -28,7 +28,7 @@ class  PostsCustomDAO extends PostsDAO {
         WHERE post_status = 'publish'
         AND post_type = '$tipo'
          ORDER BY ID DESC LIMIT $limit";
-        $result = $this->getConexao ()->query ( $sql );
+        $result = $this->getConnection()->query ( $sql );
         
         foreach ( $result as $linha ) {
             
@@ -48,7 +48,7 @@ class  PostsCustomDAO extends PostsDAO {
         $ID = $post->getID();
         $sql = "SELECT * FROM ".PREFIXO_WP."posts
                  WHERE ID = $ID";
-        $result = $this->getConexao ()->query ( $sql );
+        $result = $this->getConnection ()->query ( $sql );
         
         foreach ( $result as $linha ) {
             $post->setID( $linha ['ID'] );
@@ -70,7 +70,7 @@ class  PostsCustomDAO extends PostsDAO {
         AND LOWER(post_content) like '%$content%'
         ORDER BY ID DESC LIMIT 1000";
         
-        $result = $this->getConexao ()->query ( $sql );
+        $result = $this->getConnection ()->query ( $sql );
         
         foreach ( $result as $linha ) {
             $post2 = new Posts();
@@ -94,7 +94,7 @@ class  PostsCustomDAO extends PostsDAO {
                  ORDER BY ID DESC LIMIT 1000";
         
         
-        $result = $this->getConexao ()->query ( $sql );
+        $result = $this->getConnection ()->query ( $sql );
         
         foreach ( $result as $linha ) {
             $post2 = new Posts();

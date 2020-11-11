@@ -5,6 +5,7 @@
 namespace GetCrudByUML\controller;
 use GetCrudByUML\util\Sessao;
 use GetCrudByUML\custom\view\UsuarioCustomView;
+use blogGetCrudByUML\custom\dao\PostsCustomDAO;
 
 class HomeController{
     
@@ -234,6 +235,61 @@ echo '" height="200" alt="QR Code">
             
 
 ';
+    
+    
+    
+    
+    $postDao = new PostsCustomDAO();
+    $lista = $postDao->retornaLista(3);
+    
+    
+    
+    echo '
+        
+<section class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center" id="noticias">
+        
+        
+        
+        
+        
+    <div class="container">
+	<h2>Blog</h2>
+        <p> Estas são as mais recentes.<a href="?pagina=post"> Veja todas aqui.</a></p>
+    	<div class="row">
+    		<div class="container">
+            	<div class="row">';
+    foreach($lista as $post){
+        echo '
+                    <div class="col-md-4">
+                		<div class="card mb rounded">';
+        if($post->getImgPath() != null){
+            echo '<a href="?pagina=post&selecionar='.$post->getID().'"><img class="card-img-top" src="'.$post->getImgPath().'"  alt="Card image cap"></a>';
+        }
+        
+        echo '
+                          <div class="card-body mb">
+                            <h5 class="card-title"><a class="text-dark" href="?pagina=post&selecionar='.$post->getID().'">'.mb_strimwidth( strip_tags($post->getTitle()), 0, 45 , "...").'</a></h5>
+                            <p>'.date("d.m.Y", strtotime($post->getDate())).'</p>
+                            <p class="card-text">'.mb_strimwidth( strip_tags($post->getContent()), 0, 150 , "...").'</p>
+                                
+                          </div>
+                        </div>
+                    </div>';
+    }
+    
+    echo '
+        
+            	</div>
+            </div>
+        </div>
+    </div>
+        
+        
+';
+    
+    
+    echo '
+</section>';
         
     }
     

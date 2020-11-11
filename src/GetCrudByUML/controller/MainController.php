@@ -63,7 +63,8 @@ class MainController{
                 $controller->editarSenha($usuario);
                 break;
             case 'post':
-                PostsCustomController::main();
+                $controller = new PostsCustomController();
+                $controller->main();
                 break;
             default:
                 echo '404';

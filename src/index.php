@@ -1,7 +1,7 @@
 <?php
 
-define("DB_INI", "../escritordesoftware_bd.ini");
-define("DB_INI_BLOG", "../blog_get_crud_by_uml_db.ini");
+define("DB_INI", "../config/escritordesoftware_bd.ini");
+define("DB_INI_BLOG", "../config/blog_get_crud_by_uml_db.ini");
 define("PREFIXO_WP", 'wp_');
 include "blogGetCrudByUML/util/Simple_html_dom.php";
 
