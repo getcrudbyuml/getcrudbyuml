@@ -27,11 +27,7 @@ class Posts {
 	public function setContent($content) {
 	    $this->content = $content;
 	    $html = new \simple_html_dom($content);
-	    $i = 0;
-	    if($html == null){
-	        $this->content = '';
-	        return;
-	    }
+	    $i = 0;   
 	    foreach($html->find('img') as $img)
 	    {
 	        $search = 'http://dti.unilab.edu.br/wp-content';

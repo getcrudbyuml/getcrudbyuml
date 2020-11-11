@@ -36,6 +36,21 @@ class NavBarController{
               
               echo '</a>
             </li>';
+              
+             echo '
+            <li class="nav-item active">
+              <a class="nav-link" href="#noticias">';
+        if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt')
+        {
+            echo 'Notícias';
+        }else{
+            echo 'Blog';
+        }
+              
+              echo '</a>
+            </li>';
+              
+               
         
         if($sessao->getNivelAcesso() == Sessao::NIVEL_DESLOGADO || $sessao->getNivelAcesso() == Sessao::NIVEL_VERIFICADO)
         {
