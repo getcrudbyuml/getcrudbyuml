@@ -198,9 +198,27 @@ class SoftwareController
             echo '
 
 <div class="alert alert-success" role="alert">
-    O link de Download Contém um arquivo .zip com '.$numeroDeArquivos.' arquivos.  
+    O link de Download Contém um arquivo .zip com '.$numeroDeArquivos.' arquivos.
+    
+  
+</div>
+<div class="alert alert-warning" role="alert">
+  <br>Considere fazer uma doação. 
+    <br>Ah, vai não seja mão de vaca, um real não vai fazer falta. <br>
+    Clica aí no botão do PayPal, 
+    isso vai evitar que eu precise começar a fazer corridas de Uber 
+    e vai me dar mais tempo para fazer novas funcionalidades pra vocês. 
+    <br><br><img class="img-fluid" src="https://media.tumblr.com/71bb156842af5ac635b7973b911d9692/tumblr_inline_mmg4b8JK391qz4rgp.gif" alt="Gatinho"><br><br>
+    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+    <input type="hidden" name="cmd" value="_s-xclick" />
+    <input type="hidden" name="hosted_button_id" value="YZ2P3PA58NHJ2" />
+    <input type="image" src="https://www.paypalobjects.com/pt_BR/BR/i/btn/btn_donateCC_LG.gif" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+    <img alt=""  src="https://www.paypal.com/pt_BR/i/scr/pixel.gif" width="1" height="1" />
+    </form>
 </div>
 ';
+            
+            
         }else{
             
             echo '

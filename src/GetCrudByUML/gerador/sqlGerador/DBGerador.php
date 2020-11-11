@@ -37,7 +37,7 @@ class DBGerador
     {
         $this->geraINI();
         $this->geraBancoPG();
-//         $this->geraBancoMysql();
+        $this->geraBancoMysql();
         $this->geraBancoSqlite();
 
         return $this->listaDeArquivos;
@@ -194,119 +194,125 @@ ALTER TABLE ' . $atributo->getArrayTipoSnakeCase() . '
      * @return string
      */
     public function geraBancoMysql()
-    {
-        $objetosNN = array();
-        $objetos1N = array();
-        $codigo = '-- GetCrudByUml Forward Engineering';
-        foreach ($this->software->getObjetos() as $objeto) {
-            
-            $campos = array();
-            foreach ($objeto->getAtributos() as $atributo)
+    {        $objetosNN = array();
+    $objetos1N = array();
+    $codigo = '';
+    foreach ($this->software->getObjetos() as $objeto) {
+        
+        $campos = array();
+        foreach ($objeto->getAtributos() as $atributo)
+        {
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY && $atributo->tipoListado()) {
+                $campos[] = $atributo->getNomeSnakeCase() . '  INT NOT NULL AUTO_INCREMENT ';
+                $campos[] = 'PRIMARY KEY (' .$atributo->getNomeSnakeCase() .')';
+            } else if ($atributo->tipoListado()) {
+                $campos[] = $atributo->getNomeSnakeCase() . ' ' . $atributo->getTipoMysql();
+            } else if ($atributo->isArrayNN())
             {
-                if ($atributo->getIndice() == Atributo::INDICE_PRIMARY && $atributo->tipoListado()) {
-                    $campos[] = $atributo->getNomeSnakeCase() . '  INT NOT NULL AUTO_INCREMENT';
-                    $campos[] = 'PRIMARY KEY (' . $atributo->getNomeSnakeCase() . ')';
-                } else if ($atributo->tipoListado()) {
-                    $campos[] = $atributo->getNomeSnakeCase() . ' ' . $atributo->getTipoMysql();
-                } else if ($atributo->isArrayNN())
-                {
-                    $objetosNN[] = $objeto;
-                } else if ($atributo->isArray1N()) {
-                    $objetos1N[] = $objeto;
-                } else if ($atributo->isObjeto()) {
-                    $campos[] = 'id' . '_' . $atributo->getNomeSnakeCase() . ' INT NOT NULL';
-                }
-            }
-            
-            $codigo .= '
-CREATE TABLE ' . $objeto->getNomeSnakeCase();
-            $codigo .= " (\n        ";
-            $codigo .= implode(", \n        ", $campos);
-            $codigo .= "\n)
- ENGINE = InnoDB;\n";
-        }
-        foreach ($objetosNN as $objeto) {
-            
-            // explode(' ', $string);
-            foreach ($objeto->getAtributos() as $atributo) {
-                if ($atributo->isArrayNN()) {
-                    $codigo .= '
-CREATE TABLE ' . $objeto->getNomeSnakeCase() . '_' . strtolower(explode(" ", $atributo->getTipoSnakeCase())[2]);
-                    $codigo .= '(
-    id INT NOT NULL AUTO_INCREMENT,
-    PRIMARY KEY (id), 
-    id_' . $objeto->getNomeSnakeCase() . ' INT NOT NULL,
-    id_' . $atributo->getArrayTipoSnakeCase() . ' INT NOT NULL,
-    CONSTRAINT fk_' . $objeto->getNomeSnakeCase() . '_id 
-        FOREIGN KEY (id_' . $objeto->getNomeSnakeCase() . ')
-        REFERENCES ' . $objeto->getNomeSnakeCase() . ' (id)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION),
-        INDEX fk_' . $atributo->getArrayTipoSnakeCase() . '_id (`imovel_id` ASC) VISIBLE,
-    CONSTRAINT fk_' . $atributo->getArrayTipoSnakeCase() . '_id
-        FOREIGN KEY (id_' . $atributo->getArrayTipoSnakeCase() . ')
-        REFERENCES ' . $atributo->getArrayTipoSnakeCase() . ' (id)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION)
-)
- ENGINE = InnoDB;';
-                }
-            }
-        }
-        // Adicionar outras chaves estrangeiras.
-        foreach ($this->software->getObjetos() as $objeto) {
-            foreach ($objeto->getAtributos() as $atributo) {
-                if ($atributo->isObjeto()) {
-                    foreach ($this->software->getObjetos() as $objeto2) {
-                        if ($atributo->getTipo() == $objeto2->getNome()) {
-                            $objetoDoAtributo = $objeto2;
-                            break;
-                        }
-                    }
-                    foreach ($objetoDoAtributo->getAtributos() as $atributo3) {
-                        if ($atributo3->getIndice() == Atributo::INDICE_PRIMARY) {
-                            $atributoPrimary = $atributo3;
-                            break;
-                        }
-                    }
-                    $codigo .= '
-                        
-ALTER TABLE ' . $objeto->getNomeSnakeCase() . '
-    ADD CONSTRAINT fk_' . $objeto->getNomeSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ' FOREIGN KEY ('.$atributoPrimary->getNomeSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ')
-    REFERENCES ' . $atributo->getTipoSnakeCase() . ' (' . $atributoPrimary->getNomeSnakeCase() . ');
-';
-                }
+                $objetosNN[] = $objeto;
+            } else if ($atributo->isArray1N()) {
+                $objetos1N[] = $objeto;
+            } else if ($atributo->isObjeto()) {
+                $campos[] = 'id' . '_' . $atributo->getNomeSnakeCase() . ' INT NOT NULL';
             }
         }
         
-        foreach ($objetos1N as $objeto) {
-            $atributoPK = null;
-            foreach ($objeto->getAtributos() as $atributo) {
-                if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                    $atributoPK = $atributo;
-                }
+        $codigo .= '
+CREATE TABLE IF NOT EXISTS ' . $objeto->getNomeSnakeCase();
+        $codigo .= " (\n        ";
+        $codigo .= implode(", \n        ", $campos);
+        $codigo .= "\n)ENGINE = InnoDB;\n";
+    }
+    foreach ($objetosNN as $objeto) {
+        
+        // explode(' ', $string);
+        foreach ($objeto->getAtributos() as $atributo) {
+            if ($atributo->isArrayNN()) {
+                $codigo .= '
+CREATE TABLE IF NOT EXISTS ' . $objeto->getNomeSnakeCase() . '_' . strtolower(explode(" ", $atributo->getTipoSnakeCase())[2]);
+                $codigo .= '(
+    id_' . $objeto->getNomeSnakeCase() . ' INT NOT NULL,
+    id_' . $atributo->getArrayTipoSnakeCase() . ' INT NOT NULL,
+    PRIMARY KEY (id_' . $objeto->getNomeSnakeCase() . ', id_' . $atributo->getArrayTipoSnakeCase() . '),
+    CONSTRAINT fk_' . $objeto->getNomeSnakeCase() . '_id 
+    FOREIGN KEY (id_' . $objeto->getNomeSnakeCase() . ')
+    REFERENCES ' . $objeto->getNomeSnakeCase() . ' (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+    CONSTRAINT fk_' . $atributo->getArrayTipoSnakeCase() . '_id
+    FOREIGN KEY (id_' . $atributo->getArrayTipoSnakeCase() . ')
+    REFERENCES ' . $atributo->getArrayTipoSnakeCase() . ' (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+)ENGINE = InnoDB;';
             }
-            foreach ($objeto->getAtributos() as $atributo) {
+        }
+    }
+    // Adicionar outras chaves estrangeiras.
+    foreach ($this->software->getObjetos() as $objeto) {
+        foreach ($objeto->getAtributos() as $atributo) {
+            if ($atributo->isObjeto()) {
+                $objetoDoAtributo = null;
+                foreach ($this->software->getObjetos() as $objeto2) {
+                    if ($atributo->getTipo() == $objeto2->getNome()) {
+                        $objetoDoAtributo = $objeto2;
+                        break;
+                    }
+                }
+                if($objetoDoAtributo == null){
+                    if($atributo->getTipo() == ""){
+                        $tipo = $atributo->getNome()." Tipo: Vazio ";
+                    }else{
+                        $tipo = $atributo->getNome()."Tipo: ".$atributo->getTipo();
+                    }
+                    
+                    echo "<br>Atributo do tipo ".$tipo.' não pode ser criada.<br>';
+                    break;
+                }
                 
-                if ($atributo->isArray1N()) {
-                    if ($atributoPK != null) {
-                        
-                        $codigo .= '
+                foreach ($objetoDoAtributo->getAtributos() as $atributo3) {
+                    if ($atributo3->getIndice() == Atributo::INDICE_PRIMARY) {
+                        $atributoPrimary = $atributo3;
+                        break;
+                    }
+                }
+                $codigo .= '
+ALTER TABLE ' . $objeto->getNomeSnakeCase() . '
+    ADD CONSTRAINT fk_' . $objeto->getNomeSnakeCase() . '_' . $atributo->getNomeSnakeCase() . ' FOREIGN KEY (id_' . $atributo->getTipoSnakeCase() . ')
+    REFERENCES ' . $atributo->getTipoSnakeCase() . ' (' . $atributoPrimary->getNomeSnakeCase() . ');
+';
+            }
+        }
+    }
+    
+    foreach ($objetos1N as $objeto) {
+        $atributoPK = null;
+        foreach ($objeto->getAtributos() as $atributo) {
+            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
+                $atributoPK = $atributo;
+            }
+        }
+        foreach ($objeto->getAtributos() as $atributo) {
+            
+            if ($atributo->isArray1N()) {
+                if ($atributoPK != null) {
+                    
+                    $codigo .= '
 ALTER TABLE ' . $atributo->getArrayTipoSnakeCase() .
-' ADD COLUMN  ' . $atributoPK->getNomeSnakeCase() . '_' . $objeto->getNomeSnakeCase() . '  integer ;';
+' ADD COLUMN  ' . $atributoPK->getNomeSnakeCase() . '_' . $objeto->getNomeSnakeCase() . '  INT ;';
+                    
+                    $codigo .= '
                         
-                        $codigo .= '
-                            
 ALTER TABLE ' . $atributo->getArrayTipoSnakeCase() . '
     ADD CONSTRAINT
     fk'. '_' . $objeto->getNomeSnakeCase() . '_' . $atributo->getNomeSnakeCase() .
     ' FOREIGN KEY (' . $atributoPK->getNomeSnakeCase() . '_' . $objeto->getNomeSnakeCase() . ')
     REFERENCES ' . $objeto->getNomeSnakeCase() . ' (' . $atributoPK->getNomeSnakeCase() . ');
 ';
-                    }
                 }
             }
         }
+    }
         $path = $this->software->getNomeSnakeCase() . '_banco_mysql.sql';
         $this->listaDeArquivos[$path] = $codigo;
         return $codigo;
