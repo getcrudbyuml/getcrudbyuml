@@ -7,7 +7,6 @@ use GetCrudByUML\model\Usuario;
 use GetCrudByUML\util\Sessao;
 use blogGetCrudByUML\custom\controller\PostsCustomController;
 
-
 class MainController{
     
     public static function mainDeslogado(){

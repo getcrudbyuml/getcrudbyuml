@@ -407,10 +407,10 @@ class ControllerGerador{
         return $codigo;
         
     }
-    public function list() : string {
+    public function fetch() : string {
         $codigo = '
 
-	public function list() 
+	public function fetch() 
     {
 		$list = $this->dao->fetch();
 		$this->view->showList($list);
@@ -440,7 +440,7 @@ class ControllerGerador{
 	    }else{
             $this->add();
         }
-        $this->list();
+        $this->fetch();
         
         echo \'</div>\';
         echo \'</div>\';
@@ -570,7 +570,14 @@ class ControllerGerador{
     public function select(Objeto $objeto):string{
         
         $atributosNN = array();
-        
+        $atributos1N = array();
+        foreach($objeto->getAtributos() as $atrib){
+            if($atrib->isArrayNN()){
+                $atributosNN[] = $atrib;
+            }else if($atrib->isArray1N()){
+                $atributos1N[] = $atrib;
+            }
+        }
         
         $codigo = '';
         
@@ -584,7 +591,7 @@ class ControllerGerador{
 	    $selected->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'select\']);
 	        
         $this->dao->fillBy'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selected);
-            
+
         echo \'<div class="col-xl-7 col-lg-7 col-md-12 col-sm-12">\';
 	    $this->view->showSelected($selected);
         echo \'</div>\';
@@ -676,22 +683,20 @@ class ControllerGerador{
  */
 
 namespace '.$this->software->getNome().'\\\\controller;
-
-use '.$this->software->getNome().'\\\\dao\\\\'.ucfirst($objeto->getNome()).'DAO;
-';
+use '.$this->software->getNome().'\\\\dao\\\\'.ucfirst($objeto->getNome()).'DAO;';
         
         foreach ($objeto->getAtributos() as $atributo) {
             if ($atributo->isObjeto()) {
                 $codigo .= '
-
-use '.$this->software->getNome().'\\\\dao\\\\'.ucfirst($atributo->getTipo()).'DAO;
-
-';
+use '.$this->software->getNome().'\\\\dao\\\\'.ucfirst($atributo->getTipo()).'DAO;';
                 
+            }else if($atributo->isArrayNN()){
+                $codigo .= '
+use '.$this->software->getNome().'\\\\model\\\\'.ucfirst($atributo->getTipoDeArray()).';
+use '.$this->software->getNome().'\\\\dao\\\\'.ucfirst($atributo->getTipoDeArray()).'DAO;';
             }
         }
         $codigo .= '
-
 use '.$this->software->getNome().'\\\\model\\\\'.ucfirst($objeto->getNome()).';
 use '.$this->software->getNome().'\\\\view\\\\'.ucfirst($objeto->getNome()).'View;
 
@@ -702,7 +707,7 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
     protected $dao;';
         $codigo .= $this->construct($objeto);
         $codigo .= $this->delete($objeto);
-        $codigo .= $this->list();
+        $codigo .= $this->fetch();
         $codigo .= $this->add($objeto);
         $codigo .= $this->addAjax($objeto);
         $codigo .= $this->edit($objeto);

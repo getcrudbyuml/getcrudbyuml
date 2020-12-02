@@ -245,7 +245,12 @@ class Atributo {
 	}
 	public function getFormHTML(){
 	    
-	    $form = '<input type="'.$this->getTipoFormHTML().'" class="form-control"  name="' . $this->getNomeSnakeCase(). '" id="' . $this->getNomeSnakeCase(). '" placeholder="' . $this->getNomeTextual(). '">';
+	    $form = '<input type="'.$this->getTipoFormHTML().'" class="form-control" ';
+	    if($this->tipo == self::TIPO_FLOAT){
+	        $form .= 'step="0.01"';
+	    }
+	    $form .= ' name="' . $this->getNomeSnakeCase(). '" id="' . $this->getNomeSnakeCase(). '" placeholder="' . $this->getNomeTextual(). '">';
+	    
 	    if($this->getTipo() == self::TIPO_BOOLEAN){
 	        $form = '
                     <select class="form-control" id="' . $this->getNomeSnakeCase(). '" name="' . $this->getNomeSnakeCase(). '">
