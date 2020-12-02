@@ -504,66 +504,47 @@ class ViewGerador{
 ';
         return $codigo;
     }
-    private function geraViews(Objeto $objeto)
-    {
+
+    private function showAtributoArray(Objeto $objeto) : string{
         $codigo = '';
-        
-        
-        $atributosNN = array();
+        $atributosArray = array();
         foreach ($objeto->getAtributos() as $atributo) {
-            if($atributo->isArrayNN()){
-                
-                $atributosNN[] = $atributo;
-                
+            if($atributo->isArray()){
+                $atributosArray[] = $atributo;
             }
         }
-        
-        $codigo = '<?php
-            
-/**
- * Classe de visao para ' . $objeto->getNome() . '
- * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
- *
- */
-
-namespace '.$this->software->getNome().'\\\\view;
-use '.$this->software->getNome().'\\\\model\\\\'.ucfirst($objeto->getNome()).';
-
-
-
-class ' . $objeto->getNome() . 'View {';
-        $codigo .= '';
-        $codigo .= $this->showInsertForm($objeto);
-        $codigo .= $this->showList($objeto);
-        $codigo .= $this->showEditForm($objeto);
-        $codigo .= $this->mostrarSelecionado($objeto);
-        $codigo .= $this->confirmDelete($objeto);
-        
-        foreach($atributosNN as $atributoNN){
-            foreach($this->software->getObjetos() as $objeto3){
-                if($objeto3->getNome() == explode(' ', $atributoNN->getTipo())[2]){
-                    $objetoNN = $objeto3;
+        foreach($atributosArray as $atributoArray){
+            $objetoNN = null;
+            foreach($this->software->getObjetos() as $obj){
+                if($obj->getNome() == $atributoArray->getTipoDeArray()){
+                    $objetoNN = $obj;
                     break;
                 }
             }
+            if($objetoNN == null){
+                continue;
+            }
+            $atributoPrimary = null;
             foreach ($objetoNN->getAtributos() as $atributo2) {
-                if(substr($atributo2->getTipo(),0,6) == 'Array '){
-                    
-                }else if($atributo2->getTipo() == Atributo::TIPO_INT || $atributo2->getTipo() == Atributo::TIPO_STRING || $atributo2->getTipo() == Atributo::TIPO_FLOAT)
+                if($atributo2->tipoListado())
                 {
                     $atributosComuns2[] = $atributo2;
                 }
+                if($atributo2->isPrimary()){
+                    $atributoPrimary = $atributo2;
+                }
             }
-            
+            if($atributoPrimary == null){
+                continue;
+            }
             $codigo .= '
-                
-    public function show'.ucfirst($atributoNN->getNome()).'('.ucfirst($objeto->getNome()).' $'.strtolower($objeto->getNome()).'){
+    public function show'.ucfirst($atributoArray->getNome()).'('.ucfirst($objeto->getNome()).' $'.strtolower($objeto->getNome()).'){
         echo \'
         
     	<div class="card o-hidden border-0 shadow-lg my-5">
               <div class="card mb-4">
                 <div class="card-header">
-                  '.explode(" ", $atributoNN->getTipo())[2].' do '.$objeto->getNome().'
+                  '.explode(" ", $atributoArray->getTipo())[2].' do '.$objeto->getNome().'
                 </div>
                 <div class="card-body">
                       
@@ -606,7 +587,7 @@ class ' . $objeto->getNome() . 'View {';
             
             $codigo .= '
                 
-            foreach($'.strtolower($objeto->getNome()).'->get'.ucfirst($atributoNN->getNome()).'() as $element){
+            foreach($'.strtolower($objeto->getNome()).'->get'.ucfirst($atributoArray->getNome()).'() as $element){
                 echo \'<tr>\';';
             $i = 0;
             foreach($atributosComuns2 as $atributo3){
@@ -618,8 +599,8 @@ class ' . $objeto->getNome() . 'View {';
                 echo \'<td>\'.$element->get'.ucfirst ($atributo3->getNome()).'().\'</td>\';';
             }
             $codigo .= 'echo \'<td>
-                        <a href="?page='.strtolower(explode(' ', $atributoNN->getTipo())[2]).'&select=\'.$element->get'.ucfirst ($objetoNN->getAtributos()[0]->getNome()).'().\'" class="btn btn-info">Selecionar</a>
-                        <a href="?page='.strtolower($objeto->getNome()).'&select=\'.$'.strtolower($objeto->getNome()).'->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'&remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'=\'.$element->get'.ucfirst($atributosComuns2[0]->getNome()).'().\'" class="btn btn-danger">Remover</a>
+                        <a href="?page='.$atributoArray->getTipoDeArraySnakeCase().'&select=\'.$element->get'.ucfirst ($atributoPrimary->getNome()).'().\'" class="btn btn-info">Selecionar</a>
+                        <a href="?page='.strtolower($objeto->getNome()).'&select=\'.$'.strtolower($objeto->getNome()).'->get'.ucfirst ($atributoPrimary->getNome()).'().\'&remover_'.$atributoArray->getTipoDeArraySnakeCase().'=\'.$element->get'.ucfirst($atributoPrimary->getNome()).'().\'" class="btn btn-danger">Remover</a>
                       </td>\';';
             
             $codigo .= '
@@ -647,7 +628,37 @@ class ' . $objeto->getNome() . 'View {';
                 
     }
                 
-    public function add'.ucfirst(explode(' ', $atributoNN->getTipo())[2]).'($lista){
+';
+            
+        }
+        
+        return $codigo;
+    }
+
+    private function addAtributoArray(Objeto $objeto):string{
+        $atributosArray = array();
+        $codigo = '';
+        foreach ($objeto->getAtributos() as $atributo) {
+            if($atributo->isArray()){
+                $atributosArray[] = $atributo;
+            }
+        }
+        foreach($atributosArray as $atributoArray){
+            $objetoNN = null;
+            foreach($this->software->getObjetos() as $obj){
+                if($obj->getNome() == $atributoArray->getTipoDeArray()){
+                    $objetoNN = $obj;
+                    break;
+                }
+            }
+            if($objetoNN == null){
+                continue;
+            }
+            
+            $codigo .= '
+                
+                
+    public function add'.ucfirst($atributoArray->getTipoDeArray()).'($lista){
         
         
         echo \'
@@ -661,14 +672,14 @@ class ' . $objeto->getNome() . 'View {';
 							<div class="col-lg-12">
 								<div class="p-5">
 									<div class="text-center">
-										<h1 class="h4 text-gray-900 mb-4"> Adicione '.explode(" ", $atributoNN->getTipo())[2].' ao '.$objeto->getNome().'</h1>
+										<h1 class="h4 text-gray-900 mb-4"> Adicione '.$atributoArray->getTipoDeArray().' ao '.$objeto->getNome().'</h1>
 									</div>
 						              <form class="user" method="post">';
             
             $codigo .= '
                                         <div class="form-group">
-                						  <select type="text" class="form-control" id="add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'" name="add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'" >
-                                                <option>Adicione '.explode(" ", $atributoNN->getTipo())[2].'</option>\';
+                						  <select type="text" class="form-control" id="add_'.$atributoArray->getTipoDeArraySnakeCase().'" name="add_'.$atributoArray->getTipoDeArraySnakeCase().'" >
+                                                <option>Adicione '.$atributoArray->getTipoDeArray().'</option>\';
 ';
             $codigo .= '
             foreach($lista as $element){';
@@ -676,13 +687,12 @@ class ' . $objeto->getNome() . 'View {';
             foreach($objetoNN->getAtributos() as $atributo2){
                 if($atributo2->getIndice() == Atributo::INDICE_PRIMARY){
                     $atributoChave = $atributo2;
-                }else if($atributo2->getTipo() == Atributo::TIPO_INT || $atributo2->getTipo() == Atributo::TIPO_STRING){
+                }else if($atributo2->tipoListado()){
                     $atributosLabel[] = $atributo2;
                 }
             }
             $codigo .= '
                 echo \'
-                
                                                 <option value="\'.$element->get'.ucfirst($atributoChave->getNome()).'().\'">';
             foreach($atributosLabel as $atributo2){
                 $codigo .= '\'.$element->get'.ucfirst($atributo2->getNome()).'().\' - ';
@@ -700,7 +710,7 @@ class ' . $objeto->getNome() . 'View {';
                 						</div>';
             
             $codigo .= '
-                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastrar" name="enviar_'.strtolower(explode(' ', $atributoNN->getTipo())[2]).'">
+                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Cadastrar" name="enviar_'.strtolower(explode(' ', $atributoArray->getTipo())[2]).'">
                                         <hr>
                                             
 						              </form>
@@ -722,7 +732,32 @@ class ' . $objeto->getNome() . 'View {';
 ';
             
         }
-        
+        return $codigo;
+    }
+    
+    private function geraViews(Objeto $objeto)
+    {
+        $codigo = '<?php
+            
+/**
+ * Classe de visao para ' . $objeto->getNome() . '
+ * @author Jefferson Uchôa Ponte <j.pontee@gmail.com>
+ *
+ */
+
+namespace '.$this->software->getNome().'\\\\view;
+use '.$this->software->getNome().'\\\\model\\\\'.ucfirst($objeto->getNome()).';
+
+
+class ' . $objeto->getNome() . 'View {';
+        $codigo .= '';
+        $codigo .= $this->showInsertForm($objeto);
+        $codigo .= $this->showList($objeto);
+        $codigo .= $this->showEditForm($objeto);
+        $codigo .= $this->mostrarSelecionado($objeto);
+        $codigo .= $this->confirmDelete($objeto);
+        $codigo .= $this->showAtributoArray($objeto);
+        $codigo .= $this->addAtributoArray($objeto);
         $codigo .= '
 }';
 

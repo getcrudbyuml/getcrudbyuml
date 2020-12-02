@@ -461,6 +461,7 @@ class ControllerGerador{
     public function edit(Objeto $objeto) : string {
         $atributosComuns = array();
         $atributosObjetos = array();
+        $atributoPrimary = null;
         foreach ($objeto->getAtributos() as $atributo) {
             if($atributo->tipoListado()){
                 $atributosComuns[] = $atributo;
@@ -468,8 +469,13 @@ class ControllerGerador{
                 $atributosObjetos[] = $atributo;
                 
             }
+            if($atributo->isPrimary()){
+                $atributoPrimary = $atributo;
+            }
         }
-        
+        if($atributoPrimary == null){
+            return "";
+        }
         
         $codigo = '';
         $codigo .= '
@@ -479,8 +485,8 @@ class ControllerGerador{
 	        return;
 	    }
         $selected = new '.ucfirst($objeto->getNome()).'();
-	    $selected->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'edit\']);
-	    $this->dao->fillBy'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selected);
+	    $selected->set'.ucfirst ($atributoPrimary->getNome()).'($_GET[\'edit\']);
+	    $this->dao->fillBy'.ucfirst ($atributoPrimary->getNome()).'($selected);
 	        
         if(!isset($_POST[\'edit_' . $objeto->getNomeSnakeCase() . '\'])){';
         $listaParametros = array();
@@ -570,19 +576,17 @@ class ControllerGerador{
         return $codigo;
     }
     public function select(Objeto $objeto):string{
-        
-        $atributosNN = array();
-        $atributos1N = array();
-        foreach($objeto->getAtributos() as $atrib){
-            if($atrib->isArrayNN()){
-                $atributosNN[] = $atrib;
-            }else if($atrib->isArray1N()){
-                $atributos1N[] = $atrib;
+        $atributoPrimary = null;
+        foreach($objeto->getAtributos() as $atributo){
+            if($atributo->isPrimary()){
+                $atributoPrimary = $atributo;
+                break;
             }
         }
-        
+        if($atributoPrimary == null){
+            return "";
+        }
         $codigo = '';
-        
         $codigo .= '
             
     public function select(){
@@ -590,35 +594,40 @@ class ControllerGerador{
 	        return;
 	    }
         $selected = new '.ucfirst($objeto->getNome()).'();
-	    $selected->set'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($_GET[\'select\']);
+	    $selected->set'.ucfirst ($atributoPrimary->getNome()).'($_GET[\'select\']);
 	        
-        $this->dao->fillBy'.ucfirst ($objeto->getAtributos()[0]->getNome()).'($selected);
+        $this->dao->fillBy'.ucfirst ($atributoPrimary->getNome()).'($selected);
 
         echo \'<div class="col-xl-7 col-lg-7 col-md-12 col-sm-12">\';
 	    $this->view->showSelected($selected);
         echo \'</div>\';
             
 ';
-        
-        foreach($atributosNN as $atributoNN){
+
+        foreach($objeto->getAtributos() as $atributo){
+            if(!$atributo->isArrayNN()){//VOLTE AQUI> 
+                continue;
+            }
+            
             $codigo .= '
-        $this->dao->fetch'.ucfirst($atributoNN->getNome()).'($selected);
-        $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'Dao = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'DAO($this->dao->getConnection());
-        $list = $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'Dao->fetch();
+        $this->dao->fetch'.ucfirst($atributo->getNome()).'($selected);
+        $'.lcfirst($atributo->getTipoDeArray()).'Dao = new '.ucfirst($atributo->getTipoDeArray()).'DAO($this->dao->getConnection());
+        $list = $'.lcfirst($atributo->getTipoDeArray()).'Dao->fetch();
             
         echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
-        $this->view->show'.ucfirst($atributoNN->getNome()).'($selected);
+        $this->view->show'.ucfirst($atributo->getNome()).'($selected);
         echo \'</div>\';
             
             
-        if(!isset($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']) && !isset($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
+        if(!isset($_POST[\'add_'.$atributo->getTipoDeArraySnakeCase().'\']) && !isset($_GET[\'remover_'.$atributo->getTipoDeArraySnakeCase().'\'])){
             echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
-            $this->view->add'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($list);
+            $this->view->add'.ucfirst($atributo->getTipoDeArray()).'($list);
             echo \'</div>\';
-        }else if(isset($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
-            $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).' = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'();
-            $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'->setId($_POST[\'add'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']);
-            if($this->dao->insert'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selected, $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'))
+        }else if(isset($_POST[\'add_'.$atributo->getTipoDeArraySnakeCase().'\']))
+        {
+            $'.lcfirst($atributo->getTipoDeArray()).' = new '.ucfirst($atributo->getTipoDeArray()).'();
+            $'.lcfirst($atributo->getTipoDeArray()).'->setId($_POST[\'add_'.$atributo->getTipoDeArraySnakeCase().'\']);
+            if($this->dao->insert'.ucfirst($atributo->getTipoDeArray()).'($selected, $'.lcfirst($atributo->getTipoDeArray()).'))
             {
 			echo \'
                 
@@ -636,13 +645,13 @@ class ControllerGerador{
                 
 \';
 		    }
-            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?page='.$objeto->getNomeSnakeCase().'&select=\'.$selected->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
+            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?page='.$objeto->getNomeSnakeCase().'&select=\'.$selected->get'.ucfirst ($atributoPrimary->getNome()).'().\'">\';
             return;
-        }else  if(isset($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\'])){
+        }else  if(isset($_GET[\'remover_'.$atributo->getTipoDeArraySnakeCase().'\'])){
             
-            $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).' = new '.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'();
-            $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'->setId($_GET[\'remover'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'\']);
-            if($this->dao->remover'.ucfirst(explode(" ", $atributoNN->getTipo())[2]).'($selected, $'.strtolower(explode(" ", $atributoNN->getTipo())[2]).'))
+            $'.lcfirst($atributo->getTipoDeArray()).' = new '.ucfirst($atributo->getTipoDeArray()).'();
+            $'.lcfirst($atributo->getTipoDeArray()).'->setId($_GET[\'remover_'.$atributo->getTipoDeArraySnakeCase().'\']);
+            if($this->dao->remover'.ucfirst($atributo->getTipoDeArray()).'($selected, $'.lcfirst($atributo->getTipoDeArray()).'))
             {
 		      echo \'
                 
@@ -660,7 +669,7 @@ class ControllerGerador{
                 
 \';
 		      }
-            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?page='.$objeto->getNomeSnakeCase().'&select=\'.$selected->get'.ucfirst ($objeto->getAtributos()[0]->getNome()).'().\'">\';
+            echo \'<META HTTP-EQUIV="REFRESH" CONTENT="2; URL=index.php?page='.$objeto->getNomeSnakeCase().'&select=\'.$selected->get'.ucfirst ($atributoPrimary->getNome()).'().\'">\';
             return;
         }
                 
@@ -692,7 +701,7 @@ use '.$this->software->getNome().'\\\\dao\\\\'.ucfirst($objeto->getNome()).'DAO;
                 $codigo .= '
 use '.$this->software->getNome().'\\\\dao\\\\'.ucfirst($atributo->getTipo()).'DAO;';
                 
-            }else if($atributo->isArrayNN()){
+            }else if($atributo->isArray()){
                 $codigo .= '
 use '.$this->software->getNome().'\\\\model\\\\'.ucfirst($atributo->getTipoDeArray()).';
 use '.$this->software->getNome().'\\\\dao\\\\'.ucfirst($atributo->getTipoDeArray()).'DAO;';
