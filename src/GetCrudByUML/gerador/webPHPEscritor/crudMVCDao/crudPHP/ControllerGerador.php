@@ -125,18 +125,18 @@ class ControllerGerador{
             
             if($atributo->getTipo() == Atributo::TIPO_IMAGE){
                 $codigo .= '
-                    
-		if(!file_exists(\'uploads/'.$objeto->getNomeSnakeCase().'/'.$atributo->getNomeSnakeCase().'/\')) {
-		    mkdir(\'uploads/'.$objeto->getNomeSnakeCase().'/'.$atributo->getNomeSnakeCase().'/\', 0777, true);
-		}
-		        
-		if(!move_uploaded_file($_FILES[\'' . $atributo->getNomeSnakeCase() . '\'][\'tmp_name\'], \'uploads/'.$objeto->getNomeSnakeCase().'/'.$atributo->getNomeSnakeCase().'/\'. $_FILES[\'' . $atributo->getNomeSnakeCase() . '\'][\'name\']))
-		{
-		    echo \':falha\';
-		    return;
-		}
-		    
-		$' . $nomeDoObjeto . '->set' . ucfirst($atributo->getNome()) . ' ( "uploads/'.$objeto->getNomeSnakeCase().'/'.$atributo->getNomeSnakeCase().'/".$_FILES [\'' . $atributo->getNomeSnakeCase() . '\'][\'name\'] );';
+        if($_FILES[\'' . $atributo->getNomeSnakeCase() . '\'][\'name\'] != null){
+    		if(!file_exists(\'uploads/'.$objeto->getNomeSnakeCase().'/'.$atributo->getNomeSnakeCase().'/\')) {
+    		    mkdir(\'uploads/'.$objeto->getNomeSnakeCase().'/'.$atributo->getNomeSnakeCase().'/\', 0777, true);
+    		}
+    		        
+    		if(!move_uploaded_file($_FILES[\'' . $atributo->getNomeSnakeCase() . '\'][\'tmp_name\'], \'uploads/'.$objeto->getNomeSnakeCase().'/'.$atributo->getNomeSnakeCase().'/\'. $_FILES[\'' . $atributo->getNomeSnakeCase() . '\'][\'name\']))
+    		{
+    		    echo \':falha\';
+    		    return;
+    		}
+            $' . $nomeDoObjeto . '->set' . ucfirst($atributo->getNome()) . ' ( "uploads/'.$objeto->getNomeSnakeCase().'/'.$atributo->getNomeSnakeCase().'/".$_FILES [\'' . $atributo->getNomeSnakeCase() . '\'][\'name\'] );
+        }';
                 
             }
             else
@@ -286,22 +286,24 @@ class ControllerGerador{
             if($atributo->getTipo() == Atributo::TIPO_IMAGE){
                 $codigo .= '
 
-		if(!file_exists(\'uploads/'.$objeto->getNomeSnakeCase().'/'.$atributo->getNomeSnakeCase().'/\')) {
-		    mkdir(\'uploads/'.$objeto->getNomeSnakeCase().'/'.$atributo->getNomeSnakeCase().'/\', 0777, true);
-		}
+        if($_FILES[\'' . $atributo->getNomeSnakeCase() . '\'][\'name\'] != null){
 
-		if(!move_uploaded_file($_FILES[\'' . $atributo->getNomeSnakeCase() . '\'][\'tmp_name\'], \'uploads/'.$objeto->getNomeSnakeCase().'/'.$atributo->getNomeSnakeCase().'/\'. $_FILES[\'' . $atributo->getNomeSnakeCase() . '\'][\'name\']))
-		{
-		    echo \'
-                <div class="alert alert-danger" role="alert">
-                    Failed to send file.
-                </div>
-		        
-                \';
-		    return;
-		}
-		
-		$' . $nomeDoObjeto . '->set' . ucfirst($atributo->getNome()) . ' ( "uploads/'.$objeto->getNomeSnakeCase().'/'.$atributo->getNomeSnakeCase().'/".$_FILES [\'' . $atributo->getNomeSnakeCase() . '\'][\'name\'] );';
+            if(!file_exists(\'uploads/'.$objeto->getNomeSnakeCase().'/'.$atributo->getNomeSnakeCase().'/\')) {
+    		    mkdir(\'uploads/'.$objeto->getNomeSnakeCase().'/'.$atributo->getNomeSnakeCase().'/\', 0777, true);
+    		}
+    
+    		if(!move_uploaded_file($_FILES[\'' . $atributo->getNomeSnakeCase() . '\'][\'tmp_name\'], \'uploads/'.$objeto->getNomeSnakeCase().'/'.$atributo->getNomeSnakeCase().'/\'. $_FILES[\'' . $atributo->getNomeSnakeCase() . '\'][\'name\']))
+    		{
+    		    echo \'
+                    <div class="alert alert-danger" role="alert">
+                        Failed to send file.
+                    </div>
+    		        
+                    \';
+    		    return;
+    		}
+            $' . $nomeDoObjeto . '->set' . ucfirst($atributo->getNome()) . ' ( "uploads/'.$objeto->getNomeSnakeCase().'/'.$atributo->getNomeSnakeCase().'/".$_FILES [\'' . $atributo->getNomeSnakeCase() . '\'][\'name\'] );
+        }';
                 
             }else{
                 $codigo .= '

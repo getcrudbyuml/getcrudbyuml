@@ -939,15 +939,16 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
             }
         }
         foreach ($atributosNN as $atributo) {
+            
             $codigo .= '
-	public function remover' . ucfirst(explode(" ", $atributo->getTipo())[2]) . '(' . $nomeDoObjetoMA . ' $' . $nomeDoObjeto . ', ' . ucfirst(explode(" ", $atributo->getTipo())[2]) . ' $' . strtolower(explode(" ", $atributo->getTipo())[2]) . '){
-        $id' . strtolower($objeto->getNome()) . ' =  $' . $nomeDoObjeto . '->getId();
-        $id' . strtolower(explode(' ', $atributo->getTipo())[2]) . ' = $' . strtolower(explode(" ", $atributo->getTipo())[2]) . '->getId();
+	public function remover' . ucfirst($atributo->getTipoDeArray()) . '(' . $nomeDoObjetoMA . ' $' . $nomeDoObjeto . ', ' . ucfirst(explode(" ", $atributo->getTipo())[2]) . ' $' . strtolower(explode(" ", $atributo->getTipo())[2]) . '){
+        $id' . ucfirst($objeto->getNome()) . ' =  $' . $nomeDoObjeto . '->getId();
+        $id' . ucfirst(explode(' ', $atributo->getTipo())[2]) . ' = $' . strtolower(explode(" ", $atributo->getTipo())[2]) . '->getId();
 		$sql = "DELETE FROM  ' . strtolower($objeto->getNome()) . '_' . strtolower(explode(' ', $atributo->getTipo())[2]) . ' WHERE ';
             $codigo .= '
-                    id' . strtolower($objeto->getNome()) . ' = :id' . strtolower($objeto->getNome()) . '
+                    id_' . $objeto->getNomeSnakeCase() . ' = :id' . ucfirst($objeto->getNome()) . '
                     AND
-                    id' . strtolower(explode(' ', $atributo->getTipo())[2]) . ' = :id' . strtolower(explode(' ', $atributo->getTipo())[2]) . '";';
+                    id_' . $atributo->getTipoDeArraySnakeCase() . ' = :id' . ucfirst($atributo->getTipoDeArray()) . '";';
             
             $codigo .= '
 		try {
@@ -955,8 +956,8 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
 			$stmt = $db->prepare($sql);';
             
             $codigo .= '
-		    $stmt->bindParam(":id' . strtolower($objeto->getNome()) . '", $id' . strtolower($objeto->getNome()) . ', PDO::PARAM_INT);
-            $stmt->bindParam(":id' . strtolower(explode(' ', $atributo->getTipo())[2]) . '", $id' . strtolower(explode(' ', $atributo->getTipo())[2]) . ', PDO::PARAM_INT);
+		    $stmt->bindParam(":id' . ucfirst($objeto->getNome()) . '", $id' . ucfirst($objeto->getNome()) . ', PDO::PARAM_INT);
+            $stmt->bindParam(":id' . ucfirst(explode(' ', $atributo->getTipo())[2]) . '", $id' . ucfirst($atributo->getTipoDeArray()) . ', PDO::PARAM_INT);
 ';
             
             $codigo .= '
