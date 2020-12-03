@@ -293,7 +293,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                 
         $codigo .= '
     public function insert('.implode(', ', $parametros).'){';
-        $codigo .= implode('', $varPrimary);
+        
         $codigo .= '
         $sql = "INSERT INTO ' . $objeto->getNomeSnakeCase() . '(';
         $listaAtributos = array();
@@ -330,7 +330,6 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         $codigo .= implode(", ", $listaAtributosVar);
         $codigo .= ');";';
         
-        
         foreach ($objeto->getAtributos() as $atributo) {
             if($atributo->isPrimary()){
                 continue;
@@ -360,7 +359,9 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
             }
             
         }
-
+        
+        $codigo .= implode('', $varPrimary);
+        
         
         $codigo .= '
 		try {
@@ -405,6 +406,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         return $codigo;
         
     }
+    /*
 
     private function insertWithPK(Objeto $objeto)
     {
@@ -475,6 +477,144 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         
         $codigo .= '
 
+    }';
+        
+        return $codigo;
+        
+    }
+    */
+    private function insertWithPK(Objeto $objeto)
+    {
+        $objetos1N = array();
+        foreach ($this->software->getObjetos() as $objeto2){
+            foreach($objeto2->getAtributos() as $atributo){
+                if($atributo->isArray1N()){
+                    if($atributo->getTipoDeArray() == $objeto->getNome()){
+                        $objetos1N[] = $objeto2;
+                    }
+                    
+                }
+            }
+        }
+        $codigo = '';
+        $parametros = array();
+        $varPrimary = array();
+        $parametros[] = ucfirst($objeto->getNome()) . ' $' . lcfirst($objeto->getNome());
+        foreach($objetos1N as $objeto2){
+            $parametros[] = ucfirst($objeto2->getNome()).' $'.lcfirst($objeto2->getNome());
+            foreach($objeto2->getAtributos() as $attr){
+                if($attr->isPrimary()){
+                    $varPrimary[] = '
+        $'.lcfirst($attr->getNome()).ucfirst($objeto2->getNome()).' = $'.lcfirst($objeto2->getNome()).'->get'.ucfirst($attr->getNome()).'();';
+                }
+            }
+        }
+        
+        
+        $codigo .= '
+    public function insertWithPK('.implode(', ', $parametros).'){';
+        
+        $codigo .= '
+        $sql = "INSERT INTO ' . $objeto->getNomeSnakeCase() . '(';
+        $listaAtributos = array();
+        $listaAtributosVar = array();
+        foreach ($objeto->getAtributos() as $atributo)
+        {
+
+            if($atributo->tipoListado()){
+                $listaAtributos[] = $atributo->getNomeSnakeCase();
+                $listaAtributosVar[] = ':' .lcfirst($atributo->getNome());
+                
+            }else if($atributo->isObjeto()){
+                $listaAtributos[] = 'id_' . $atributo->getNomeSnakeCase();
+                $listaAtributosVar[] = ':' .lcfirst($atributo->getNome());
+                
+            }else{
+                continue;
+            }
+        }
+        foreach($objetos1N as $objeto2){
+            foreach($objeto2->getAtributos() as $attr){
+                if($attr->isPrimary()){
+                    $listaAtributos[] = $attr->getNomeSnakeCase().'_'.$objeto2->getNomeSnakeCase();
+                    $listaAtributosVar[] = ':' .lcfirst($attr->getNome()).ucfirst($objeto2->getNome());
+                }
+            }
+        }
+        
+        
+        $codigo .= implode(", ", $listaAtributos);
+        $codigo .= ') VALUES (';
+        $codigo .= implode(", ", $listaAtributosVar);
+        $codigo .= ');";';
+        
+        foreach ($objeto->getAtributos() as $atributo) {
+
+            if($atributo->tipoListado()){
+                $codigo .= '
+		$' . lcfirst($atributo->getNome()) . ' = $' . lcfirst($objeto->getNome()) . '->get' . ucfirst($atributo->getNome()) . '();';
+            }else if($atributo->isObjeto())
+            {
+                $strCampoPrimary = '';
+                foreach($this->software->getObjetos() as $objetoDoAtributo){
+                    if($objetoDoAtributo->getNome() == $atributo->getTipo()){
+                        foreach($objetoDoAtributo->getAtributos() as $att){
+                            if($att->isPrimary()){
+                                $strCampoPrimary = ucfirst($att->getNome());
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+                
+                
+                $codigo .= '
+		$' . lcfirst($atributo->getNome()). ' = $' . lcfirst($objeto->getNome()) . '->get' . ucfirst($atributo->getNome()) . '()->get'.$strCampoPrimary.'();';
+                
+            }
+            
+        }
+        
+        $codigo .= implode('', $varPrimary);
+        
+        
+        $codigo .= '
+		try {
+			$db = $this->getConnection();
+			$stmt = $db->prepare($sql);';
+        foreach ($objeto->getAtributos() as $atributo)
+        {
+
+            if($atributo->tipoListado() || $atributo->isObjeto())
+            {
+                $codigo .= '
+			$stmt->bindParam(":' . $atributo->getNome() . '", $' . $atributo->getNome() . ', PDO::'.$atributo->getTipoParametroPDO().');';
+                
+            }
+            
+        }
+        foreach($objetos1N as $objeto2){
+            foreach($objeto2->getAtributos() as $attr){
+                if($attr->isPrimary()){
+                    $codigo .= '
+			$stmt->bindParam(":' . $attr->getNome().ucfirst($objeto2->getNome()) . '", $' . $attr->getNome().ucfirst($objeto2->getNome()) . ', PDO::'.$attr->getTipoParametroPDO().');';
+                }
+            }
+        }
+        
+        
+        $codigo .= '
+			return $stmt->execute();
+		} catch(PDOException $e) {
+			echo \'{"error":{"text":\'. $e->getMessage() .\'}}\';
+		}';
+        
+        
+        
+        
+        $codigo .= '
+            
     }';
         
         return $codigo;
