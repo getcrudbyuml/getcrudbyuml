@@ -35,7 +35,7 @@ class ViewGerador{
         
     }
 
-    private function showInsertForm(Objeto $objeto) : string {
+    private function showInsertForm(Objeto $objeto, $nomeMetodo = 'showInsertForm') : string {
         $codigo = '';
         
         
@@ -54,7 +54,7 @@ class ViewGerador{
             }
         }
         $codigo = '
-    public function showInsertForm(';
+    public function '.$nomeMetodo.'(';
         $i = count($atributosObjetos);
         foreach($atributosObjetos as $atributoObjeto){
             $i--;
@@ -81,16 +81,17 @@ class ViewGerador{
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body">';
         
-
-
+        
+        $codigo .= '
           <form id="insert_form_'.$objeto->getNomeSnakeCase().'" class="user" method="post"';
         if($existeCampoFile){
             $codigo .= ' enctype="multipart/form-data" ';
         }
+
           $codigo .= '>
-            <input type="hidden" name="enviar_' . $objeto->getNomeSnakeCase() . '" value="1">                
+            <input type="hidden" name="'.'enviar_'.$objeto->getNomeSnakeCase().'" value="1">                
 
 ';
         foreach ($atributosComuns as $atributo) {
@@ -635,11 +636,32 @@ class ViewGerador{
         return $codigo;
     }
 
-    private function addAtributoArray(Objeto $objeto):string{
+    public function addAtributo1N(Objeto $objeto):string{
+        $codigo = '';
+        foreach($objeto->getAtributos() as $atributo){
+            if(!$atributo->isArray1N()){
+                continue;
+            }
+            $objetoDoArray = null;
+            foreach($this->software->getObjetos() as $objeto){
+                if($objeto->getNome() == $atributo->getTipoDeArray()){
+                    $objetoDoArray = $objeto;
+                    break;
+                }
+            }
+            if($objetoDoArray == null){
+                continue;
+            }
+            $codigo .= $this->showInsertForm($objetoDoArray, 'add'.ucfirst($objetoDoArray->getNome()), 'add_'.lcfirst($objetoDoArray->getNomeSnakeCase()));
+            
+        }
+        return $codigo;
+    }
+    private function addAtributoArrayNN(Objeto $objeto):string{
         $atributosArray = array();
         $codigo = '';
         foreach ($objeto->getAtributos() as $atributo) {
-            if($atributo->isArray()){
+            if($atributo->isArrayNN()){
                 $atributosArray[] = $atributo;
             }
         }
@@ -757,7 +779,8 @@ class ' . $objeto->getNome() . 'View {';
         $codigo .= $this->mostrarSelecionado($objeto);
         $codigo .= $this->confirmDelete($objeto);
         $codigo .= $this->showAtributoArray($objeto);
-        $codigo .= $this->addAtributoArray($objeto);
+        $codigo .= $this->addAtributoArrayNN($objeto);
+        $codigo .= $this->addAtributo1N($objeto);
         $codigo .= '
 }';
 

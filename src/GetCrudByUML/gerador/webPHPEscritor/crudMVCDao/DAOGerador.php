@@ -108,6 +108,17 @@ class DAO {
 
         
         $codigo = '';
+        $objetos1N = array();
+        foreach ($this->software->getObjetos() as $objeto2){
+            foreach($objeto2->getAtributos() as $atributo){
+                if($atributo->isArray1N()){
+                    if($atributo->getTipoDeArray() == $objeto->getNome()){
+                        $objetos1N[] = $objeto2;
+                    }
+                    
+                }
+            }
+        }
         $codigo .= '<?php
             
 /**
@@ -118,8 +129,14 @@ class DAO {
      
 namespace '.$this->software->getNome().'\\\\dao;
 use PDO;
-use PDOException;
+use PDOException;';
+        
+        $codigo .= '
 use '.$this->software->getNome().'\\\\model\\\\'.ucfirst($objeto->getNome()).';';
+        foreach($objetos1N as $obj){
+            $codigo .= '
+use '.$this->software->getNome().'\\\\model\\\\'.ucfirst($obj->getNome()).';';
+        }
         
         foreach ($objeto->getAtributos() as $atributo) {
             if ($atributo->isArray()) {
@@ -146,7 +163,6 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         $codigo .= $this->fetchAtributoNN($objeto);
         $codigo .= $this->fetchAtributo1N($objeto);
         $codigo .= $this->insertAtributoNN($objeto);
-        $codigo .= $this->insertAtributo1N($objeto);
         $codigo .= $this->removerAtributoNN($objeto);
         $codigo .= '
 }';
@@ -249,9 +265,35 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
     }
     private function insert(Objeto $objeto)
     {
-        $codigo = '
-    public function insert(' . ucfirst($objeto->getNome()) . ' $' . lcfirst($objeto->getNome()) . '){';
+        $objetos1N = array();
+        foreach ($this->software->getObjetos() as $objeto2){
+            foreach($objeto2->getAtributos() as $atributo){
+                if($atributo->isArray1N()){
+                    if($atributo->getTipoDeArray() == $objeto->getNome()){
+                        $objetos1N[] = $objeto2; 
+                    }
+                    
+                }
+            }
+        }
+        $codigo = '';
+        $parametros = array();
+        $varPrimary = array();
+        $parametros[] = ucfirst($objeto->getNome()) . ' $' . lcfirst($objeto->getNome());
+        foreach($objetos1N as $objeto2){
+            $parametros[] = ucfirst($objeto2->getNome()).' $'.lcfirst($objeto2->getNome());
+            foreach($objeto2->getAtributos() as $attr){
+                if($attr->isPrimary()){
+                    $varPrimary[] = '
+        $'.lcfirst($attr->getNome()).ucfirst($objeto2->getNome()).' = $'.lcfirst($objeto2->getNome()).'->get'.ucfirst($attr->getNome()).'();';
+                }
+            }
+        }
         
+                
+        $codigo .= '
+    public function insert('.implode(', ', $parametros).'){';
+        $codigo .= implode('', $varPrimary);
         $codigo .= '
         $sql = "INSERT INTO ' . $objeto->getNomeSnakeCase() . '(';
         $listaAtributos = array();
@@ -273,6 +315,15 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                 continue;
             }
         }
+        foreach($objetos1N as $objeto2){
+            foreach($objeto2->getAtributos() as $attr){
+                if($attr->isPrimary()){
+                    $listaAtributos[] = $attr->getNomeSnakeCase().'_'.$objeto2->getNomeSnakeCase();
+                    $listaAtributosVar[] = ':' .lcfirst($attr->getNome()).ucfirst($objeto2->getNome());
+                }
+            }
+        }
+        
         
         $codigo .= implode(", ", $listaAtributos);
         $codigo .= ') VALUES (';
@@ -309,6 +360,8 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
             }
             
         }
+
+        
         $codigo .= '
 		try {
 			$db = $this->getConnection();
@@ -323,6 +376,15 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
                 $codigo .= '
 			$stmt->bindParam(":' . $atributo->getNome() . '", $' . $atributo->getNome() . ', PDO::'.$atributo->getTipoParametroPDO().');';
                 
+            }
+            
+        }
+        foreach($objetos1N as $objeto2){
+            foreach($objeto2->getAtributos() as $attr){
+                if($attr->isPrimary()){
+                    $codigo .= '
+			$stmt->bindParam(":' . $attr->getNome().ucfirst($objeto2->getNome()) . '", $' . $attr->getNome().ucfirst($objeto2->getNome()) . ', PDO::'.$attr->getTipoParametroPDO().');';
+                }
             }
         }
         
@@ -928,132 +990,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         }
         return $codigo;
     }
-    private function insertAtributo1N($objeto) : string {
-        $codigo = '';
-        $atributos1N = array();
-        $atributoPrimary = null;
-        
-        foreach ($objeto->getAtributos() as $atributo) {
-            if ($atributo->isArray1N()) {
-                $atributos1N[] = $atributo;
-            }
-            if($atributo->isPrimary()){
-                $atributoPrimary = $atributo;
-            }
-        }
-        if($atributoPrimary == null){
-            return "";
-        }
-        
-        foreach ($atributos1N as $atributo) {
-            $objeto2 = null;
-            foreach($this->software->getObjetos() as $objeto3){
-                if($objeto3->getNome() == $atributo->getTipoDeArray()){
-                    $objeto2 = $objeto3;
-                }
-            }
-            if($objeto2 == null){
-                continue;
-            }
-        
-        $codigo .= '
-	public function insert' . ucfirst($atributo->getTipoDeArray()) . '(' . ucfirst($objeto->getNome()) . ' $' . lcfirst($objeto->getNome()). ', ' . ucfirst($atributo->getTipoDeArray()) . ' $' . lcfirst($atributo->getTipoDeArray()) . ')
-    {
-        $'.lcfirst($atributoPrimary->getNome()).ucfirst($objeto->getNome()) . ' =  $' .lcfirst( $objeto->getNome()). '->get'.ucfirst($atributoPrimary->getNome()).'();
-        $sql = "INSERT INTO ' . $objeto2->getNomeSnakeCase() . '(';
-        $listaAtributos = array();
-        $listaAtributosVar = array();
-        foreach ($objeto2->getAtributos() as $atributo)
-        {
-            if($atributo->isPrimary()){
-                continue;
-            }
-            if($atributo->tipoListado()){
-                $listaAtributos[] = $atributo->getNomeSnakeCase();
-                $listaAtributosVar[] = ':' .lcfirst($atributo->getNome());
-                
-            }else if($atributo->isObjeto()){
-                $listaAtributos[] = 'id_' . $atributo->getNomeSnakeCase();
-                $listaAtributosVar[] = ':' .lcfirst($atributo->getNome());
-                
-            }else{
-                continue;
-            }
-        }
-        $listaAtributos[] =  $atributoPrimary->getNomeSnakeCase().'_'.$objeto->getNomeSnakeCase();
-        $listaAtributosVar[] =  ':'.lcfirst($atributoPrimary->getNome()).$objeto->getNome();
-        
-        $codigo .= implode(", ", $listaAtributos);
-        $codigo .= ') VALUES (';
-        $codigo .= implode(", ", $listaAtributosVar);
-        $codigo .= ');";';
-        
-        
-        foreach ($objeto2->getAtributos() as $atributo) {
-            if($atributo->isPrimary()){
-                continue;
-            }
-            if($atributo->tipoListado()){
-                $codigo .= '
-		$' . lcfirst($atributo->getNome()) . ' = $' . lcfirst($objeto2->getNome()) . '->get' . ucfirst($atributo->getNome()) . '();';
-            }else if($atributo->isObjeto())
-            {
-                $strCampoPrimary = '';
-                foreach($this->software->getObjetos() as $objetoDoAtributo){
-                    if($objetoDoAtributo->getNome() == $atributo->getTipo()){
-                        foreach($objetoDoAtributo->getAtributos() as $att){
-                            if($att->isPrimary()){
-                                $strCampoPrimary = ucfirst($att->getNome());
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }
-                
-                
-                $codigo .= '
-		$' . lcfirst($atributo->getNome()). ' = $' . lcfirst($objeto2->getNome()) . '->get' . ucfirst($atributo->getNome()) . '()->get'.$strCampoPrimary.'();';
-                
-            }
-            
-        }
-        $codigo .= '
-		try {
-			$db = $this->getConnection();
-			$stmt = $db->prepare($sql);';
-        foreach ($objeto2->getAtributos() as $atributo)
-        {
-            if($atributo->isPrimary()){
-                continue;
-            }
-            if($atributo->tipoListado() || $atributo->isObjeto())
-            {
-                $codigo .= '
-			$stmt->bindParam(":' . $atributo->getNome() . '", $' . $atributo->getNome() . ', PDO::'.$atributo->getTipoParametroPDO().');';
-                
-            }
-        }
-        $codigo .= '
-			$stmt->bindParam(":'.lcfirst($atributoPrimary->getNome()).$objeto->getNome().'", $'.lcfirst($atributoPrimary->getNome()).$objeto->getNome().', PDO::'.$atributoPrimary->getTipoParametroPDO().');';
-        
-        
-        $codigo .= '
-			return $stmt->execute();
-		} catch(PDOException $e) {
-			echo \'{"error":{"text":\'. $e->getMessage() .\'}}\';
-		}';
-        
-        
-        
-        
-        $codigo .= '
-            
-    }';
-        }
-        return $codigo;
-        
-    }
+
     private function removerAtributoNN($objeto) : string {
         $codigo = '';
         $nomeDoObjeto = lcfirst($objeto->getNome());
