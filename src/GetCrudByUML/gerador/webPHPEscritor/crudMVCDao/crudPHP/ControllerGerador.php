@@ -55,6 +55,17 @@ class ControllerGerador{
                 
             }
         }
+        $objetos1N = array();
+        foreach ($this->software->getObjetos() as $objeto2){
+            foreach($objeto2->getAtributos() as $atributo){
+                if($atributo->isArray1N()){
+                    if($atributo->getTipoDeArray() == $objeto->getNome()){
+                        $objetos1N[] = $objeto2;
+                    }
+                    
+                }
+            }
+        }
         
         $codigo .= '
             
@@ -84,6 +95,9 @@ class ControllerGerador{
             }
             
             
+        }
+        foreach($objetos1N as $obj){
+            $issetList[] = 'isset ( $_POST [\'' . $obj->getNomeSnakeCase() . '\'] )';
         }
         $codigo .= implode(' && ', $issetList);
         $i = 0;
@@ -161,10 +175,25 @@ class ControllerGerador{
                 }
             }
         }
-        
+        $listaParametros = array();
+        $listaParametros[] = '$'.lcfirst($objeto->getNome());
+        foreach($objetos1N as $obj){
+            $codigo .= '
+        $'.lcfirst($obj->getNome()).' = new '.ucfirst ($obj->getNome()).'();';
+            foreach($obj->getAtributos() as $att){
+                if($att->isPrimary()){
+                    $codigo .= '
+        $'.lcfirst($obj->getNome()).'->set'.ucfirst($att->getNome()).'($_POST[\''.$obj->getNomeSnakeCase().'\']);
+';
+                }
+            }
+
+
+            $listaParametros[] = '$'.lcfirst ($obj->getNome());
+        }
         $codigo .= '
             
-		if ($this->dao->insert ( $' . $nomeDoObjeto . ' ))
+		if ($this->dao->insert ( ' . implode(', ', $listaParametros). ' ))
         {
 			$id = $this->dao->getConnection()->lastInsertId();
             echo \':sucesso:\'.$id;
@@ -192,6 +221,17 @@ class ControllerGerador{
                 
             }
         }
+        $objetos1N = array();
+        foreach ($this->software->getObjetos() as $objeto2){
+            foreach($objeto2->getAtributos() as $atributo){
+                if($atributo->isArray1N()){
+                    if($atributo->getTipoDeArray() == $objeto->getNome()){
+                        $objetos1N[] = $objeto2;
+                    }
+                    
+                }
+            }
+        }
         
         $codigo .= '
 
@@ -201,12 +241,19 @@ class ControllerGerador{
         $listaParametros = array();
         foreach($atributosObjetos as $atributoObjeto){
             $codigo .= '
-            $'.strtolower($atributoObjeto->getTipo()).'Dao = new '.ucfirst ($atributoObjeto->getTipo()).'DAO($this->dao->getConnection());
-            $list'.ucfirst ($atributoObjeto->getTipo()).' = $'.strtolower($atributoObjeto->getTipo()).'Dao->fetch();
+            $'.lcfirst($atributoObjeto->getTipo()).'Dao = new '.ucfirst ($atributoObjeto->getTipo()).'DAO($this->dao->getConnection());
+            $list'.ucfirst ($atributoObjeto->getTipo()).' = $'.lcfirst($atributoObjeto->getTipo()).'Dao->fetch();
 ';
             $listaParametros[] = '$list'.ucfirst ($atributoObjeto->getTipo());
             
             
+        }
+        foreach($objetos1N as $obj){
+            $codigo .= '
+            $'.lcfirst($obj->getNome()).'Dao = new '.ucfirst ($obj->getNome()).'DAO($this->dao->getConnection());
+            $list'.ucfirst ($obj->getNome()).' = $'.lcfirst($obj->getNome()).'Dao->fetch();            
+';
+            $listaParametros[] = '$list'.ucfirst ($obj->getNome());
         }
         $codigo .= '
             $this->view->showInsertForm(';
@@ -233,6 +280,9 @@ class ControllerGerador{
             }
             
             
+        }
+        foreach($objetos1N as $obj){
+            $issetLista[] = 'isset ( $_POST [\'' . $obj->getNomeSnakeCase() . '\'] )';
         }
         $codigo .= implode(' && ', $issetLista);
         $i = 0;
@@ -270,8 +320,6 @@ class ControllerGerador{
         
         
         $codigo .= '
-		
-        
 		$' . lcfirst($objeto->getNome()) . ' = new ' . ucfirst($objeto->getNome()) . ' ();';
         
         
@@ -313,7 +361,7 @@ class ControllerGerador{
                 if($atributoObjeto->getTipo() == $objeto3->getNome())
                 {
                     foreach($objeto3->getAtributos() as $atributo2){
-                        if($atributo2->getIndice() == Atributo::INDICE_PRIMARY){
+                        if($atributo2->isPrimary()){
                             $codigo .= '
 		$' . lcfirst($objeto->getNome()) . '->get' .ucfirst($atributoObjeto->getNome()) . '()->set'.ucfirst ($atributo2->getNome()).' ( $_POST [\'' . $atributoObjeto->getNomeSnakeCase() . '\'] );';
                             break;
@@ -323,10 +371,25 @@ class ControllerGerador{
                 }
             }
         }
-        
+        $listaParametros = array();
+        $listaParametros[] = '$'.lcfirst($objeto->getNome());
+        foreach($objetos1N as $obj){
+            $codigo .= '
+        $'.lcfirst($obj->getNome()).' = new '.ucfirst ($obj->getNome()).'();';
+            foreach($obj->getAtributos() as $att){
+                if($att->isPrimary()){
+                    $codigo .= '
+        $'.lcfirst($obj->getNome()).'->set'.ucfirst($att->getNome()).'($_POST[\''.$obj->getNomeSnakeCase().'\']);
+';
+                }
+            }
+            
+            
+            $listaParametros[] = '$'.lcfirst ($obj->getNome());
+        }
         $codigo .= '
             
-		if ($this->dao->insert ( $' . lcfirst($objeto->getNome()) . ' ))
+		if ($this->dao->insert ('.implode(', ', $listaParametros).' ))
         {
 			echo \'
 
@@ -601,20 +664,20 @@ class ControllerGerador{
             
 ';
 
-//         foreach($objeto->getAtributos() as $atributo){
-//             if(!$atributo->isArray1N()){
-//                 continue;
-//             }
-//             $codigo .= '
-//         $this->dao->fetch'.ucfirst($atributo->getNome()).'($selected);
-//         echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
-//         $this->view->show'.ucfirst($atributo->getNome()).'($selected);
-//         echo \'</div>\';
+        foreach($objeto->getAtributos() as $atributo){
+            if(!$atributo->isArray1N()){
+                continue;
+            }
+            $codigo .= '
+        $this->dao->fetch'.ucfirst($atributo->getNome()).'($selected);
+        echo \'<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">\';
+        $this->view->show'.ucfirst($atributo->getNome()).'($selected);
+        echo \'</div>\';
             
 
-// ';
+';
             
-//         }
+        }
         foreach($objeto->getAtributos() as $atributo){
             if(!$atributo->isArrayNN()){
                 continue;
@@ -694,43 +757,21 @@ class ControllerGerador{
     }';
         return $codigo;
     }
-    public function addAtributo1N(Objeto $objeto):string{
-        $codigo = '';
-        
-        foreach($objeto->getAtributos() as $atributo){
-            if(!$atributo->isArray1N()){
-                continue;
-            }
-            $objeto2 = null;
-            foreach($this->software->getObjetos() as $obj){
-                if($obj->getNome() == $atributo->getTipoDeArray()){
-                    $objeto2 = $obj;
-                    break;
-                }
-            }
-            if($objeto2 == null){
-                continue;
-            }
-            $codigo .= '
-    public function add'.ucfirst($atributo->getTipoDeArray()).'(){
-	    if(!isset($_GET[\'select\'])){
-	        return;
-	    }
-        if(!isset($_POST[\'add_'.$objeto2->getNomeSnakeCase().'\'])){
-            $this->view->add'.ucfirst($atributo->getTipoDeArray()).'();
-		    return;
-		}
 
-    }
-';
-        }
-        
-        return $codigo;
-    }
-    
     
     public function geraControllers(Objeto $objeto)
     { 
+        $objetos1N = array();
+        foreach ($this->software->getObjetos() as $objeto2){
+            foreach($objeto2->getAtributos() as $atributo){
+                if($atributo->isArray1N()){
+                    if($atributo->getTipoDeArray() == $objeto->getNome()){
+                        $objetos1N[] = $objeto2;
+                    }
+                    
+                }
+            }
+        }
         $codigo = '<?php
             
 /**
@@ -747,11 +788,16 @@ use '.$this->software->getNome().'\\\\dao\\\\'.ucfirst($objeto->getNome()).'DAO;
                 $codigo .= '
 use '.$this->software->getNome().'\\\\dao\\\\'.ucfirst($atributo->getTipo()).'DAO;';
                 
-            }else if($atributo->isArray()){
+            }else if($atributo->isArrayNN()){
                 $codigo .= '
 use '.$this->software->getNome().'\\\\model\\\\'.ucfirst($atributo->getTipoDeArray()).';
 use '.$this->software->getNome().'\\\\dao\\\\'.ucfirst($atributo->getTipoDeArray()).'DAO;';
             }
+        }
+        foreach($objetos1N as $obj){
+            $codigo .= '
+use '.$this->software->getNome().'\\\\model\\\\'.ucfirst($obj->getNome()).';
+use '.$this->software->getNome().'\\\\dao\\\\'.ucfirst($obj->getNome()).'DAO;';
         }
         $codigo .= '
 use '.$this->software->getNome().'\\\\model\\\\'.ucfirst($objeto->getNome()).';
@@ -770,7 +816,7 @@ class ' . ucfirst($objeto->getNome()) . 'Controller {
         $codigo .= $this->edit($objeto);
         $codigo .= $this->geraMain();
         $codigo .= $this->select($objeto);
-        $codigo .= $this->addAtributo1N($objeto);
+
     
         
         

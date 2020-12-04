@@ -35,7 +35,7 @@ class ViewGerador{
         
     }
 
-    private function showInsertForm(Objeto $objeto, $nomeMetodo = 'showInsertForm') : string {
+    private function showInsertForm(Objeto $objeto) : string {
         $codigo = '';
         
         
@@ -53,17 +53,28 @@ class ViewGerador{
                 $existeCampoFile = true;
             }
         }
-        $codigo = '
-    public function '.$nomeMetodo.'(';
-        $i = count($atributosObjetos);
-        foreach($atributosObjetos as $atributoObjeto){
-            $i--;
-            $codigo .= '$lista'.ucfirst($atributoObjeto->getNome());
-            if($i != 0){
-                $codigo .= ', ';
+        $objetos1N = array();
+        foreach ($this->software->getObjetos() as $objeto2){
+            foreach($objeto2->getAtributos() as $atributo){
+                if($atributo->isArray1N()){
+                    if($atributo->getTipoDeArray() == $objeto->getNome()){
+                        $objetos1N[] = $objeto2;
+                    }
+                    
+                }
             }
-            
         }
+        
+        $arrayParametros = array();
+        foreach($atributosObjetos as $atributoObjeto){
+            $arrayParametros[] = '$lista'.ucfirst($atributoObjeto->getNome());   
+        }
+        foreach($objetos1N as $obj){
+            $arrayParametros[] = '$lista'.ucfirst($obj->getNome());
+        }
+        $codigo = '
+    public function showInsertForm(';
+        $codigo .= implode(', ', $arrayParametros);
         $codigo .= ') {
 		echo \'
 <!-- Button trigger modal -->
@@ -136,6 +147,28 @@ class ViewGerador{
                                           </select>
                 						</div>';
             
+        }
+        foreach($objetos1N as $obj){
+            $strCampoPrimary = '';
+            foreach ($obj->getAtributos() as $att){
+                if($att->isPrimary()){
+                    $strCampoPrimary = ucfirst($att->getNome());
+                    break;
+                }
+            }
+            $codigo .= '
+                                        <div class="form-group">
+                                          <label for="' . $obj->getNomeSnakeCase(). '">' . $obj->getNomeTextual(). '</label>
+                						  <select class="form-control" id="' . $obj->getNomeSnakeCase() . '" name="' . $obj->getNomeSnakeCase(). '">
+                                            <option value="">Selecione o '.$obj->getNomeTextual().'</option>\';
+                                                
+        foreach( $lista'.ucfirst($obj->getNome()).' as $element){
+            echo \'<option value="\'.$element->get'.$strCampoPrimary.'().\'">\'.$element.\'</option>\';
+        }
+                
+        echo \'
+                                          </select>
+                						</div>';
         }
         
         $codigo .= '
@@ -636,27 +669,7 @@ class ViewGerador{
         return $codigo;
     }
 
-    public function addAtributo1N(Objeto $objeto):string{
-        $codigo = '';
-        foreach($objeto->getAtributos() as $atributo){
-            if(!$atributo->isArray1N()){
-                continue;
-            }
-            $objetoDoArray = null;
-            foreach($this->software->getObjetos() as $objeto){
-                if($objeto->getNome() == $atributo->getTipoDeArray()){
-                    $objetoDoArray = $objeto;
-                    break;
-                }
-            }
-            if($objetoDoArray == null){
-                continue;
-            }
-            $codigo .= $this->showInsertForm($objetoDoArray, 'add'.ucfirst($objetoDoArray->getNome()), 'add_'.lcfirst($objetoDoArray->getNomeSnakeCase()));
-            
-        }
-        return $codigo;
-    }
+    
     private function addAtributoArrayNN(Objeto $objeto):string{
         $atributosArray = array();
         $codigo = '';
@@ -780,7 +793,7 @@ class ' . $objeto->getNome() . 'View {';
         $codigo .= $this->confirmDelete($objeto);
         $codigo .= $this->showAtributoArray($objeto);
         $codigo .= $this->addAtributoArrayNN($objeto);
-        $codigo .= $this->addAtributo1N($objeto);
+
         $codigo .= '
 }';
 

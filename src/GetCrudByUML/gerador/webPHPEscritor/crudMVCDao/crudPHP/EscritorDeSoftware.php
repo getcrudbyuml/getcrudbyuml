@@ -40,7 +40,7 @@ class EscritorDeSoftware
         foreach ($arquivos as $path => $codigo) {
             if(file_exists($diretorio.'/'.$path)){
                 if($sobrescrever == false){
-                    break;
+                    continue;
                 }
             }
             $file = fopen($diretorio.'/'.$path, "w+");
