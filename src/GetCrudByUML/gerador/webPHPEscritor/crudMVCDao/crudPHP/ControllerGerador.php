@@ -486,13 +486,13 @@ class ControllerGerador{
     public function main(){
         
         if (isset($_GET[\'select\'])){
-            echo \'<div class="row justify-content-center">\';
+            echo \'<div class="row">\';
                 $this->select();
             echo \'</div>\';
             return;
         }
         echo \'
-		<div class="row justify-content-center">\';
+		<div class="row">\';
         echo \'<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">\';
         
         if(isset($_GET[\'edit\'])){

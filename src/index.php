@@ -209,6 +209,7 @@ echo '
   <!-- Copyright -->
   <div class="footer-copyright text-center py-3">© 2020 Copyright:
     <a href="https://getcrudbyuml.com/"> getcrudbyuml.com</a>
+    <p>Apoie a página me dando 1 real: PIX jefponte@gmail.com</p>
   </div>
   <!-- Copyright -->
 

@@ -218,7 +218,7 @@ class ViewGerador{
                                             
                                             
 
-          <div class="card mb-4">
+          <div class="card">
                 <div class="card-header">
                   Lista '.$objeto->getNomeTextual().'
                 </div>
@@ -360,7 +360,7 @@ class ViewGerador{
             echo \'
             
 	<div class="card o-hidden border-0 shadow-lg my-5">
-        <div class="card mb-4">
+        <div class="card">
             <div class="card-header">
                   '.$objeto->getNomeTextual().' selecionado
             </div>
@@ -576,7 +576,7 @@ class ViewGerador{
         echo \'
         
     	<div class="card o-hidden border-0 shadow-lg my-5">
-              <div class="card mb-4">
+              <div class="card">
                 <div class="card-header">
                   '.explode(" ", $atributoArray->getTipo())[2].' do '.$objeto->getNome().'
                 </div>
