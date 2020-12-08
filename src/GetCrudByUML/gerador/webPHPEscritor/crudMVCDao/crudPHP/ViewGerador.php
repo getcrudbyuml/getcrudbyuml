@@ -359,7 +359,7 @@ class ViewGerador{
         public function showSelected('.$objeto->getNome().' $'.$nomeDoObjeto.'){
             echo \'
             
-	<div class="card o-hidden border-0 shadow-lg my-5">
+	<div class="card o-hidden border-0 shadow-lg">
         <div class="card">
             <div class="card-header">
                   '.$objeto->getNomeTextual().' selecionado
@@ -416,7 +416,7 @@ class ViewGerador{
 	    
 	    
 	    
-				<div class="card o-hidden border-0 shadow-lg my-5">
+				<div class="card o-hidden border-0 shadow-lg">
 					<div class="card-body p-0">
 						<div class="row">
 	    
@@ -495,7 +495,7 @@ class ViewGerador{
         
         
         
-				<div class="card o-hidden border-0 shadow-lg my-5">
+				<div class="card o-hidden border-0 shadow-lg">
 					<div class="card-body p-0">
 						<!-- Nested Row within Card Body -->
 						<div class="row">
@@ -575,7 +575,7 @@ class ViewGerador{
     public function show'.ucfirst($atributoArray->getNome()).'('.ucfirst($objeto->getNome()).' $'.strtolower($objeto->getNome()).'){
         echo \'
         
-    	<div class="card o-hidden border-0 shadow-lg my-5">
+    	<div class="card o-hidden border-0 shadow-lg">
               <div class="card">
                 <div class="card-header">
                   '.explode(" ", $atributoArray->getTipo())[2].' do '.$objeto->getNome().'
@@ -700,7 +700,7 @@ class ViewGerador{
         
         
         
-    <div class="card o-hidden border-0 shadow-lg my-5">
+    <div class="card o-hidden border-0 shadow-lg">
 	   <div class="card-body p-0">
 		  <div class="row">
         

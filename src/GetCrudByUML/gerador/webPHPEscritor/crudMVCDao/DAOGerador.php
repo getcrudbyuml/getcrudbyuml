@@ -165,6 +165,7 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         $codigo .= $this->insertAtributoNN($objeto);
         $codigo .= $this->removerAtributoNN($objeto);
         $codigo .= $this->fetchByNN($objeto);
+        $codigo .= $this->belongAtributo1N($objeto);
         $codigo .= '
 }';
         
@@ -1047,10 +1048,16 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
         
         return $codigo;
     }
+    
+    
     private function fetchAtributo1N($objeto) : string {
         $codigo = '';
         $atributos1N = array();
+        $atributoPrimary = null;
         foreach ($objeto->getAtributos() as $atributo) {
+            if($atributo->isPrimary()){
+                $atributoPrimary = $atributo;
+            }
             if ($atributo->isArray1N()) {
                 $atributos1N[] = $atributo;
             }
@@ -1066,21 +1073,26 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
             if($objetoDoAtributo == null){
                 return "";
             }
+            $atributoDele = null;
+            foreach($objetoDoAtributo->getAtributos() as $attr){
+                if($attr->tipoListado() && $attr->isPrimary())
+                {
+                    $atributoDele = $attr;
+                    break;
+                }
+            }
+            if($atributoDele == null){
+                return "";
+            }
             
             $codigo .= '
                 
     public function fetch' . ucfirst($atributo->getNome()) . '(' . ucfirst($objeto->getNome()) . ' $' . strtolower($objeto->getNome()) . '){';
-            foreach($objetoDoAtributo->getAtributos() as $atributosDele){
-                if($atributosDele->tipoListado() && $atributosDele->isPrimary())
-                {
-                    $codigo .= '
-	    $' . $atributosDele->getNome() . ' = $' . lcfirst($objeto->getNome()). '->get' . ucfirst($atributosDele->getNome()) . '();';
-                    $filtro = ' 
-            WHERE '. $atributosDele->getNome().'_'.$objeto->getNomeSnakeCase().' = :' . $atributosDele->getNome() . ';';
-                    break;
-                }
-            }
-            
+
+            $codigo .= '
+	    $' . lcfirst($atributoPrimary->getNome()) . ' = $' . lcfirst($objeto->getNome()). '->get' . ucfirst($atributoPrimary->getNome()) . '();';
+            $filtro = '
+            WHERE '. $atributoPrimary->getNome().'_'.$objeto->getNomeSnakeCase().' = :' . $atributoPrimary->getNome() . ';';
             
             $sqlGerador = new SQLGerador($this->software);
             $codigo .= '
@@ -1091,13 +1103,13 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
             $codigo .= '";';
             $codigo .= '
         try {
-            
+                
             $stmt = $this->connection->prepare($sql);
-            $stmt->bindParam(":' . $atributosDele->getNome() . '", $' . $atributosDele->getNome() . ', PDO::'.$atributosDele->getTipoParametroPDO().');
+            $stmt->bindParam(":' . $atributoPrimary->getNome() . '", $' . $atributoPrimary->getNome() . ', PDO::'.$atributoPrimary->getTipoParametroPDO().');
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             foreach ( $result as $row ){
-
+                
                 $'.lcfirst($objetoDoAtributo->getNome()).' = new '.ucfirst($objetoDoAtributo->getNome()).'();
 ';
             
@@ -1127,16 +1139,97 @@ class ' . ucfirst($objeto->getNome()) . 'DAO extends DAO {
             $codigo .= '
                 $'.lcfirst($objeto->getNome()).'->add'.ucfirst($objetoDoAtributo->getNome()).'($'.lcfirst($objetoDoAtributo->getNome()).');
             }
+                    
+        } catch(PDOException $e) {
+            echo $e->getMessage();
+                    
+        }
+                    
+';
+            $codigo .= '
+                
+                
+    }
+                
+                
+';
+            
+        }
+        return $codigo;
+        
+    }
+    
+    private function belongAtributo1N($objeto) : string {
+        $codigo = '';
+        $atributos1N = array();
+        $atributoPrimary = null;
+        foreach ($objeto->getAtributos() as $atributo) {
+            if($atributo->isPrimary()){
+                $atributoPrimary = $atributo;
+            }
+            if ($atributo->isArray1N()) {
+                $atributos1N[] = $atributo;
+            }
+        }
+        foreach($atributos1N as $atributo){
+            $objetoDoAtributo = null;
+            foreach($this->software->getObjetos() as $obj){
+                if($obj->getNome() == $atributo->getTipoDeArray()){
+                    $objetoDoAtributo = $obj;
+                }
+            }
+            
+            if($objetoDoAtributo == null){
+                return "";
+            }
+            $atributoDele = null;
+            foreach($objetoDoAtributo->getAtributos() as $atributo3){
+                if($atributo3->tipoListado() && $atributo3->isPrimary())
+                {
+                    $atributoDele = $atributo3;
+                    break;
+                }
+            }
+            $codigo .= '
+                
+    public function belog' . ucfirst($atributo->getTipoDeArray()) . '(' . ucfirst($objeto->getNome()) . ' $' . strtolower($objeto->getNome()) . ', ' . ucfirst($atributo->getTipoDeArray()) . ' $' . lcfirst($atributo->getTipoDeArray()) . '){';
+
+            
+
+            $codigo .= '
+	    $' . $atributoPrimary->getNome() .ucfirst($objeto->getNome()). ' = $' . lcfirst($objeto->getNome()). '->get' . ucfirst($atributoPrimary->getNome()) . '();
+        $'.lcfirst($atributoDele->getNome()).ucfirst($objetoDoAtributo->getNome()).' = $'.lcfirst($objetoDoAtributo->getNome()).'->get'.ucfirst($atributoDele->getNome()).'();';
+            $filtro = '
+            WHERE '.$objetoDoAtributo->getNomeSnakeCase() . '.'. $atributoPrimary->getNome().'_'.$objeto->getNomeSnakeCase().' = :' . $atributoPrimary->getNome() .ucfirst($objeto->getNome()).'
+            AND '.$objetoDoAtributo->getNomeSnakeCase() . '.' . $atributoDele->getNomeSnakeCase().'  = :' . lcfirst($atributoDele->getNome()).ucfirst($objetoDoAtributo->getNome()). ';';
+            
+            $sqlGerador = new SQLGerador($this->software);
+            $codigo .= '
+        $sql = "';
+            $codigo .= $sqlGerador->getSQLSelect($objetoDoAtributo);
+            $codigo .= $filtro;
+            
+            $codigo .= '";';
+            $codigo .= '
+        try {
+            
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindParam(":' . lcfirst($atributoPrimary->getNome()) .ucfirst($objeto->getNome()). '", $' . lcfirst($atributoPrimary->getNome()) .ucfirst($objeto->getNome()). ', PDO::'.$atributoPrimary->getTipoParametroPDO().');
+            $stmt->bindParam(":' . lcfirst($atributoDele->getNome()) .ucfirst($objetoDoAtributo->getNome()). '", $' . lcfirst($atributoDele->getNome()) .ucfirst($objetoDoAtributo->getNome()). ', PDO::'.$atributoDele->getTipoParametroPDO().');
+            $stmt->execute();
+            if($stmt->fetchColumn() > 0){
+                return true;
+            }
+            return false;
+         
             
         } catch(PDOException $e) {
             echo $e->getMessage();
             
         }
-
+        return false;
 ';
             $codigo .= '
-            
-
     }
                 
                 
