@@ -77,7 +77,7 @@ class EscritorDeSoftware
         
         $dbGerador = new DBGerador($this->software);
         $codigo = $dbGerador->geraBancoSqlite();
-        echo $codigo;
+        
         $bdNome = $this->diretorio . '/' . $this->software->getNomeSnakeCase() . '.db';
         if (file_exists($bdNome)) {
             unlink($bdNome);

@@ -320,7 +320,7 @@ ALTER TABLE ' . $atributo->getArrayTipoSnakeCase() . '
     public function geraBancoSqlite()
     {
         $objetosNN = array();
-        $objetos1N = array();
+
         
         
         $codigo = '';
@@ -336,7 +336,7 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase();
                     
                     $objetosNN[] = $objeto;
                 } else if ($atributo->isArray1N()) {
-                    $objetos1N[] = $objeto;
+
                 } else {
                     
                     $atributosComuns[] = $atributo;
