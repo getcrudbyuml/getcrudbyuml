@@ -77,6 +77,7 @@ class EscritorDeSoftware
         
         $dbGerador = new DBGerador($this->software);
         $codigo = $dbGerador->geraBancoSqlite();
+        echo $codigo;
         $bdNome = $this->diretorio . '/' . $this->software->getNomeSnakeCase() . '.db';
         if (file_exists($bdNome)) {
             unlink($bdNome);
@@ -84,7 +85,7 @@ class EscritorDeSoftware
         $pdo = new PDO('sqlite:' . $bdNome);
         $pdo->exec($codigo);
         
-        $this->criarArquivos(JSAjaxGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/js');
+        $this->criarArquivos(JSAjaxGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/js', false);
         
         //Classes de customização.
         $this->criarArquivos(ControllerCustomGerador::main($this->software), $diretorio.'/'.$diretorioSrc.'/'.$this->software->getNomeSimples().'/custom/controller', false);

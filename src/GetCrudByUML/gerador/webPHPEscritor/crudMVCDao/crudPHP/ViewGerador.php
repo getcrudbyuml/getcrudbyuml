@@ -415,32 +415,29 @@ class ViewGerador{
 		echo \'
 	    
 	    
-	    
-				<div class="card o-hidden border-0 shadow-lg">
-					<div class="card-body p-0">
-						<div class="row">
-	    
-							<div class="col-lg-12">
-								<div class="p-5">
-									<div class="text-center">
-										<h1 class="h4 text-gray-900 mb-4"> Edit ' . $objeto->getNomeTextual() . '</h1>
-									</div>
-						              <form class="user" method="post">';
-        
-        
-        foreach ($atributosComuns as $atributo) {
-            
-            if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
-                continue;
-            }
-            $codigo .= '
+
+<div class="card o-hidden border-0 shadow-lg mb-4">
+    <div class="card">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Edit ' . $objeto->getNomeTextual() . '</h6>
+        </div>
+        <div class="card-body">
+            <form class="user" method="post" id="edit_form_' . $objeto->getNomeSnakeCase() . '">';
+	   
+	   
+	   foreach ($atributosComuns as $atributo) {
+	       
+	       if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {
+	           continue;
+	       }
+	       $codigo .= '
                                         <div class="form-group">
                                             <label for="'.$atributo->getNomeSnakeCase().'">'.$atributo->getNomeTextual().'</label>
                                             '.$atributo->getFormHTMLEditar().'
                 						</div>';
-        }
-        foreach($atributosObjetos as $atributo){
-            $codigo .= '
+	   }
+	   foreach($atributosObjetos as $atributo){
+	       $codigo .= '
                                         <div class="form-group">
                                           <label for="' . $atributo->getNomeSnakeCase(). '">' . $atributo->getNomeTextual(). '</label>
                 						  <select class="form-control" id="' . $atributo->getNomeSnakeCase() . '" name="' . $atributo->getNomeSnakeCase(). '">
@@ -453,23 +450,26 @@ class ViewGerador{
         echo \'
                                           </select>
                 						</div>';
-            
-        }
+	       
+	   }
+	   $codigo .= '
+                <input type="hidden" value="1" name="edit_' . $objeto->getNomeSnakeCase() . '">
+                </form>
+
+        </div>
+        <div class="modal-footer">
+            <button form="edit_form_' . $objeto->getNomeSnakeCase() . '" type="submit" class="btn btn-primary">Cadastrar</button>
+        </div>
+    </div>
+</div>
+
+	    
+
+										
+						              ';
         
-        $codigo .= '
-                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Alterar" name="edit_' . $objeto->getNomeSnakeCase() . '">
-                                        <hr>
-                                            
-						              </form>
-                                            
-								</div>
-							</div>
-						</div>
-					</div>
-                                            
-                                            
-                                            
-	</div>\';
+        
+        $codigo .= '\';
 	}
 
 ';

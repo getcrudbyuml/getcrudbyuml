@@ -376,7 +376,7 @@ CREATE TABLE ' . $objeto->getNomeSnakeCase() . '_' . strtolower(explode(" ", $at
                 }
             }
         }
-        foreach ($objetos1N as $objeto) {
+        foreach ($this->software->getObjetos() as $objeto) {
             $atributoPK = null;
             foreach ($objeto->getAtributos() as $atributo) {
                 if ($atributo->getIndice() == Atributo::INDICE_PRIMARY) {

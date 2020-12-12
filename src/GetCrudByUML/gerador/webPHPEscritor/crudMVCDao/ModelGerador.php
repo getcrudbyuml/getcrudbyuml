@@ -91,7 +91,12 @@ class ' . ucfirst($objeto->getNome()) . ' {';
 	}';
             } else if ($atributo->isArray()) {
                 $codigo .= '
-                            
+
+	public function set' . ucfirst($atributo->getNome()) . '($' . lcfirst($atributo->getNome()) . ') {';
+                $codigo .= '
+		$this->' . lcfirst($atributo->getNome()) . ' = $' . lcfirst($atributo->getNome()) . ';
+	}
+         
     public function add' . ucfirst($atributo->getTipoDeArray()) . '(' . ucfirst($atributo->getTipoDeArray()) . ' $' . lcfirst($atributo->getTipoDeArray()) . '){
         $this->' . lcfirst($atributo->getNome()) . '[] = $' . lcfirst($atributo->getTipoDeArray()) . ';
             
