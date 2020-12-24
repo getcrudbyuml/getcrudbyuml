@@ -25,7 +25,7 @@ class HomeController{
                 <p class="text-white-75 mb-5">';
         if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
             echo '
-                    GetCrudByUml é uma ferramenta que gera códigos a partir de um diagrama de classes.';
+                    GetCrudByUml é uma ferramenta que permite gerar códigos de aplicações através da modelagem de um diagrama de classes.';
         }else{
             echo '
                     GetCrudByUml is a tool that generates code from class diagrams.';
