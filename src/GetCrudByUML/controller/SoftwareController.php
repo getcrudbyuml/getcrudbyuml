@@ -162,7 +162,7 @@ class SoftwareController
         }
         
         if($_SERVER['HTTP_HOST'] == 'localhost'){
-            $diretorio = 'C:/web/'. $this->selecionado->getNomeSimples();
+            $diretorio = '../../'. $this->selecionado->getNomeSimples();
             
         }else{
             $diretorio = './sistemas/' . $sessao->getLoginUsuario() . '/' . $this->selecionado->getNomeSimples();
