@@ -152,7 +152,7 @@ class SoftwareController
                 return;
             }
         }
-        if(strtolower($this->selecionado->getNomeSimples()) == 'getcrudbyuml' && $_SERVER['HTTP_HOST'] == 'localhost'){
+        if(strtolower($this->selecionado->getNomeSimples()) == 'getcrudbyuml' && $_SERVER['HTTP_HOST'] == 'localhost:888'){
             echo '
             <div class="alert alert-warning" role="alert">
               <p>Me Poupe. Tudo tem limite. Vamos parar com a palhaçada!</p>
@@ -161,8 +161,8 @@ class SoftwareController
             return;
         }
         
-        if($_SERVER['HTTP_HOST'] == 'localhost'){
-            $diretorio = 'C:/web/'. $this->selecionado->getNomeSimples();
+        if($_SERVER['HTTP_HOST'] == 'localhost:888'){
+            $diretorio = '../../'. $this->selecionado->getNomeSimples();
             
         }else{
             $diretorio = './sistemas/' . $sessao->getLoginUsuario() . '/' . $this->selecionado->getNomeSimples();
@@ -188,7 +188,7 @@ class SoftwareController
         else{
             return;
         }
-        if($_SERVER['HTTP_HOST'] != 'localhost'){
+        if($_SERVER['HTTP_HOST'] != 'localhost:888'){
             $zipador = new Zipador();
             $numeroDeArquivos = $zipador->zipaArquivo($diretorio, $diretorio.'/../'.$this->selecionado->getNomeSimples().'.zip');
         }
@@ -204,17 +204,7 @@ class SoftwareController
 </div>
 <div class="alert alert-warning" role="alert">
   <br>Considere fazer uma doação. 
-    <br>Ah, vai não seja mão de vaca, um real não vai fazer falta. <br>
-    Clica aí no botão do PayPal, 
-    isso vai evitar que eu precise começar a fazer corridas de Uber 
-    e vai me dar mais tempo para fazer novas funcionalidades pra vocês. 
-    <br><br><img class="img-fluid" src="https://media.tumblr.com/71bb156842af5ac635b7973b911d9692/tumblr_inline_mmg4b8JK391qz4rgp.gif" alt="Gatinho"><br><br>
-    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-    <input type="hidden" name="cmd" value="_s-xclick" />
-    <input type="hidden" name="hosted_button_id" value="YZ2P3PA58NHJ2" />
-    <input type="image" src="https://www.paypalobjects.com/pt_BR/BR/i/btn/btn_donateCC_LG.gif" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-    <img alt=""  src="https://www.paypal.com/pt_BR/i/scr/pixel.gif" width="1" height="1" />
-    </form>
+    <br>PIX: jefponte@gmail.com
 </div>
 ';
             

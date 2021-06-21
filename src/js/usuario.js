@@ -37,7 +37,7 @@ $(document).ready(function(e) {
             	else
             	{
             		
-                	$('#local-do-email').text("Falha ao inserir Usuario, fale com o Fabiano. ");                	
+                	$('#local-do-email').text("Falha ao inserir Usuario, fale com o Suporte. ");                	
             		
             	}
 
