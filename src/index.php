@@ -1,14 +1,6 @@
 <?php
 
 define("DB_INI", "../config/escritordesoftware_bd.ini");
-if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
-    define("DB_INI_BLOG", "../config/blog_get_crud_by_uml_db.ini");
-}else{
-    define("DB_INI_BLOG", "../config/blog_get_crud_by_uml_eng_db.ini");
-}
-
-define("PREFIXO_WP", 'wp_');
-include "blogGetCrudByUML/util/Simple_html_dom.php";
 
 function autoload($classe) {
     
@@ -26,22 +18,8 @@ function autoload($classe) {
     
 }
 
-function autoloadBlog($classe){
-    $prefix = 'blogGetCrudByUML';
-    $base_dir = './blogGetCrudByUML';
-    $len = strlen($prefix);
-    if (strncmp($prefix, $classe, $len) !== 0) {
-        return;
-    }
-    $relative_class = substr($classe, $len);
-    $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
-    if (file_exists($file)) {
-        require $file;
-        
-    }
-}
 spl_autoload_register('autoload');
-spl_autoload_register('autoloadBlog');
+
 
 
 
@@ -180,7 +158,7 @@ echo '
           <a class="tw-ic" href="https://api.whatsapp.com/send?phone=5585981763936">
             <i class="fab fa-whatsapp fa-lg white-text mr-md-5 mr-3 fa-2x"> </i>
           </a>
-          <a class="gplus-ic" href="https://www.instagram.com/getcrudbyuml/">
+          <a class="gplus-ic" href="https://www.instagram.com/jefponte/">
             <i class="fab fa-instagram fa-lg white-text mr-md-5 mr-3 fa-2x"> </i>
           </a>
           <!--Linkedin -->
