@@ -26,21 +26,10 @@ class NavBarController{
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
             <li class="nav-item active">
-              <a class="nav-link" href="./">';
-        if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt')
-        {
-            echo 'Início';
-        }else{
-            echo 'Home';
-        }
-              
-              echo '</a>
+              <a class="nav-link" href="./">Home</a>
             </li>';
               
-             echo '
-            <li class="nav-item">
-              <a class="nav-link" href="index.php#noticias">Blog</a>
-            </li>';
+
               
                
         
@@ -76,23 +65,9 @@ class NavBarController{
               </a>
                 
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="?pagina=mudar_senha">                ';
-            if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
-                echo 'Mudar Senha';
-            }else{
-                echo 'Change Password';
-            }
-                
-                echo '</a>
+                <a class="dropdown-item" href="?pagina=mudar_senha">Change Password</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="?sair=1">';
-            if(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2) == 'pt'){
-                echo 'Sair';
-            }else{
-                echo 'Sign Out';
-            }
-                
-                echo '</a>
+                <a class="dropdown-item" href="?sair=1">Sign Out</a>
               </div>
             </li>';
         }
