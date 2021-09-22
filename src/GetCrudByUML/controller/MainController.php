@@ -5,7 +5,7 @@ namespace GetCrudByUML\controller;
 use GetCrudByUML\custom\controller\UsuarioCustomController;
 use GetCrudByUML\model\Usuario;
 use GetCrudByUML\util\Sessao;
-use blogGetCrudByUML\custom\controller\PostsCustomController;
+
 
 class MainController{
     
@@ -19,10 +19,7 @@ class MainController{
                 $controller = new UsuarioCustomController();
                 $controller->login();
                 break;
-            case 'post':
-                $controller = new PostsCustomController();
-                $controller->main();
-                break;
+            
             default:
                 echo '404';
                 break;
@@ -60,10 +57,6 @@ class MainController{
                 $sessao = new Sessao();
                 $usuario->setId($sessao->getIdUsuario());
                 $controller->editarSenha($usuario);
-                break;
-            case 'post':
-                $controller = new PostsCustomController();
-                $controller->main();
                 break;
             default:
                 echo '404';
